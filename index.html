@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abba Wada | Hardware Engineer & Financial Product Strategist</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav" id="nav">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="#home">Abba Wada</a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#experience">Experience</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1 class="hero-title">
+                <span class="line">Abba Wada</span>
+            </h1>
+            <p class="hero-subtitle">Hardware Engineering, Finance & Blockchain</p>
+            <div class="hero-location">
+                <span>📍 Los Angeles, CA | USC '26</span>
+            </div>
+            <a href="#projects" class="cta-button">View My Work</a>
+        </div>
+        <div class="scroll-indicator">
+            <span>Scroll</span>
+            <div class="scroll-line"></div>
+        </div>
+    </section>
+
+    <!-- Featured Projects -->
+    <section class="featured-projects" id="projects">
+        <div class="container">
+            <h2 class="section-title">Featured Work</h2>
+            <p class="section-subtitle">Select recent and notable projects</p>
+            
+            <div class="projects-grid">
+                <!-- Project 1 -->
+                <div class="project-card featured" data-project="1">
+                    <div class="project-image">
+                        <!-- Replace this placeholder with your project image or video -->
+                        <!-- For video: <video class="project-media" src="videos/haptic-sleeve.mp4" poster="images/haptic-sleeve-poster.jpg" controls></video> -->
+                        <!-- For image: <img class="project-media" src="images/haptic-sleeve.jpg" alt="AI Haptic Feedback Shooting Sleeve"> -->
+                        <div class="project-placeholder">
+                            <svg viewBox="0 0 200 200" fill="none">
+                                <rect width="200" height="200" fill="#f5f5f5"/>
+                                <rect x="60" y="40" width="80" height="120" rx="5" fill="#333"/>
+                                <circle cx="100" cy="80" r="15" fill="#666"/>
+                                <rect x="75" y="100" width="50" height="50" rx="3" fill="#999"/>
+                            </svg>
+                        </div>
+                        <div class="project-overlay">
+                            <span class="project-tag">Wearable IoT</span>
+                        </div>
+                    </div>
+                    <div class="project-info">
+                        <h3 class="project-title">AI Haptic Feedback Shooting Sleeve</h3>
+                        <p class="project-description">Wearable IoT device using IMU sensors to track 3D biomechanical motion, delivering real-time vibrotactile haptic cues to correct elbow/wrist alignment during basketball shots.</p>
+                        <div class="project-tech">
+                            <span>C++</span>
+                            <span>Python</span>
+                            <span>IMU Sensors</span>
+                            <span>Electrical Circuit Design</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 2 -->
+                <div class="project-card featured" data-project="2">
+                    <div class="project-image">
+                        <div class="project-placeholder">
+                            <svg viewBox="0 0 200 200" fill="none">
+                                <rect width="200" height="200" fill="#f5f5f5"/>
+                                <rect x="30" y="60" width="140" height="80" rx="5" fill="#333"/>
+                                <rect x="50" y="80" width="20" height="20" fill="#666"/>
+                                <rect x="80" y="80" width="20" height="20" fill="#666"/>
+                                <rect x="110" y="80" width="20" height="20" fill="#666"/>
+                                <rect x="140" y="80" width="20" height="20" fill="#666"/>
+                            </svg>
+                        </div>
+                        <div class="project-overlay">
+                            <span class="project-tag">Trading & Analytics</span>
+                        </div>
+                    </div>
+                    <div class="project-info">
+                        <h3 class="project-title">Digital Asset Trading Group</h3>
+                        <p class="project-description">Generated 5,000% portfolio ROI through directional trades on BTC and LUNA, utilizing Dune SQL queries, on-chain metrics, and macro sentiment analysis. Published weekly reports for 500-member community.</p>
+                        <div class="project-tech">
+                            <span>Dune Analytics</span>
+                            <span>Coinglass</span>
+                            <span>TradingView</span>
+                            <span>SQL</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 3 -->
+                <div class="project-card featured" data-project="3">
+                    <div class="project-image">
+                        <!-- YouTube Video Embed -->
+                        <div class="project-video-embed">
+                            <iframe 
+                                src="https://www.youtube.com/embed/rMxsd21XIwQ" 
+                                frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen
+                                loading="lazy">
+                            </iframe>
+                        </div>
+                        <!-- Alternative: Use image if you prefer -->
+                        <!-- <img class="project-media" src="images/bluetooth-car.jpg" alt="Bluetooth Car Project"> -->
+                        <div class="project-overlay">
+                            <span class="project-tag">Robotics</span>
+                        </div>
+                    </div>
+                    <div class="project-info">
+                        <h3 class="project-title">Bluetooth Car</h3>
+                        <p class="project-description">Autonomous robot with Bluetooth control, featuring motor drivers, microcontroller integration, and sensor systems. Custom chassis with breadboard prototyping and real-time control capabilities.</p>
+                        <div class="project-tech">
+                            <span>Bluetooth</span>
+                            <span>Motor Drivers</span>
+                            <span>Microcontroller</span>
+                            <span>Embedded Systems</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- More Projects Section -->
+    <section class="more-projects">
+        <div class="container">
+            <h2 class="section-title">More Work</h2>
+            <p class="section-subtitle">Take a scroll, stay a while</p>
+            
+            <div class="projects-list">
+                <div class="project-item" data-project="4">
+                    <div class="project-item-content">
+                        <div class="project-item-number">01</div>
+                        <div class="project-item-info">
+                            <h3>Bitcoin Yield Vaults</h3>
+                            <p>Structured products combining principal protection with leveraged upside via options strategies</p>
+                        </div>
+                        <div class="project-item-arrow">→</div>
+                    </div>
+                </div>
+                
+                <div class="project-item" data-project="5">
+                    <div class="project-item-content">
+                        <div class="project-item-number">02</div>
+                        <div class="project-item-info">
+                            <h3>Data-Driven Brand Partnerships</h3>
+                            <p>SQL and Python analysis of student spending patterns, negotiating 15+ partnerships</p>
+                        </div>
+                        <div class="project-item-arrow">→</div>
+                    </div>
+                </div>
+                
+                <div class="project-item" data-project="6">
+                    <div class="project-item-content">
+                        <div class="project-item-number">03</div>
+                        <div class="project-item-info">
+                            <h3>Venture Capital Due Diligence</h3>
+                            <p>Technical and financial analysis of early-stage startups, quantitative scoring rubrics</p>
+                        </div>
+                        <div class="project-item-arrow">→</div>
+                    </div>
+                </div>
+                
+                <div class="project-item" data-project="7">
+                    <div class="project-item-content">
+                        <div class="project-item-number">04</div>
+                        <div class="project-item-info">
+                            <h3>Non-Profit Strategic Roadmaps</h3>
+                            <p>Data-driven donor retention playbooks and 12-month Go-To-Market strategies</p>
+                        </div>
+                        <div class="project-item-arrow">→</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about" id="about">
+        <div class="container">
+            <div class="about-content">
+                <div class="about-text">
+                    <h2 class="section-title">About</h2>
+                    <p class="about-description">
+                        I'm a hardware engineer and product manager at the intersection of technology and finance. 
+                        Currently pursuing a Bachelor of Arts in Economics with a minor in Mathematical Finance at USC, I'm 
+                        specializing in Connected Devices & Making through the Viterbi School of Engineering.
+                    </p>
+                    <p class="about-description">
+                        My work spans from building wearable IoT devices with haptic feedback systems to engineering 
+                        financial models and trading crypto. I combine my love for hardware prototyping with quantitative 
+                        analysis to solve complex problems across both domains.
+                    </p>
+                    <div class="education">
+                        <h3>Education</h3>
+                        <p><strong>University of Southern California</strong> | Los Angeles, CA</p>
+                        <p>Bachelor of Arts, Economics - Dean Scholar (Academic Merit Scholarship) | GPA: 3.70</p>
+                        <p>Minor: Mathematical Finance | Expected Graduation: May 2026</p>
+                        <p>Specialization: Viterbi School of Engineering, Connected Devices & Making</p>
+                    </div>
+                    <div class="skills">
+                        <h3>Technical Skills</h3>
+                        <div class="skills-grid">
+                            <span>Python</span>
+                            <span>C++</span>
+                            <span>C#</span>
+                            <span>SQL</span>
+                            <span>Matlab</span>
+                            <span>Tableau</span>
+                            <span>Excel</span>
+                            <span>CAD</span>
+                            <span>VectorBT</span>
+                            <span>NumPy</span>
+                            <span>Data Analysis</span>
+                            <span>Financial Modeling</span>
+                            <span>Tokenomics Research</span>
+                            <span>Quantitative Analysis</span>
+                            <span>Risk Management</span>
+                            <span>A/B Testing</span>
+                            <span>Electrical Circuit Design</span>
+                            <span>IMU Sensors</span>
+                            <span>IoT Development</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experience Section -->
+    <section class="experience" id="experience">
+        <div class="container">
+            <h2 class="section-title">Experience</h2>
+            <p class="section-subtitle">Professional work and leadership</p>
+            
+            <div class="experience-list">
+                <div class="experience-item">
+                    <div class="experience-header">
+                        <div>
+                            <h3>Financial Product & Strategy Intern</h3>
+                            <p class="experience-company">Solera</p>
+                        </div>
+                        <span class="experience-date">Jun 2025 - Aug 2025</span>
+                    </div>
+                    <p class="experience-location">Los Angeles, CA</p>
+                    <ul class="experience-details">
+                        <li>Engineered stochastic financial models to simulate liquidity stress tests, optimizing utilization rates and boosting projected capital efficiency by 30%</li>
+                        <li>Designed structured Bitcoin yield vaults combining principal protection with leveraged upside via options strategies</li>
+                        <li>Spearheaded integration of Liquid Staking Tokens as collateral, increasing protocol AUM potential</li>
+                    </ul>
+                </div>
+
+                <div class="experience-item">
+                    <div class="experience-header">
+                        <div>
+                            <h3>Data & Sales Analyst Intern</h3>
+                            <p class="experience-company">Claim</p>
+                        </div>
+                        <span class="experience-date">Mar 2024 - Aug 2024</span>
+                    </div>
+                    <p class="experience-location">Los Angeles, CA</p>
+                    <ul class="experience-details">
+                        <li>Leveraged SQL and Python to analyze student spending patterns, negotiating 15+ brand partnerships</li>
+                        <li>Drove 20% increase in user retention at USC and 40% growth in first-time student purchases</li>
+                    </ul>
+                </div>
+
+                <div class="experience-item">
+                    <div class="experience-header">
+                        <div>
+                            <h3>Consulting Extern</h3>
+                            <p class="experience-company">PwC</p>
+                        </div>
+                        <span class="experience-date">Jun 2024 - Aug 2024</span>
+                    </div>
+                    <p class="experience-location">Los Angeles, CA</p>
+                    <ul class="experience-details">
+                        <li>Formulated data-driven donor-retention playbook for We Build Black, targeting 2000+ recurring donors</li>
+                        <li>Synthesized KPI tracking metrics into strategic roadmap with 12-month Go-To-Market strategy</li>
+                    </ul>
+                </div>
+
+                <div class="experience-item">
+                    <div class="experience-header">
+                        <div>
+                            <h3>Venture Analyst Intern</h3>
+                            <p class="experience-company">Tech Coast Angels Venture Group</p>
+                        </div>
+                        <span class="experience-date">Mar 2024 - Jun 2024</span>
+                    </div>
+                    <p class="experience-location">Los Angeles, CA</p>
+                    <ul class="experience-details">
+                        <li>Executed technical and financial due diligence on early-stage startups in Pegasus Angel Accelerator</li>
+                        <li>Cultivated pipeline of 500+ founders and investors, implementing quantitative scoring rubric</li>
+                    </ul>
+                </div>
+
+                <div class="experience-item">
+                    <div class="experience-header">
+                        <div>
+                            <h3>Treasurer</h3>
+                            <p class="experience-company">Blockchain @ USC</p>
+                        </div>
+                        <span class="experience-date">May 2025 - Present</span>
+                    </div>
+                    <p class="experience-location">Los Angeles, CA</p>
+                    <ul class="experience-details">
+                        <li>Directing $15,000+ annual operating budget with transparent ledger reporting</li>
+                        <li>Orchestrated financial logistics for USC Blockchain Conference with 300+ attendees and 20+ speakers</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <h2 class="section-title">Contact</h2>
+            <p class="section-subtitle">Let's build something together</p>
+            
+            <div class="contact-content">
+                <div class="contact-info">
+                    <a href="tel:+13234283830" class="contact-link">
+                        <span class="contact-label">Phone</span>
+                        <span class="contact-value">(323) 428-3830</span>
+                    </a>
+                    <a href="mailto:abba.wada10@gmail.com" class="contact-link">
+                        <span class="contact-label">Email</span>
+                        <span class="contact-value">abba.wada10@gmail.com</span>
+                    </a>
+                    <a href="https://www.linkedin.com/in/abba-wada-63b999266/" target="_blank" rel="noopener noreferrer" class="contact-link">
+                        <span class="contact-label">LinkedIn</span>
+                        <span class="contact-value">linkedin.com/in/abba-wada-63b999266</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; <span id="currentYear"></span> All rights reserved</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
