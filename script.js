@@ -71,23 +71,40 @@ document.querySelectorAll('section, .project-card, .project-item').forEach(el =>
 });
 
 // Project card interactions
-document.querySelectorAll('.project-card, .project-item').forEach(card => {
+document.querySelectorAll('.project-card').forEach(card => {
     card.addEventListener('click', function() {
         // Add your project detail modal or navigation logic here
         console.log('Project clicked:', this.dataset.project);
         // Example: window.location.href = `project-${this.dataset.project}.html`;
     });
-    
-    // Add hover effect for project items
-    if (card.classList.contains('project-item')) {
-        card.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateX(10px)';
-        });
+});
+
+// Expandable project items
+document.querySelectorAll('.project-item.expandable').forEach(item => {
+    item.addEventListener('click', function(e) {
+        // Toggle expanded state
+        this.classList.toggle('expanded');
         
-        card.addEventListener('mouseleave', function() {
+        // Scroll to expanded item if it's being opened
+        if (this.classList.contains('expanded')) {
+            setTimeout(() => {
+                this.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 100);
+        }
+    });
+    
+    // Remove hover transform for expandable items
+    item.addEventListener('mouseenter', function() {
+        if (!this.classList.contains('expanded')) {
+            this.style.transform = 'translateX(5px)';
+        }
+    });
+    
+    item.addEventListener('mouseleave', function() {
+        if (!this.classList.contains('expanded')) {
             this.style.transform = 'translateX(0)';
-        });
-    }
+        }
+    });
 });
 
 // Update current year in footer
@@ -139,4 +156,21 @@ document.querySelectorAll('.skills-grid span').forEach(skill => {
     skill.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
     skillsObserver.observe(skill);
 });
+
+// Local video play functionality
+const homeMonitorContainer = document.getElementById('home-monitor-video-container');
+const homeMonitorThumbnail = document.getElementById('home-monitor-thumbnail');
+const homeMonitorVideo = document.getElementById('home-monitor-video');
+const homeMonitorPlay = document.getElementById('home-monitor-play');
+
+if (homeMonitorContainer && homeMonitorThumbnail && homeMonitorVideo && homeMonitorPlay) {
+    homeMonitorContainer.addEventListener('click', function() {
+        if (homeMonitorVideo.style.display === 'none') {
+            homeMonitorThumbnail.style.display = 'none';
+            homeMonitorPlay.style.display = 'none';
+            homeMonitorVideo.style.display = 'block';
+            homeMonitorVideo.play();
+        }
+    });
+}
 
