@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Abba Wada | Hardware Engineer & Financial Product Strategist</title>
+    <title>Abba Wada | Economics, Blockchain, and Hardware Engineering</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 </head>
 <body>
     <!-- Navigation -->
@@ -19,10 +19,12 @@
             <ul class="nav-links">
                 <li><a href="#home">Home</a></li>
                 <li><a href="#projects">Projects</a></li>
-                <li><a href="#about">About</a></li>
                 <li><a href="#experience">Experience</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
+            <a href="#about" class="nav-about-icon" aria-label="About">
+                <img src="images/profile.png" alt="About Abba Wada" id="profile-img" onerror="this.style.display='none'; this.parentElement.innerHTML='<span style=\'font-size: 1.2rem;\'>ABOUT</span>';">
+            </a>
             <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
                 <span></span>
                 <span></span>
@@ -35,13 +37,12 @@
     <section class="hero" id="home">
         <div class="hero-content">
             <h1 class="hero-title">
-                <span class="line">Abba Wada</span>
+                <span class="line">ABBA WADA</span>
             </h1>
-            <p class="hero-subtitle">Hardware Engineering, Finance & Blockchain</p>
+            <p class="hero-subtitle">Economics, Blockchain, and Hardware</p>
             <div class="hero-location">
-                <span>📍 Los Angeles, CA | USC '26</span>
+                <span>LOS ANGELES, CA</span>
             </div>
-            <a href="#projects" class="cta-button">View My Work</a>
         </div>
         <div class="scroll-indicator">
             <span>Scroll</span>
@@ -59,29 +60,21 @@
                 <!-- Project 1 -->
                 <div class="project-card featured" data-project="1">
                     <div class="project-image">
-                        <!-- Replace this placeholder with your project image or video -->
-                        <!-- For video: <video class="project-media" src="videos/haptic-sleeve.mp4" poster="images/haptic-sleeve-poster.jpg" controls></video> -->
-                        <!-- For image: <img class="project-media" src="images/haptic-sleeve.jpg" alt="AI Haptic Feedback Shooting Sleeve"> -->
-                        <div class="project-placeholder">
-                            <svg viewBox="0 0 200 200" fill="none">
-                                <rect width="200" height="200" fill="#f5f5f5"/>
-                                <rect x="60" y="40" width="80" height="120" rx="5" fill="#333"/>
-                                <circle cx="100" cy="80" r="15" fill="#666"/>
-                                <rect x="75" y="100" width="50" height="50" rx="3" fill="#999"/>
-                            </svg>
-                        </div>
+                        <video class="project-media" src="videos/Shot_Test.MOV" poster="images/Shot_Test.png" controls>
+                            Your browser does not support the video tag.
+                        </video>
                         <div class="project-overlay">
                             <span class="project-tag">Wearable IoT</span>
                         </div>
                     </div>
                     <div class="project-info">
-                        <h3 class="project-title">AI Haptic Feedback Shooting Sleeve</h3>
-                        <p class="project-description">Wearable IoT device using IMU sensors to track 3D biomechanical motion, delivering real-time vibrotactile haptic cues to correct elbow/wrist alignment during basketball shots.</p>
+                        <h3 class="project-title">FlowState</h3>
+                        <p class="project-description">Wearable device tracking biomechanical motion with real-time haptic feedback for basketball shot correction.</p>
                         <div class="project-tech">
                             <span>C++</span>
                             <span>Python</span>
                             <span>IMU Sensors</span>
-                            <span>Electrical Circuit Design</span>
+                            <span>Circuit Design</span>
                         </div>
                     </div>
                 </div>
@@ -89,28 +82,21 @@
                 <!-- Project 2 -->
                 <div class="project-card featured" data-project="2">
                     <div class="project-image">
-                        <div class="project-placeholder">
-                            <svg viewBox="0 0 200 200" fill="none">
-                                <rect width="200" height="200" fill="#f5f5f5"/>
-                                <rect x="30" y="60" width="140" height="80" rx="5" fill="#333"/>
-                                <rect x="50" y="80" width="20" height="20" fill="#666"/>
-                                <rect x="80" y="80" width="20" height="20" fill="#666"/>
-                                <rect x="110" y="80" width="20" height="20" fill="#666"/>
-                                <rect x="140" y="80" width="20" height="20" fill="#666"/>
-                            </svg>
-                        </div>
+                        <img class="project-media" src="images/Posture_Cue_Thumbnail.png" alt="Posture Cue">
+                        <a href="https://www.youtube.com/watch?v=Hr_AOARKWCw" target="_blank" rel="noopener noreferrer" class="project-video-link">
+                            <div class="play-button-overlay">▶</div>
+                        </a>
                         <div class="project-overlay">
-                            <span class="project-tag">Trading & Analytics</span>
+                            <span class="project-tag">Wearable</span>
                         </div>
                     </div>
                     <div class="project-info">
-                        <h3 class="project-title">Digital Asset Trading Group</h3>
-                        <p class="project-description">Generated 5,000% portfolio ROI through directional trades on BTC and LUNA, utilizing Dune SQL queries, on-chain metrics, and macro sentiment analysis. Published weekly reports for 500-member community.</p>
+                        <h3 class="project-title">Posture Cue</h3>
+                        <p class="project-description">Smart wearable monitoring spinal alignment with real-time posture correction feedback.</p>
                         <div class="project-tech">
-                            <span>Dune Analytics</span>
-                            <span>Coinglass</span>
-                            <span>TradingView</span>
-                            <span>SQL</span>
+                            <span>Sensors</span>
+                            <span>Wearable Tech</span>
+                            <span>Embedded Systems</span>
                         </div>
                     </div>
                 </div>
@@ -118,30 +104,90 @@
                 <!-- Project 3 -->
                 <div class="project-card featured" data-project="3">
                     <div class="project-image">
-                        <!-- YouTube Video Embed -->
-                        <div class="project-video-embed">
-                            <iframe 
-                                src="https://www.youtube.com/embed/rMxsd21XIwQ" 
-                                frameborder="0" 
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                                allowfullscreen
-                                loading="lazy">
-                            </iframe>
+                        <img class="project-media" src="images/Visual_Mapping_Robot.png" alt="Visual Mapping for Autonomous Robots">
+                        <a href="https://www.youtube.com/watch?v=rWP7KaduHdg" target="_blank" rel="noopener noreferrer" class="project-video-link">
+                            <div class="play-button-overlay">▶</div>
+                        </a>
+                        <div class="project-overlay">
+                            <span class="project-tag">Robotics</span>
                         </div>
-                        <!-- Alternative: Use image if you prefer -->
-                        <!-- <img class="project-media" src="images/bluetooth-car.jpg" alt="Bluetooth Car Project"> -->
+                    </div>
+                    <div class="project-info">
+                        <h3 class="project-title">Visual Mapping for Autonomous Robots</h3>
+                        <p class="project-description">Simulation software for autonomous mobile robots to optimize routes and prevent factory congestion.</p>
+                        <div class="project-tech">
+                            <span>Robotics</span>
+                            <span>Simulation</span>
+                            <span>Path Planning</span>
+                            <span>Collision Avoidance</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 4 -->
+                <div class="project-card featured" data-project="4">
+                    <div class="project-image">
+                        <img class="project-media" src="images/Bluetooth_Car.png" alt="Bluetooth Car">
+                        <a href="https://www.youtube.com/watch?v=rMxsd21XIwQ" target="_blank" rel="noopener noreferrer" class="project-video-link">
+                            <div class="play-button-overlay">▶</div>
+                        </a>
                         <div class="project-overlay">
                             <span class="project-tag">Robotics</span>
                         </div>
                     </div>
                     <div class="project-info">
                         <h3 class="project-title">Bluetooth Car</h3>
-                        <p class="project-description">Autonomous robot with Bluetooth control, featuring motor drivers, microcontroller integration, and sensor systems. Custom chassis with breadboard prototyping and real-time control capabilities.</p>
+                        <p class="project-description">Bluetooth-controlled robot car</p>
                         <div class="project-tech">
                             <span>Bluetooth</span>
                             <span>Motor Drivers</span>
                             <span>Microcontroller</span>
                             <span>Embedded Systems</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 7 -->
+                <div class="project-card featured" data-project="7">
+                    <div class="project-image" id="home-monitor-video-container">
+                        <img class="project-media" src="images/Home_monitor.png" alt="Home Temperature Monitor" id="home-monitor-thumbnail">
+                        <video class="project-media" src="videos/Temp_Home_Monitor.mov" controls style="display: none;" id="home-monitor-video">
+                            Your browser does not support the video tag.
+                        </video>
+                        <div class="play-button-overlay" id="home-monitor-play">▶</div>
+                        <div class="project-overlay">
+                            <span class="project-tag">IoT</span>
+                        </div>
+                    </div>
+                    <div class="project-info">
+                        <h3 class="project-title">Home Temperature Monitor</h3>
+                        <p class="project-description">IoT device tracking temperature and humidity with real-time monitoring.</p>
+                        <div class="project-tech">
+                            <span>Sensors</span>
+                            <span>IoT</span>
+                            <span>Data Logging</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 8 -->
+                <div class="project-card featured" data-project="8">
+                    <div class="project-image">
+                        <img class="project-media" src="images/Ping_Pong_Lights.png" alt="Ping Pong Lights">
+                        <a href="https://www.youtube.com/watch?v=Us6PR6JX7_M" target="_blank" rel="noopener noreferrer" class="project-video-link">
+                            <div class="play-button-overlay">▶</div>
+                        </a>
+                        <div class="project-overlay">
+                            <span class="project-tag">Hardware</span>
+                        </div>
+                    </div>
+                    <div class="project-info">
+                        <h3 class="project-title">Ping Pong Lights</h3>
+                        <p class="project-description">Interactive project with ping pong balls creating dynamic light patterns.</p>
+                        <div class="project-tech">
+                            <span>LEDs</span>
+                            <span>Circuit Design</span>
+                            <span>Prototyping</span>
                         </div>
                     </div>
                 </div>
@@ -156,47 +202,84 @@
             <p class="section-subtitle">Take a scroll, stay a while</p>
             
             <div class="projects-list">
-                <div class="project-item" data-project="4">
+                <div class="project-item expandable" data-project="4">
                     <div class="project-item-content">
                         <div class="project-item-number">01</div>
                         <div class="project-item-info">
-                            <h3>Bitcoin Yield Vaults</h3>
-                            <p>Structured products combining principal protection with leveraged upside via options strategies</p>
+                            <h3>Plume Token Yield Vaults</h3>
+                            <p>Designed vault with Plume native tokens, creating custom risk rating system and allocation formula</p>
                         </div>
                         <div class="project-item-arrow">→</div>
                     </div>
+                    <div class="project-item-details">
+                        <div class="project-detail-content">
+                            <p>Designed yield vault with Plume native tokens using custom risk rating system and allocation formula, producing higher native yield than current offerings.</p>
+                            <div class="project-detail-tech">
+                                <span>Financial Modeling</span>
+                                <span>Risk Management</span>
+                                <span>Tokenomics</span>
+                                <span>Python</span>
+                            </div>
+                            <div class="project-detail-links">
+                                <a href="https://1drv.ms/x/c/933edcbe437d6d8e/IQCObX1Dvtw-IICT8QAAAAAAAZDvoEZcrmQfKaM4GBRI_Q0" target="_blank" rel="noopener noreferrer" class="project-link-button">
+                                    View Project Document →
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 
-                <div class="project-item" data-project="5">
+                <div class="project-item expandable" data-project="5">
                     <div class="project-item-content">
                         <div class="project-item-number">02</div>
                         <div class="project-item-info">
-                            <h3>Data-Driven Brand Partnerships</h3>
-                            <p>SQL and Python analysis of student spending patterns, negotiating 15+ partnerships</p>
+                            <h3>Ethereum Validators</h3>
+                            <p>Validator infrastructure and staking strategy optimization for Ethereum network participation</p>
                         </div>
                         <div class="project-item-arrow">→</div>
                     </div>
+                    <div class="project-item-details">
+                        <div class="project-detail-content">
+                            <p>Designed an incentive system for validators to increase network decentralization.</p>
+                            <div class="project-detail-tech">
+                                <span>Ethereum</span>
+                                <span>Staking</span>
+                                <span>Blockchain</span>
+                                <span>Infrastructure</span>
+                            </div>
+                            <div class="project-detail-links">
+                                <a href="https://docs.google.com/presentation/d/1iWLCOoLZ2Rc2Mj3XaIiYThyZ5qNMzqDJLamOjiv3Fmw/edit?usp=sharing" target="_blank" rel="noopener noreferrer" class="project-link-button">
+                                    View Presentation →
+                                </a>
+                                <a href="https://docs.google.com/document/d/1Fty-PDfzk-jWjNQU8jz_1RUKmQcDWTrZbvIsxl_z7mc/edit?usp=sharing" target="_blank" rel="noopener noreferrer" class="project-link-button">
+                                    View Project Proposal →
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 
-                <div class="project-item" data-project="6">
+                <div class="project-item expandable" data-project="6">
                     <div class="project-item-content">
                         <div class="project-item-number">03</div>
                         <div class="project-item-info">
-                            <h3>Venture Capital Due Diligence</h3>
-                            <p>Technical and financial analysis of early-stage startups, quantitative scoring rubrics</p>
+                            <h3>Wheelchair Basketball Volunteering</h3>
+                            <p>Community engagement and support for adaptive sports programs</p>
                         </div>
                         <div class="project-item-arrow">→</div>
                     </div>
-                </div>
-                
-                <div class="project-item" data-project="7">
-                    <div class="project-item-content">
-                        <div class="project-item-number">04</div>
-                        <div class="project-item-info">
-                            <h3>Non-Profit Strategic Roadmaps</h3>
-                            <p>Data-driven donor retention playbooks and 12-month Go-To-Market strategies</p>
+                    <div class="project-item-details">
+                        <div class="project-detail-content">
+                            <p>Volunteered with wheelchair basketball programs, supporting adaptive sports initiatives and community engagement.</p>
+                            <div class="project-detail-tech">
+                                <span>Community Service</span>
+                                <span>Adaptive Sports</span>
+                                <span>Volunteering</span>
+                            </div>
+                            <video class="project-detail-image" src="videos/Wheelchair_Basketball.MOV" controls>
+                                Your browser does not support the video tag.
+                            </video>
                         </div>
-                        <div class="project-item-arrow">→</div>
                     </div>
                 </div>
             </div>
@@ -210,19 +293,15 @@
                 <div class="about-text">
                     <h2 class="section-title">About</h2>
                     <p class="about-description">
-                        I'm a hardware engineer and product manager at the intersection of technology and finance. 
-                        Currently pursuing a Bachelor of Arts in Economics with a minor in Mathematical Finance at USC, I'm 
-                        specializing in Connected Devices & Making through the Viterbi School of Engineering.
+                        I am a senior at USC studying Economics with a minor in Mathematical Finance. I'm specializing in Connected Devices & Making through the Viterbi School of Engineering.
                     </p>
                     <p class="about-description">
-                        My work spans from building wearable IoT devices with haptic feedback systems to engineering 
-                        financial models and trading crypto. I combine my love for hardware prototyping with quantitative 
-                        analysis to solve complex problems across both domains.
+                        My work spans from building wearable devices to engineering financial models and trading crypto. I combine my love for hardware prototyping with quantitative analysis to solve complex problems across different domains.
                     </p>
                     <div class="education">
                         <h3>Education</h3>
                         <p><strong>University of Southern California</strong> | Los Angeles, CA</p>
-                        <p>Bachelor of Arts, Economics - Dean Scholar (Academic Merit Scholarship) | GPA: 3.70</p>
+                        <p>Bachelor of Arts, Economics - Dean Scholar (Academic Merit Scholarship)</p>
                         <p>Minor: Mathematical Finance | Expected Graduation: May 2026</p>
                         <p>Specialization: Viterbi School of Engineering, Connected Devices & Making</p>
                     </div>
@@ -272,7 +351,7 @@
                     </div>
                     <p class="experience-location">Los Angeles, CA</p>
                     <ul class="experience-details">
-                        <li>Engineered stochastic financial models to simulate liquidity stress tests, optimizing utilization rates and boosting projected capital efficiency by 30%</li>
+                        <li>Engineered financial models to simulate liquidity stress tests, optimizing utilization rates and boosting projected capital efficiency by 30%</li>
                         <li>Designed structured Bitcoin yield vaults combining principal protection with leveraged upside via options strategies</li>
                         <li>Spearheaded integration of Liquid Staking Tokens as collateral, increasing protocol AUM potential</li>
                     </ul>
