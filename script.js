@@ -164,12 +164,23 @@ const flowstateVideo = document.getElementById('flowstate-video');
 const flowstatePlay = document.getElementById('flowstate-play');
 
 if (flowstateContainer && flowstateThumbnail && flowstateVideo && flowstatePlay) {
-    flowstateContainer.addEventListener('click', function() {
-        if (flowstateVideo.style.display === 'none') {
+    flowstateContainer.addEventListener('click', function(e) {
+        // Only trigger if clicking on the container, not if video is already playing
+        if (flowstateVideo.style.display === 'none' || flowstateVideo.style.display === '') {
+            e.preventDefault();
+            e.stopPropagation();
             flowstateThumbnail.style.display = 'none';
             flowstatePlay.style.display = 'none';
             flowstateVideo.style.display = 'block';
-            flowstateVideo.play();
+            flowstateVideo.style.position = 'absolute';
+            flowstateVideo.style.top = '0';
+            flowstateVideo.style.left = '0';
+            flowstateVideo.style.width = '100%';
+            flowstateVideo.style.height = '100%';
+            flowstateVideo.load(); // Reload the video
+            flowstateVideo.play().catch(function(error) {
+                console.log('Video play error:', error);
+            });
         }
     });
 }
@@ -180,13 +191,23 @@ const homeMonitorVideo = document.getElementById('home-monitor-video');
 const homeMonitorPlay = document.getElementById('home-monitor-play');
 
 if (homeMonitorContainer && homeMonitorThumbnail && homeMonitorVideo && homeMonitorPlay) {
-    homeMonitorContainer.addEventListener('click', function() {
-        if (homeMonitorVideo.style.display === 'none') {
+    homeMonitorContainer.addEventListener('click', function(e) {
+        // Only trigger if clicking on the container, not if video is already playing
+        if (homeMonitorVideo.style.display === 'none' || homeMonitorVideo.style.display === '') {
+            e.preventDefault();
+            e.stopPropagation();
             homeMonitorThumbnail.style.display = 'none';
             homeMonitorPlay.style.display = 'none';
             homeMonitorVideo.style.display = 'block';
-            homeMonitorVideo.play();
+            homeMonitorVideo.style.position = 'absolute';
+            homeMonitorVideo.style.top = '0';
+            homeMonitorVideo.style.left = '0';
+            homeMonitorVideo.style.width = '100%';
+            homeMonitorVideo.style.height = '100%';
+            homeMonitorVideo.load(); // Reload the video
+            homeMonitorVideo.play().catch(function(error) {
+                console.log('Video play error:', error);
+            });
         }
     });
 }
-
