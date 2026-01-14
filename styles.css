@@ -394,7 +394,7 @@ section {
     position: relative;
 }
 
-#tea-state-play,
+#flowstate-play,
 #home-monitor-play {
     position: absolute;
     top: 50%;
