@@ -662,6 +662,47 @@ section {
     border-color: var(--primary-color);
 }
 
+/* Publications */
+.publications {
+    padding: 6rem 0;
+}
+
+.publications-list {
+    margin-top: 3rem;
+}
+
+.publication-card {
+    display: block;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 2rem;
+    text-decoration: none;
+    color: var(--text-color);
+    transition: var(--transition);
+    background-color: var(--bg-color);
+    max-width: 700px;
+}
+
+.publication-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
+}
+
+.publication-card-content h3 {
+    font-size: 1.4rem;
+    margin-bottom: 0.5rem;
+}
+
+.publication-card-content p {
+    color: var(--secondary-color);
+    margin-bottom: 0.75rem;
+}
+
+.publication-link {
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
 .education {
     margin-top: 3rem;
 }
