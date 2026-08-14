@@ -462,7 +462,6 @@ section {
     position: relative;
 }
 
-#flowstate-play,
 #home-monitor-play {
     position: absolute;
     top: 50%;
@@ -530,6 +529,252 @@ section {
     background-color: var(--accent-teal);
     color: var(--bg-color);
     transform: translateY(-2px);
+}
+
+/* Betta Flagship Section */
+.betta {
+    background-color: #0b0b0c;
+    color: #f4f2ee;
+}
+
+.betta .section-title {
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+.betta-header {
+    max-width: 800px;
+}
+
+.betta-crest {
+    width: 56px;
+    height: 50px;
+    margin-bottom: 1.5rem;
+}
+
+.betta-kicker {
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #c6a15b;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.betta-tagline {
+    font-size: 1.4rem;
+    line-height: 1.5;
+    font-weight: 500;
+    margin-bottom: 1.25rem;
+}
+
+.betta-lede {
+    color: #a8a49c;
+    font-size: 1.05rem;
+    line-height: 1.8;
+}
+
+.betta-banner {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-top: 3.5rem;
+}
+
+.betta-milestones {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 3.5rem;
+    align-items: center;
+    margin-top: 4rem;
+}
+
+.betta-stat {
+    padding: 1.75rem 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.betta-stat:last-child {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.betta-stat-headline {
+    display: block;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #c6a15b;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.01em;
+}
+
+.betta-stat p {
+    color: #a8a49c;
+    line-height: 1.7;
+}
+
+.betta-cheque img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.betta-cheque figcaption,
+.betta-video figcaption,
+.betta-colorways figcaption {
+    font-size: 0.85rem;
+    color: #8b877f;
+    margin-top: 0.75rem;
+}
+
+.betta-videos {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2.5rem;
+    max-width: 720px;
+    margin: 4.5rem auto 0;
+}
+
+.betta-video video {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    background-color: #000;
+}
+
+.betta-gallery {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 4.5rem;
+}
+
+.betta-gallery img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.betta-colorways {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-top: 4.5rem;
+}
+
+.betta-colorways img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.betta-app {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    max-width: 860px;
+    margin-top: 4.5rem;
+}
+
+.betta-app img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.betta-note {
+    color: #8b877f;
+    font-size: 0.9rem;
+    margin-top: 1rem;
+}
+
+.betta-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin-top: 4.5rem;
+    padding-top: 2.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.betta-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.betta-tags span {
+    font-size: 0.75rem;
+    padding: 0.35rem 0.9rem;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 12px;
+    color: #cfcbc2;
+}
+
+.betta-link {
+    display: inline-block;
+    padding: 0.9rem 1.8rem;
+    background-color: #c6a15b;
+    color: #0b0b0c;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: var(--transition);
+}
+
+.betta-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(198, 161, 91, 0.35);
+}
+
+@media (max-width: 768px) {
+    .betta-milestones {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+    }
+
+    .betta-cheque {
+        max-width: 440px;
+    }
+
+    .betta-videos {
+        grid-template-columns: 1fr;
+        max-width: 420px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .betta-gallery {
+        grid-template-columns: 1fr;
+    }
+
+    .betta-colorways {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .betta-app {
+        grid-template-columns: 1fr;
+        max-width: 300px;
+    }
+
+    .betta-footer {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .betta-stat-headline {
+        font-size: 1.6rem;
+    }
 }
 
 /* More Projects */

@@ -158,33 +158,6 @@ document.querySelectorAll('.skills-grid span').forEach(skill => {
 });
 
 // Local video play functionality
-const flowstateContainer = document.getElementById('flowstate-video-container');
-const flowstateThumbnail = document.getElementById('flowstate-thumbnail');
-const flowstateVideo = document.getElementById('flowstate-video');
-const flowstatePlay = document.getElementById('flowstate-play');
-
-if (flowstateContainer && flowstateThumbnail && flowstateVideo && flowstatePlay) {
-    flowstateContainer.addEventListener('click', function(e) {
-        // Only trigger if clicking on the container, not if video is already playing
-        if (flowstateVideo.style.display === 'none' || flowstateVideo.style.display === '') {
-            e.preventDefault();
-            e.stopPropagation();
-            flowstateThumbnail.style.display = 'none';
-            flowstatePlay.style.display = 'none';
-            flowstateVideo.style.display = 'block';
-            flowstateVideo.style.position = 'absolute';
-            flowstateVideo.style.top = '0';
-            flowstateVideo.style.left = '0';
-            flowstateVideo.style.width = '100%';
-            flowstateVideo.style.height = '100%';
-            flowstateVideo.load(); // Reload the video
-            flowstateVideo.play().catch(function(error) {
-                console.log('Video play error:', error);
-            });
-        }
-    });
-}
-
 const homeMonitorContainer = document.getElementById('home-monitor-video-container');
 const homeMonitorThumbnail = document.getElementById('home-monitor-thumbnail');
 const homeMonitorVideo = document.getElementById('home-monitor-video');
