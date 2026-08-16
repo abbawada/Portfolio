@@ -4,35 +4,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Abba Wada | Building Betta</title>
-    <meta name="description" content="Abba Wada builds hardware that turns human movement into real-time feedback. The flagship project is Betta, a haptic shooting sleeve for basketball that learns your shot and corrects drift through vibration.">
+    <meta name="description" content="Abba Wada, 23. Building Betta, a haptic shooting sleeve for basketball that learns your shot and taps your wrist when a rep drifts.">
     <meta property="og:title" content="Abba Wada | Building Betta">
-    <meta property="og:description" content="Hardware that turns human movement into real-time feedback.">
+    <meta property="og:description" content="Building Betta, a shooting sleeve that learns your shot and taps your wrist when a rep drifts.">
     <meta property="og:image" content="https://abbawada.github.io/Portfolio/images/betta_hero_court.jpg">
     <meta property="og:url" content="https://abbawada.github.io/Portfolio/">
     <meta property="og:type" content="website">
+    <link rel="icon" href="favicon.ico" sizes="32x32">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;family=Schibsted+Grotesk:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
 </head>
-<body class="home">
+<body class="home" data-wave="0.5">
+    <canvas id="wave" aria-hidden="true"></canvas>
     <div class="home-halftone" aria-hidden="true">
-        <img src="images/page_halftone.png" alt="" width="1478" height="1884" decoding="async" fetchpriority="high">
+        <img src="images/page_halftone.png" alt="" width="2956" height="3768" decoding="async" fetchpriority="high">
     </div>
 
     <main class="home-main">
         <section class="home-intro">
             <h1 class="home-name">Abba Wada</h1>
-            <p class="home-line">Building Betta and other hardware that turns human movement into <span class="nowrap">real-time feedback</span></p>
+            <p class="home-line">23 years old. Building Betta, a shooting sleeve that learns your shot and taps your wrist when a rep drifts.</p>
             <p class="home-location">Los Angeles, CA</p>
         </section>
 
-        <nav class="home-dir" aria-label="Site directory">
-            <a class="dir-row" href="betta.html">
-                <span class="dir-name">Betta</span>
-                <span class="dir-desc">the flagship, a haptic shooting sleeve</span>
-                <span class="dir-arrow" aria-hidden="true">→</span>
+        <section class="home-featured">
+            <a class="featured-media" href="betta.html" aria-label="Betta case study">
+                <img src="images/betta_hero_court_1x.jpg" srcset="images/betta_hero_court_1x.jpg 1x, images/betta_hero_court.jpg 2x" alt="The Betta sleeve on a hardwood court" width="836" height="470" decoding="async">
             </a>
+            <div class="featured-text">
+                <p class="featured-line">The shooting sleeve that learns the shot only you take.</p>
+                <div class="featured-links">
+                    <a href="betta.html">Betta case study →</a>
+                    <a href="https://betta.live" target="_blank" rel="noopener noreferrer">betta.live →</a>
+                </div>
+            </div>
+        </section>
+
+        <nav class="home-dir" aria-label="Site directory">
             <a class="dir-row" href="projects.html">
                 <span class="dir-name">Projects</span>
                 <span class="dir-desc">Posture Cue, robots, IoT</span>
@@ -43,18 +56,73 @@
                 <span class="dir-desc">essays on Medium</span>
                 <span class="dir-arrow" aria-hidden="true">→</span>
             </a>
-            <a class="dir-row" href="about.html">
-                <span class="dir-name">About</span>
-                <span class="dir-desc">who I am, education, skills, contact</span>
-                <span class="dir-arrow" aria-hidden="true">→</span>
-            </a>
         </nav>
 
-        <footer class="home-footer">
-            <p>&copy; <span id="currentYear"></span> All rights reserved</p>
-        </footer>
+        <section class="about-body">
+            <p class="about-description">
+                I graduated from USC, where I studied economics and hardware.
+            </p>
+            <p class="about-description">
+                I'm currently reading <em>East of Eden</em> by John Steinbeck.
+            </p>
+            <p class="about-description">
+                I love running, bike rides, filmmaking, and watching Arsenal or Formula One.
+            </p>
+        </section>
+
+        <section class="about-section education">
+            <h2 class="about-h">Education</h2>
+            <p><strong>University of Southern California</strong> | Los Angeles, CA</p>
+            <p>Bachelor of Arts, Economics - Dean Scholar (Academic Merit Scholarship)</p>
+            <p>Minor: Mathematical Finance | Graduated May 2026</p>
+            <p>Specialization: Viterbi School of Engineering, Connected Devices &amp; Making</p>
+        </section>
+
+        <section class="about-section skills">
+            <h2 class="about-h">Technical Skills</h2>
+            <div class="skills-grid">
+                <span>Python</span>
+                <span>C++</span>
+                <span>C#</span>
+                <span>SQL</span>
+                <span>R</span>
+                <span>Matlab</span>
+                <span>Tableau</span>
+                <span>Excel</span>
+                <span>Fusion 360</span>
+                <span>VectorBT</span>
+                <span>NumPy</span>
+                <span>Data Analysis</span>
+                <span>Financial Modeling</span>
+                <span>Tokenomics Research</span>
+                <span>Quantitative Analysis</span>
+                <span>Risk Management</span>
+                <span>A/B Testing</span>
+                <span>Electrical Circuit Design</span>
+                <span>IMU Sensors</span>
+                <span>Haptics</span>
+                <span>Embedded Firmware</span>
+                <span>IoT Development</span>
+            </div>
+        </section>
+
+        <section class="about-section contact">
+            <h2 class="about-h">Contact</h2>
+            <p class="contact-sub">Let's build something together</p>
+            <div class="contact-info">
+                <a href="mailto:abba.wada10@gmail.com" class="contact-link">
+                    <span class="contact-label">Email</span>
+                    <span class="contact-value">abba.wada10@gmail.com</span>
+                </a>
+                <a href="https://www.linkedin.com/in/abba-wada-63b999266/" target="_blank" rel="noopener noreferrer" class="contact-link">
+                    <span class="contact-label">LinkedIn</span>
+                    <span class="contact-value">linkedin.com/in/abba-wada-63b999266</span>
+                </a>
+            </div>
+        </section>
     </main>
 
+    <script src="wave.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

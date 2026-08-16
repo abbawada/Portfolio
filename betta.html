@@ -4,20 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Betta | Abba Wada</title>
-    <meta name="description" content="Betta is a haptic shooting sleeve for basketball. Dual IMUs learn your shot signature, then directional vibration corrects drift in real time.">
+    <meta name="description" content="Betta is a haptic shooting sleeve for basketball. Dual IMUs learn your shot signature, and a tap on the wrist corrects drift.">
+    <link rel="icon" href="favicon.ico" sizes="32x32">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;family=Schibsted+Grotesk:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
 </head>
-<body class="dark">
+<body data-wave="0.55">
+    <canvas id="wave" aria-hidden="true"></canvas>
+
     <header class="site-header shell">
         <a class="site-name" href="index.html">Abba Wada</a>
         <nav class="site-nav" aria-label="Primary">
             <a href="betta.html" aria-current="page">Betta</a>
             <a href="projects.html">Projects</a>
             <a href="writing.html">Writing</a>
-            <a href="about.html">About</a>
         </nav>
     </header>
 
@@ -31,9 +36,9 @@
         </section>
 
         <section class="betta-showcase">
-            <img src="images/betta_sleeve_portrait.jpg" alt="The Betta sleeve" class="betta-showcase-sleeve" width="1600" height="2000" loading="lazy" decoding="async">
+            <img src="images/betta_sleeve_portrait_1x.jpg" srcset="images/betta_sleeve_portrait_1x.jpg 1x, images/betta_sleeve_portrait.jpg 2x" alt="The Betta sleeve" class="betta-showcase-sleeve" width="640" height="800" loading="lazy" decoding="async">
             <div class="betta-showcase-phone">
-                <img src="images/betta_app_screen_2.png" alt="The Betta app during a live session" width="640" height="1380" loading="lazy" decoding="async">
+                <img src="images/betta_app_screen_2_1x.png" srcset="images/betta_app_screen_2_1x.png 1x, images/betta_app_screen_2.png 2x" alt="The Betta app during a live session" width="320" height="690" loading="lazy" decoding="async">
             </div>
         </section>
 
@@ -54,7 +59,7 @@
             </div>
             <figure class="betta-cheque">
                 <img src="images/betta_nvsc_cheque.jpg" alt="Accepting the $10,000 NVSC award at USC" width="1170" height="1594" loading="lazy" decoding="async">
-                <figcaption>The project received its $10,000 award at USC.</figcaption>
+                <figcaption>Accepting the award at USC, April 2026.</figcaption>
             </figure>
         </section>
 
@@ -83,12 +88,7 @@
         </section>
     </main>
 
-    <footer class="site-footer">
-        <div class="shell footer-line">
-            <p>&copy; <span id="currentYear"></span> All rights reserved</p>
-        </div>
-    </footer>
-
+    <script src="wave.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

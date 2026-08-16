@@ -4,243 +4,247 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Projects | Abba Wada</title>
+    <link rel="icon" href="favicon.ico" sizes="32x32">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;family=Schibsted+Grotesk:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
 </head>
-<body>
+<body data-wave="1">
+    <canvas id="wave" aria-hidden="true"></canvas>
+
     <header class="site-header shell">
         <a class="site-name" href="index.html">Abba Wada</a>
         <nav class="site-nav" aria-label="Primary">
             <a href="betta.html">Betta</a>
             <a href="projects.html" aria-current="page">Projects</a>
             <a href="writing.html">Writing</a>
-            <a href="about.html">About</a>
         </nav>
     </header>
 
     <main class="shell">
         <header class="page-head">
             <h1 class="page-title">Projects</h1>
-            <p class="page-sub">Select recent and notable projects</p>
+            <p class="xmb-hint" id="xmbHint" hidden>Arrow keys or swipe</p>
         </header>
 
-        <section class="projects-grid">
-            <div class="project-card featured" data-project="2">
-                <div class="project-image">
-                    <img class="project-media" src="images/Posture_Cue_Thumbnail.jpg" alt="Posture Cue" width="1382" height="1450" loading="lazy" decoding="async">
-                    <a href="https://www.youtube.com/watch?v=Hr_AOARKWCw" target="_blank" rel="noopener noreferrer" class="project-video-link" aria-label="Watch the Posture Cue video on YouTube">
-                        <span class="play-button-overlay" aria-hidden="true">▶</span>
-                    </a>
-                    <div class="project-overlay">
-                        <span class="project-tag">Wearable</span>
-                    </div>
-                </div>
-                <div class="project-info">
-                    <h2 class="project-title">Posture Cue</h2>
-                    <p class="project-description">Wearable that tracks spinal alignment and cues you upright when you slouch.</p>
-                    <div class="project-tech">
-                        <span>Sensors</span>
-                        <span>Wearable Tech</span>
-                        <span>Embedded Systems</span>
-                    </div>
-                </div>
+        <section class="xmb" id="xmb" aria-label="Project browser" hidden>
+            <div class="cat-row-clip">
+                <div class="cat-row" id="catRow"></div>
             </div>
-
-            <div class="project-card featured" data-project="3">
-                <div class="project-image">
-                    <img class="project-media" src="images/Visual_Mapping_Robot.jpg" alt="Visual Mapping for Autonomous Robots" width="1064" height="1044" loading="lazy" decoding="async">
-                    <a href="https://www.youtube.com/watch?v=rWP7KaduHdg" target="_blank" rel="noopener noreferrer" class="project-video-link" aria-label="Watch the Visual Mapping for Autonomous Robots video on YouTube">
-                        <span class="play-button-overlay" aria-hidden="true">▶</span>
-                    </a>
-                    <div class="project-overlay">
-                        <span class="project-tag">Robotics</span>
-                    </div>
-                </div>
-                <div class="project-info">
-                    <h2 class="project-title">Visual Mapping for Autonomous Robots</h2>
-                    <p class="project-description">Simulation software for autonomous mobile robots to optimize routes and prevent factory congestion.</p>
-                    <div class="project-tech">
-                        <span>Robotics</span>
-                        <span>Simulation</span>
-                        <span>Path Planning</span>
-                        <span>Collision Avoidance</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="project-card featured" data-project="4">
-                <div class="project-image">
-                    <img class="project-media" src="images/Bluetooth_Car.jpg" alt="Bluetooth Car" width="1162" height="998" loading="lazy" decoding="async">
-                    <a href="https://www.youtube.com/watch?v=rMxsd21XIwQ" target="_blank" rel="noopener noreferrer" class="project-video-link" aria-label="Watch the Bluetooth Car video on YouTube">
-                        <span class="play-button-overlay" aria-hidden="true">▶</span>
-                    </a>
-                    <div class="project-overlay">
-                        <span class="project-tag">Robotics</span>
-                    </div>
-                </div>
-                <div class="project-info">
-                    <h2 class="project-title">Bluetooth Car</h2>
-                    <p class="project-description">Bluetooth-controlled robot car.</p>
-                    <div class="project-tech">
-                        <span>Bluetooth</span>
-                        <span>Motor Drivers</span>
-                        <span>Microcontroller</span>
-                        <span>Embedded Systems</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="project-card featured" data-project="7">
-                <div class="project-image" id="home-monitor-video-container">
-                    <img class="project-media" src="images/Home_monitor.jpg" alt="Home Temperature Monitor" id="home-monitor-thumbnail" width="1186" height="1048" loading="lazy" decoding="async">
-                    <video class="project-media" data-src="videos/Temp_Home_Monitor.mp4" controls preload="none" id="home-monitor-video" width="600" height="960" playsinline aria-label="Home Temperature Monitor video" tabindex="0" hidden>
-                        Your browser does not support the video tag.
-                    </video>
-                    <button class="project-media-trigger" id="home-monitor-play" type="button" aria-controls="home-monitor-video" aria-label="Play the Home Temperature Monitor video">
-                        <span class="play-button-overlay" aria-hidden="true">▶</span>
-                    </button>
-                    <div class="project-overlay">
-                        <span class="project-tag">IoT</span>
-                    </div>
-                </div>
-                <div class="project-info">
-                    <h2 class="project-title">Home Temperature Monitor</h2>
-                    <p class="project-description">IoT unit that logs temperature and humidity in real time.</p>
-                    <div class="project-tech">
-                        <span>Sensors</span>
-                        <span>IoT</span>
-                        <span>Data Logging</span>
-                    </div>
-                </div>
+            <div class="xmb-body">
+                <div class="item-list" id="itemList"></div>
+                <div class="media" id="media" aria-live="polite"></div>
             </div>
         </section>
 
-        <section class="side-quests">
-            <h2 class="section-h">Side Quests</h2>
-            <p class="page-sub">Take a scroll, stay a while</p>
-
-            <div class="projects-list">
-                <div class="project-item expandable" data-project="4">
-                    <div class="project-item-header">
-                        <span class="project-item-number" aria-hidden="true">01</span>
-                        <div class="project-item-info">
-                            <h3 class="project-item-heading">
-                                <button class="project-item-toggle" id="plume-toggle" type="button" aria-expanded="false" aria-controls="plume-details" aria-describedby="plume-summary">
-                                    <span>Plume Token Yield Vaults</span>
-                                    <span class="project-item-arrow" aria-hidden="true">→</span>
-                                </button>
-                            </h3>
-                            <p class="project-item-summary" id="plume-summary">A yield vault design with its own risk rating system</p>
-                        </div>
-                    </div>
-                    <div class="project-item-details" id="plume-details" role="region" aria-labelledby="plume-toggle" hidden>
-                        <div class="project-detail-content">
-                            <p>Designed yield vault with Plume native tokens using custom risk rating system and allocation formula, producing higher native yield than current offerings.</p>
-                            <div class="project-detail-tech">
-                                <span>Financial Modeling</span>
-                                <span>Risk Management</span>
-                                <span>Tokenomics</span>
-                                <span>Python</span>
-                            </div>
-                            <div class="project-detail-links">
-                                <a href="https://1drv.ms/x/c/933edcbe437d6d8e/IQCObX1Dvtw-IICT8QAAAAAAAZDvoEZcrmQfKaM4GBRI_Q0" target="_blank" rel="noopener noreferrer" class="project-link-button">
-                                    View Project Document →
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="project-item expandable" data-project="5">
-                    <div class="project-item-header">
-                        <span class="project-item-number" aria-hidden="true">02</span>
-                        <div class="project-item-info">
-                            <h3 class="project-item-heading">
-                                <button class="project-item-toggle" id="ethereum-toggle" type="button" aria-expanded="false" aria-controls="ethereum-details" aria-describedby="ethereum-summary">
-                                    <span>Ethereum Validators</span>
-                                    <span class="project-item-arrow" aria-hidden="true">→</span>
-                                </button>
-                            </h3>
-                            <p class="project-item-summary" id="ethereum-summary">An incentive design that pushes Ethereum toward more validators</p>
-                        </div>
-                    </div>
-                    <div class="project-item-details" id="ethereum-details" role="region" aria-labelledby="ethereum-toggle" hidden>
-                        <div class="project-detail-content">
-                            <p>Designed an incentive system for validators to increase network decentralization.</p>
-                            <div class="project-detail-tech">
-                                <span>Ethereum</span>
-                                <span>Staking</span>
-                                <span>Blockchain</span>
-                                <span>Infrastructure</span>
-                            </div>
-                            <div class="project-detail-links">
-                                <a href="https://docs.google.com/presentation/d/1iWLCOoLZ2Rc2Mj3XaIiYThyZ5qNMzqDJLamOjiv3Fmw/edit?usp=sharing" target="_blank" rel="noopener noreferrer" class="project-link-button">
-                                    View Presentation →
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="project-item expandable" data-project="6">
-                    <div class="project-item-header">
-                        <span class="project-item-number" aria-hidden="true">03</span>
-                        <div class="project-item-info">
-                            <h3 class="project-item-heading">
-                                <button class="project-item-toggle" id="wheelchair-toggle" type="button" aria-expanded="false" aria-controls="wheelchair-details" aria-describedby="wheelchair-summary">
-                                    <span>Wheelchair Basketball Volunteering</span>
-                                    <span class="project-item-arrow" aria-hidden="true">→</span>
-                                </button>
-                            </h3>
-                            <p class="project-item-summary" id="wheelchair-summary">Volunteering with adaptive sports programs</p>
-                        </div>
-                    </div>
-                    <div class="project-item-details" id="wheelchair-details" role="region" aria-labelledby="wheelchair-toggle" hidden>
-                        <div class="project-detail-content">
-                            <p>Volunteered with wheelchair basketball programs, supporting adaptive sports initiatives and community engagement.</p>
-                            <div class="project-detail-tech">
-                                <span>Community Service</span>
-                                <span>Adaptive Sports</span>
-                                <span>Volunteering</span>
-                            </div>
-                            <video class="project-detail-image" data-src="videos/Wheelchair_Basketball.mp4" data-poster="images/wheelchair_poster.jpg" controls preload="none" width="1280" height="720" playsinline aria-label="Wheelchair basketball video">
-                                Your browser does not support the video tag.
-                            </video>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="project-item expandable" data-project="8">
-                    <div class="project-item-header">
-                        <span class="project-item-number" aria-hidden="true">04</span>
-                        <div class="project-item-info">
-                            <h3 class="project-item-heading">
-                                <button class="project-item-toggle" id="medici-toggle" type="button" aria-expanded="false" aria-controls="medici-details" aria-describedby="medici-summary">
-                                    <span>The Medici Network</span>
-                                    <span class="project-item-arrow" aria-hidden="true">→</span>
-                                </button>
-                            </h3>
-                            <p class="project-item-summary" id="medici-summary">Wrote the 10 Key Takeaways report from Medici LA 26, a digital assets conference in Los Angeles</p>
-                        </div>
-                    </div>
-                    <div class="project-item-details" id="medici-details" role="region" aria-labelledby="medici-toggle" hidden>
-                        <div class="project-detail-content">
-                            <p>I built research packets on the speakers and themes ahead of Medici LA 26. After the event, I wrote the 10 Key Takeaways report and produced it print-ready.</p>
-                        </div>
-                    </div>
-                </div>
+        <section class="plain-projects" id="plainProjects" aria-label="Projects">
+            <div class="plain-group">
+                <h2 class="section-h">Wearables</h2>
+                <ul class="plain-list">
+                    <li><a href="https://www.youtube.com/watch?v=Hr_AOARKWCw" target="_blank" rel="noopener noreferrer">Posture Cue →</a> Wearable that tracks spinal alignment and cues you upright when you slouch.</li>
+                </ul>
+            </div>
+            <div class="plain-group">
+                <h2 class="section-h">Robotics</h2>
+                <ul class="plain-list">
+                    <li><a href="https://www.youtube.com/watch?v=rWP7KaduHdg" target="_blank" rel="noopener noreferrer">Visual Mapping for Autonomous Robots →</a> Simulation software for autonomous mobile robots to optimize routes and prevent factory congestion.</li>
+                    <li><a href="https://www.youtube.com/watch?v=rMxsd21XIwQ" target="_blank" rel="noopener noreferrer">Bluetooth Car →</a> Bluetooth-controlled robot car.</li>
+                </ul>
+            </div>
+            <div class="plain-group">
+                <h2 class="section-h">IoT</h2>
+                <ul class="plain-list">
+                    <li>Home Temperature Monitor. IoT unit that logs temperature and humidity in real time.
+                        <video controls preload="none" poster="images/Home_monitor.jpg" src="videos/Temp_Home_Monitor.mp4" width="600" height="960" playsinline aria-label="Home Temperature Monitor video"></video>
+                    </li>
+                </ul>
+            </div>
+            <div class="plain-group">
+                <h2 class="section-h">Side Quests</h2>
+                <ul class="plain-list">
+                    <li><a href="https://1drv.ms/x/c/933edcbe437d6d8e/IQCObX1Dvtw-IICT8QAAAAAAAZDvoEZcrmQfKaM4GBRI_Q0" target="_blank" rel="noopener noreferrer">Plume Token Yield Vaults →</a> Designed yield vault with Plume native tokens using custom risk rating system and allocation formula, producing higher native yield than current offerings.</li>
+                    <li><a href="https://docs.google.com/presentation/d/1iWLCOoLZ2Rc2Mj3XaIiYThyZ5qNMzqDJLamOjiv3Fmw/edit?usp=sharing" target="_blank" rel="noopener noreferrer">Ethereum Validators →</a> Designed an incentive system for validators to increase network decentralization.</li>
+                    <li>Wheelchair Basketball Volunteering. Volunteering with adaptive sports programs.
+                        <video controls preload="none" poster="images/wheelchair_poster.jpg" src="videos/Wheelchair_Basketball.mp4" width="1280" height="720" playsinline aria-label="Wheelchair basketball video"></video>
+                    </li>
+                    <li>The Medici Network. I built research packets on the speakers and themes ahead of Medici LA 26. After the event, I wrote the 10 Key Takeaways report and produced it print-ready.</li>
+                </ul>
             </div>
         </section>
     </main>
 
-    <footer class="site-footer">
-        <div class="shell footer-line">
-            <p>&copy; <span id="currentYear"></span> All rights reserved</p>
-        </div>
-    </footer>
-
+    <script src="wave.js"></script>
     <script src="script.js"></script>
+    <script>
+    (function () {
+        'use strict';
+
+        var ICONS = {
+            wearables: '<svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="9" y="3" width="10" height="22" rx="5"></rect><circle cx="14" cy="10" r="1.6" fill="currentColor" stroke="none"></circle><line x1="9" y1="17" x2="19" y2="17"></line></svg>',
+            robotics: '<svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="6" y="11" width="16" height="12" rx="2"></rect><circle cx="11.5" cy="17" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="16.5" cy="17" r="1.4" fill="currentColor" stroke="none"></circle><line x1="14" y1="11" x2="14" y2="6"></line><circle cx="14" cy="4.5" r="1.4"></circle></svg>',
+            iot: '<svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="14" cy="21" r="1.6" fill="currentColor" stroke="none"></circle><path d="M8.5 15.5a8 8 0 0 1 11 0"></path><path d="M5 11.5a13 13 0 0 1 18 0"></path></svg>',
+            quests: '<svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M14 4 L22 14 L14 24 L6 14 Z"></path><path d="M21 4.5 L22.2 7 L24.7 8.2 L22.2 9.4 L21 12 L19.8 9.4 L17.3 8.2 L19.8 7 Z" fill="currentColor" stroke="none"></path></svg>'
+        };
+
+        var DATA = [
+            { name: 'Wearables', icon: ICONS.wearables, items: [
+                { t: 'Posture Cue', line: 'Wearable that tracks spinal alignment and cues you upright when you slouch.',
+                  media: { img: 'images/Posture_Cue_Thumbnail.jpg', w: 1382, h: 1450 },
+                  links: [['Watch on YouTube →', 'https://www.youtube.com/watch?v=Hr_AOARKWCw']] }
+            ]},
+            { name: 'Robotics', icon: ICONS.robotics, items: [
+                { t: 'Visual Mapping for Autonomous Robots', line: 'Simulation software for autonomous mobile robots to optimize routes and prevent factory congestion.',
+                  media: { img: 'images/Visual_Mapping_Robot.jpg', w: 1064, h: 1044 },
+                  links: [['Watch on YouTube →', 'https://www.youtube.com/watch?v=rWP7KaduHdg']] },
+                { t: 'Bluetooth Car', line: 'Bluetooth-controlled robot car.',
+                  media: { img: 'images/Bluetooth_Car.jpg', w: 1162, h: 998 },
+                  links: [['Watch on YouTube →', 'https://www.youtube.com/watch?v=rMxsd21XIwQ']] }
+            ]},
+            { name: 'IoT', icon: ICONS.iot, items: [
+                { t: 'Home Temperature Monitor', line: 'IoT unit that logs temperature and humidity in real time.',
+                  media: { video: 'videos/Temp_Home_Monitor.mp4', poster: 'images/Home_monitor.jpg', w: 600, h: 960, label: 'Home Temperature Monitor video' },
+                  links: [] }
+            ]},
+            { name: 'Side Quests', icon: ICONS.quests, items: [
+                { t: 'Plume Token Yield Vaults', line: 'A yield vault design with its own risk rating system',
+                  media: { text: 'Designed yield vault with Plume native tokens using custom risk rating system and allocation formula, producing higher native yield than current offerings.' },
+                  links: [['View Project Document →', 'https://1drv.ms/x/c/933edcbe437d6d8e/IQCObX1Dvtw-IICT8QAAAAAAAZDvoEZcrmQfKaM4GBRI_Q0']] },
+                { t: 'Ethereum Validators', line: 'An incentive design that pushes Ethereum toward more validators',
+                  media: { text: 'Designed an incentive system for validators to increase network decentralization.' },
+                  links: [['View Presentation →', 'https://docs.google.com/presentation/d/1iWLCOoLZ2Rc2Mj3XaIiYThyZ5qNMzqDJLamOjiv3Fmw/edit?usp=sharing']] },
+                { t: 'Wheelchair Basketball Volunteering', line: 'Volunteering with adaptive sports programs',
+                  media: { video: 'videos/Wheelchair_Basketball.mp4', poster: 'images/wheelchair_poster.jpg', w: 1280, h: 720, label: 'Wheelchair basketball video' },
+                  links: [] },
+                { t: 'The Medici Network', line: 'Wrote the 10 Key Takeaways report from Medici LA 26, a digital assets conference in Los Angeles',
+                  media: { text: 'I built research packets on the speakers and themes ahead of Medici LA 26. After the event, I wrote the 10 Key Takeaways report and produced it print-ready.' },
+                  links: [] }
+            ]}
+        ];
+
+        var xmb = document.getElementById('xmb');
+        var plain = document.getElementById('plainProjects');
+        var hint = document.getElementById('xmbHint');
+        var catRow = document.getElementById('catRow');
+        var itemList = document.getElementById('itemList');
+        var media = document.getElementById('media');
+        if (!xmb || !catRow) return;
+
+        plain.hidden = true;
+        xmb.hidden = false;
+        hint.hidden = false;
+
+        var state = { c: 0, i: 0 };
+        var SLOT = 96 + 48;
+
+        DATA.forEach(function (cat, ci) {
+            var b = document.createElement('button');
+            b.className = 'cat';
+            b.type = 'button';
+            b.innerHTML = cat.icon + '<span>' + cat.name + '</span>';
+            b.addEventListener('click', function () { select(ci, 0); });
+            catRow.appendChild(b);
+        });
+
+        function renderItems() {
+            itemList.innerHTML = '';
+            DATA[state.c].items.forEach(function (it, ii) {
+                var b = document.createElement('button');
+                b.className = 'item';
+                b.type = 'button';
+                b.innerHTML = '<span class="item-title">' + it.t + '</span><span class="item-line">' + it.line + '</span>';
+                b.addEventListener('click', function () { select(state.c, ii); });
+                b.addEventListener('mouseenter', function () { select(state.c, ii); });
+                itemList.appendChild(b);
+            });
+        }
+
+        function renderMedia() {
+            var it = DATA[state.c].items[state.i];
+            var m = it.media || {};
+            var html = '<div class="media-inner">';
+            if (m.img) {
+                html += '<img src="' + m.img + '" alt="' + it.t + '" width="' + m.w + '" height="' + m.h + '" loading="lazy" decoding="async">';
+            } else if (m.video) {
+                html += '<video controls preload="none" playsinline src="' + m.video + '" poster="' + m.poster + '" width="' + m.w + '" height="' + m.h + '" aria-label="' + m.label + '"></video>';
+            } else if (m.text) {
+                html += '<p class="media-text">' + m.text + '</p>';
+            }
+            if (it.links.length) {
+                html += '<div class="media-links">';
+                it.links.forEach(function (l) {
+                    html += '<a href="' + l[1] + '" target="_blank" rel="noopener noreferrer">' + l[0] + '</a>';
+                });
+                html += '</div>';
+            }
+            html += '</div>';
+            media.innerHTML = html;
+            requestAnimationFrame(function () {
+                requestAnimationFrame(function () {
+                    var inner = media.querySelector('.media-inner');
+                    if (inner) inner.classList.add('show');
+                });
+            });
+        }
+
+        function glow() {
+            if (!window.__wave) return;
+            var target = media.querySelector('img, video') ? media : itemList.children[state.i];
+            if (!target) target = itemList;
+            var r = target.getBoundingClientRect();
+            window.__wave.setFocus(r.left + r.width / 2, r.top + Math.min(r.height / 2, 160), true);
+        }
+
+        function select(c, i, focusItem) {
+            var catChanged = c !== state.c;
+            var itemChanged = i !== state.i;
+            if (!catChanged && !itemChanged && itemList.children.length) {
+                if (focusItem && itemList.children[i]) itemList.children[i].focus();
+                return;
+            }
+            state.c = c; state.i = i;
+            catRow.style.transform = 'translateX(' + (-c * SLOT) + 'px)';
+            [].forEach.call(catRow.children, function (el, idx) {
+                el.setAttribute('aria-current', String(idx === c));
+            });
+            if (catChanged || !itemList.children.length) renderItems();
+            [].forEach.call(itemList.children, function (el, idx) {
+                el.setAttribute('aria-current', String(idx === i));
+            });
+            renderMedia();
+            glow();
+            if (focusItem && itemList.children[i]) itemList.children[i].focus();
+        }
+
+        window.addEventListener('keydown', function (e) {
+            if (e.altKey || e.ctrlKey || e.metaKey) return;
+            var t = e.target;
+            if (t && (t.tagName === 'VIDEO' || t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable)) return;
+            if (e.key === 'ArrowRight') { select((state.c + 1) % DATA.length, 0, true); e.preventDefault(); }
+            else if (e.key === 'ArrowLeft') { select((state.c + DATA.length - 1) % DATA.length, 0, true); e.preventDefault(); }
+            else if (e.key === 'ArrowDown') { var n = DATA[state.c].items.length; select(state.c, Math.min(state.i + 1, n - 1), true); e.preventDefault(); }
+            else if (e.key === 'ArrowUp') { select(state.c, Math.max(state.i - 1, 0), true); e.preventDefault(); }
+        });
+
+        var touch = null;
+        window.addEventListener('touchstart', function (e) {
+            touch = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        }, { passive: true });
+        window.addEventListener('touchend', function (e) {
+            if (!touch) return;
+            var dx = e.changedTouches[0].clientX - touch.x;
+            var dy = e.changedTouches[0].clientY - touch.y;
+            if (Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+                dx < 0 ? select((state.c + 1) % DATA.length, 0) : select((state.c + DATA.length - 1) % DATA.length, 0);
+            }
+            touch = null;
+        }, { passive: true });
+
+        select(0, 0);
+    })();
+    </script>
 </body>
 </html>

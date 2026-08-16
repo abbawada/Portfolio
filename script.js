@@ -7,8 +7,6 @@ const revealTargets = document.querySelectorAll([
     '.betta-milestones',
     '.betta-videos',
     '.betta-footer',
-    '.project-card',
-    '.project-item',
     '.publication-item',
     '.about-body',
     '.about-section'
@@ -132,60 +130,6 @@ if (rigVideo && rigToggle) {
     updateRigToggle();
 }
 
-const homeMonitorPlay = document.getElementById('home-monitor-play');
-const homeMonitorVideo = document.getElementById('home-monitor-video');
-const homeMonitorThumbnail = document.getElementById('home-monitor-thumbnail');
-
-if (homeMonitorPlay && homeMonitorVideo) {
-    homeMonitorPlay.addEventListener('click', () => {
-        attachVideoMedia(homeMonitorVideo);
-        homeMonitorPlay.hidden = true;
-        if (homeMonitorThumbnail) homeMonitorThumbnail.hidden = true;
-        homeMonitorVideo.hidden = false;
-        homeMonitorVideo.focus({ preventScroll: true });
-        homeMonitorVideo.play().catch(() => {});
-    });
-}
-
-document.querySelectorAll('.project-item-toggle').forEach((toggle) => {
-    const panel = document.getElementById(toggle.getAttribute('aria-controls'));
-    const item = toggle.closest('.project-item');
-
-    if (!panel || !item) return;
-
-    toggle.addEventListener('click', () => {
-        const expanded = toggle.getAttribute('aria-expanded') !== 'true';
-        toggle.setAttribute('aria-expanded', String(expanded));
-        panel.hidden = !expanded;
-        item.classList.toggle('expanded', expanded);
-
-        if (expanded) {
-            panel.querySelectorAll('video[data-src]').forEach((video) => {
-                attachVideoMedia(video);
-            });
-
-            if (!reducedMotion.matches) {
-                requestAnimationFrame(() => {
-                    const rect = item.getBoundingClientRect();
-                    if (rect.top < 0) {
-                        window.scrollTo({
-                            top: window.scrollY + rect.top - 24,
-                            behavior: 'smooth'
-                        });
-                    }
-                });
-            }
-        } else {
-            panel.querySelectorAll('video').forEach((video) => video.pause());
-        }
-    });
-});
-
-const yearElement = document.getElementById('currentYear');
-if (yearElement) {
-    yearElement.textContent = new Date().getFullYear();
-}
-
 function handleReducedMotionChange(event) {
     if (event.matches) {
         revealTargets.forEach((element) => {
@@ -214,3 +158,9 @@ document.addEventListener('visibilitychange', () => {
         rigVideo.play().catch(() => {});
     }
 });
+
+const waveCanvas = document.getElementById('wave');
+if (waveCanvas && window.RibbonWave) {
+    const waveIntensity = parseFloat(document.body.dataset.wave || '0.6');
+    window.__wave = window.RibbonWave.mount(waveCanvas, { intensity: waveIntensity });
+}
