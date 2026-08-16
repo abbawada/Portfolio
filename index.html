@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
 </head>
 <body>
     <!-- Navigation -->
@@ -22,7 +22,7 @@
             <div class="nav-logo">
                 <a href="#home">Abba Wada</a>
             </div>
-            <ul class="nav-links">
+            <ul class="nav-links" id="navLinks">
                 <li><a href="#home">Home</a></li>
                 <li><a href="#betta">Betta</a></li>
                 <li><a href="#projects">Projects</a></li>
@@ -32,10 +32,10 @@
             <a href="#about" class="nav-about-icon" aria-label="About">
                 <img src="images/profile.jpg" alt="About Abba Wada" id="profile-img" width="978" height="1144" onerror="this.style.display='none'; this.parentElement.innerHTML='<span style=\'font-size: 1.2rem;\'>ABOUT</span>';">
             </a>
-            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
-                <span></span>
-                <span></span>
-                <span></span>
+            <button class="nav-toggle" id="navToggle" type="button" aria-label="Toggle navigation" aria-controls="navLinks" aria-expanded="false">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
             </button>
         </div>
     </nav>
@@ -67,75 +67,72 @@
     <section class="betta" id="betta">
         <div class="container">
             <div class="betta-header">
-                <img src="images/betta_crest_gold.png" alt="Betta crest" class="betta-crest" width="320" height="285" loading="lazy">
+                <img src="images/betta_crest_gold.png" alt="Betta crest" class="betta-crest" width="320" height="285" loading="lazy" decoding="async">
                 <p class="betta-kicker">Flagship Project</p>
                 <h2 class="section-title betta-title">Betta</h2>
                 <p class="betta-tagline">The shooting sleeve that learns the shot only you take, then helps you repeat it.</p>
-                <p class="betta-lede">I'm building Betta, a haptic sleeve for basketball. Dual IMUs at the elbow and wrist read the arm 100 times a second and learn your shot signature. When a rep drifts from it, motors answer with directional vibration, steering the next rep back toward the shot your body already knows.</p>
+                <p class="betta-lede">I'm building Betta, a haptic shooting sleeve for basketball. Dual IMUs at the elbow and wrist collect 100 readings per second. The sleeve learns your shot signature, then uses directional vibration when a rep drifts from it.</p>
             </div>
 
-            <img src="images/betta_hero_court.jpg" alt="The Betta sleeve on a hardwood court with its haptic pads lit" class="betta-banner" width="1672" height="941" loading="lazy">
+            <img src="images/betta_hero_court.jpg" alt="Betta sleeve resting on a hardwood basketball court" class="betta-banner" width="1672" height="941" loading="lazy" decoding="async">
 
             <div class="betta-milestones">
                 <div class="betta-stats">
                     <div class="betta-stat">
                         <span class="betta-stat-headline">4th of 221</span>
-                        <p>The project placed 4th of 221 teams at USC's 2026 New Venture Seed Competition and won a $10,000 award.</p>
+                        <p>The project placed 4th of 221 teams at USC's 2026 New Venture Seed Competition and received a $10,000 award.</p>
                     </div>
                     <div class="betta-stat">
                         <span class="betta-stat-headline">Hand-built</span>
-                        <p>Every circuit built and soldered by hand, from the first breadboard to the protoboard inside the current prototype.</p>
+                        <p>I built the prototype by hand, moving from a breadboard to soldered protoboard.</p>
                     </div>
                     <div class="betta-stat">
                         <span class="betta-stat-headline">19 for 19</span>
-                        <p>First real on-body capture session, August 4, 2026. Nineteen reps, every one captured and segmented.</p>
+                        <p>On August 4, 2026, the first real on-body session captured and segmented all 19 reps.</p>
                     </div>
                 </div>
                 <figure class="betta-cheque">
-                    <img src="images/betta_nvsc_cheque.jpg" alt="Accepting the $10,000 award at USC's 2026 New Venture Seed Competition" width="1170" height="1594" loading="lazy">
-                    <figcaption>Award night at USC's New Venture Seed Competition, April 2026.</figcaption>
+                    <img src="images/betta_nvsc_cheque.jpg" alt="Accepting the $10,000 NVSC award at USC" width="1170" height="1594" loading="lazy" decoding="async">
+                    <figcaption>The project received its $10,000 award at USC.</figcaption>
                 </figure>
             </div>
 
             <div class="betta-videos">
                 <figure class="betta-video">
-                    <video src="videos/betta_prototype.mp4" poster="images/betta_poster_prototype.jpg" controls preload="none" playsinline width="720" height="1280"></video>
-                    <figcaption>The prototype, motors running. Sound on.</figcaption>
+                    <video data-src="videos/betta_prototype.mp4" data-poster="images/betta_poster_prototype.jpg" controls preload="none" playsinline width="720" height="1280" aria-label="Betta prototype motor test"></video>
+                    <figcaption>The prototype runs its haptic motors in this test. Turn on sound to hear them.</figcaption>
                 </figure>
                 <figure class="betta-video">
-                    <video src="videos/betta_rig.mp4" poster="images/betta_poster_rig.jpg" autoplay muted loop playsinline preload="metadata" width="720" height="1280"></video>
-                    <figcaption>The capture rig, worn on the arm.</figcaption>
+                    <video id="bettaRigVideo" data-src="videos/betta_rig.mp4" data-poster="images/betta_poster_rig.jpg" data-autoplay="true" muted loop playsinline preload="none" width="720" height="1280" aria-label="Betta capture rig video"></video>
+                    <button class="video-motion-toggle" id="bettaRigToggle" type="button" aria-controls="bettaRigVideo" aria-label="Play or pause the Betta capture rig video" aria-pressed="false">Play video</button>
+                    <figcaption>This on-arm test shows the capture rig in place.</figcaption>
                 </figure>
             </div>
 
             <div class="betta-gallery">
-                <img src="images/betta_sleeve_portrait.jpg" alt="Studio view of the Betta sleeve" width="1600" height="2000" loading="lazy">
-                <img src="images/betta_cuff_macro.jpg" alt="Close-up of the sleeve cuff knit and controls" width="1448" height="1086" loading="lazy">
+                <img src="images/betta_sleeve_portrait.jpg" alt="Studio view of the Betta sleeve" width="1600" height="2000" loading="lazy" decoding="async">
+                <img src="images/betta_cuff_macro.jpg" alt="Close-up of the sleeve cuff knit and controls" width="1448" height="1086" loading="lazy" decoding="async">
             </div>
 
-            <div class="betta-colorways">
+            <div class="betta-colorways" role="group" aria-label="Betta colorway studies, scroll horizontally" tabindex="0">
                 <figure>
-                    <img src="images/betta_colorway_stealth.jpg" alt="Stealth colorway study" width="1248" height="782" loading="lazy">
+                    <img src="images/betta_colorway_stealth.jpg" alt="Stealth colorway study" width="1248" height="782" loading="lazy" decoding="async">
                     <figcaption>Stealth</figcaption>
                 </figure>
                 <figure>
-                    <img src="images/betta_colorway_cardinal.jpg" alt="Cardinal colorway study" width="1600" height="1018" loading="lazy">
+                    <img src="images/betta_colorway_cardinal.jpg" alt="Cardinal colorway study" width="1600" height="1018" loading="lazy" decoding="async">
                     <figcaption>Cardinal</figcaption>
                 </figure>
                 <figure>
-                    <img src="images/betta_colorway_royal.jpg" alt="Royal colorway study" width="1600" height="1018" loading="lazy">
+                    <img src="images/betta_colorway_royal.jpg" alt="Royal colorway study" width="1600" height="1018" loading="lazy" decoding="async">
                     <figcaption>Royal</figcaption>
                 </figure>
             </div>
-            <p class="betta-note">Colorway studies for the production sleeve.</p>
-
-            <div class="betta-app">
-                <img src="images/betta_app_screen_1.png" alt="Betta app design, training mission screen" width="640" height="1380" loading="lazy">
-                <img src="images/betta_app_screen_2.png" alt="Betta app design, live session screen" width="640" height="1380" loading="lazy">
-                <img src="images/betta_app_screen_3.png" alt="Betta app design, mission complete screen" width="640" height="1380" loading="lazy">
+            <div class="betta-app" role="group" aria-label="Betta app screens, scroll horizontally" tabindex="0">
+                <img src="images/betta_app_screen_1.png" alt="Betta app design, training mission screen" width="640" height="1380" loading="lazy" decoding="async">
+                <img src="images/betta_app_screen_2.png" alt="Betta app design, live session screen" width="640" height="1380" loading="lazy" decoding="async">
+                <img src="images/betta_app_screen_3.png" alt="Betta app design, mission complete screen" width="640" height="1380" loading="lazy" decoding="async">
             </div>
-            <p class="betta-note">App design in progress. Missions, live cues, and a form score for every session.</p>
-
             <div class="betta-footer">
                 <div class="betta-tags">
                     <span>C++</span>
@@ -160,9 +157,9 @@
                 <!-- Posture Cue -->
                 <div class="project-card featured" data-project="2">
                     <div class="project-image">
-                        <img class="project-media" src="images/Posture_Cue_Thumbnail.jpg" alt="Posture Cue" width="1382" height="1450" loading="lazy">
-                        <a href="https://www.youtube.com/watch?v=Hr_AOARKWCw" target="_blank" rel="noopener noreferrer" class="project-video-link">
-                            <div class="play-button-overlay">▶</div>
+                        <img class="project-media" src="images/Posture_Cue_Thumbnail.jpg" alt="Posture Cue" width="1382" height="1450" loading="lazy" decoding="async">
+                        <a href="https://www.youtube.com/watch?v=Hr_AOARKWCw" target="_blank" rel="noopener noreferrer" class="project-video-link" aria-label="Watch the Posture Cue video on YouTube">
+                            <span class="play-button-overlay" aria-hidden="true">▶</span>
                         </a>
                         <div class="project-overlay">
                             <span class="project-tag">Wearable</span>
@@ -182,9 +179,9 @@
                 <!-- Visual Mapping -->
                 <div class="project-card featured" data-project="3">
                     <div class="project-image">
-                        <img class="project-media" src="images/Visual_Mapping_Robot.jpg" alt="Visual Mapping for Autonomous Robots" width="1064" height="1044" loading="lazy">
-                        <a href="https://www.youtube.com/watch?v=rWP7KaduHdg" target="_blank" rel="noopener noreferrer" class="project-video-link">
-                            <div class="play-button-overlay">▶</div>
+                        <img class="project-media" src="images/Visual_Mapping_Robot.jpg" alt="Visual Mapping for Autonomous Robots" width="1064" height="1044" loading="lazy" decoding="async">
+                        <a href="https://www.youtube.com/watch?v=rWP7KaduHdg" target="_blank" rel="noopener noreferrer" class="project-video-link" aria-label="Watch the Visual Mapping for Autonomous Robots video on YouTube">
+                            <span class="play-button-overlay" aria-hidden="true">▶</span>
                         </a>
                         <div class="project-overlay">
                             <span class="project-tag">Robotics</span>
@@ -205,9 +202,9 @@
                 <!-- Bluetooth Car -->
                 <div class="project-card featured" data-project="4">
                     <div class="project-image">
-                        <img class="project-media" src="images/Bluetooth_Car.jpg" alt="Bluetooth Car" width="1162" height="998" loading="lazy">
-                        <a href="https://www.youtube.com/watch?v=rMxsd21XIwQ" target="_blank" rel="noopener noreferrer" class="project-video-link">
-                            <div class="play-button-overlay">▶</div>
+                        <img class="project-media" src="images/Bluetooth_Car.jpg" alt="Bluetooth Car" width="1162" height="998" loading="lazy" decoding="async">
+                        <a href="https://www.youtube.com/watch?v=rMxsd21XIwQ" target="_blank" rel="noopener noreferrer" class="project-video-link" aria-label="Watch the Bluetooth Car video on YouTube">
+                            <span class="play-button-overlay" aria-hidden="true">▶</span>
                         </a>
                         <div class="project-overlay">
                             <span class="project-tag">Robotics</span>
@@ -215,7 +212,7 @@
                     </div>
                     <div class="project-info">
                         <h3 class="project-title">Bluetooth Car</h3>
-                        <p class="project-description">Robot car driven from a phone over Bluetooth.</p>
+                        <p class="project-description">Bluetooth-controlled robot car.</p>
                         <div class="project-tech">
                             <span>Bluetooth</span>
                             <span>Motor Drivers</span>
@@ -228,11 +225,13 @@
                 <!-- Home Temperature Monitor -->
                 <div class="project-card featured" data-project="7">
                     <div class="project-image" id="home-monitor-video-container">
-                        <img class="project-media" src="images/Home_monitor.jpg" alt="Home Temperature Monitor" id="home-monitor-thumbnail" width="1186" height="1048" loading="lazy">
-                        <video class="project-media" src="videos/Temp_Home_Monitor.mp4" controls preload="none" style="display: none;" id="home-monitor-video">
+                        <img class="project-media" src="images/Home_monitor.jpg" alt="Home Temperature Monitor" id="home-monitor-thumbnail" width="1186" height="1048" loading="lazy" decoding="async">
+                        <video class="project-media" data-src="videos/Temp_Home_Monitor.mp4" controls preload="none" id="home-monitor-video" width="600" height="960" playsinline aria-label="Home Temperature Monitor video" tabindex="0" hidden>
                             Your browser does not support the video tag.
                         </video>
-                        <div class="play-button-overlay" id="home-monitor-play">▶</div>
+                        <button class="project-media-trigger" id="home-monitor-play" type="button" aria-controls="home-monitor-video" aria-label="Play the Home Temperature Monitor video">
+                            <span class="play-button-overlay" aria-hidden="true">▶</span>
+                        </button>
                         <div class="project-overlay">
                             <span class="project-tag">IoT</span>
                         </div>
@@ -271,7 +270,7 @@
                         I love running, bike rides, filmmaking, and watching Arsenal or Formula One.
                     </p>
                     <p class="about-description">
-                        Right now most of my time goes into Betta. In a world where I wasn't obsessed with tech, I'd probably be writing novels.
+                        I'm building Betta, but in a world where I wasn't obsessed with tech, I'd probably be writing novels.
                     </p>
                 </div>
             </div>
@@ -321,15 +320,19 @@
             
             <div class="projects-list">
                 <div class="project-item expandable" data-project="4">
-                    <div class="project-item-content">
-                        <div class="project-item-number">01</div>
+                    <div class="project-item-header">
+                        <span class="project-item-number" aria-hidden="true">01</span>
                         <div class="project-item-info">
-                            <h3>Plume Token Yield Vaults</h3>
-                            <p>Designed vault with Plume native tokens, creating custom risk rating system and allocation formula</p>
+                            <h3 class="project-item-heading">
+                                <button class="project-item-toggle" id="plume-toggle" type="button" aria-expanded="false" aria-controls="plume-details" aria-describedby="plume-summary">
+                                    <span>Plume Token Yield Vaults</span>
+                                    <span class="project-item-arrow" aria-hidden="true">→</span>
+                                </button>
+                            </h3>
+                            <p class="project-item-summary" id="plume-summary">Designed vault with Plume native tokens, creating custom risk rating system and allocation formula</p>
                         </div>
-                        <div class="project-item-arrow">→</div>
                     </div>
-                    <div class="project-item-details">
+                    <div class="project-item-details" id="plume-details" role="region" aria-labelledby="plume-toggle" hidden>
                         <div class="project-detail-content">
                             <p>Designed yield vault with Plume native tokens using custom risk rating system and allocation formula, producing higher native yield than current offerings.</p>
                             <div class="project-detail-tech">
@@ -348,15 +351,19 @@
                 </div>
                 
                 <div class="project-item expandable" data-project="5">
-                    <div class="project-item-content">
-                        <div class="project-item-number">02</div>
+                    <div class="project-item-header">
+                        <span class="project-item-number" aria-hidden="true">02</span>
                         <div class="project-item-info">
-                            <h3>Ethereum Validators</h3>
-                            <p>Validator infrastructure and staking strategy optimization for Ethereum network participation</p>
+                            <h3 class="project-item-heading">
+                                <button class="project-item-toggle" id="ethereum-toggle" type="button" aria-expanded="false" aria-controls="ethereum-details" aria-describedby="ethereum-summary">
+                                    <span>Ethereum Validators</span>
+                                    <span class="project-item-arrow" aria-hidden="true">→</span>
+                                </button>
+                            </h3>
+                            <p class="project-item-summary" id="ethereum-summary">Validator infrastructure and staking strategy optimization for Ethereum network participation</p>
                         </div>
-                        <div class="project-item-arrow">→</div>
                     </div>
-                    <div class="project-item-details">
+                    <div class="project-item-details" id="ethereum-details" role="region" aria-labelledby="ethereum-toggle" hidden>
                         <div class="project-detail-content">
                             <p>Designed an incentive system for validators to increase network decentralization.</p>
                             <div class="project-detail-tech">
@@ -378,15 +385,19 @@
                 </div>
                 
                 <div class="project-item expandable" data-project="6">
-                    <div class="project-item-content">
-                        <div class="project-item-number">03</div>
+                    <div class="project-item-header">
+                        <span class="project-item-number" aria-hidden="true">03</span>
                         <div class="project-item-info">
-                            <h3>Wheelchair Basketball Volunteering</h3>
-                            <p>Community engagement and support for adaptive sports programs</p>
+                            <h3 class="project-item-heading">
+                                <button class="project-item-toggle" id="wheelchair-toggle" type="button" aria-expanded="false" aria-controls="wheelchair-details" aria-describedby="wheelchair-summary">
+                                    <span>Wheelchair Basketball Volunteering</span>
+                                    <span class="project-item-arrow" aria-hidden="true">→</span>
+                                </button>
+                            </h3>
+                            <p class="project-item-summary" id="wheelchair-summary">Community engagement and support for adaptive sports programs</p>
                         </div>
-                        <div class="project-item-arrow">→</div>
                     </div>
-                    <div class="project-item-details">
+                    <div class="project-item-details" id="wheelchair-details" role="region" aria-labelledby="wheelchair-toggle" hidden>
                         <div class="project-detail-content">
                             <p>Volunteered with wheelchair basketball programs, supporting adaptive sports initiatives and community engagement.</p>
                             <div class="project-detail-tech">
@@ -394,7 +405,7 @@
                                 <span>Adaptive Sports</span>
                                 <span>Volunteering</span>
                             </div>
-                            <video class="project-detail-image" src="videos/Wheelchair_Basketball.mp4" poster="images/wheelchair_poster.jpg" controls preload="none" width="1280" height="720">
+                            <video class="project-detail-image" data-src="videos/Wheelchair_Basketball.mp4" data-poster="images/wheelchair_poster.jpg" controls preload="none" width="1280" height="720" playsinline aria-label="Wheelchair basketball video">
                                 Your browser does not support the video tag.
                             </video>
                         </div>
@@ -402,22 +413,21 @@
                 </div>
 
                 <div class="project-item expandable" data-project="8">
-                    <div class="project-item-content">
-                        <div class="project-item-number">04</div>
+                    <div class="project-item-header">
+                        <span class="project-item-number" aria-hidden="true">04</span>
                         <div class="project-item-info">
-                            <h3>The Medici Network</h3>
-                            <p>Wrote and produced the print-ready 10 Key Takeaways report from Medici LA 26, a digital assets conference</p>
+                            <h3 class="project-item-heading">
+                                <button class="project-item-toggle" id="medici-toggle" type="button" aria-expanded="false" aria-controls="medici-details" aria-describedby="medici-summary">
+                                    <span>The Medici Network</span>
+                                    <span class="project-item-arrow" aria-hidden="true">→</span>
+                                </button>
+                            </h3>
+                            <p class="project-item-summary" id="medici-summary">From May to July 2026, I researched Medici LA 26, then wrote and produced its print-ready 10 Key Takeaways report</p>
                         </div>
-                        <div class="project-item-arrow">→</div>
                     </div>
-                    <div class="project-item-details">
+                    <div class="project-item-details" id="medici-details" role="region" aria-labelledby="medici-toggle" hidden>
                         <div class="project-detail-content">
-                            <p>From May to July 2026 I worked with The Medici Network around Medici LA 26, its digital assets conference in Los Angeles. I researched the speakers and themes going in, then wrote the 10 Key Takeaways report from the event and produced it print-ready.</p>
-                            <div class="project-detail-tech">
-                                <span>Research</span>
-                                <span>Editorial</span>
-                                <span>Print Production</span>
-                            </div>
+                            <p>The work began with my own research for Medici LA 26. I then wrote its 10 Key Takeaways report and produced the final document print-ready.</p>
                         </div>
                     </div>
                 </div>
@@ -448,7 +458,7 @@
                     <p><strong>University of Southern California</strong> | Los Angeles, CA</p>
                     <p>Bachelor of Arts, Economics - Dean Scholar (Academic Merit Scholarship)</p>
                     <p>Minor: Mathematical Finance | Graduated May 2026</p>
-                    <p>Specialization: Viterbi School of Engineering, Connected Devices & Making</p>
+                    <p>Specialization: Viterbi School of Engineering, Connected Devices &amp; Making</p>
                 </div>
                 
                 <div class="skills">
@@ -492,4 +502,3 @@
     <script src="script.js"></script>
 </body>
 </html>
-
