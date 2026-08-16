@@ -591,12 +591,35 @@ section {
     line-height: 1.8;
 }
 
-.betta-banner {
+.betta-showcase {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: 3rem;
+    align-items: center;
+    margin-top: 3.5rem;
+}
+
+.betta-showcase-sleeve {
     display: block;
     width: 100%;
     height: auto;
     border-radius: 8px;
-    margin-top: 3.5rem;
+}
+
+.betta-showcase-phone {
+    justify-self: center;
+    width: min(100%, 300px);
+    border-radius: 36px;
+    border: 6px solid #1c1c1e;
+    background-color: #000;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+    overflow: hidden;
+}
+
+.betta-showcase-phone img {
+    display: block;
+    width: 100%;
+    height: auto;
 }
 
 .betta-milestones {
@@ -638,8 +661,7 @@ section {
 }
 
 .betta-cheque figcaption,
-.betta-video figcaption,
-.betta-colorways figcaption {
+.betta-video figcaption {
     font-size: 0.85rem;
     color: #8b877f;
     margin-top: 0.75rem;
@@ -686,56 +708,6 @@ section {
 .betta a:focus-visible,
 .betta button:focus-visible {
     outline-color: #c6a15b;
-}
-
-.betta-gallery {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-    margin-top: 4.5rem;
-}
-
-.betta-gallery img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    aspect-ratio: 4 / 5;
-    object-fit: cover;
-    border-radius: 8px;
-}
-
-.betta-colorways {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
-    margin-top: 4.5rem;
-}
-
-.betta-colorways img {
-    display: block;
-    width: 100%;
-    height: auto;
-    border-radius: 8px;
-}
-
-.betta-app {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
-    max-width: 860px;
-    margin-top: 4.5rem;
-}
-
-.betta-app img {
-    display: block;
-    width: 100%;
-    height: auto;
-}
-
-.betta-colorways:focus-visible,
-.betta-app:focus-visible {
-    outline: 2px solid var(--accent-blue);
-    outline-offset: 4px;
 }
 
 .betta-footer {
@@ -797,27 +769,13 @@ section {
         margin-right: auto;
     }
 
-    .betta-gallery {
+    .betta-showcase {
         grid-template-columns: 1fr;
+        gap: 2rem;
     }
 
-    .betta-colorways,
-    .betta-app {
-        grid-template-columns: none;
-        grid-auto-flow: column;
-        grid-auto-columns: clamp(260px, 82vw, 320px);
-        gap: 1.25rem;
-        max-width: none;
-        overflow-x: auto;
-        overscroll-behavior-inline: contain;
-        scroll-snap-type: inline mandatory;
-        padding: 0 0 1rem;
-        scrollbar-width: thin;
-    }
-
-    .betta-colorways figure,
-    .betta-app img {
-        scroll-snap-align: start;
+    .betta-showcase-phone {
+        width: min(100%, 260px);
     }
 
     .betta-footer {

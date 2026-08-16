@@ -63,96 +63,79 @@
         </div>
     </section>
 
-    <!-- Betta Flagship Section -->
-    <section class="betta" id="betta">
-        <div class="container">
-            <div class="betta-header">
-                <img src="images/betta_crest_gold.png" alt="Betta crest" class="betta-crest" width="320" height="285" loading="lazy" decoding="async">
-                <p class="betta-kicker">Flagship Project</p>
-                <h2 class="section-title betta-title">Betta</h2>
-                <p class="betta-tagline">The shooting sleeve that learns the shot only you take, then helps you repeat it.</p>
-                <p class="betta-lede">I'm building Betta, a haptic shooting sleeve for basketball. Dual IMUs at the elbow and wrist collect 100 readings per second. The sleeve learns your shot signature, then uses directional vibration when a rep drifts from it.</p>
-            </div>
-
-            <img src="images/betta_hero_court.jpg" alt="Betta sleeve resting on a hardwood basketball court" class="betta-banner" width="1672" height="941" loading="lazy" decoding="async">
-
-            <div class="betta-milestones">
-                <div class="betta-stats">
-                    <div class="betta-stat">
-                        <span class="betta-stat-headline">4th of 221</span>
-                        <p>The project placed 4th of 221 teams at USC's 2026 New Venture Seed Competition and received a $10,000 award.</p>
-                    </div>
-                    <div class="betta-stat">
-                        <span class="betta-stat-headline">Hand-built</span>
-                        <p>I built the prototype by hand, moving from a breadboard to soldered protoboard.</p>
-                    </div>
-                    <div class="betta-stat">
-                        <span class="betta-stat-headline">19 for 19</span>
-                        <p>On August 4, 2026, the first real on-body session captured and segmented all 19 reps.</p>
-                    </div>
-                </div>
-                <figure class="betta-cheque">
-                    <img src="images/betta_nvsc_cheque.jpg" alt="Accepting the $10,000 NVSC award at USC" width="1170" height="1594" loading="lazy" decoding="async">
-                    <figcaption>The project received its $10,000 award at USC.</figcaption>
-                </figure>
-            </div>
-
-            <div class="betta-videos">
-                <figure class="betta-video">
-                    <video data-src="videos/betta_prototype.mp4" data-poster="images/betta_poster_prototype.jpg" controls preload="none" playsinline width="720" height="1280" aria-label="Betta prototype motor test"></video>
-                    <figcaption>The prototype runs its haptic motors in this test. Turn on sound to hear them.</figcaption>
-                </figure>
-                <figure class="betta-video">
-                    <video id="bettaRigVideo" data-src="videos/betta_rig.mp4" data-poster="images/betta_poster_rig.jpg" data-autoplay="true" muted loop playsinline preload="none" width="720" height="1280" aria-label="Betta capture rig video"></video>
-                    <button class="video-motion-toggle" id="bettaRigToggle" type="button" aria-controls="bettaRigVideo" aria-label="Play or pause the Betta capture rig video" aria-pressed="false">Play video</button>
-                    <figcaption>This on-arm test shows the capture rig in place.</figcaption>
-                </figure>
-            </div>
-
-            <div class="betta-gallery">
-                <img src="images/betta_sleeve_portrait.jpg" alt="Studio view of the Betta sleeve" width="1600" height="2000" loading="lazy" decoding="async">
-                <img src="images/betta_cuff_macro.jpg" alt="Close-up of the sleeve cuff knit and controls" width="1448" height="1086" loading="lazy" decoding="async">
-            </div>
-
-            <div class="betta-colorways" role="group" aria-label="Betta colorway studies, scroll horizontally" tabindex="0">
-                <figure>
-                    <img src="images/betta_colorway_stealth.jpg" alt="Stealth colorway study" width="1248" height="782" loading="lazy" decoding="async">
-                    <figcaption>Stealth</figcaption>
-                </figure>
-                <figure>
-                    <img src="images/betta_colorway_cardinal.jpg" alt="Cardinal colorway study" width="1600" height="1018" loading="lazy" decoding="async">
-                    <figcaption>Cardinal</figcaption>
-                </figure>
-                <figure>
-                    <img src="images/betta_colorway_royal.jpg" alt="Royal colorway study" width="1600" height="1018" loading="lazy" decoding="async">
-                    <figcaption>Royal</figcaption>
-                </figure>
-            </div>
-            <div class="betta-app" role="group" aria-label="Betta app screens, scroll horizontally" tabindex="0">
-                <img src="images/betta_app_screen_1.png" alt="Betta app design, training mission screen" width="640" height="1380" loading="lazy" decoding="async">
-                <img src="images/betta_app_screen_2.png" alt="Betta app design, live session screen" width="640" height="1380" loading="lazy" decoding="async">
-                <img src="images/betta_app_screen_3.png" alt="Betta app design, mission complete screen" width="640" height="1380" loading="lazy" decoding="async">
-            </div>
-            <div class="betta-footer">
-                <div class="betta-tags">
-                    <span>C++</span>
-                    <span>Python</span>
-                    <span>IMU Sensors</span>
-                    <span>Haptics</span>
-                    <span>Embedded Firmware</span>
-                    <span>Circuit Design</span>
-                </div>
-                <a href="https://betta.live" target="_blank" rel="noopener noreferrer" class="betta-link">Visit betta.live →</a>
-            </div>
-        </div>
-    </section>
-
     <!-- Featured Projects -->
     <section class="featured-projects" id="projects">
         <div class="container">
             <h2 class="section-title">Featured Work</h2>
             <p class="section-subtitle">Select recent and notable projects</p>
-            
+        </div>
+
+        <!-- Betta, the flagship -->
+        <section class="betta" id="betta">
+            <div class="container">
+                <div class="betta-header">
+                    <img src="images/betta_crest_gold.png" alt="Betta crest" class="betta-crest" width="320" height="285" loading="lazy" decoding="async">
+                    <p class="betta-kicker">Flagship Project</p>
+                    <h2 class="section-title betta-title">Betta</h2>
+                    <p class="betta-tagline">The shooting sleeve that learns the shot only you take, then helps you repeat it.</p>
+                    <p class="betta-lede">I'm building Betta, a haptic shooting sleeve for basketball. Dual IMUs at the elbow and wrist collect 100 readings per second. The sleeve learns your shot signature, then uses directional vibration when a rep drifts from it.</p>
+                </div>
+
+                <div class="betta-showcase">
+                    <img src="images/betta_sleeve_portrait.jpg" alt="The Betta sleeve" class="betta-showcase-sleeve" width="1600" height="2000" loading="lazy" decoding="async">
+                    <div class="betta-showcase-phone">
+                        <img src="images/betta_app_screen_2.png" alt="The Betta app during a live session" width="640" height="1380" loading="lazy" decoding="async">
+                    </div>
+                </div>
+
+                <div class="betta-milestones">
+                    <div class="betta-stats">
+                        <div class="betta-stat">
+                            <span class="betta-stat-headline">4th of 221</span>
+                            <p>The project placed 4th of 221 teams at USC's 2026 New Venture Seed Competition and received a $10,000 award.</p>
+                        </div>
+                        <div class="betta-stat">
+                            <span class="betta-stat-headline">Hand-built</span>
+                            <p>I built the prototype by hand, moving from a breadboard to soldered protoboard.</p>
+                        </div>
+                        <div class="betta-stat">
+                            <span class="betta-stat-headline">Working prototype</span>
+                            <p>Everything runs end to end on the arm. Next comes moving the electronics into an actual sleeve.</p>
+                        </div>
+                    </div>
+                    <figure class="betta-cheque">
+                        <img src="images/betta_nvsc_cheque.jpg" alt="Accepting the $10,000 NVSC award at USC" width="1170" height="1594" loading="lazy" decoding="async">
+                        <figcaption>The project received its $10,000 award at USC.</figcaption>
+                    </figure>
+                </div>
+
+                <div class="betta-videos">
+                    <figure class="betta-video">
+                        <video data-src="videos/betta_prototype.mp4" data-poster="images/betta_poster_prototype.jpg" controls preload="none" playsinline width="720" height="1280" aria-label="Betta prototype motor test"></video>
+                        <figcaption>The prototype runs its haptic motors in this test. Turn on sound to hear them.</figcaption>
+                    </figure>
+                    <figure class="betta-video">
+                        <video id="bettaRigVideo" data-src="videos/betta_rig.mp4" data-poster="images/betta_poster_rig.jpg" data-autoplay="true" muted loop playsinline preload="none" width="720" height="1280" aria-label="Betta capture rig video"></video>
+                        <button class="video-motion-toggle" id="bettaRigToggle" type="button" aria-controls="bettaRigVideo" aria-label="Play or pause the Betta capture rig video" aria-pressed="false">Play video</button>
+                        <figcaption>This on-arm test shows the capture rig in place.</figcaption>
+                    </figure>
+                </div>
+
+                <div class="betta-footer">
+                    <div class="betta-tags">
+                        <span>C++</span>
+                        <span>Python</span>
+                        <span>IMU Sensors</span>
+                        <span>Haptics</span>
+                        <span>Embedded Firmware</span>
+                        <span>Circuit Design</span>
+                    </div>
+                    <a href="https://betta.live" target="_blank" rel="noopener noreferrer" class="betta-link">Visit betta.live →</a>
+                </div>
+            </div>
+        </section>
+
+        <div class="container">
             <div class="projects-grid">
                 <!-- Posture Cue -->
                 <div class="project-card featured" data-project="2">
@@ -261,16 +244,10 @@
                         I graduated from USC, where I studied economics and hardware.
                     </p>
                     <p class="about-description">
-                        I love storytelling in every medium, from films to games like <em>Red Dead Redemption 2</em>.
-                    </p>
-                    <p class="about-description">
                         I'm currently reading <em>East of Eden</em> by John Steinbeck.
                     </p>
                     <p class="about-description">
                         I love running, bike rides, filmmaking, and watching Arsenal or Formula One.
-                    </p>
-                    <p class="about-description">
-                        I'm building Betta, but in a world where I wasn't obsessed with tech, I'd probably be writing novels.
                     </p>
                 </div>
             </div>
@@ -422,12 +399,12 @@
                                     <span class="project-item-arrow" aria-hidden="true">→</span>
                                 </button>
                             </h3>
-                            <p class="project-item-summary" id="medici-summary">From May to July 2026, I researched Medici LA 26, then wrote and produced its print-ready 10 Key Takeaways report</p>
+                            <p class="project-item-summary" id="medici-summary">Wrote the 10 Key Takeaways report from Medici LA 26, a digital assets conference in Los Angeles</p>
                         </div>
                     </div>
                     <div class="project-item-details" id="medici-details" role="region" aria-labelledby="medici-toggle" hidden>
                         <div class="project-detail-content">
-                            <p>The work began with my own research for Medici LA 26. I then wrote its 10 Key Takeaways report and produced the final document print-ready.</p>
+                            <p>It started with my own research on the conference's speakers and themes. We made the report, sent our draft off for review, and the final version went out print-ready.</p>
                         </div>
                     </div>
                 </div>
