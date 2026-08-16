@@ -26,12 +26,21 @@ p.add_argument("--crop", help="L,T,R,B in source pixels", default=None)
 p.add_argument("--cell", type=int, default=10, help="dot grid pitch in output px")
 p.add_argument("--scale", type=float, default=2.2, help="output size vs source")
 p.add_argument("--threshold", type=float, default=0.12, help="min darkness 0..1 that draws a dot")
+p.add_argument("--max", dest="max_darkness", type=float, default=1.0,
+               help="max darkness 0..1 that draws a dot; band-pass to drop dark backgrounds")
 p.add_argument("--fade", type=float, default=1.9, help="edge fade strength; lower = dots reach farther")
 p.add_argument("--fade-exp", type=float, default=1.6, help="edge fade curve exponent")
 p.add_argument("--contrast", type=float, default=1.3)
+p.add_argument("--invert", action="store_true",
+               help="dots follow brightness instead of darkness (light subject on dark background)")
 args = p.parse_args()
 
-img = Image.open(args.src).convert("L")
+img = Image.open(args.src)
+if img.mode in ("RGBA", "LA", "PA"):
+    # flatten transparency onto white so masked-out regions draw no dots
+    bg = Image.new("RGBA", img.size, (255, 255, 255, 255))
+    img = Image.alpha_composite(bg, img.convert("RGBA"))
+img = img.convert("L")
 if args.crop:
     l, t, r, b = (int(v) for v in args.crop.split(","))
     img = img.crop((l, t, r, b))
@@ -49,8 +58,8 @@ cx, cy = small.width / 2, small.height / 2
 px = small.load()
 for gy in range(small.height):
     for gx in range(small.width):
-        darkness = 1.0 - px[gx, gy] / 255.0
-        if darkness < args.threshold:
+        darkness = px[gx, gy] / 255.0 if args.invert else 1.0 - px[gx, gy] / 255.0
+        if darkness < args.threshold or darkness > args.max_darkness:
             continue
         dist = math.hypot((gx - cx) / cx, (gy - cy) / cy) / math.sqrt(2)
         fade = max(0.0, 1.0 - (dist ** args.fade_exp) * args.fade)
