@@ -79,6 +79,7 @@
 
     <script src="wave.js"></script>
     <script src="script.js"></script>
+    <script src="betta-capture.js"></script>
     <script>
     (function () {
         'use strict';
@@ -121,42 +122,64 @@
                   { src: 'images/betta_poster_rig.jpg', w: 720, h: 1280, alt: 'Betta capture rig worn on the arm' },
                   { src: 'images/betta_app_screen_2_1x.png', w: 320, h: 690, alt: 'Betta app live session screen' }
               ],
+              how: ['Pull the sleeve on. One IMU sits at the elbow, one at the wrist.',
+                    'Shoot. Both joints get read 100 times a second until the sleeve knows the signature of your shot.',
+                    'A rep drifts off it, a motor taps that joint. You fix it on the next one.'],
+              capture: true,
               bullets: ['IMU SENSORS', 'HAPTICS', 'EMBEDDED FIRMWARE', 'C++'],
               links: [['VIEW FULL CASE STUDY', 'betta.html'], ['BETTA.LIVE', 'https://betta.live']] },
             { id: 'posture-cue', cat: 'Wearables', title: 'Posture Cue', serial: 'AWUS-30311', dom: '#78625a',
               line: 'Wearable that tracks spinal alignment and cues you upright when you slouch.',
               blurb: 'Your spine keeps the score. Posture Cue tracks your alignment through the whole day and cues you upright the second you slouch.',
               shots: [{ src: 'images/Posture_Cue_Thumbnail.jpg', w: 1382, h: 1450, alt: 'Posture Cue prototype held up' }],
-              bullets: ['SENSORS', 'WEARABLE TECH', 'EMBEDDED SYSTEMS'],
+              how: ['Wear the unit against your upper back.',
+                    'A sensor reads the angle your spine holds while you sit.',
+                    'Slouch past the line and it cues you upright.'],
+              bullets: ['SENSORS', 'WEARABLES', 'EMBEDDED SYSTEMS'],
               links: [['WATCH ON YOUTUBE', 'https://www.youtube.com/watch?v=Hr_AOARKWCw']] },
             { id: 'visual-mapping', cat: 'Robotics', title: 'Visual Mapping for Autonomous Robots', serial: 'AWUS-30342', dom: '#1c1f19',
               line: 'Simulation software for autonomous mobile robots to optimize routes and prevent factory congestion.',
               blurb: 'Five robots. Eighteen shelves. One quiet night shift. Plan the routes, dodge the pileups, and keep the warehouse floor moving until morning.',
               shots: [{ src: 'images/Visual_Mapping_Robot.jpg', w: 1064, h: 1044, alt: 'Warehouse simulation screen' }],
+              how: ['Lay out the floor: the shelves, the docks, the robots that work it.',
+                    'The planner routes every robot to its next pick.',
+                    'Paths that would cross get re-timed, so the aisles never jam.'],
               bullets: ['ROBOTICS', 'SIMULATION', 'PATH PLANNING', 'COLLISION AVOIDANCE'],
               links: [['GITHUB', 'https://github.com/abbawada/Robot-Facility'], ['WATCH ON YOUTUBE', 'https://www.youtube.com/watch?v=rWP7KaduHdg']] },
             { id: 'bluetooth-car', cat: 'Robotics', title: 'Bluetooth Car', serial: 'AWUS-30188', dom: '#693e29', spineColor: '#A31621',
               line: 'Bluetooth-controlled robot car.',
               blurb: 'Strip the shell, keep the wires. Pair your phone, drop the hammer, and drive the breadboard like you built it. Because you did.',
               shots: [{ src: 'images/Bluetooth_Car.jpg', w: 1162, h: 998, alt: 'Breadboard robot car' }],
+              how: ['Pair a phone with the module on the board.',
+                    'Taps on the phone reach the microcontroller over Bluetooth.',
+                    'It drives the motors, and the breadboard rolls.'],
               bullets: ['BLUETOOTH', 'MOTOR DRIVERS', 'MICROCONTROLLER'],
               links: [['WATCH ON YOUTUBE', 'https://www.youtube.com/watch?v=rMxsd21XIwQ']] },
             { id: 'home-temp-monitor', cat: 'IoT', title: 'Home Temperature Monitor', serial: 'AWUS-30129', dom: '#77655b',
               line: 'IoT unit that logs temperature and humidity in real time.',
               blurb: 'Every degree on record. The little red unit on the shelf logs temperature and humidity around the clock and never asks for a day off.',
               shots: [{ src: 'images/Home_monitor.jpg', w: 1186, h: 1048, alt: 'Temperature monitor display' }],
+              how: ['Sit the unit on a shelf anywhere in the house.',
+                    'It samples temperature and humidity on a loop.',
+                    'Every reading lands on the display and in the log.'],
               bullets: ['SENSORS', 'IOT', 'DATA LOGGING'],
               links: [['WATCH THE DEMO', 'videos/Temp_Home_Monitor.mp4']] },
             { id: 'yield-vaults', cat: 'Side Quests', title: 'Plume Token Yield Vaults', serial: 'AWUS-30366', dom: '#2d2315',
               line: 'A yield vault design with its own risk rating system',
               blurb: 'Behind this door, yield. A vault design for Plume native tokens with its own risk rating system and an allocation formula tuned for higher native yield.',
               shots: [],
+              how: ['Score each Plume native token against a custom risk rating.',
+                    'An allocation formula weights the vault by those scores.',
+                    'The mix pays higher native yield than what is on offer today.'],
               bullets: ['FINANCIAL MODELING', 'RISK MANAGEMENT', 'TOKENOMICS', 'PYTHON'],
               links: [['VIEW PROJECT DOCUMENT', 'https://1drv.ms/x/c/933edcbe437d6d8e/IQCObX1Dvtw-IICT8QAAAAAAAZDvoEZcrmQfKaM4GBRI_Q0']] },
             { id: 'ethereum-validators', cat: 'Side Quests', title: 'Ethereum Validators', serial: 'AWUS-30402', dom: '#171716',
               line: 'An incentive design that pushes Ethereum toward more validators',
               blurb: 'The network is only as strong as its validators. An incentive design that pushes Ethereum toward more of them.',
               shots: [],
+              how: ['Map where the stake sits and who runs the validators.',
+                    'Price the reward so a small operator is worth being.',
+                    'More operators sign on, and the network spreads out.'],
               bullets: ['ETHEREUM', 'STAKING', 'INFRASTRUCTURE'],
               links: [['VIEW PRESENTATION', 'https://docs.google.com/presentation/d/1iWLCOoLZ2Rc2Mj3XaIiYThyZ5qNMzqDJLamOjiv3Fmw/edit?usp=sharing']] }
         ];
@@ -249,17 +272,76 @@
             });
         }
 
+        var PLATE = { 'Wearables': 'wearables', 'Robotics': 'robotics', 'IoT': 'iot', 'Side Quests': 'quests' };
+
+        /* A landscape panel crops a phone photo through the middle, which on
+           these shots is a torso. Portrait sources sit higher. */
+        function shotPos(s) {
+            return s.h > s.w * 1.2 ? 'center 28%' : 'center';
+        }
+
+        /* Left panel of the spread: a hero shot that fills the panel, with the
+           other shots as a strip that swaps into it. Cases with no shots get a
+           typographic plate so the panel is never dead space. */
+        /* Betta carries one tile more than it has photos: the bench session
+           recorded on 4 August 2026, drawn live by betta-capture.js. The case
+           opens on that tile, so the readout runs the moment it flips. */
+        var CAP_TILE =
+            '<svg viewBox="0 0 60 40" aria-hidden="true" focusable="false">' +
+              '<rect width="60" height="40" fill="rgba(0,0,0,0.5)"></rect>' +
+              '<path d="M3 21 L8 13 L12 27 L17 11 L21 29 L26 10 L31 30 L36 9 L41 31 L47 8 L52 32 L57 19" ' +
+                'fill="none" stroke="#c6a15b" stroke-width="1.6" stroke-linejoin="round"></path>' +
+            '</svg>';
+
+        function heroImgHTML(s) {
+            return '<img src="' + s.src + '" alt="' + s.alt + '" width="' + s.w + '" height="' + s.h +
+                   '" style="object-position:' + shotPos(s) + '" decoding="async">';
+        }
+
+        function mediaHTML(c) {
+            if (!c.shots.length && !c.capture) {
+                return '<div class="back-plate">' + (ICONS[PLATE[c.cat]] || '') +
+                       '<span>' + chromeLabel(c.cat) + '</span></div>';
+            }
+            /* with a capture the hero starts empty; setHero mounts the panel */
+            var h = '<div class="back-hero' + (c.capture ? ' is-cap' : '') + '">' +
+                    (c.capture ? '' : heroImgHTML(c.shots[0])) + '</div>';
+            var tiles = [];
+            if (c.capture) {
+                tiles.push('<button type="button" data-shot="cap" aria-pressed="true" ' +
+                           'aria-label="Show the recorded bench session">' + CAP_TILE + '</button>');
+            }
+            c.shots.forEach(function (s, i) {
+                tiles.push('<button type="button" data-shot="' + i + '" aria-pressed="' +
+                           (!c.capture && i === 0) + '" aria-label="Show ' + s.alt + '">' +
+                           '<img src="' + s.src + '" alt="" width="' + s.w + '" height="' + s.h +
+                           '" style="object-position:' + shotPos(s) + '" loading="lazy" decoding="async"></button>');
+            });
+            if (tiles.length > 1) h += '<div class="back-strip">' + tiles.join('') + '</div>';
+            return h;
+        }
+
+        function frontHTML(c) {
+            return '<img src="covers/' + c.id + '.webp" alt="" width="1024" height="1536" decoding="async">' +
+                   chromeSVG(c) +
+                   '<div class="pcase-grain" aria-hidden="true"></div>';
+        }
+
         function backHTML(c) {
             var h = '<div class="back-inner" style="--dom:' + c.dom + '">';
-            h += '<div class="back-title">' + c.title + '</div>';
-            if (c.shots.length) {
-                h += '<div class="back-shots shots-' + c.shots.length + '">';
-                c.shots.forEach(function (s) {
-                    h += '<img src="' + s.src + '" alt="' + s.alt + '" width="' + s.w + '" height="' + s.h + '" loading="lazy" decoding="async">';
-                });
-                h += '</div>';
+            h += '<button class="back-close" type="button" aria-label="Close ' + c.title + '">&#10005;</button>';
+            h += '<div class="back-media">' + mediaHTML(c) +
+                 '<p class="back-caption">' + c.blurb + '</p></div>';
+            h += '<div class="back-info">';
+            h += '<p class="back-kicker"><span>' + chromeLabel(c.cat) + '</span></p>';
+            h += '<h2 class="back-title">' + c.title + '</h2>';
+            h += '<p class="back-line">' + c.line + '</p>';
+            if (c.how && c.how.length) {
+                h += '<div class="back-how"><h3>How it works</h3><ol class="back-steps">' +
+                     c.how.map(function (s, i) {
+                         return '<li><b>0' + (i + 1) + '</b><span>' + s + '</span></li>';
+                     }).join('') + '</ol></div>';
             }
-            h += '<p class="back-blurb">' + c.blurb + '</p>';
             h += '<ul class="back-bullets">' + c.bullets.map(function (b) { return '<li>' + b + '</li>'; }).join('') + '</ul>';
             h += '<div class="back-bar">';
             h += '<span class="back-serial">' + c.serial + '</span>';
@@ -268,71 +350,174 @@
                 var ext = l[1].indexOf('http') === 0;
                 return '<a href="' + l[1] + '"' + (ext ? ' target="_blank" rel="noopener noreferrer"' : '') + '>' + l[0] + '</a>';
             }).join('') + '</span>';
-            h += '</div></div>';
+            h += '</div></div></div>';
             return h;
         }
 
+        /* The case keeps its 2:3 shape on the shelf, then opens out to a
+           landscape spread as it flips, so the back has room for the media and
+           the gist side by side. The front face stays at case size throughout. */
+        function stageSize() {
+            var vw = window.innerWidth, vh = window.innerHeight;
+            var caseH = Math.min(vh * 0.8, 620);
+            var caseW = caseH * (2 / 3);
+            if (caseW > vw * 0.86) { caseW = vw * 0.86; caseH = caseW * 1.5; }
+            var wide = vw >= 920;
+            return {
+                caseW: caseW,
+                caseH: caseH,
+                w: wide ? Math.min(vw * 0.9, 1060) : Math.max(caseW, Math.min(vw * 0.92, 560)),
+                h: wide ? caseH : Math.max(caseH, Math.min(vh * 0.82, 700))
+            };
+        }
+
+        var stageIndex = -1;
+        var stageSource = null;
+
         function openStage(c, sourceEl) {
-            if (flipped) { closeStage(); return; }
+            if (flipped) return;
             flipped = c;
+            stageSource = sourceEl;
+            stageIndex = visibleCases().indexOf(c);
             var r = sourceEl.getBoundingClientRect();
+            var sz = stageSize();
             stage.hidden = false;
             stage.innerHTML =
                 '<div class="stage-backdrop"></div>' +
-                '<div class="flipper" role="dialog" aria-label="' + c.title + ' case, back cover">' +
+                '<button class="stage-nav prev" type="button" aria-label="Previous project">&#8249;</button>' +
+                '<button class="stage-nav next" type="button" aria-label="Next project">&#8250;</button>' +
+                '<p class="stage-hint">Arrow keys for the next case &middot; Esc closes</p>' +
+                '<div class="flipper" role="dialog" aria-modal="true" aria-label="' + c.title + ' case, back cover">' +
                   '<div class="flip3d">' +
-                    '<div class="flip-face flip-front" style="background-color:' + c.dom + '">' +
-                      '<img src="covers/' + c.id + '.webp" alt="" width="1024" height="1536" decoding="async">' +
-                      chromeSVG(c) +
-                      '<div class="pcase-grain" aria-hidden="true"></div>' +
-                    '</div>' +
+                    '<div class="flip-face flip-front" style="background-color:' + c.dom + '">' + frontHTML(c) + '</div>' +
                     '<div class="flip-face flip-back">' + backHTML(c) + '</div>' +
                   '</div>' +
                 '</div>';
             document.body.classList.add('stage-open');
             var flipper = stage.querySelector('.flipper');
-            /* start at the case's shelf position, then travel to center and flip */
-            var targetH = Math.min(window.innerHeight * 0.86, 660);
-            var targetW = targetH * (2 / 3);
-            flipper.style.width = targetW + 'px';
-            flipper.style.height = targetH + 'px';
-            var sx = r.width / targetW, sy = r.height / targetH;
+            flipper.style.setProperty('--case-w', sz.caseW + 'px');
+            flipper.style.setProperty('--case-h', sz.caseH + 'px');
+            flipper.style.width = sz.caseW + 'px';
+            flipper.style.height = sz.caseH + 'px';
+            /* start at the case's shelf position, then travel to center and open */
+            var sx = r.width / sz.caseW, sy = r.height / sz.caseH;
             var dx = r.left + r.width / 2 - window.innerWidth / 2;
             var dy = r.top + r.height / 2 - window.innerHeight / 2;
             if (reduced.matches) {
+                flipper.style.width = sz.w + 'px';
+                flipper.style.height = sz.h + 'px';
                 flipper.classList.add('flipped');
             } else {
                 flipper.style.transform = 'translate(' + dx + 'px,' + dy + 'px) scale(' + sx + ',' + sy + ')';
                 requestAnimationFrame(function () {
                     requestAnimationFrame(function () {
                         flipper.style.transform = 'translate(0,0) scale(1)';
+                        flipper.style.width = sz.w + 'px';
+                        flipper.style.height = sz.h + 'px';
                         flipper.classList.add('flipped');
                     });
                 });
             }
-            stage.querySelector('.stage-backdrop').addEventListener('click', function () { closeStage(); });
-            flipper.addEventListener('click', function () { closeStage(); });
-            flipper.setAttribute('tabindex', '-1');
-            flipper.focus({ preventScroll: true });
+            var close = stage.querySelector('.back-close');
+            if (close) close.focus({ preventScroll: true });
+            if (c.capture) setHero('cap');
+        }
+
+        /* step through the shelf without leaving the spread */
+        function stepStage(d) {
+            if (!flipped) return;
+            var list = visibleCases();
+            if (list.length < 2) return;
+            stageIndex = (stageIndex + d + list.length) % list.length;
+            var c = list[stageIndex];
+            flipped = c;
+            stageSource = shelf.children[stageIndex] || stageSource;
+            var flipper = stage.querySelector('.flipper');
+            flipper.classList.add('swapping');
+            dropCapture();
+            setTimeout(function () {
+                var front = stage.querySelector('.flip-front');
+                front.style.backgroundColor = c.dom;
+                front.innerHTML = frontHTML(c);
+                stage.querySelector('.flip-back').innerHTML = backHTML(c);
+                flipper.setAttribute('aria-label', c.title + ' case, back cover');
+                flipper.classList.remove('swapping');
+                if (stageSource) {
+                    shelf.scrollTo({ left: stageSource.offsetLeft - 48, behavior: 'auto' });
+                }
+                if (c.capture) setHero('cap');
+            }, reduced.matches ? 0 : 170);
+        }
+
+        var capPanel = null;
+
+        function dropCapture() {
+            if (capPanel) { capPanel.destroy(); capPanel = null; }
+        }
+
+        /* key is a shot index, or 'cap' for the recorded session panel */
+        function setHero(key) {
+            var c = flipped;
+            var hero = stage.querySelector('.back-hero');
+            if (!c || !hero) return;
+            dropCapture();
+            if (key === 'cap') {
+                if (!window.__bettaCapture) { if (c.shots.length) setHero(0); return; }
+                hero.innerHTML = '';
+                hero.classList.add('is-cap');
+                capPanel = window.__bettaCapture.mount(hero);
+                capPanel.play();
+            } else {
+                var s = c.shots[Number(key)];
+                if (!s) return;
+                hero.classList.remove('is-cap');
+                hero.innerHTML = heroImgHTML(s);
+            }
+            [].forEach.call(stage.querySelectorAll('.back-strip button'), function (b) {
+                b.setAttribute('aria-pressed', String(b.getAttribute('data-shot') === String(key)));
+            });
         }
 
         function closeStage(instant) {
             if (!flipped) return;
+            dropCapture();
             flipped = null;
-            if (instant || reduced.matches) {
-                stage.hidden = true;
-                stage.innerHTML = '';
-                document.body.classList.remove('stage-open');
-                return;
-            }
+            stageIndex = -1;
+            var back = stageSource;
+            stageSource = null;
             var flipper = stage.querySelector('.flipper');
-            if (flipper) flipper.classList.remove('flipped');
-            setTimeout(function () {
+            function done() {
                 stage.hidden = true;
                 stage.innerHTML = '';
                 document.body.classList.remove('stage-open');
-            }, 420);
+                if (back && !instant) back.focus({ preventScroll: true });
+            }
+            if (instant || reduced.matches || !flipper) { done(); return; }
+            var sz = stageSize();
+            flipper.style.width = sz.caseW + 'px';
+            flipper.style.height = sz.caseH + 'px';
+            flipper.classList.remove('flipped');
+            setTimeout(done, 420);
         }
+
+        /* Clicking the case no longer dismisses it: the spread is the content.
+           Closing is the X, Esc, or a deliberate press and release on the
+           backdrop outside the case. */
+        var downOnBackdrop = false;
+
+        stage.addEventListener('pointerdown', function (e) {
+            downOnBackdrop = e.target.classList.contains('stage-backdrop');
+        });
+
+        stage.addEventListener('click', function (e) {
+            var t = e.target;
+            if (t.closest('.back-close')) { closeStage(); return; }
+            var nav = t.closest('.stage-nav');
+            if (nav) { stepStage(nav.classList.contains('next') ? 1 : -1); return; }
+            var thumb = t.closest('.back-strip button');
+            if (thumb) { setHero(thumb.getAttribute('data-shot')); return; }
+            if (t.classList.contains('stage-backdrop') && downOnBackdrop) closeStage();
+        });
 
         document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape') closeStage();
@@ -367,6 +552,7 @@
             if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
             var t = e.target;
             if (t && (t.tagName === 'VIDEO' || t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable)) return;
+            if (flipped) { stepStage(e.key === 'ArrowRight' ? 1 : -1); e.preventDefault(); return; }
             var n = shelf.children.length;
             if (!n) return;
             focused = e.key === 'ArrowRight' ? Math.min(focused + 1, n - 1) : Math.max(focused - 1, 0);
