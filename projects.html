@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects | Abba Wada</title>
+    <link rel="icon" href="favicon.ico" sizes="32x32">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,600;0,700;1,600&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;family=Schibsted+Grotesk:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+</head>
+<body data-wave="1">
+    <canvas id="wave" aria-hidden="true"></canvas>
+
+    <header class="site-header shell">
+        <a class="site-name" href="index.html">Abba Wada</a>
+        <nav class="site-nav" aria-label="Primary">
+            <a href="betta.html">Betta</a>
+            <a href="projects.html" aria-current="page">Projects</a>
+            <a href="writing.html">Writing</a>
+        </nav>
+    </header>
+
+    <main class="shell">
+        <header class="page-head">
+            <h1 class="page-title">Projects</h1>
+        </header>
+
+        <section id="shelfZone" hidden>
+            <div class="filters" id="filters" role="group" aria-label="Filter projects"></div>
+            <div class="shelf-wrap">
+                <div class="shelf" id="shelf" aria-label="Project shelf"></div>
+            </div>
+            <p class="xmb-hint">DRAG THE SHELF · CLICK A CASE TO FLIP IT · ARROW KEYS WORK TOO</p>
+        </section>
+
+        <div class="stage" id="stage" hidden></div>
+
+        <section class="plain-projects" id="plainProjects" aria-label="Projects">
+            <div class="plain-group">
+                <h2 class="section-h">Wearables</h2>
+                <ul class="plain-list">
+                    <li><a href="https://www.youtube.com/watch?v=Hr_AOARKWCw" target="_blank" rel="noopener noreferrer">Posture Cue →</a> Wearable that tracks spinal alignment and cues you upright when you slouch.</li>
+                </ul>
+            </div>
+            <div class="plain-group">
+                <h2 class="section-h">Robotics</h2>
+                <ul class="plain-list">
+                    <li><a href="https://www.youtube.com/watch?v=rWP7KaduHdg" target="_blank" rel="noopener noreferrer">Visual Mapping for Autonomous Robots →</a> Simulation software for autonomous mobile robots to optimize routes and prevent factory congestion.</li>
+                    <li><a href="https://www.youtube.com/watch?v=rMxsd21XIwQ" target="_blank" rel="noopener noreferrer">Bluetooth Car →</a> Bluetooth-controlled robot car.</li>
+                </ul>
+            </div>
+            <div class="plain-group">
+                <h2 class="section-h">IoT</h2>
+                <ul class="plain-list">
+                    <li>Home Temperature Monitor. IoT unit that logs temperature and humidity in real time.
+                        <video controls preload="none" poster="images/Home_monitor.jpg" src="videos/Temp_Home_Monitor.mp4" width="600" height="960" playsinline aria-label="Home Temperature Monitor video"></video>
+                    </li>
+                </ul>
+            </div>
+            <div class="plain-group">
+                <h2 class="section-h">Side Quests</h2>
+                <ul class="plain-list">
+                    <li><a href="https://1drv.ms/x/c/933edcbe437d6d8e/IQCObX1Dvtw-IICT8QAAAAAAAZDvoEZcrmQfKaM4GBRI_Q0" target="_blank" rel="noopener noreferrer">Plume Token Yield Vaults →</a> Designed yield vault with Plume native tokens using custom risk rating system and allocation formula, producing higher native yield than current offerings.</li>
+                    <li><a href="https://docs.google.com/presentation/d/1iWLCOoLZ2Rc2Mj3XaIiYThyZ5qNMzqDJLamOjiv3Fmw/edit?usp=sharing" target="_blank" rel="noopener noreferrer">Ethereum Validators →</a> Designed an incentive system for validators to increase network decentralization.</li>
+                    <li>Wheelchair Basketball Volunteering. Volunteering with adaptive sports programs.
+                        <video controls preload="none" poster="images/wheelchair_poster.jpg" src="videos/Wheelchair_Basketball.mp4" width="1280" height="720" playsinline aria-label="Wheelchair basketball video"></video>
+                    </li>
+                    <li>The Medici Network. I built research packets on the speakers and themes ahead of Medici LA 26. After the event, I wrote the 10 Key Takeaways report and produced it print-ready.</li>
+                </ul>
+            </div>
+        </section>
+    </main>
+
+    <script src="wave.js"></script>
+    <script src="script.js"></script>
+    <script>
+    (function () {
+        'use strict';
+        var ICONS = {
+            wearables: '<svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="9" y="3" width="10" height="22" rx="5"></rect><circle cx="14" cy="10" r="1.6" fill="currentColor" stroke="none"></circle><line x1="9" y1="17" x2="19" y2="17"></line></svg>',
+            robotics: '<svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="6" y="11" width="16" height="12" rx="2"></rect><circle cx="11.5" cy="17" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="16.5" cy="17" r="1.4" fill="currentColor" stroke="none"></circle><line x1="14" y1="11" x2="14" y2="6"></line><circle cx="14" cy="4.5" r="1.4"></circle></svg>',
+            iot: '<svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="14" cy="21" r="1.6" fill="currentColor" stroke="none"></circle><path d="M8.5 15.5a8 8 0 0 1 11 0"></path><path d="M5 11.5a13 13 0 0 1 18 0"></path></svg>',
+            quests: '<svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M14 4 L22 14 L14 24 L6 14 Z"></path><path d="M21 4.5 L22.2 7 L24.7 8.2 L22.2 9.4 L21 12 L19.8 9.4 L17.3 8.2 L19.8 7 Z" fill="currentColor" stroke="none"></path></svg>'
+        };
+
+        /* Case chrome: vector spine mounted over the art per the Design chrome
+           SPEC (600 by 900 grid, spine 12%). The opaque spine guarantees a
+           correct monogram, category and serial over whatever the art bakes
+           into that band. Rating boxes and the author line ship baked in the
+           cover art. All text is live SVG text; page grain supplies texture. */
+        var CHROME_MONO = '<g transform="translate(16 22) scale(0.4167)" fill="none" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><rect x="10.5" y="10.5" width="75" height="75" rx="17"></rect><path d="M23 61 L32 35 L41 61"></path><path d="M26.5 52.5 L37.5 52.5"></path><path d="M46 35 L52.5 61 L59 40 L65.5 61 L72 35"></path></g>';
+
+        function chromeLabel(cat) {
+            return cat === 'Side Quests' ? 'SIDE QUEST' : cat.toUpperCase();
+        }
+
+        function chromeSVG(c) {
+            var label = chromeLabel(c.cat);
+            return '<svg class="case-chrome" viewBox="0 0 600 900" aria-hidden="true" focusable="false">' +
+                '<rect width="72" height="900" fill="' + (c.spineColor || '#141414') + '"></rect>' +
+                '<line x1="71.25" y1="0" x2="71.25" y2="900" stroke="#FFFFFF" stroke-opacity="0.14" stroke-width="1.5"></line>' +
+                CHROME_MONO +
+                '<text transform="translate(36 108) rotate(90)" dominant-baseline="central" font-family="&#39;Chakra Petch&#39;,sans-serif" font-weight="600" font-style="italic" font-size="30" letter-spacing="10.2" fill="#FFFFFF">' + label + '</text>' +
+                '<text x="36" y="882" text-anchor="middle" font-family="&#39;Schibsted Grotesk&#39;,sans-serif" font-weight="600" font-size="9" letter-spacing="0.2" fill="#FFFFFF" fill-opacity="0.8">' + c.serial + '</text>' +
+                '</svg>';
+        }
+
+        /* Cover files are swappable; nothing below depends on image contents. */
+        var CASES = [
+            { id: 'betta', cat: 'Wearables', title: 'Betta', serial: 'AWUS-30250', dom: '#27211b',
+              line: 'The shooting sleeve that learns the shot only you take.',
+              blurb: 'Your shot has a signature. Betta learns it. Dual IMUs at the elbow and wrist read every rep 100 times a second, and the moment one drifts, a tap on the wrist calls the correction.',
+              shots: [
+                  { src: 'images/betta_poster_prototype.jpg', w: 720, h: 1280, alt: 'Betta prototype electronics test' },
+                  { src: 'images/betta_poster_rig.jpg', w: 720, h: 1280, alt: 'Betta capture rig worn on the arm' },
+                  { src: 'images/betta_app_screen_2_1x.png', w: 320, h: 690, alt: 'Betta app live session screen' }
+              ],
+              bullets: ['IMU SENSORS', 'HAPTICS', 'EMBEDDED FIRMWARE', 'C++'],
+              links: [['VIEW FULL CASE STUDY', 'betta.html'], ['BETTA.LIVE', 'https://betta.live']] },
+            { id: 'posture-cue', cat: 'Wearables', title: 'Posture Cue', serial: 'AWUS-30311', dom: '#78625a',
+              line: 'Wearable that tracks spinal alignment and cues you upright when you slouch.',
+              blurb: 'Your spine keeps the score. Posture Cue tracks your alignment through the whole day and cues you upright the second you slouch.',
+              shots: [{ src: 'images/Posture_Cue_Thumbnail.jpg', w: 1382, h: 1450, alt: 'Posture Cue prototype held up' }],
+              bullets: ['SENSORS', 'WEARABLE TECH', 'EMBEDDED SYSTEMS'],
+              links: [['WATCH ON YOUTUBE', 'https://www.youtube.com/watch?v=Hr_AOARKWCw']] },
+            { id: 'visual-mapping', cat: 'Robotics', title: 'Visual Mapping for Autonomous Robots', serial: 'AWUS-30342', dom: '#1c1f19',
+              line: 'Simulation software for autonomous mobile robots to optimize routes and prevent factory congestion.',
+              blurb: 'Five robots. Eighteen shelves. One quiet night shift. Plan the routes, dodge the pileups, and keep the warehouse floor moving until morning.',
+              shots: [{ src: 'images/Visual_Mapping_Robot.jpg', w: 1064, h: 1044, alt: 'Warehouse simulation screen' }],
+              bullets: ['ROBOTICS', 'SIMULATION', 'PATH PLANNING', 'COLLISION AVOIDANCE'],
+              links: [['GITHUB', 'https://github.com/abbawada/Robot-Facility'], ['WATCH ON YOUTUBE', 'https://www.youtube.com/watch?v=rWP7KaduHdg']] },
+            { id: 'bluetooth-car', cat: 'Robotics', title: 'Bluetooth Car', serial: 'AWUS-30188', dom: '#693e29', spineColor: '#A31621',
+              line: 'Bluetooth-controlled robot car.',
+              blurb: 'Strip the shell, keep the wires. Pair your phone, drop the hammer, and drive the breadboard like you built it. Because you did.',
+              shots: [{ src: 'images/Bluetooth_Car.jpg', w: 1162, h: 998, alt: 'Breadboard robot car' }],
+              bullets: ['BLUETOOTH', 'MOTOR DRIVERS', 'MICROCONTROLLER'],
+              links: [['WATCH ON YOUTUBE', 'https://www.youtube.com/watch?v=rMxsd21XIwQ']] },
+            { id: 'home-temp-monitor', cat: 'IoT', title: 'Home Temperature Monitor', serial: 'AWUS-30129', dom: '#77655b',
+              line: 'IoT unit that logs temperature and humidity in real time.',
+              blurb: 'Every degree on record. The little red unit on the shelf logs temperature and humidity around the clock and never asks for a day off.',
+              shots: [{ src: 'images/Home_monitor.jpg', w: 1186, h: 1048, alt: 'Temperature monitor display' }],
+              bullets: ['SENSORS', 'IOT', 'DATA LOGGING'],
+              links: [['WATCH THE DEMO', 'videos/Temp_Home_Monitor.mp4']] },
+            { id: 'yield-vaults', cat: 'Side Quests', title: 'Plume Token Yield Vaults', serial: 'AWUS-30366', dom: '#2d2315',
+              line: 'A yield vault design with its own risk rating system',
+              blurb: 'Behind this door, yield. A vault design for Plume native tokens with its own risk rating system and an allocation formula tuned for higher native yield.',
+              shots: [],
+              bullets: ['FINANCIAL MODELING', 'RISK MANAGEMENT', 'TOKENOMICS', 'PYTHON'],
+              links: [['VIEW PROJECT DOCUMENT', 'https://1drv.ms/x/c/933edcbe437d6d8e/IQCObX1Dvtw-IICT8QAAAAAAAZDvoEZcrmQfKaM4GBRI_Q0']] },
+            { id: 'ethereum-validators', cat: 'Side Quests', title: 'Ethereum Validators', serial: 'AWUS-30402', dom: '#171716',
+              line: 'An incentive design that pushes Ethereum toward more validators',
+              blurb: 'The network is only as strong as its validators. An incentive design that pushes Ethereum toward more of them.',
+              shots: [],
+              bullets: ['ETHEREUM', 'STAKING', 'INFRASTRUCTURE'],
+              links: [['VIEW PRESENTATION', 'https://docs.google.com/presentation/d/1iWLCOoLZ2Rc2Mj3XaIiYThyZ5qNMzqDJLamOjiv3Fmw/edit?usp=sharing']] }
+        ];
+        var FILTERS = [
+            { key: 'All', icon: null },
+            { key: 'Wearables', icon: ICONS.wearables },
+            { key: 'Robotics', icon: ICONS.robotics },
+            { key: 'IoT', icon: ICONS.iot },
+            { key: 'Side Quests', icon: ICONS.quests }
+        ];
+
+        var zone = document.getElementById('shelfZone');
+        var plain = document.getElementById('plainProjects');
+        var shelf = document.getElementById('shelf');
+        var stage = document.getElementById('stage');
+        var filters = document.getElementById('filters');
+        if (!zone || !shelf) return;
+        plain.hidden = true;
+        zone.hidden = false;
+
+        var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+        var filter = 'All';
+        var focused = 0;
+        var flipped = null;   /* the CASES entry currently on stage */
+
+        FILTERS.forEach(function (f) {
+            var b = document.createElement('button');
+            b.className = 'chip'; b.type = 'button';
+            b.setAttribute('aria-pressed', String(f.key === filter));
+            b.innerHTML = (f.icon || '') + '<span>' + f.key + '</span>';
+            b.addEventListener('click', function () {
+                filter = f.key;
+                [].forEach.call(filters.children, function (c, i) {
+                    c.setAttribute('aria-pressed', String(FILTERS[i].key === filter));
+                });
+                closeStage(true);
+                focused = 0;
+                render();
+            });
+            filters.appendChild(b);
+        });
+
+        function visibleCases() {
+            return CASES.filter(function (c) {
+                return filter === 'All' || c.cat === filter;
+            });
+        }
+
+        var dragMoved = false;
+
+        function render() {
+            shelf.innerHTML = '';
+            visibleCases().forEach(function (c, i) {
+                var el = document.createElement('div');
+                el.className = 'pcase';
+                el.tabIndex = 0;
+                el.setAttribute('role', 'button');
+                el.setAttribute('data-cat', c.cat);
+                el.setAttribute('aria-label', c.title + ', ' + c.cat + ' project. Press Enter to flip the case.');
+                var eager = i < 3 ? '' : ' loading="lazy"';
+                el.innerHTML =
+                    '<div class="pcase-box">' +
+                      '<div class="pcase-spine3d" aria-hidden="true"><span>' + c.title + '</span></div>' +
+                      '<div class="pcase-front" style="background-color:' + c.dom + '">' +
+                        '<img src="covers/' + c.id + '.webp" alt="' + c.title + ' game case cover" width="1024" height="1536"' + eager + ' decoding="async">' +
+                        chromeSVG(c) +
+                        '<div class="pcase-grain" aria-hidden="true"></div>' +
+                        '<div class="pcase-gloss" aria-hidden="true"></div>' +
+                        '<div class="pcase-lip" aria-hidden="true"></div>' +
+                      '</div>' +
+                    '</div>';
+                el.addEventListener('click', function () { if (!dragMoved) openStage(c, el); });
+                el.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter' || e.key === ' ') { openStage(c, el); e.preventDefault(); }
+                });
+                el.addEventListener('pointermove', function (e) {
+                    if (reduced.matches) return;
+                    var r = el.getBoundingClientRect();
+                    var px = (e.clientX - r.left) / r.width - 0.5;
+                    var py = (e.clientY - r.top) / r.height - 0.5;
+                    el.style.setProperty('--tx', (py * -7) + 'deg');
+                    el.style.setProperty('--ty', (px * 10) + 'deg');
+                    el.style.setProperty('--gx', (px * 130 + 50) + '%');
+                });
+                el.addEventListener('pointerleave', function () {
+                    el.style.setProperty('--tx', '0deg');
+                    el.style.setProperty('--ty', '0deg');
+                });
+                shelf.appendChild(el);
+            });
+        }
+
+        function backHTML(c) {
+            var h = '<div class="back-inner" style="--dom:' + c.dom + '">';
+            h += '<div class="back-title">' + c.title + '</div>';
+            if (c.shots.length) {
+                h += '<div class="back-shots shots-' + c.shots.length + '">';
+                c.shots.forEach(function (s) {
+                    h += '<img src="' + s.src + '" alt="' + s.alt + '" width="' + s.w + '" height="' + s.h + '" loading="lazy" decoding="async">';
+                });
+                h += '</div>';
+            }
+            h += '<p class="back-blurb">' + c.blurb + '</p>';
+            h += '<ul class="back-bullets">' + c.bullets.map(function (b) { return '<li>' + b + '</li>'; }).join('') + '</ul>';
+            h += '<div class="back-bar">';
+            h += '<span class="back-serial">' + c.serial + '</span>';
+            h += '<span class="back-barcode" aria-hidden="true"></span>';
+            h += '<span class="back-links">' + c.links.map(function (l) {
+                var ext = l[1].indexOf('http') === 0;
+                return '<a href="' + l[1] + '"' + (ext ? ' target="_blank" rel="noopener noreferrer"' : '') + '>' + l[0] + '</a>';
+            }).join('') + '</span>';
+            h += '</div></div>';
+            return h;
+        }
+
+        function openStage(c, sourceEl) {
+            if (flipped) { closeStage(); return; }
+            flipped = c;
+            var r = sourceEl.getBoundingClientRect();
+            stage.hidden = false;
+            stage.innerHTML =
+                '<div class="stage-backdrop"></div>' +
+                '<div class="flipper" role="dialog" aria-label="' + c.title + ' case, back cover">' +
+                  '<div class="flip3d">' +
+                    '<div class="flip-face flip-front" style="background-color:' + c.dom + '">' +
+                      '<img src="covers/' + c.id + '.webp" alt="" width="1024" height="1536" decoding="async">' +
+                      chromeSVG(c) +
+                      '<div class="pcase-grain" aria-hidden="true"></div>' +
+                    '</div>' +
+                    '<div class="flip-face flip-back">' + backHTML(c) + '</div>' +
+                  '</div>' +
+                '</div>';
+            document.body.classList.add('stage-open');
+            var flipper = stage.querySelector('.flipper');
+            /* start at the case's shelf position, then travel to center and flip */
+            var targetH = Math.min(window.innerHeight * 0.86, 660);
+            var targetW = targetH * (2 / 3);
+            flipper.style.width = targetW + 'px';
+            flipper.style.height = targetH + 'px';
+            var sx = r.width / targetW, sy = r.height / targetH;
+            var dx = r.left + r.width / 2 - window.innerWidth / 2;
+            var dy = r.top + r.height / 2 - window.innerHeight / 2;
+            if (reduced.matches) {
+                flipper.classList.add('flipped');
+            } else {
+                flipper.style.transform = 'translate(' + dx + 'px,' + dy + 'px) scale(' + sx + ',' + sy + ')';
+                requestAnimationFrame(function () {
+                    requestAnimationFrame(function () {
+                        flipper.style.transform = 'translate(0,0) scale(1)';
+                        flipper.classList.add('flipped');
+                    });
+                });
+            }
+            stage.querySelector('.stage-backdrop').addEventListener('click', function () { closeStage(); });
+            flipper.addEventListener('click', function () { closeStage(); });
+            flipper.setAttribute('tabindex', '-1');
+            flipper.focus({ preventScroll: true });
+        }
+
+        function closeStage(instant) {
+            if (!flipped) return;
+            flipped = null;
+            if (instant || reduced.matches) {
+                stage.hidden = true;
+                stage.innerHTML = '';
+                document.body.classList.remove('stage-open');
+                return;
+            }
+            var flipper = stage.querySelector('.flipper');
+            if (flipper) flipper.classList.remove('flipped');
+            setTimeout(function () {
+                stage.hidden = true;
+                stage.innerHTML = '';
+                document.body.classList.remove('stage-open');
+            }, 420);
+        }
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') closeStage();
+        });
+
+        /* drag to scroll */
+        var dragging = false, startX = 0, startLeft = 0;
+        shelf.addEventListener('pointerdown', function (e) {
+            dragging = true; dragMoved = false;
+            startX = e.clientX; startLeft = shelf.scrollLeft;
+            shelf.classList.add('dragging');
+        });
+        window.addEventListener('pointermove', function (e) {
+            if (!dragging) return;
+            var dx = e.clientX - startX;
+            if (Math.abs(dx) > 6) dragMoved = true;
+            shelf.scrollLeft = startLeft - dx;
+        });
+        window.addEventListener('pointerup', function () {
+            dragging = false;
+            shelf.classList.remove('dragging');
+        });
+        shelf.addEventListener('wheel', function (e) {
+            if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+                shelf.scrollLeft += e.deltaY;
+                e.preventDefault();
+            }
+        }, { passive: false });
+
+        /* arrow keys, a supplement */
+        window.addEventListener('keydown', function (e) {
+            if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+            var t = e.target;
+            if (t && (t.tagName === 'VIDEO' || t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable)) return;
+            var n = shelf.children.length;
+            if (!n) return;
+            focused = e.key === 'ArrowRight' ? Math.min(focused + 1, n - 1) : Math.max(focused - 1, 0);
+            var el = shelf.children[focused];
+            el.focus({ preventScroll: true });
+            shelf.scrollTo({ left: el.offsetLeft - 48, behavior: reduced.matches ? 'auto' : 'smooth' });
+            if (window.__wave) {
+                var r = el.getBoundingClientRect();
+                window.__wave.setFocus(r.left + r.width / 2, r.top + r.height / 2, true);
+            }
+            e.preventDefault();
+        });
+
+        render();
+    })();
+    </script>
+</body>
+</html>

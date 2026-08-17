@@ -1,214 +1,166 @@
-// Navigation functionality
-const nav = document.getElementById('nav');
-const navToggle = document.getElementById('navToggle');
-const navLinks = document.querySelector('.nav-links');
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+const saveData = Boolean(navigator.connection && navigator.connection.saveData);
 
-// Handle scroll effect on navigation
-let lastScroll = 0;
-window.addEventListener('scroll', () => {
-    const currentScroll = window.pageYOffset;
-    
-    if (currentScroll > 50) {
-        nav.classList.add('scrolled');
-    } else {
-        nav.classList.remove('scrolled');
-    }
-    
-    lastScroll = currentScroll;
-});
+const revealTargets = document.querySelectorAll([
+    '.betta-header',
+    '.betta-showcase',
+    '.betta-milestones',
+    '.betta-videos',
+    '.betta-footer',
+    '.publication-item',
+    '.about-body',
+    '.about-section'
+].join(','));
 
-// Mobile navigation toggle
-if (navToggle) {
-    navToggle.addEventListener('click', () => {
-        navLinks.classList.toggle('active');
-        navToggle.classList.toggle('active');
-    });
-}
+if ('IntersectionObserver' in window && !reducedMotion.matches) {
+    const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
 
-// Close mobile menu when clicking on a link
-document.querySelectorAll('.nav-links a').forEach(link => {
-    link.addEventListener('click', () => {
-        navLinks.classList.remove('active');
-        navToggle.classList.remove('active');
-    });
-});
-
-// Smooth scroll for anchor links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-            const navHeight = nav.offsetHeight;
-            const targetPosition = target.offsetTop - navHeight;
-            
-            window.scrollTo({
-                top: targetPosition,
-                behavior: 'smooth'
-            });
-        }
-    });
-});
-
-// Scroll reveal animation
-const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
-};
-
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
+            entry.target.classList.remove('reveal-pending');
             entry.target.classList.add('active');
-        }
+            revealObserver.unobserve(entry.target);
+        });
+    }, {
+        threshold: 0.01,
+        rootMargin: '0px 0px -40px 0px'
     });
-}, observerOptions);
 
-// Observe all sections and project cards
-document.querySelectorAll('section, .project-card, .project-item').forEach(el => {
-    el.classList.add('reveal');
-    observer.observe(el);
-});
+    revealTargets.forEach((element) => {
+        const rect = element.getBoundingClientRect();
+        if (rect.top < window.innerHeight && rect.bottom > 0) return;
 
-// Project card interactions
-document.querySelectorAll('.project-card').forEach(card => {
-    card.addEventListener('click', function() {
-        // Add your project detail modal or navigation logic here
-        console.log('Project clicked:', this.dataset.project);
-        // Example: window.location.href = `project-${this.dataset.project}.html`;
+        element.classList.add('reveal', 'reveal-pending');
+        revealObserver.observe(element);
     });
-});
-
-// Expandable project items
-document.querySelectorAll('.project-item.expandable').forEach(item => {
-    item.addEventListener('click', function(e) {
-        // Toggle expanded state
-        this.classList.toggle('expanded');
-        
-        // Scroll to expanded item if it's being opened
-        if (this.classList.contains('expanded')) {
-            setTimeout(() => {
-                this.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            }, 100);
-        }
-    });
-    
-    // Remove hover transform for expandable items
-    item.addEventListener('mouseenter', function() {
-        if (!this.classList.contains('expanded')) {
-            this.style.transform = 'translateX(5px)';
-        }
-    });
-    
-    item.addEventListener('mouseleave', function() {
-        if (!this.classList.contains('expanded')) {
-            this.style.transform = 'translateX(0)';
-        }
-    });
-});
-
-// Update current year in footer
-const currentYear = new Date().getFullYear();
-const yearElement = document.getElementById('currentYear');
-if (yearElement) {
-    yearElement.textContent = currentYear;
 }
 
-// Parallax effect for hero section (subtle)
-window.addEventListener('scroll', () => {
-    const scrolled = window.pageYOffset;
-    const hero = document.querySelector('.hero');
-    if (hero && scrolled < window.innerHeight) {
-        hero.style.transform = `translateY(${scrolled * 0.5}px)`;
-        hero.style.opacity = 1 - (scrolled / window.innerHeight) * 0.5;
+function attachVideoMedia(video) {
+    if (!video) return;
+
+    const source = video.dataset.src;
+    const poster = video.dataset.poster;
+    let changed = false;
+
+    if (source && !video.getAttribute('src')) {
+        video.setAttribute('src', source);
+        changed = true;
+    }
+
+    if (poster && !video.getAttribute('poster')) {
+        video.setAttribute('poster', poster);
+        changed = true;
+    }
+
+    if (changed) {
+        video.load();
+    }
+}
+
+function shouldAutoplay(video) {
+    return video.hasAttribute('data-autoplay') &&
+        !reducedMotion.matches &&
+        !saveData &&
+        video.dataset.userPaused !== 'true';
+}
+
+const lazyVideos = document.querySelectorAll('video[data-src]');
+const ambientVideos = document.querySelectorAll('video[data-autoplay]');
+let preloadObserver = null;
+let playbackObserver = null;
+
+if ('IntersectionObserver' in window) {
+    preloadObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+
+            attachVideoMedia(entry.target);
+            preloadObserver.unobserve(entry.target);
+        });
+    }, {
+        rootMargin: '400px 0px'
+    });
+
+    playbackObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            const video = entry.target;
+            video.dataset.inViewport = String(entry.isIntersecting);
+
+            if (entry.isIntersecting) {
+                attachVideoMedia(video);
+                if (shouldAutoplay(video)) video.play().catch(() => {});
+            } else {
+                video.pause();
+            }
+        });
+    }, { threshold: 0.01 });
+
+    lazyVideos.forEach((video) => preloadObserver.observe(video));
+    ambientVideos.forEach((video) => playbackObserver.observe(video));
+} else {
+    lazyVideos.forEach((video) => attachVideoMedia(video));
+}
+
+const rigVideo = document.querySelector('video[data-autoplay]');
+const rigToggle = document.getElementById('bettaRigToggle');
+
+function updateRigToggle() {
+    if (!rigVideo || !rigToggle) return;
+
+    const playing = !rigVideo.paused;
+    rigToggle.textContent = playing ? 'Pause video' : 'Play video';
+    rigToggle.setAttribute('aria-pressed', String(playing));
+}
+
+if (rigVideo && rigToggle) {
+    rigToggle.addEventListener('click', () => {
+        attachVideoMedia(rigVideo);
+
+        if (rigVideo.paused) {
+            rigVideo.dataset.userPaused = 'false';
+            rigVideo.play().catch(() => updateRigToggle());
+        } else {
+            rigVideo.dataset.userPaused = 'true';
+            rigVideo.pause();
+        }
+    });
+
+    rigVideo.addEventListener('play', updateRigToggle);
+    rigVideo.addEventListener('pause', updateRigToggle);
+    updateRigToggle();
+}
+
+function handleReducedMotionChange(event) {
+    if (event.matches) {
+        revealTargets.forEach((element) => {
+            element.classList.remove('reveal-pending');
+            element.classList.add('active');
+        });
+
+        if (rigVideo) rigVideo.pause();
+    } else if (rigVideo?.dataset.inViewport === 'true' && shouldAutoplay(rigVideo)) {
+        rigVideo.play().catch(() => {});
+    }
+}
+
+if (typeof reducedMotion.addEventListener === 'function') {
+    reducedMotion.addEventListener('change', handleReducedMotionChange);
+} else if (typeof reducedMotion.addListener === 'function') {
+    reducedMotion.addListener(handleReducedMotionChange);
+}
+
+document.addEventListener('visibilitychange', () => {
+    if (!rigVideo) return;
+
+    if (document.hidden) {
+        rigVideo.pause();
+    } else if (rigVideo.dataset.inViewport === 'true' && shouldAutoplay(rigVideo)) {
+        rigVideo.play().catch(() => {});
     }
 });
 
-// Add loading animation
-window.addEventListener('load', () => {
-    document.body.classList.add('loaded');
-});
-
-// Keyboard navigation support
-document.addEventListener('keydown', (e) => {
-    // ESC key closes mobile menu
-    if (e.key === 'Escape' && navLinks.classList.contains('active')) {
-        navLinks.classList.remove('active');
-        navToggle.classList.remove('active');
-    }
-});
-
-// Smooth reveal for skills on scroll
-const skillsObserver = new IntersectionObserver((entries) => {
-    entries.forEach((entry, index) => {
-        if (entry.isIntersecting) {
-            setTimeout(() => {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
-            }, index * 50);
-        }
-    });
-}, { threshold: 0.1 });
-
-document.querySelectorAll('.skills-grid span').forEach(skill => {
-    skill.style.opacity = '0';
-    skill.style.transform = 'translateY(10px)';
-    skill.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-    skillsObserver.observe(skill);
-});
-
-// Local video play functionality
-const flowstateContainer = document.getElementById('flowstate-video-container');
-const flowstateThumbnail = document.getElementById('flowstate-thumbnail');
-const flowstateVideo = document.getElementById('flowstate-video');
-const flowstatePlay = document.getElementById('flowstate-play');
-
-if (flowstateContainer && flowstateThumbnail && flowstateVideo && flowstatePlay) {
-    flowstateContainer.addEventListener('click', function(e) {
-        // Only trigger if clicking on the container, not if video is already playing
-        if (flowstateVideo.style.display === 'none' || flowstateVideo.style.display === '') {
-            e.preventDefault();
-            e.stopPropagation();
-            flowstateThumbnail.style.display = 'none';
-            flowstatePlay.style.display = 'none';
-            flowstateVideo.style.display = 'block';
-            flowstateVideo.style.position = 'absolute';
-            flowstateVideo.style.top = '0';
-            flowstateVideo.style.left = '0';
-            flowstateVideo.style.width = '100%';
-            flowstateVideo.style.height = '100%';
-            flowstateVideo.load(); // Reload the video
-            flowstateVideo.play().catch(function(error) {
-                console.log('Video play error:', error);
-            });
-        }
-    });
+const waveCanvas = document.getElementById('wave');
+if (waveCanvas && window.RibbonWave) {
+    const waveIntensity = parseFloat(document.body.dataset.wave || '0.6');
+    window.__wave = window.RibbonWave.mount(waveCanvas, { intensity: waveIntensity });
 }
-
-const homeMonitorContainer = document.getElementById('home-monitor-video-container');
-const homeMonitorThumbnail = document.getElementById('home-monitor-thumbnail');
-const homeMonitorVideo = document.getElementById('home-monitor-video');
-const homeMonitorPlay = document.getElementById('home-monitor-play');
-
-if (homeMonitorContainer && homeMonitorThumbnail && homeMonitorVideo && homeMonitorPlay) {
-    homeMonitorContainer.addEventListener('click', function(e) {
-        // Only trigger if clicking on the container, not if video is already playing
-        if (homeMonitorVideo.style.display === 'none' || homeMonitorVideo.style.display === '') {
-            e.preventDefault();
-            e.stopPropagation();
-            homeMonitorThumbnail.style.display = 'none';
-            homeMonitorPlay.style.display = 'none';
-            homeMonitorVideo.style.display = 'block';
-            homeMonitorVideo.style.position = 'absolute';
-            homeMonitorVideo.style.top = '0';
-            homeMonitorVideo.style.left = '0';
-            homeMonitorVideo.style.width = '100%';
-            homeMonitorVideo.style.height = '100%';
-            homeMonitorVideo.load(); // Reload the video
-            homeMonitorVideo.play().catch(function(error) {
-                console.log('Video play error:', error);
-            });
-        }
-    });
-}
-

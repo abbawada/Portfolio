@@ -3,345 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Abba Wada | Economics, Blockchain, and Hardware Engineering</title>
+    <title>Abba Wada | Building Betta</title>
+    <meta name="description" content="Abba Wada, 23. Building Betta, a haptic shooting sleeve for basketball that learns your shot and taps your wrist when a rep drifts.">
+    <meta property="og:title" content="Abba Wada | Building Betta">
+    <meta property="og:description" content="Building Betta, a shooting sleeve that learns your shot and taps your wrist when a rep drifts.">
+    <meta property="og:image" content="https://abbawada.github.io/Portfolio/images/betta_hero_court.jpg">
+    <meta property="og:url" content="https://abbawada.github.io/Portfolio/">
+    <meta property="og:type" content="website">
+    <link rel="icon" href="favicon.ico" sizes="32x32">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;family=Schibsted+Grotesk:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
 </head>
-<body>
-    <!-- Navigation -->
-    <nav class="nav" id="nav">
-        <div class="nav-container">
-            <div class="nav-logo">
-                <a href="#home">Abba Wada</a>
-            </div>
-            <ul class="nav-links">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#projects">Projects</a></li>
-                <li><a href="#publications">Writing</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-            <a href="#about" class="nav-about-icon" aria-label="About">
-                <img src="images/profile.png" alt="About Abba Wada" id="profile-img" onerror="this.style.display='none'; this.parentElement.innerHTML='<span style=\'font-size: 1.2rem;\'>ABOUT</span>';">
-            </a>
-            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-        </div>
-    </nav>
+<body class="home" data-wave="0.5">
+    <canvas id="wave" aria-hidden="true"></canvas>
+    <canvas id="portrait" aria-hidden="true"></canvas>
 
-    <!-- Hero Section -->
-    <section class="hero" id="home">
-        <div class="hero-photos-background">
-            <img src="images/profile.png" alt="Abba Wada" class="hero-bg-photo hero-bg-photo-1">
-            <img src="images/Steve Jobs.jpeg" alt="Steve Jobs" class="hero-bg-photo hero-bg-photo-2">
-            <img src="images/Zeeterstar_Design.jpeg" alt="Zeeterstar Design" class="hero-bg-photo hero-bg-photo-3">
-            <img src="images/Ayrton Senna.jpeg" alt="Ayrton Senna" class="hero-bg-photo hero-bg-photo-4">
-        </div>
-        <div class="hero-content">
-            <h1 class="hero-title">
-                <span class="line">ABBA WADA</span>
-            </h1>
-            <p class="hero-subtitle">Economics, Blockchain, and Hardware</p>
-            <div class="hero-location">
-                <span>LOS ANGELES, CA</span>
-            </div>
-        </div>
-        <div class="scroll-indicator">
-            <span>Scroll</span>
-            <div class="scroll-line"></div>
-        </div>
-    </section>
+    <div class="dash">
+        <section class="intro">
+            <h1 class="home-name">Abba Wada</h1>
+            <p class="home-line">23 years old. Building Betta, a shooting sleeve that learns your shot and taps your wrist when a rep drifts.</p>
+            <p class="home-location">Los Angeles, CA</p>
+        </section>
 
-    <!-- Featured Projects -->
-    <section class="featured-projects" id="projects">
-        <div class="container">
-            <h2 class="section-title">Featured Work</h2>
-            <p class="section-subtitle">Select recent and notable projects</p>
-            
-            <div class="projects-grid">
-                <!-- Project 1 -->
-                <div class="project-card featured" data-project="1">
-                    <div class="project-image" id="flowstate-video-container">
-                        <img class="project-media" src="images/Shot_Test.png" alt="FlowState" id="flowstate-thumbnail">
-                        <video class="project-media" src="videos/Shot_Test.mov" controls style="display: none;" id="flowstate-video">
-                            Your browser does not support the video tag.
-                        </video>
-                        <div class="play-button-overlay" id="flowstate-play">▶</div>
-                        <div class="project-overlay">
-                            <span class="project-tag">Wearable IoT</span>
-                        </div>
+        <div class="channels-zone">
+            <div class="channels" id="channels" aria-label="Browse">
+                <article class="panel wide">
+                    <p class="p-eyebrow">Featured Project</p>
+                    <a class="featured-media" href="betta.html" aria-label="Betta case study">
+                        <img src="images/betta_hero_court_1x.jpg" srcset="images/betta_hero_court_1x.jpg 1x, images/betta_hero_court.jpg 2x" alt="The Betta sleeve on a hardwood court" width="836" height="470" decoding="async">
+                    </a>
+                    <p class="featured-line">The shooting sleeve that learns the shot only you take.</p>
+                    <div class="featured-links">
+                        <a href="betta.html">Betta case study →</a>
+                        <a href="https://betta.live" target="_blank" rel="noopener noreferrer">betta.live →</a>
                     </div>
-                    <div class="project-info">
-                        <h3 class="project-title">FlowState</h3>
-                        <p class="project-description">Wearable device tracking biomechanical motion with real-time haptic feedback for basketball shot correction.</p>
-                        <div class="project-tech">
-                            <span>C++</span>
-                            <span>Python</span>
-                            <span>IMU Sensors</span>
-                            <span>Circuit Design</span>
-                        </div>
-                    </div>
-                </div>
+                </article>
 
-                <!-- Project 2 -->
-                <div class="project-card featured" data-project="2">
-                    <div class="project-image">
-                        <img class="project-media" src="images/Posture_Cue_Thumbnail.png" alt="Posture Cue">
-                        <a href="https://www.youtube.com/watch?v=Hr_AOARKWCw" target="_blank" rel="noopener noreferrer" class="project-video-link">
-                            <div class="play-button-overlay">▶</div>
-                        </a>
-                        <div class="project-overlay">
-                            <span class="project-tag">Wearable</span>
-                        </div>
+                <article class="panel">
+                    <a class="p-link" href="projects.html">
+                        <p class="p-eyebrow">Projects</p>
+                        <p class="p-desc">Posture Cue, robots, IoT <span class="dir-arrow" aria-hidden="true">→</span></p>
+                    </a>
+                    <div class="thumb-grid">
+                        <img src="images/Posture_Cue_Thumbnail.jpg" alt="Posture Cue" loading="lazy" decoding="async">
+                        <img src="images/Visual_Mapping_Robot.jpg" alt="Visual Mapping for Autonomous Robots" loading="lazy" decoding="async">
+                        <img src="images/Bluetooth_Car.jpg" alt="Bluetooth Car" loading="lazy" decoding="async">
+                        <img src="images/Home_monitor.jpg" alt="Home Temperature Monitor" loading="lazy" decoding="async">
                     </div>
-                    <div class="project-info">
-                        <h3 class="project-title">Posture Cue</h3>
-                        <p class="project-description">Smart wearable monitoring spinal alignment with real-time posture correction feedback.</p>
-                        <div class="project-tech">
-                            <span>Sensors</span>
-                            <span>Wearable Tech</span>
-                            <span>Embedded Systems</span>
-                        </div>
-                    </div>
-                </div>
+                </article>
 
-                <!-- Project 3 -->
-                <div class="project-card featured" data-project="3">
-                    <div class="project-image">
-                        <img class="project-media" src="images/Visual_Mapping_Robot.png" alt="Visual Mapping for Autonomous Robots">
-                        <a href="https://www.youtube.com/watch?v=rWP7KaduHdg" target="_blank" rel="noopener noreferrer" class="project-video-link">
-                            <div class="play-button-overlay">▶</div>
-                        </a>
-                        <div class="project-overlay">
-                            <span class="project-tag">Robotics</span>
-                        </div>
-                    </div>
-                    <div class="project-info">
-                        <h3 class="project-title">Visual Mapping for Autonomous Robots</h3>
-                        <p class="project-description">Simulation software for autonomous mobile robots to optimize routes and prevent factory congestion.</p>
-                        <div class="project-tech">
-                            <span>Robotics</span>
-                            <span>Simulation</span>
-                            <span>Path Planning</span>
-                            <span>Collision Avoidance</span>
-                        </div>
-                    </div>
-                </div>
+                <article class="panel">
+                    <a class="p-link" href="writing.html">
+                        <p class="p-eyebrow">Writing</p>
+                        <p class="p-desc">essays on Medium <span class="dir-arrow" aria-hidden="true">→</span></p>
+                    </a>
+                    <a class="pub" href="https://medium.com/@abbaquant/redeeming-the-internets-original-sin-x402-autonomous-economies-6ca416807e53" target="_blank" rel="noopener noreferrer">
+                        <span class="pub-date">NOV 22, 2025</span>
+                        <span class="pub-title">Redeeming the Internet's Original Sin: X402 Autonomous Economies</span>
+                    </a>
+                    <a class="pub" href="https://medium.com/@abbawada_63188/a-new-hope-13b7e42c79bd" target="_blank" rel="noopener noreferrer">
+                        <span class="pub-date">JUL 22, 2024</span>
+                        <span class="pub-title">A New Hope</span>
+                    </a>
+                    <a class="pub" href="https://medium.com/@abbawada_63188/the-world-is-yours-de54e80b2fb3" target="_blank" rel="noopener noreferrer">
+                        <span class="pub-date">MAY 10, 2024</span>
+                        <span class="pub-title">The World is Yours</span>
+                    </a>
+                    <a class="view-all" href="https://medium.com/@abbawada_63188" target="_blank" rel="noopener noreferrer">VIEW ALL →</a>
+                </article>
 
-                <!-- Project 4 -->
-                <div class="project-card featured" data-project="4">
-                    <div class="project-image">
-                        <img class="project-media" src="images/Bluetooth_Car.png" alt="Bluetooth Car">
-                        <a href="https://www.youtube.com/watch?v=rMxsd21XIwQ" target="_blank" rel="noopener noreferrer" class="project-video-link">
-                            <div class="play-button-overlay">▶</div>
-                        </a>
-                        <div class="project-overlay">
-                            <span class="project-tag">Robotics</span>
-                        </div>
-                    </div>
-                    <div class="project-info">
-                        <h3 class="project-title">Bluetooth Car</h3>
-                        <p class="project-description">Bluetooth-controlled robot car</p>
-                        <div class="project-tech">
-                            <span>Bluetooth</span>
-                            <span>Motor Drivers</span>
-                            <span>Microcontroller</span>
-                            <span>Embedded Systems</span>
-                        </div>
-                    </div>
-                </div>
+                <article class="panel">
+                    <p class="about-description">I graduated from USC, where I studied economics and hardware.</p>
+                    <p class="about-description">I'm currently reading <em>East of Eden</em> by John Steinbeck.</p>
+                    <p class="about-description">I love running, bike rides, filmmaking, and watching Arsenal or Formula One.</p>
+                </article>
 
-                <!-- Project 7 -->
-                <div class="project-card featured" data-project="7">
-                    <div class="project-image" id="home-monitor-video-container">
-                        <img class="project-media" src="images/Home_monitor.png" alt="Home Temperature Monitor" id="home-monitor-thumbnail">
-                        <video class="project-media" src="videos/Temp_Home_Monitor.mov" controls style="display: none;" id="home-monitor-video">
-                            Your browser does not support the video tag.
-                        </video>
-                        <div class="play-button-overlay" id="home-monitor-play">▶</div>
-                        <div class="project-overlay">
-                            <span class="project-tag">IoT</span>
-                        </div>
-                    </div>
-                    <div class="project-info">
-                        <h3 class="project-title">Home Temperature Monitor</h3>
-                        <p class="project-description">IoT device tracking temperature and humidity with real-time monitoring.</p>
-                        <div class="project-tech">
-                            <span>Sensors</span>
-                            <span>IoT</span>
-                            <span>Data Logging</span>
-                        </div>
-                    </div>
-                </div>
+                <article class="panel edu">
+                    <p class="p-eyebrow">Education</p>
+                    <p><strong>University of Southern California</strong> | Los Angeles, CA</p>
+                    <p>Bachelor of Arts, Economics - Dean Scholar (Academic Merit Scholarship)</p>
+                    <p>Minor: Mathematical Finance | Graduated May 2026</p>
+                    <p>Specialization: Viterbi School of Engineering, Connected Devices &amp; Making</p>
+                </article>
 
-            </div>
-        </div>
-    </section>
+                <article class="panel">
+                    <p class="p-eyebrow">Technical Skills</p>
+                    <div class="skills-grid">
+                        <span>Python</span><span>C++</span><span>C#</span><span>SQL</span><span>R</span>
+                        <span>Matlab</span><span>Tableau</span><span>Excel</span><span>Fusion 360</span>
+                        <span>VectorBT</span><span>NumPy</span><span>Data Analysis</span>
+                        <span>Financial Modeling</span><span>Tokenomics Research</span>
+                        <span>Quantitative Analysis</span><span>Risk Management</span><span>A/B Testing</span>
+                        <span>Electrical Circuit Design</span><span>IMU Sensors</span><span>Haptics</span>
+                        <span>Embedded Firmware</span><span>IoT Development</span>
+                    </div>
+                </article>
 
-    <!-- About Section -->
-    <section class="about" id="about">
-        <div class="container">
-            <div class="about-content">
-                <div class="about-text">
-                    <h2 class="section-title">About</h2>
-                    <p class="about-description">
-                        I am an Economics, Mathematical Finance & Hardware Engineering student at USC.
-                    </p>
-                    <p class="about-description">
-                        I love storytelling in every medium, from films to games like <em>Red Dead Redemption 2</em>.
-                    </p>
-                    <p class="about-description">
-                        I'm currently reading <em>The Story of the Lost Child</em> by Elena Ferrante and <em>The Hard Thing About Hard Things</em> by Ben Horowitz.
-                    </p>
-                    <p class="about-description">
-                        I love running, bike rides, filmmaking, and watching Arsenal or Formula One.
-                    </p>
-                    <p class="about-description">
-                        Currently, I'm on a mission to revolutionize sports. In a world where I wasn't obsessed with tech, I'd probably be writing novels.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Publications Section -->
-    <section class="publications" id="publications">
-        <div class="container">
-            <div class="publications-header">
-                <h2 class="section-title">Writings</h2>
-                <a href="https://medium.com/@abbawada_63188" target="_blank" rel="noopener noreferrer" class="publications-view-all">
-                    VIEW ALL →
-                </a>
-            </div>
-            <div class="publications-list">
-                <a href="https://medium.com/@abbaquant/redeeming-the-internets-original-sin-x402-autonomous-economies-6ca416807e53" target="_blank" rel="noopener noreferrer" class="publication-item">
-                    <div class="publication-date">NOV 15, 2025</div>
-                    <div class="publication-content">
-                        <h3 class="publication-title">Redeeming the Internet's Original Sin: X402 Autonomous Economies</h3>
-                        <p class="publication-description">Exploring how autonomous economies can reshape digital infrastructure and create more equitable systems.</p>
-                    </div>
-                </a>
-                <a href="https://medium.com/@abbawada_63188/the-world-is-yours-de54e80b2fb3" target="_blank" rel="noopener noreferrer" class="publication-item">
-                    <div class="publication-date">MAY 10, 2024</div>
-                    <div class="publication-content">
-                        <h3 class="publication-title">The World is Yours</h3>
-                        <p class="publication-description">Reflections on building, creating, and taking ownership of your path in technology and beyond.</p>
-                    </div>
-                </a>
-                <a href="https://medium.com/@abbawada_63188/a-new-hope-13b7e42c79bd" target="_blank" rel="noopener noreferrer" class="publication-item">
-                    <div class="publication-date">JUL 22, 2024</div>
-                    <div class="publication-content">
-                        <h3 class="publication-title">A New Hope</h3>
-                        <p class="publication-description">Thoughts on innovation, disruption, and the future of technology in solving real-world problems.</p>
-                    </div>
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- More Projects Section -->
-    <section class="more-projects">
-        <div class="container">
-            <h2 class="section-title">Side Quests</h2>
-            <p class="section-subtitle">Take a scroll, stay a while</p>
-            
-            <div class="projects-list">
-                <div class="project-item expandable" data-project="4">
-                    <div class="project-item-content">
-                        <div class="project-item-number">01</div>
-                        <div class="project-item-info">
-                            <h3>Plume Token Yield Vaults</h3>
-                            <p>Designed vault with Plume native tokens, creating custom risk rating system and allocation formula</p>
-                        </div>
-                        <div class="project-item-arrow">→</div>
-                    </div>
-                    <div class="project-item-details">
-                        <div class="project-detail-content">
-                            <p>Designed yield vault with Plume native tokens using custom risk rating system and allocation formula, producing higher native yield than current offerings.</p>
-                            <div class="project-detail-tech">
-                                <span>Financial Modeling</span>
-                                <span>Risk Management</span>
-                                <span>Tokenomics</span>
-                                <span>Python</span>
-                            </div>
-                            <div class="project-detail-links">
-                                <a href="https://1drv.ms/x/c/933edcbe437d6d8e/IQCObX1Dvtw-IICT8QAAAAAAAZDvoEZcrmQfKaM4GBRI_Q0" target="_blank" rel="noopener noreferrer" class="project-link-button">
-                                    View Project Document →
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="project-item expandable" data-project="5">
-                    <div class="project-item-content">
-                        <div class="project-item-number">02</div>
-                        <div class="project-item-info">
-                            <h3>Ethereum Validators</h3>
-                            <p>Validator infrastructure and staking strategy optimization for Ethereum network participation</p>
-                        </div>
-                        <div class="project-item-arrow">→</div>
-                    </div>
-                    <div class="project-item-details">
-                        <div class="project-detail-content">
-                            <p>Designed an incentive system for validators to increase network decentralization.</p>
-                            <div class="project-detail-tech">
-                                <span>Ethereum</span>
-                                <span>Staking</span>
-                                <span>Blockchain</span>
-                                <span>Infrastructure</span>
-                            </div>
-                            <div class="project-detail-links">
-                                <a href="https://docs.google.com/presentation/d/1iWLCOoLZ2Rc2Mj3XaIiYThyZ5qNMzqDJLamOjiv3Fmw/edit?usp=sharing" target="_blank" rel="noopener noreferrer" class="project-link-button">
-                                    View Presentation →
-                                </a>
-                                <a href="https://docs.google.com/document/d/1Fty-PDfzk-jWjNQU8jz_1RUKmQcDWTrZbvIsxl_z7mc/edit?usp=sharing" target="_blank" rel="noopener noreferrer" class="project-link-button">
-                                    View Project Proposal →
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="project-item expandable" data-project="6">
-                    <div class="project-item-content">
-                        <div class="project-item-number">03</div>
-                        <div class="project-item-info">
-                            <h3>Wheelchair Basketball Volunteering</h3>
-                            <p>Community engagement and support for adaptive sports programs</p>
-                        </div>
-                        <div class="project-item-arrow">→</div>
-                    </div>
-                    <div class="project-item-details">
-                        <div class="project-detail-content">
-                            <p>Volunteered with wheelchair basketball programs, supporting adaptive sports initiatives and community engagement.</p>
-                            <div class="project-detail-tech">
-                                <span>Community Service</span>
-                                <span>Adaptive Sports</span>
-                                <span>Volunteering</span>
-                            </div>
-                            <video class="project-detail-image" src="videos/Wheelchair_Basketball.mov" controls>
-                                Your browser does not support the video tag.
-                            </video>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section class="contact" id="contact">
-        <div class="container">
-            <h2 class="section-title">Contact</h2>
-            <p class="section-subtitle">Let's build something together</p>
-            
-            <div class="contact-content">
-                <div class="contact-info">
+                <article class="panel">
+                    <p class="p-eyebrow">Contact</p>
+                    <p class="contact-sub">Let's build something together</p>
                     <a href="mailto:abba.wada10@gmail.com" class="contact-link">
                         <span class="contact-label">Email</span>
                         <span class="contact-value">abba.wada10@gmail.com</span>
@@ -350,52 +115,90 @@
                         <span class="contact-label">LinkedIn</span>
                         <span class="contact-value">linkedin.com/in/abba-wada-63b999266</span>
                     </a>
-                </div>
-                
-                <div class="education">
-                    <h3>Education</h3>
-                    <p><strong>University of Southern California</strong> | Los Angeles, CA</p>
-                    <p>Bachelor of Arts, Economics - Dean Scholar (Academic Merit Scholarship)</p>
-                    <p>Minor: Mathematical Finance | Expected Graduation: May 2026</p>
-                    <p>Specialization: Viterbi School of Engineering, Connected Devices & Making</p>
-                </div>
-                
-                <div class="skills">
-                    <h3>Technical Skills</h3>
-                    <div class="skills-grid">
-                        <span>Python</span>
-                        <span>C++</span>
-                        <span>C#</span>
-                        <span>SQL</span>
-                        <span>Matlab</span>
-                        <span>Tableau</span>
-                        <span>Excel</span>
-                        <span>CAD</span>
-                        <span>VectorBT</span>
-                        <span>NumPy</span>
-                        <span>Data Analysis</span>
-                        <span>Financial Modeling</span>
-                        <span>Tokenomics Research</span>
-                        <span>Quantitative Analysis</span>
-                        <span>Risk Management</span>
-                        <span>A/B Testing</span>
-                        <span>Electrical Circuit Design</span>
-                        <span>IMU Sensors</span>
-                        <span>IoT Development</span>
-                    </div>
-                </div>
+                </article>
+            </div>
+
+            <div class="channel-nav">
+                <button class="ch-btn" id="prev" type="button" aria-label="Previous panel">‹</button>
+                <div class="dots" id="dots" aria-hidden="true"></div>
+                <button class="ch-btn" id="next" type="button" aria-label="Next panel">›</button>
             </div>
         </div>
-    </section>
+    </div>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; <span id="currentYear"></span> All rights reserved</p>
-        </div>
-    </footer>
-
+    <script src="wave.js"></script>
+    <script src="halftone-live.js"></script>
     <script src="script.js"></script>
+    <script>
+    (function () {
+        'use strict';
+        var portrait = document.getElementById('portrait');
+        if (portrait && window.HalftoneLive) {
+            window.HalftoneLive.mount(portrait, {
+                src: 'images/page_halftone.png',
+                region: { x: 0.42, y: 0.24, w: 0.53, h: 0.50 },
+                paper: '#f7f5f0',
+                pitch: 14,
+                rate: 0.3
+            });
+        }
+
+        var ch = document.getElementById('channels');
+        var dots = document.getElementById('dots');
+        if (!ch || !dots) return;
+        var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+        var panels = [].slice.call(ch.children);
+        panels.forEach(function () {
+            var d = document.createElement('span');
+            dots.appendChild(d);
+        });
+
+        function current() {
+            var x = ch.scrollLeft, best = 0, bd = 1e9;
+            panels.forEach(function (p, i) {
+                var d = Math.abs(p.offsetLeft - 4 - x);
+                if (d < bd) { bd = d; best = i; }
+            });
+            return best;
+        }
+        function paintDots() {
+            var c = current();
+            [].forEach.call(dots.children, function (d, i) { d.classList.toggle('on', i === c); });
+        }
+        function go(i) {
+            i = Math.max(0, Math.min(panels.length - 1, i));
+            ch.scrollTo({ left: panels[i].offsetLeft - 4, behavior: reduced.matches ? 'auto' : 'smooth' });
+        }
+        ch.addEventListener('scroll', function () { requestAnimationFrame(paintDots); }, { passive: true });
+        document.getElementById('prev').addEventListener('click', function () { go(current() - 1); });
+        document.getElementById('next').addEventListener('click', function () { go(current() + 1); });
+        window.addEventListener('keydown', function (e) {
+            var t = e.target;
+            if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.tagName === 'VIDEO' || t.isContentEditable)) return;
+            if (e.key === 'ArrowRight') { go(current() + 1); e.preventDefault(); }
+            if (e.key === 'ArrowLeft') { go(current() - 1); e.preventDefault(); }
+        });
+        ch.addEventListener('wheel', function (e) {
+            if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+                ch.scrollLeft += e.deltaY;
+                e.preventDefault();
+            }
+        }, { passive: false });
+        var dragging = false, startX = 0, startLeft = 0;
+        ch.addEventListener('pointerdown', function (e) {
+            if (e.target.closest('a')) return;
+            dragging = true; startX = e.clientX; startLeft = ch.scrollLeft;
+            ch.classList.add('dragging');
+        });
+        window.addEventListener('pointermove', function (e) {
+            if (dragging) ch.scrollLeft = startLeft - (e.clientX - startX);
+        });
+        window.addEventListener('pointerup', function () {
+            dragging = false;
+            ch.classList.remove('dragging');
+        });
+        paintDots();
+    })();
+    </script>
 </body>
 </html>
-
