@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;family=Schibsted+Grotesk:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,600;0,700;1,600&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;family=Schibsted+Grotesk:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
 </head>
 <body data-wave="1">
     <canvas id="wave" aria-hidden="true"></canvas>
@@ -88,9 +88,39 @@
             quests: '<svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M14 4 L22 14 L14 24 L6 14 Z"></path><path d="M21 4.5 L22.2 7 L24.7 8.2 L22.2 9.4 L21 12 L19.8 9.4 L17.3 8.2 L19.8 7 Z" fill="currentColor" stroke="none"></path></svg>'
         };
 
+        /* Case chrome: vector spine, rating and author mounted over the art per
+           the Design chrome SPEC (600 by 900 grid, spine 12%, rating 15%).
+           All text is live SVG text; flat build, page grain supplies texture. */
+        var CHROME_MONO = '<g transform="translate(16 22) scale(0.4167)" fill="none" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><rect x="10.5" y="10.5" width="75" height="75" rx="17"></rect><path d="M23 61 L32 35 L41 61"></path><path d="M26.5 52.5 L37.5 52.5"></path><path d="M46 35 L52.5 61 L59 40 L65.5 61 L72 35"></path></g>';
+
+        function chromeLabel(cat) {
+            return cat === 'Side Quests' ? 'SIDE QUEST' : cat.toUpperCase();
+        }
+
+        function chromeSVG(c) {
+            var label = chromeLabel(c.cat);
+            var letter = label.charAt(0);
+            var wordSize = label === 'WEARABLES' ? 12 : (label === 'SIDE QUEST' ? 11.5 : 13);
+            var wordSpace = label === 'WEARABLES' ? 1.5 : (label === 'SIDE QUEST' ? 1.4 : 1.8);
+            return '<svg class="case-chrome" viewBox="0 0 600 900" aria-hidden="true" focusable="false">' +
+                '<rect width="72" height="900" fill="' + (c.spineColor || '#141414') + '"></rect>' +
+                '<line x1="71.25" y1="0" x2="71.25" y2="900" stroke="#FFFFFF" stroke-opacity="0.14" stroke-width="1.5"></line>' +
+                CHROME_MONO +
+                '<text transform="translate(36 108) rotate(90)" dominant-baseline="central" font-family="&#39;Chakra Petch&#39;,sans-serif" font-weight="600" font-style="italic" font-size="30" letter-spacing="10.2" fill="#FFFFFF">' + label + '</text>' +
+                '<text x="36" y="882" text-anchor="middle" font-family="&#39;Schibsted Grotesk&#39;,sans-serif" font-weight="600" font-size="9" letter-spacing="0.2" fill="#FFFFFF" fill-opacity="0.8">' + c.serial + '</text>' +
+                '<g transform="translate(84 771) scale(0.75)">' +
+                  '<rect x="2.5" y="2.5" width="115" height="151" fill="#FFFFFF" stroke="#141414" stroke-width="5"></rect>' +
+                  '<text x="60" y="87" text-anchor="middle" font-family="&#39;Chakra Petch&#39;,sans-serif" font-weight="700" font-size="78" fill="#141414">' + letter + '</text>' +
+                  '<line x1="5" y1="113" x2="115" y2="113" stroke="#141414" stroke-width="3"></line>' +
+                  '<text x="60" y="131" text-anchor="middle" dominant-baseline="central" font-family="&#39;Chakra Petch&#39;,sans-serif" font-weight="600" font-size="' + wordSize + '" letter-spacing="' + wordSpace + '" fill="#141414">' + label + '</text>' +
+                '</g>' +
+                '<text x="568" y="870" text-anchor="end" font-family="&#39;Schibsted Grotesk&#39;,sans-serif" font-weight="600" font-size="17" letter-spacing="6.8" fill="#FFFFFF">ABBA WADA</text>' +
+                '</svg>';
+        }
+
         /* Cover files are swappable; nothing below depends on image contents. */
         var CASES = [
-            { id: 'betta', cat: 'Wearables', title: 'Betta', serial: 'BLUS-30250', dom: '#27211b',
+            { id: 'betta', cat: 'Wearables', title: 'Betta', serial: 'AWUS-30250', dom: '#27211b',
               line: 'The shooting sleeve that learns the shot only you take.',
               /* TODO(review): back-of-box voice drafted from the frozen Betta copy; facts real, phrasing new. */
               blurb: 'Your shot has a signature. Betta learns it. Dual IMUs at the elbow and wrist read every rep 100 times a second, and the moment one drifts, a tap on the wrist calls the correction.',
@@ -101,28 +131,28 @@
               ],
               bullets: ['IMU SENSORS', 'HAPTICS', 'EMBEDDED FIRMWARE', 'C++'],
               links: [['VIEW FULL CASE STUDY', 'betta.html'], ['BETTA.LIVE', 'https://betta.live']] },
-            { id: 'posture-cue', cat: 'Wearables', title: 'Posture Cue', serial: 'BLUS-30311', dom: '#78625a',
+            { id: 'posture-cue', cat: 'Wearables', title: 'Posture Cue', serial: 'AWUS-30311', dom: '#78625a',
               line: 'Wearable that tracks spinal alignment and cues you upright when you slouch.',
               /* TODO(review): voice invented; the tracking and cueing facts are the real card copy. */
               blurb: 'Your spine keeps the score. Posture Cue tracks your alignment through the whole day and cues you upright the second you slouch.',
               shots: [{ src: 'images/Posture_Cue_Thumbnail.jpg', w: 1382, h: 1450, alt: 'Posture Cue prototype held up' }],
               bullets: ['SENSORS', 'WEARABLE TECH', 'EMBEDDED SYSTEMS'],
               links: [['WATCH ON YOUTUBE', 'https://www.youtube.com/watch?v=Hr_AOARKWCw']] },
-            { id: 'visual-mapping', cat: 'Robotics', title: 'Visual Mapping for Autonomous Robots', serial: 'BLUS-30342', dom: '#1c1f19',
+            { id: 'visual-mapping', cat: 'Robotics', title: 'Visual Mapping for Autonomous Robots', serial: 'AWUS-30342', dom: '#1c1f19',
               line: 'Simulation software for autonomous mobile robots to optimize routes and prevent factory congestion.',
               /* TODO(review): the five robots and eighteen shelves flavor comes from the cover art HUD, not the repo copy. */
               blurb: 'Five robots. Eighteen shelves. One quiet night shift. Plan the routes, dodge the pileups, and keep the warehouse floor moving until morning.',
               shots: [{ src: 'images/Visual_Mapping_Robot.jpg', w: 1064, h: 1044, alt: 'Warehouse simulation screen' }],
               bullets: ['ROBOTICS', 'SIMULATION', 'PATH PLANNING', 'COLLISION AVOIDANCE'],
               links: [['GITHUB', 'https://github.com/abbawada/Robot-Facility'], ['WATCH ON YOUTUBE', 'https://www.youtube.com/watch?v=rWP7KaduHdg']] },
-            { id: 'bluetooth-car', cat: 'Robotics', title: 'Bluetooth Car', serial: 'BLUS-30188', dom: '#693e29',
+            { id: 'bluetooth-car', cat: 'Robotics', title: 'Bluetooth Car', serial: 'AWUS-30188', dom: '#693e29', spineColor: '#A31621',
               line: 'Bluetooth-controlled robot car.',
               /* TODO(review): voice invented; the phone pairing and breadboard build are real. */
               blurb: 'Strip the shell, keep the wires. Pair your phone, drop the hammer, and drive the breadboard like you built it. Because you did.',
               shots: [{ src: 'images/Bluetooth_Car.jpg', w: 1162, h: 998, alt: 'Breadboard robot car' }],
               bullets: ['BLUETOOTH', 'MOTOR DRIVERS', 'MICROCONTROLLER'],
               links: [['WATCH ON YOUTUBE', 'https://www.youtube.com/watch?v=rMxsd21XIwQ']] },
-            { id: 'home-temp-monitor', cat: 'IoT', title: 'Home Temperature Monitor', serial: 'BLUS-30129', dom: '#77655b',
+            { id: 'home-temp-monitor', cat: 'IoT', title: 'Home Temperature Monitor', serial: 'AWUS-30129', dom: '#77655b',
               line: 'IoT unit that logs temperature and humidity in real time.',
               /* TODO(review): voice invented; the logging facts are the real card copy. */
               blurb: 'Every degree on record. The little red unit on the shelf logs temperature and humidity around the clock and never asks for a day off.',
@@ -130,14 +160,14 @@
               bullets: ['SENSORS', 'IOT', 'DATA LOGGING'],
               /* TODO(review): no external demo exists; this links the local demo video file. */
               links: [['WATCH THE DEMO', 'videos/Temp_Home_Monitor.mp4']] },
-            { id: 'yield-vaults', cat: 'Side Quests', title: 'Plume Token Yield Vaults', serial: 'BLUS-30366', dom: '#2d2315',
+            { id: 'yield-vaults', cat: 'Side Quests', title: 'Plume Token Yield Vaults', serial: 'AWUS-30366', dom: '#2d2315',
               line: 'A yield vault design with its own risk rating system',
               /* TODO(review): first sentence invented; the rest is the real project copy. */
               blurb: 'Behind this door, yield. A vault design for Plume native tokens with its own risk rating system and an allocation formula tuned for higher native yield.',
               shots: [],
               bullets: ['FINANCIAL MODELING', 'RISK MANAGEMENT', 'TOKENOMICS', 'PYTHON'],
               links: [['VIEW PROJECT DOCUMENT', 'https://1drv.ms/x/c/933edcbe437d6d8e/IQCObX1Dvtw-IICT8QAAAAAAAZDvoEZcrmQfKaM4GBRI_Q0']] },
-            { id: 'ethereum-validators', cat: 'Side Quests', title: 'Ethereum Validators', serial: 'BLUS-30402', dom: '#171716',
+            { id: 'ethereum-validators', cat: 'Side Quests', title: 'Ethereum Validators', serial: 'AWUS-30402', dom: '#171716',
               line: 'An incentive design that pushes Ethereum toward more validators',
               /* TODO(review): first sentence invented; the incentive design line is the real copy. */
               blurb: 'The network is only as strong as its validators. An incentive design that pushes Ethereum toward more of them.',
@@ -207,6 +237,7 @@
                       '<div class="pcase-spine3d" aria-hidden="true"><span>' + c.title + '</span></div>' +
                       '<div class="pcase-front" style="background-color:' + c.dom + '">' +
                         '<img src="covers/' + c.id + '.webp" alt="' + c.title + ' game case cover" width="1024" height="1536"' + eager + ' decoding="async">' +
+                        chromeSVG(c) +
                         '<div class="pcase-grain" aria-hidden="true"></div>' +
                         '<div class="pcase-gloss" aria-hidden="true"></div>' +
                         '<div class="pcase-lip" aria-hidden="true"></div>' +
@@ -267,6 +298,7 @@
                   '<div class="flip3d">' +
                     '<div class="flip-face flip-front" style="background-color:' + c.dom + '">' +
                       '<img src="covers/' + c.id + '.webp" alt="" width="1024" height="1536" decoding="async">' +
+                      chromeSVG(c) +
                       '<div class="pcase-grain" aria-hidden="true"></div>' +
                     '</div>' +
                     '<div class="flip-face flip-back">' + backHTML(c) + '</div>' +
