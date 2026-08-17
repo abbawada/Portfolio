@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Abba Wada | Building Betta</title>
-    <meta name="description" content="I'm 23 years old, on a mission to put elite performance in the hands of every young dreamer.">
+    <meta name="description" content="Abba Wada, 23. Building Betta, a haptic shooting sleeve for basketball that learns your shot and taps your wrist when a rep drifts.">
     <meta property="og:title" content="Abba Wada | Building Betta">
-    <meta property="og:description" content="I'm 23 years old, on a mission to put elite performance in the hands of every young dreamer.">
+    <meta property="og:description" content="Building Betta, a shooting sleeve that learns your shot and taps your wrist when a rep drifts.">
     <meta property="og:image" content="https://abbawada.github.io/Portfolio/images/betta_hero_court.jpg">
     <meta property="og:url" content="https://abbawada.github.io/Portfolio/">
     <meta property="og:type" content="website">
@@ -26,7 +26,7 @@
     <main class="home-main">
         <section class="home-intro">
             <h1 class="home-name">Abba Wada</h1>
-            <p class="home-line">23 years old. Building Betta, a shooting sleeve that learns your shot and taps your wrist when a rep drifts.</p>
+            <p class="home-line">I'm 23, on a mission to put elite performance in the hands of every young dreamer.</p>
             <p class="home-location">Los Angeles, CA</p>
         </section>
 
@@ -70,10 +70,17 @@
         if (portrait && window.HalftoneLive) {
             window.HalftoneLive.mount(portrait, {
                 src: 'images/page_halftone.png',
-                region: { x: 0.42, y: 0.24, w: 0.53, h: 0.50 },
-                paper: '#f7f5f0',
+                // the left silhouette, running down the shoulder into the suit
+                region: { x: 0.00, y: 0.32, w: 0.44, h: 0.64 },
+                // his face, kept still
+                exclude: [{ cx: 0.425, cy: 0.525, rx: 0.14, ry: 0.16, feather: 0.55 }],
+                lift: '#b8b2a6',
+                liftMax: 0.3,
+                sparkMax: 0.26,
                 pitch: 14,
-                rate: 0.3
+                period: 22,
+                angle: 78,
+                wavelength: 0.5
             });
         }
     })();
