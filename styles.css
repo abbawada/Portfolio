@@ -616,11 +616,6 @@ main {
     }
 }
 
-.dir-arrow {
-    font-family: var(--font-display);
-    color: var(--muted);
-}
-
 /* ------------------------------------------------------------
    Projects: game shelf
    ------------------------------------------------------------ */
@@ -1021,165 +1016,6 @@ body.stage-open {
         transition: none !important;
     }
 }
-/* ------------------------------------------------------------
-   Home: minimal landing, big halftone, one Projects block
-   ------------------------------------------------------------ */
-
-body.home {
-    min-height: 100vh;
-    min-height: 100dvh;
-}
-
-#portrait {
-    position: fixed;
-    top: 0;
-    right: -4vw;
-    height: 100dvh;
-    width: min(52vw, 760px);
-    z-index: 0;
-    pointer-events: none;
-    opacity: 0.94;
-    -webkit-mask-image: linear-gradient(to bottom, #000 70%, rgba(0, 0, 0, 0.4) 88%, transparent 99%);
-    mask-image: linear-gradient(to bottom, #000 70%, rgba(0, 0, 0, 0.4) 88%, transparent 99%);
-}
-
-.landing {
-    position: relative;
-    z-index: 1;
-    max-width: 1240px;
-    margin-inline: auto;
-    padding: clamp(4rem, 12vh, 7.5rem) clamp(1.5rem, 5vw, 4rem) clamp(2.5rem, 6vh, 4rem);
-}
-
-.home-name {
-    font-weight: 800;
-    font-size: clamp(3rem, 7.5vw, 6.5rem);
-    line-height: 0.98;
-    letter-spacing: -0.03em;
-    text-transform: uppercase;
-}
-
-.home-line {
-    margin-top: 1.5rem;
-    font-size: clamp(1.125rem, 1.9vw, 1.5rem);
-    line-height: 1.45;
-    max-width: 27ch;
-    text-wrap: balance;
-}
-
-.home-location {
-    margin-top: 1.25rem;
-    font-family: var(--font-display);
-    font-size: 0.6875rem;
-    font-weight: 600;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--muted);
-}
-
-.home-projects {
-    margin-top: clamp(4rem, 14vh, 9rem);
-    max-width: 560px;
-}
-
-.projects-head {
-    display: inline-flex;
-    align-items: center;
-    gap: 1rem;
-    font-family: var(--font-display);
-    font-weight: 800;
-    font-size: clamp(2.25rem, 4.5vw, 3.5rem);
-    letter-spacing: -0.02em;
-    text-transform: uppercase;
-    color: var(--ink);
-}
-
-.projects-arrow {
-    color: var(--accent-ink);
-    transition: transform 0.2s ease;
-}
-
-.projects-head:hover {
-    color: var(--accent-ink);
-}
-
-.projects-head:hover .projects-arrow {
-    transform: translateX(6px);
-}
-
-.projects-thumb {
-    display: block;
-    margin-top: 1.25rem;
-    border-radius: var(--radius);
-    overflow: hidden;
-    border: 1px solid var(--hairline);
-}
-
-.projects-thumb img {
-    display: block;
-    width: 100%;
-    height: auto;
-    transition: transform 0.4s ease;
-}
-
-.projects-thumb:hover img {
-    transform: scale(1.02);
-}
-
-.projects-caption {
-    margin-top: 0.875rem;
-    font-family: var(--font-display);
-    font-size: 0.6875rem;
-    font-weight: 600;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--muted);
-}
-
-.home-dir {
-    margin-top: clamp(2.5rem, 7vh, 4.5rem);
-    max-width: 560px;
-    display: block;
-    border-top: 1px solid var(--hairline);
-}
-
-.dir-row {
-    display: grid;
-    grid-template-columns: 7.5rem 1fr auto;
-    gap: 1.5rem;
-    align-items: baseline;
-    padding: 1.05rem 0;
-    border-bottom: 1px solid var(--hairline);
-}
-
-.dir-name {
-    font-family: var(--font-display);
-    font-weight: 600;
-    font-size: 1.0625rem;
-    letter-spacing: 0.01em;
-    color: var(--ink);
-    transition: color 0.2s ease;
-}
-
-.dir-desc {
-    color: var(--muted);
-    font-size: 1rem;
-}
-
-.dir-arrow {
-    color: var(--muted);
-    font-family: var(--font-display);
-    transition: transform 0.2s ease, color 0.2s ease;
-}
-
-.dir-row:hover .dir-name {
-    color: var(--accent-ink);
-}
-
-.dir-row:hover .dir-arrow {
-    color: var(--accent-ink);
-    transform: translateX(4px);
-}
 
 /* About page */
 
@@ -1278,7 +1114,165 @@ body.home {
     color: var(--accent-ink);
 }
 
+/* ------------------------------------------------------------
+   Home: single viewport, directory plus Betta feature card
+   ------------------------------------------------------------ */
+
+body.home {
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+}
+
+#portrait {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100dvh;
+    width: min(46vw, 700px);
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.95;
+    -webkit-mask-image: linear-gradient(to bottom, #000 58%, rgba(0, 0, 0, 0.4) 82%, transparent 99%);
+    mask-image: linear-gradient(to bottom, #000 58%, rgba(0, 0, 0, 0.4) 82%, transparent 99%);
+}
+
+.home-main {
+    position: relative;
+    z-index: 1;
+    height: 100%;
+    max-width: 1160px;
+    margin-inline: auto;
+    padding-inline: clamp(1.25rem, 5vw, 4rem);
+    display: flex;
+    flex-direction: column;
+    animation: fade 0.7s ease-out both;
+}
+
+.home-intro {
+    margin-top: auto;
+    padding-top: clamp(3rem, 9vh, 6rem);
+}
+
+.home-name {
+    font-weight: 800;
+    font-size: clamp(2.75rem, min(7.5vw, 12vh), 5.75rem);
+    line-height: 0.98;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+}
+
+.home-line {
+    margin-top: clamp(1rem, 2.5vh, 1.5rem);
+    font-size: clamp(1.125rem, 1.8vw, 1.3125rem);
+    line-height: 1.5;
+    max-width: 32ch;
+    text-wrap: balance;
+}
+
+.home-location {
+    margin-top: clamp(1rem, 2.5vh, 1.5rem);
+    font-family: var(--font-display);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.home-lower {
+    margin-top: clamp(1.5rem, 4.5vh, 3rem);
+    margin-bottom: clamp(1.25rem, 3vh, 2rem);
+    max-width: 560px;
+}
+
+.home-dir {
+    border-top: 1px solid var(--hairline);
+}
+
+.dir-row {
+    display: grid;
+    grid-template-columns: 7.5rem 1fr auto;
+    gap: 1.5rem;
+    align-items: baseline;
+    padding: clamp(0.75rem, 1.8vh, 1.125rem) 0;
+    border-bottom: 1px solid var(--hairline);
+}
+
+.dir-name {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.0625rem;
+    letter-spacing: 0.01em;
+    color: var(--ink);
+    transition: color 0.2s ease;
+}
+
+.dir-desc {
+    color: var(--muted);
+    font-size: 1rem;
+}
+
+.dir-arrow {
+    color: var(--muted);
+    font-family: var(--font-display);
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.dir-row:hover .dir-name {
+    color: var(--accent-ink);
+}
+
+.dir-row:hover .dir-arrow {
+    color: var(--accent-ink);
+    transform: translateX(4px);
+}
+
+.home-feature {
+    margin-top: clamp(1.25rem, 3.5vh, 2rem);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+}
+
+.home-feature img {
+    width: auto;
+    height: auto;
+    /* Never taller than the viewport slack, never wide enough to touch the halftone */
+    max-height: calc(100vh - 700px);
+    max-height: calc(100dvh - 700px);
+    max-width: min(100%, calc(100vw - min(46vw, 700px) - max(clamp(1.25rem, 5vw, 4rem), (100vw - 1160px) / 2) - 24px));
+    border-radius: var(--radius);
+    border: 1px solid var(--hairline);
+    transition: border-color 0.4s ease;
+}
+
+.home-feature-kicker {
+    font-family: var(--font-display);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    transition: color 0.2s ease;
+}
+
+.home-feature:hover img {
+    border-color: var(--accent);
+}
+
+.home-feature:hover .home-feature-kicker {
+    color: var(--accent-ink);
+}
+
 @media (max-width: 720px) {
+    body.home {
+        height: auto;
+        overflow: visible;
+        min-height: 100dvh;
+    }
+
     #portrait {
         width: 84vw;
         right: -30vw;
@@ -1287,7 +1281,22 @@ body.home {
         mask-image: linear-gradient(to bottom, #000 45%, transparent 80%);
     }
 
-    .home-projects {
-        margin-top: clamp(2.5rem, 8vh, 4rem);
+    .home-intro {
+        margin-top: 0;
+        padding-top: clamp(3rem, 10vh, 5rem);
+    }
+
+    .home-feature img {
+        max-height: none;
+        max-width: 100%;
+    }
+
+    .dir-row {
+        grid-template-columns: 5.5rem 1fr auto;
+        gap: 0.875rem;
+    }
+
+    .dir-desc {
+        font-size: 0.9rem;
     }
 }

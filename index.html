@@ -23,31 +23,41 @@
     <canvas id="wave" aria-hidden="true"></canvas>
     <canvas id="portrait" aria-hidden="true"></canvas>
 
-    <main class="landing">
-        <h1 class="home-name">Abba Wada</h1>
-        <p class="home-line">23 years old. Building Betta, a shooting sleeve that learns your shot and taps your wrist when a rep drifts.</p>
-        <p class="home-location">Los Angeles, CA</p>
-
-        <section class="home-projects">
-            <a class="projects-head" href="projects.html">Projects <span class="projects-arrow" aria-hidden="true">→</span></a>
-            <a class="projects-thumb" href="betta.html" aria-label="Betta, the featured project">
-                <img src="images/betta_page_thumb.jpg" alt="The Betta page" width="1440" height="813" decoding="async">
-            </a>
-            <p class="projects-caption">Featured Project</p>
+    <main class="home-main">
+        <section class="home-intro">
+            <h1 class="home-name">Abba Wada</h1>
+            <p class="home-line">23 years old. Building Betta, a shooting sleeve that learns your shot and taps your wrist when a rep drifts.</p>
+            <p class="home-location">Los Angeles, CA</p>
         </section>
 
-        <nav class="home-dir" aria-label="Site directory">
-            <a class="dir-row" href="writing.html">
-                <span class="dir-name">Writing</span>
-                <span class="dir-desc">essays on Medium</span>
-                <span class="dir-arrow" aria-hidden="true">→</span>
+        <div class="home-lower">
+            <nav class="home-dir" aria-label="Site directory">
+                <a class="dir-row" href="betta.html">
+                    <span class="dir-name">Betta</span>
+                    <span class="dir-desc">a haptic shooting sleeve</span>
+                    <span class="dir-arrow" aria-hidden="true">→</span>
+                </a>
+                <a class="dir-row" href="projects.html">
+                    <span class="dir-name">Projects</span>
+                    <span class="dir-desc">Posture Cue, robots, IoT</span>
+                    <span class="dir-arrow" aria-hidden="true">→</span>
+                </a>
+                <a class="dir-row" href="writing.html">
+                    <span class="dir-name">Writing</span>
+                    <span class="dir-desc">essays on Medium</span>
+                    <span class="dir-arrow" aria-hidden="true">→</span>
+                </a>
+                <a class="dir-row" href="about.html">
+                    <span class="dir-name">About</span>
+                    <span class="dir-desc">who I am, education, skills, contact</span>
+                    <span class="dir-arrow" aria-hidden="true">→</span>
+                </a>
+            </nav>
+            <a class="home-feature" href="betta.html">
+                <img src="images/betta_thumb.jpg" alt="The Betta page" width="1400" height="747" decoding="async">
+                <span class="home-feature-kicker">Featured Project</span>
             </a>
-            <a class="dir-row" href="about.html">
-                <span class="dir-name">About</span>
-                <span class="dir-desc">who I am, education, skills, contact</span>
-                <span class="dir-arrow" aria-hidden="true">→</span>
-            </a>
-        </nav>
+        </div>
     </main>
 
     <script src="wave.js"></script>
