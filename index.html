@@ -79,13 +79,18 @@
                     { x: 0.15, y: 0.66 }, { x: 0.27, y: 0.75 }, { x: 0.44, y: 0.81 },
                     { x: 0.62, y: 0.87 }, { x: 0.80, y: 0.95 }
                 ],
-                dragon: { cross: 30, rest: 15, length: 0.34, headWidth: 0.095 },
+                dragon: {
+                    cross: 30, rest: 15, length: 0.3,
+                    headWidth: 0.11, tailWidth: 0.014
+                },
                 lift: '#b8b2a6',
-                liftMax: 0.62,
+                liftMax: 0.72,
                 sparkMax: 0.34,
                 ember: '#c6a15b',
-                emberMax: 0.42,
-                pitch: 14
+                emberMax: 0.66,
+                emberSpan: 0.3,
+                glyph: { threshold: 0.28, length: 1.15, width: 0.3 },
+                pitch: 11
             });
         }
     })();

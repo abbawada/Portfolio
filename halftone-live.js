@@ -49,7 +49,7 @@
         var bodyFrac = dg.length == null ? 0.34 : dg.length;   // of the spine length
         var headW = dg.headWidth == null ? 0.075 : dg.headWidth;  // half width, of H
         var tailW = dg.tailWidth == null ? 0.022 : dg.tailWidth;
-        var scaleLen = dg.scale == null ? 52 : dg.scale;    // scale ripple, display px
+        var scaleLen = dg.scale == null ? 34 : dg.scale;    // scale ripple, display px
         var ember = opts.ember || '#c6a15b';  // the head only, the one warm note
         var emberMax = opts.emberMax == null ? 0.22 : opts.emberMax;
         var emberSpan = opts.emberSpan == null ? 0.2 : opts.emberSpan;  // of the body
@@ -259,17 +259,16 @@
         }
 
         function activityDragon(dot, f, t) {
-            // along the body: rises just behind the head, tapers to the tail.
-            // A slow taper keeps most of the body lit, so it reads as a creature
-            // rather than a bright dot with a faint smear behind it.
-            var along = smooth(clamp01(f / 0.08)) * Math.pow(1 - f, 0.9) * 1.1;
+            // Along the body: a crisp front so you read a moving head, then a
+            // slow taper so most of the body stays lit behind it.
+            var along = smooth(clamp01(f / 0.035)) * Math.pow(1 - f, 0.9) * 1.08;
             // across it: broad at the head, thin at the tail
             var hw = H * (headW * (1 - f) + tailW * f);
             var lat = smooth(clamp01(1 - dot.d / hw));
             if (along <= 0 || lat <= 0) return 0;
-            // scales: a slow ripple in (s, d) so the body never fires in unison
-            var ripple = 0.8 + 0.2 * Math.sin(dot.s / scaleLen * 2 + dot.d / scaleLen * 1.2 - t * 1.1);
-            return along * lat * ripple * dot.edge * dot.amp;
+            // scales: a ripple in (s, d) so the body never fires in unison
+            var ripple = 0.62 + 0.38 * Math.sin(dot.s / scaleLen * 2 + dot.d / scaleLen * 1.4 - t * 1.1);
+            return Math.min(1, along * lat * ripple * dot.edge * dot.amp);
         }
 
         function paint(d, a, colour, asGlyph) {
