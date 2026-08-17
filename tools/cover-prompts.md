@@ -35,3 +35,12 @@ right-of-center, cinematic depth, no clutter, no borders, no watermark.
    lettering "THE MEDICI NETWORK": a renaissance-style marble hall at night
    with a long table of papers and one lit banker's lamp, gold seal wax
    detail, engraved linework feel.
+
+## Regen needed (2026-08-17): category change
+
+AWUS-30366 (Plume Token Yield Vaults) and AWUS-30402 (Ethereum Validators)
+moved from SIDE QUEST to TOKEN ECONOMICS. Their shipped covers still bake
+"S / SIDE QUEST" in the rating box. When regenerating, use the master prompt
+with the rating box changed to a large black letter "T" over a rule and the
+word "TOKEN ECONOMICS" beneath it, and category word TOKEN ECONOMICS on the
+spine band.

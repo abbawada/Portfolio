@@ -64,10 +64,15 @@
                 </ul>
             </div>
             <div class="plain-group">
-                <h2 class="section-h">Side Quests</h2>
+                <h2 class="section-h">Token Economics</h2>
                 <ul class="plain-list">
                     <li><a href="https://1drv.ms/x/c/933edcbe437d6d8e/IQCObX1Dvtw-IICT8QAAAAAAAZDvoEZcrmQfKaM4GBRI_Q0" target="_blank" rel="noopener noreferrer">Plume Token Yield Vaults →</a> Designed yield vault with Plume native tokens using custom risk rating system and allocation formula, producing higher native yield than current offerings.</li>
                     <li><a href="https://docs.google.com/presentation/d/1iWLCOoLZ2Rc2Mj3XaIiYThyZ5qNMzqDJLamOjiv3Fmw/edit?usp=sharing" target="_blank" rel="noopener noreferrer">Ethereum Validators →</a> Designed an incentive system for validators to increase network decentralization.</li>
+                </ul>
+            </div>
+            <div class="plain-group">
+                <h2 class="section-h">Side Quests</h2>
+                <ul class="plain-list">
                     <li>Wheelchair Basketball Volunteering. Volunteering with adaptive sports programs.
                         <video controls preload="none" poster="images/wheelchair_poster.jpg" src="videos/Wheelchair_Basketball.mp4" width="1280" height="720" playsinline aria-label="Wheelchair basketball video"></video>
                     </li>
@@ -87,7 +92,8 @@
             wearables: '<svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="9" y="3" width="10" height="22" rx="5"></rect><circle cx="14" cy="10" r="1.6" fill="currentColor" stroke="none"></circle><line x1="9" y1="17" x2="19" y2="17"></line></svg>',
             robotics: '<svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="6" y="11" width="16" height="12" rx="2"></rect><circle cx="11.5" cy="17" r="1.4" fill="currentColor" stroke="none"></circle><circle cx="16.5" cy="17" r="1.4" fill="currentColor" stroke="none"></circle><line x1="14" y1="11" x2="14" y2="6"></line><circle cx="14" cy="4.5" r="1.4"></circle></svg>',
             iot: '<svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="14" cy="21" r="1.6" fill="currentColor" stroke="none"></circle><path d="M8.5 15.5a8 8 0 0 1 11 0"></path><path d="M5 11.5a13 13 0 0 1 18 0"></path></svg>',
-            quests: '<svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M14 4 L22 14 L14 24 L6 14 Z"></path><path d="M21 4.5 L22.2 7 L24.7 8.2 L22.2 9.4 L21 12 L19.8 9.4 L17.3 8.2 L19.8 7 Z" fill="currentColor" stroke="none"></path></svg>'
+            quests: '<svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M14 4 L22 14 L14 24 L6 14 Z"></path><path d="M21 4.5 L22.2 7 L24.7 8.2 L22.2 9.4 L21 12 L19.8 9.4 L17.3 8.2 L19.8 7 Z" fill="currentColor" stroke="none"></path></svg>',
+            tokens: '<svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="14" cy="14" r="10"></circle><path d="M8.5 17.5 L12 13.5 L14.5 16 L19.5 10.5"></path><circle cx="19.5" cy="10.5" r="1.2" fill="currentColor" stroke="none"></circle></svg>'
         };
 
         /* Case chrome: vector spine mounted over the art per the Design chrome
@@ -143,12 +149,12 @@
               blurb: 'Every degree on record. The little red unit on the shelf logs temperature and humidity around the clock and never asks for a day off.',
               shots: [{ src: 'images/Home_monitor.jpg', w: 1186, h: 1048, alt: 'Temperature monitor display' }],
               links: [['WATCH THE DEMO', 'videos/Temp_Home_Monitor.mp4']] },
-            { id: 'yield-vaults', cat: 'Side Quests', title: 'Plume Token Yield Vaults', serial: 'AWUS-30366', dom: '#2d2315',
+            { id: 'yield-vaults', cat: 'Token Economics', title: 'Plume Token Yield Vaults', serial: 'AWUS-30366', dom: '#2d2315',
               line: 'A yield vault design with its own risk rating system',
               blurb: 'Behind this door, yield. A vault design for Plume native tokens with its own risk rating system and an allocation formula tuned for higher native yield.',
               shots: [],
               links: [['VIEW PROJECT DOCUMENT', 'https://1drv.ms/x/c/933edcbe437d6d8e/IQCObX1Dvtw-IICT8QAAAAAAAZDvoEZcrmQfKaM4GBRI_Q0']] },
-            { id: 'ethereum-validators', cat: 'Side Quests', title: 'Ethereum Validators', serial: 'AWUS-30402', dom: '#171716',
+            { id: 'ethereum-validators', cat: 'Token Economics', title: 'Ethereum Validators', serial: 'AWUS-30402', dom: '#171716',
               line: 'An incentive design that pushes Ethereum toward more validators',
               blurb: 'The network is only as strong as its validators. An incentive design that pushes Ethereum toward more of them.',
               shots: [],
@@ -159,7 +165,7 @@
             { key: 'Wearables', icon: ICONS.wearables },
             { key: 'Robotics', icon: ICONS.robotics },
             { key: 'IoT', icon: ICONS.iot },
-            { key: 'Side Quests', icon: ICONS.quests }
+            { key: 'Token Economics', icon: ICONS.tokens }
         ];
 
         var zone = document.getElementById('shelfZone');
@@ -243,7 +249,7 @@
             });
         }
 
-        var PLATE = { 'Wearables': 'wearables', 'Robotics': 'robotics', 'IoT': 'iot', 'Side Quests': 'quests' };
+        var PLATE = { 'Wearables': 'wearables', 'Robotics': 'robotics', 'IoT': 'iot', 'Token Economics': 'tokens', 'Side Quests': 'quests' };
 
         /* A landscape panel crops a phone photo through the middle, which on
            these shots is a torso. Portrait sources sit higher. */
