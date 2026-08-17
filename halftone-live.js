@@ -1,11 +1,14 @@
 /* HalftoneLive: makes a halftone portrait breathe, araesf-style.
-   One region animates (dots fade out to paper, faint dots blink in);
-   the rest of the artwork stays untouched. Dependency-free.
+   One region animates: a slow band travels across it, lifting dots toward a
+   dim tint (never paper white) and blinking faint dots in behind it. Ellipses
+   in `exclude` are never touched; the rest of the artwork stays untouched.
+   Dependency-free.
    Usage:
      const live = HalftoneLive.mount(canvas, {
        src: 'assets/page_halftone.png',
        region: { x: 0.42, y: 0.24, w: 0.53, h: 0.50 },  // normalized
-       paper: '#f7f5f0'
+       exclude: [{ cx: 0.42, cy: 0.52, rx: 0.13, ry: 0.15 }],
+       lift: '#b8b2a6'
      });
    Static image under prefers-reduced-motion; pauses when the tab is hidden. */
 (function () {
@@ -15,10 +18,19 @@
         opts = opts || {};
         var src = opts.src;
         var region = opts.region || { x: 0.42, y: 0.24, w: 0.53, h: 0.50 };
-        var paper = opts.paper || '#f7f5f0';
+        var exclude = opts.exclude || [];     // normalized ellipses the band skips
         var pitch = opts.pitch || 8;          // sampling grid in display px
         var rate = opts.rate == null ? 1 : opts.rate;
         var ink = opts.ink || '#141414';
+        var lift = opts.lift || '#b8b2a6';    // dots lift toward this, not paper
+        var liftMax = opts.liftMax == null ? 0.34 : opts.liftMax;
+        var sparkMax = opts.sparkMax == null ? 0.3 : opts.sparkMax;
+        var period = opts.period || 20;       // seconds for one pass of the band
+        var angle = opts.angle == null ? 78 : opts.angle;      // 0 right, 90 down
+        var wavelength = opts.wavelength == null ? 0.55 : opts.wavelength; // of the span
+        var scatter = opts.scatter == null ? 0.5 : opts.scatter;  // radians of stagger
+        var omega = (Math.PI * 2) / period;
+        var dirx = Math.cos(angle * Math.PI / 180), diry = Math.sin(angle * Math.PI / 180);
 
         var ctx = canvas.getContext('2d');
         var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -30,6 +42,26 @@
         var ready = false;
 
         function smooth(t) { return t * t * (3 - 2 * t); }
+
+        // stable per-cell scatter: the pattern stays put across resizes
+        function hash(x, y) {
+            var s = Math.sin(x * 12.9898 + y * 78.233) * 43758.5453;
+            return s - Math.floor(s);
+        }
+
+        // 0 inside an excluded ellipse, 1 clear of it, soft in the margin
+        function clearance(nx, ny) {
+            var m = 1;
+            for (var i = 0; i < exclude.length; i++) {
+                var e = exclude[i];
+                var f = e.feather == null ? 0.5 : e.feather;
+                var dx = (nx - e.cx) / e.rx, dy = (ny - e.cy) / e.ry;
+                var d = Math.sqrt(dx * dx + dy * dy);
+                var v = smooth(Math.max(0, Math.min(1, (d - 1) / f)));
+                if (v < m) m = v;
+            }
+            return m;
+        }
 
         function resize() {
             dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -53,6 +85,9 @@
             } catch (e) { return; }
             erasers = []; sparks = [];
             var p = pitch, pd = Math.round(p * dpr);
+            // one wavelength measured along the travel direction
+            var span = Math.abs(R.w * dirx) + Math.abs(R.h * diry);
+            var wl = Math.max(1, span * wavelength);
             for (var gy = 0; gy + p <= R.h; gy += p) {
                 for (var gx = 0; gx + p <= R.w; gx += p) {
                     var cov = 0, n = 0;
@@ -69,18 +104,23 @@
                     var ey = Math.min(gy, R.h - gy) / (R.h * 0.14);
                     var edge = smooth(Math.max(0, Math.min(1, Math.min(ex, ey))));
                     if (edge <= 0.02) continue;
+                    var cx = R.x + gx + p / 2, cy = R.y + gy + p / 2;
+                    var clear = clearance(cx / W, cy / H);
+                    if (clear <= 0.02) continue;
+                    var h = hash(gx, gy);
                     var dot = {
-                        x: R.x + gx + p / 2, y: R.y + gy + p / 2,
-                        phase: Math.random() * Math.PI * 2,
-                        speed: 0.35 + Math.random() * 0.55,
-                        edge: edge
+                        x: cx, y: cy,
+                        // phase rises along the travel direction: the band sweeps,
+                        // the scatter keeps its leading edge from reading as a ruler
+                        phase: (Math.PI * 2) * ((gx * dirx + gy * diry) / wl) + (h - 0.5) * scatter,
+                        edge: edge * clear
                     };
                     if (cov > 0.15) {
                         dot.r = p * 0.62;
                         dot.amp = 0.45 + 0.55 * Math.min(1, cov * 1.6);
                         erasers.push(dot);
                     } else if (cov > 0.008 && cov < 0.06) {
-                        dot.r = 1.0 + Math.random() * 0.9;
+                        dot.r = 1.0 + h * 0.9;
                         dot.amp = Math.min(1, cov * 14);
                         sparks.push(dot);
                     }
@@ -94,9 +134,9 @@
         }
 
         function activity(dot, t) {
-            var s = Math.sin(t * dot.speed * rate + dot.phase);
-            if (s < 0.80) return 0;
-            return smooth((s - 0.80) / 0.20) * dot.edge * dot.amp;
+            var s = Math.sin(t * omega * rate - dot.phase);
+            if (s < 0.72) return 0;
+            return smooth((s - 0.72) / 0.28) * dot.edge * dot.amp;
         }
 
         function frame(now) {
@@ -110,11 +150,11 @@
             ctx.clearRect(R.x, R.y, R.w, R.h);
             ctx.drawImage(img, 0, 0, W, H);
             var i, a, d;
-            ctx.fillStyle = paper;
+            ctx.fillStyle = lift;
             for (i = 0; i < erasers.length; i++) {
                 d = erasers[i]; a = activity(d, t);
                 if (a <= 0.01) continue;
-                ctx.globalAlpha = a * 0.85;
+                ctx.globalAlpha = a * liftMax;
                 ctx.beginPath();
                 ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
                 ctx.fill();
@@ -123,7 +163,7 @@
             for (i = 0; i < sparks.length; i++) {
                 d = sparks[i]; a = activity(d, t);
                 if (a <= 0.01) continue;
-                ctx.globalAlpha = a * 0.6;
+                ctx.globalAlpha = a * sparkMax;
                 ctx.beginPath();
                 ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
                 ctx.fill();
