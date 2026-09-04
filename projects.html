@@ -35,6 +35,8 @@
             <div class="filters" id="filters" role="group" aria-label="Filter projects"></div>
             <div class="shelf-wrap">
                 <div class="shelf" id="shelf" aria-label="Project shelf"></div>
+                <button class="shelf-nav prev" id="shelfPrev" type="button" aria-label="Scroll the shelf left" hidden>&#8249;</button>
+                <button class="shelf-nav next" id="shelfNext" type="button" aria-label="Scroll the shelf right" hidden>&#8250;</button>
             </div>
             <p class="xmb-hint">DRAG THE SHELF · CLICK A CASE TO FLIP IT · ARROW KEYS WORK TOO</p>
         </section>
@@ -173,6 +175,8 @@
         var shelf = document.getElementById('shelf');
         var stage = document.getElementById('stage');
         var filters = document.getElementById('filters');
+        var shelfPrev = document.getElementById('shelfPrev');
+        var shelfNext = document.getElementById('shelfNext');
         if (!zone || !shelf) return;
         plain.hidden = true;
         zone.hidden = false;
@@ -247,6 +251,48 @@
                 });
                 shelf.appendChild(el);
             });
+            syncShelfNav();
+        }
+
+        /* Shelf arrows: the visible cue that the shelf scrolls. Shown only
+           when the cases overflow, dimmed at either end, and each press
+           moves a screen of cases with one held over for context. */
+        function shelfPad() {
+            return parseFloat(getComputedStyle(shelf).paddingLeft) || 0;
+        }
+
+        function syncShelfNav() {
+            if (!shelfPrev || !shelfNext) return;
+            var over = shelf.scrollWidth - shelf.clientWidth > 2;
+            shelfPrev.hidden = !over;
+            shelfNext.hidden = !over;
+            if (!over) return;
+            shelfPrev.disabled = shelf.scrollLeft <= 1;
+            shelfNext.disabled = shelf.scrollLeft + shelf.clientWidth >= shelf.scrollWidth - 1;
+        }
+
+        function stepShelf(d) {
+            var kids = shelf.children, n = kids.length;
+            if (!n) return;
+            var pad = shelfPad();
+            var caseW = kids[0].offsetWidth;
+            var gap = n > 1 ? kids[1].offsetLeft - kids[0].offsetLeft - caseW : 0;
+            /* the first case at least half in view counts as the lead case */
+            var first = 0;
+            for (var i = 0; i < n; i++) {
+                if (kids[i].offsetLeft - pad >= shelf.scrollLeft - caseW / 2) { first = i; break; }
+            }
+            var perView = Math.max(1, Math.floor((shelf.clientWidth - pad * 2 + gap) / (caseW + gap)));
+            var step = Math.max(1, perView - 1);
+            focused = Math.max(0, Math.min(n - 1, first + d * step));
+            shelf.scrollTo({ left: kids[focused].offsetLeft - pad, behavior: reduced.matches ? 'auto' : 'smooth' });
+        }
+
+        if (shelfPrev && shelfNext) {
+            shelfPrev.addEventListener('click', function () { stepShelf(-1); });
+            shelfNext.addEventListener('click', function () { stepShelf(1); });
+            shelf.addEventListener('scroll', syncShelfNav, { passive: true });
+            window.addEventListener('resize', syncShelfNav);
         }
 
         var PLATE = { 'Wearables': 'wearables', 'Robotics': 'robotics', 'IoT': 'iot', 'Token Economics': 'tokens', 'Side Quests': 'quests' };
