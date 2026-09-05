@@ -860,11 +860,23 @@ body.stage-open {
     justify-content: center;
 }
 
+/* The stage runs in two beats. Open: the case lifts off the shelf to the
+   centre, then turns over and widens into the spread while the page blurs
+   in behind it; the arrows and hint arrive once it has settled. Close: the
+   reverse, and the case lands back in its shelf slot as the blur clears.
+   is-in fades the backdrop, is-open the chrome; the beats are timed in JS. */
 .stage-backdrop {
     position: absolute;
     inset: 0;
     background: rgba(247, 245, 240, 0.82);
     backdrop-filter: blur(6px);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.stage.is-in .stage-backdrop {
+    opacity: 1;
+    transition-duration: 0.36s;
 }
 
 .flipper {
@@ -872,14 +884,25 @@ body.stage-open {
     z-index: 1;
     cursor: default;
     transition:
-        transform 0.42s cubic-bezier(0.22, 0.8, 0.3, 1),
-        width 0.5s cubic-bezier(0.3, 0.7, 0.3, 1),
-        height 0.5s cubic-bezier(0.3, 0.7, 0.3, 1);
-    filter: drop-shadow(0 32px 48px rgba(20, 20, 20, 0.35));
+        transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1),
+        opacity 0.3s ease,
+        width 0.36s cubic-bezier(0.3, 0.7, 0.3, 1),
+        height 0.36s cubic-bezier(0.3, 0.7, 0.3, 1);
 }
 
-/* the front keeps case proportions while the flipper opens out to a spread */
-.flip-front {
+/* opening: the spread grows through the second half of the turn */
+.flipper.flipped {
+    transition:
+        transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1),
+        opacity 0.3s ease,
+        width 0.46s cubic-bezier(0.3, 0.7, 0.3, 1) 0.1s,
+        height 0.46s cubic-bezier(0.3, 0.7, 0.3, 1) 0.1s;
+}
+
+/* the front keeps case proportions while the flipper opens out to a spread.
+   Doubled selector: .flip-face sets inset 0 further down and would otherwise
+   win the tie and pin the cover to the corner. */
+.flip-face.flip-front {
     left: 50%;
     top: 50%;
     right: auto;
@@ -933,6 +956,19 @@ body.stage-open {
     pointer-events: none;
 }
 
+/* the chrome waits for the case to settle, and leaves first */
+.stage-nav,
+.stage-hint {
+    opacity: 0;
+    transition: opacity 0.18s ease;
+}
+
+.stage.is-open .stage-nav,
+.stage.is-open .stage-hint {
+    opacity: 1;
+    transition: opacity 0.3s ease 0.42s;
+}
+
 .flip3d {
     position: absolute;
     inset: 0;
@@ -944,6 +980,8 @@ body.stage-open {
     transform: rotateY(180deg);
 }
 
+/* the shadow rides on the faces, so it turns with the case and costs no
+   filter pass per frame */
 .flip-face {
     position: absolute;
     inset: 0;
@@ -951,6 +989,9 @@ body.stage-open {
     overflow: hidden;
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
+    box-shadow:
+        0 0 0 1px rgba(10, 10, 10, 0.22),
+        0 28px 48px rgba(20, 20, 20, 0.32);
     transition: opacity 0.17s ease;
 }
 
@@ -1452,7 +1493,10 @@ body.stage-open {
 @media (prefers-reduced-motion: reduce) {
     .pcase-box,
     .flipper,
-    .flip3d {
+    .flip3d,
+    .stage-backdrop,
+    .stage-nav,
+    .stage-hint {
         transition: none !important;
     }
 }

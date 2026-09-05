@@ -373,15 +373,26 @@
 
         var stageIndex = -1;
         var stageSource = null;
+        var stageTimer = null;
+
+        /* the transform that puts the centred case over a shelf slot */
+        function slotTransform(r, sz) {
+            var sx = r.width / sz.caseW, sy = r.height / sz.caseH;
+            var dx = r.left + r.width / 2 - window.innerWidth / 2;
+            var dy = r.top + r.height / 2 - window.innerHeight / 2;
+            return 'translate(' + dx + 'px,' + dy + 'px) scale(' + sx + ',' + sy + ')';
+        }
 
         function openStage(c, sourceEl) {
             if (flipped) return;
+            clearTimeout(stageTimer);
             flipped = c;
             stageSource = sourceEl;
             stageIndex = visibleCases().indexOf(c);
             var r = sourceEl.getBoundingClientRect();
             var sz = stageSize();
             stage.hidden = false;
+            stage.classList.remove('is-in', 'is-open');
             stage.innerHTML =
                 '<div class="stage-backdrop"></div>' +
                 '<button class="stage-nav prev" type="button" aria-label="Previous project">&#8249;</button>' +
@@ -399,22 +410,25 @@
             flipper.style.setProperty('--case-h', sz.caseH + 'px');
             flipper.style.width = sz.caseW + 'px';
             flipper.style.height = sz.caseH + 'px';
-            /* start at the case's shelf position, then travel to center and open */
-            var sx = r.width / sz.caseW, sy = r.height / sz.caseH;
-            var dx = r.left + r.width / 2 - window.innerWidth / 2;
-            var dy = r.top + r.height / 2 - window.innerHeight / 2;
+            /* beat one: the case lifts from its shelf slot to the centre.
+               beat two: it turns over and opens out, the chrome following. */
             if (reduced.matches) {
                 flipper.style.width = sz.w + 'px';
                 flipper.style.height = sz.h + 'px';
                 flipper.classList.add('flipped');
+                stage.classList.add('is-in', 'is-open');
             } else {
-                flipper.style.transform = 'translate(' + dx + 'px,' + dy + 'px) scale(' + sx + ',' + sy + ')';
+                flipper.style.transform = slotTransform(r, sz);
                 requestAnimationFrame(function () {
                     requestAnimationFrame(function () {
+                        stage.classList.add('is-in');
                         flipper.style.transform = 'translate(0,0) scale(1)';
-                        flipper.style.width = sz.w + 'px';
-                        flipper.style.height = sz.h + 'px';
-                        flipper.classList.add('flipped');
+                        stageTimer = setTimeout(function () {
+                            flipper.style.width = sz.w + 'px';
+                            flipper.style.height = sz.h + 'px';
+                            flipper.classList.add('flipped');
+                            stage.classList.add('is-open');
+                        }, 240);
                     });
                 });
             }
@@ -462,8 +476,11 @@
             capPanel = window.__bettaCapture.mount(slot);
         }
 
+        /* the reverse: chrome away, turn back to the cover and draw in,
+           then settle into the shelf slot as the blur clears */
         function closeStage(instant) {
             if (!flipped) return;
+            clearTimeout(stageTimer);
             dropCapture();
             flipped = null;
             stageIndex = -1;
@@ -473,15 +490,27 @@
             function done() {
                 stage.hidden = true;
                 stage.innerHTML = '';
+                stage.classList.remove('is-in', 'is-open');
                 document.body.classList.remove('stage-open');
                 if (back && !instant) back.focus({ preventScroll: true });
             }
             if (instant || reduced.matches || !flipper) { done(); return; }
             var sz = stageSize();
+            stage.classList.remove('is-open');
             flipper.style.width = sz.caseW + 'px';
             flipper.style.height = sz.caseH + 'px';
             flipper.classList.remove('flipped');
-            setTimeout(done, 420);
+            stageTimer = setTimeout(function () {
+                var r = back ? back.getBoundingClientRect() : null;
+                if (r && r.right > 0 && r.left < window.innerWidth) {
+                    flipper.style.transform = slotTransform(r, sz);
+                } else {
+                    flipper.style.transform = 'scale(0.9)';
+                    flipper.style.opacity = '0';
+                }
+                stage.classList.remove('is-in');
+                stageTimer = setTimeout(done, 320);
+            }, 360);
         }
 
         /* Clicking the case no longer dismisses it: the spread is the content.
