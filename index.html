@@ -70,17 +70,27 @@
         if (portrait && window.HalftoneLive) {
             window.HalftoneLive.mount(portrait, {
                 src: 'images/page_halftone.png',
-                // the left silhouette, running down the shoulder into the suit
-                region: { x: 0.00, y: 0.32, w: 0.44, h: 0.64 },
+                region: { x: 0.00, y: 0.26, w: 0.82, h: 0.72 },
                 // his face, kept still
                 exclude: [{ cx: 0.425, cy: 0.525, rx: 0.14, ry: 0.16, feather: 0.55 }],
+                // down the left silhouette, round the shoulder, across the suit
+                spine: [
+                    { x: 0.30, y: 0.30 }, { x: 0.21, y: 0.41 }, { x: 0.15, y: 0.54 },
+                    { x: 0.15, y: 0.66 }, { x: 0.27, y: 0.75 }, { x: 0.44, y: 0.81 },
+                    { x: 0.62, y: 0.87 }, { x: 0.80, y: 0.95 }
+                ],
+                dragon: {
+                    cross: 30, rest: 15, length: 0.3,
+                    headWidth: 0.11, tailWidth: 0.014
+                },
                 lift: '#b8b2a6',
-                liftMax: 0.3,
-                sparkMax: 0.26,
-                pitch: 14,
-                period: 22,
-                angle: 78,
-                wavelength: 0.5
+                liftMax: 0.72,
+                sparkMax: 0.34,
+                ember: '#c6a15b',
+                emberMax: 0.66,
+                emberSpan: 0.3,
+                glyph: { threshold: 0.28, length: 1.15, width: 0.3 },
+                pitch: 11
             });
         }
     })();

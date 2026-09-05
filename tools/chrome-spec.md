@@ -36,10 +36,16 @@ https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,500;0,600;0,70
 | spine-robotics-30342 | ROBOTICS | AWUS-30342 | #141414 |
 | spine-robotics-30188-red | ROBOTICS | AWUS-30188 | #A31621 |
 | spine-iot | IOT | AWUS-30129 | #141414 |
-| spine-sidequest-30366 | SIDE QUEST | AWUS-30366 | #141414 |
-| spine-sidequest-30402 | SIDE QUEST | AWUS-30402 | #141414 |
+| spine-tokenecon-30366 | TOKEN ECONOMICS | AWUS-30366 | #141414 |
+| spine-tokenecon-30402 | TOKEN ECONOMICS | AWUS-30402 | #141414 |
 
-Ratings: rating-flagship (B), rating-wearables (W), rating-robotics (R), rating-iot (I), rating-sidequest (S).
+Ratings: rating-flagship (B), rating-wearables (W), rating-robotics (R), rating-iot (I), rating-tokenecon (T), rating-sidequest (S).
+
+NOTE (2026-08-17, Abba's call): AWUS-30366 and AWUS-30402 recategorized from
+SIDE QUEST to TOKEN ECONOMICS. The live spine already renders the new label;
+the shipped cover art still bakes S / SIDE QUEST in the rating box until the
+regen. Rating word TOKEN ECONOMICS needs roughly 8u to fit the 120u box.
+SIDE QUEST remains valid for AWUS-30437 and AWUS-30475 (covers pending).
 
 ## Binding
 Curly-brace tokens are slots, not copy: {CATEGORY} {TITLE} {SERIAL} {SHOT n} {BLURB HEADLINE} {BLURB BODY} {FEATURE} {LINK}. Replace text content only; geometry stays put. back-example-betta.svg is fully bound, wording verbatim from betta.html, and references ../../site/images/ (adjust the relative path to wherever it mounts).
