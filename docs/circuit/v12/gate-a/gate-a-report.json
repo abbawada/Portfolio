@@ -1,0 +1,271 @@
+{
+ "url": "http://127.0.0.1:8647/index.html",
+ "wide": {
+  "1440": {
+   "viewport": [
+    1440,
+    900
+   ],
+   "zoom": 1,
+   "target": [
+    112,
+    96
+   ],
+   "labels": [
+    {
+     "id": "about",
+     "chip": {
+      "x": 613,
+      "y": 248,
+      "w": 110,
+      "h": 38
+     }
+    },
+    {
+     "id": "betta",
+     "chip": {
+      "x": 788,
+      "y": 375,
+      "w": 98,
+      "h": 38
+     }
+    },
+    {
+     "id": "education",
+     "chip": {
+      "x": 960,
+      "y": 540,
+      "w": 139,
+      "h": 38
+     }
+    },
+    {
+     "id": "economics",
+     "chip": {
+      "x": 575,
+      "y": 116,
+      "w": 143,
+      "h": 38
+     }
+    },
+    {
+     "id": "writing",
+     "chip": {
+      "x": 378,
+      "y": 236,
+      "w": 117,
+      "h": 38
+     }
+    },
+    {
+     "id": "projects",
+     "chip": {
+      "x": 476,
+      "y": 506,
+      "w": 132,
+      "h": 38
+     }
+    },
+    {
+     "id": "contact",
+     "chip": {
+      "x": 597,
+      "y": 603,
+      "w": 120,
+      "h": 38
+     }
+    }
+   ],
+   "stops": {
+    "about": {
+     "x": 511,
+     "y": 305,
+     "w": 114,
+     "h": 196
+    },
+    "betta": {
+     "x": 640,
+     "y": 233,
+     "w": 277,
+     "h": 301
+    },
+    "education": {
+     "x": 873,
+     "y": 561,
+     "w": 146,
+     "h": 100
+    },
+    "economics": {
+     "x": 510,
+     "y": 135,
+     "w": 102,
+     "h": 103
+    },
+    "writing": {
+     "x": 319,
+     "y": 257,
+     "w": 89,
+     "h": 64
+    },
+    "projects": {
+     "x": 335,
+     "y": 385,
+     "w": 283,
+     "h": 216
+    },
+    "contact": {
+     "x": 324,
+     "y": 494,
+     "w": 259,
+     "h": 137
+    }
+   },
+   "labelOverlaps": [],
+   "labelOverStop": [],
+   "stopOverlaps": [],
+   "planOverlaps": [],
+   "labelFont": "14px 700",
+   "calls": 149,
+   "triangles": 36264,
+   "fps": 30.8
+  },
+  "1600": {
+   "viewport": [
+    1600,
+    900
+   ],
+   "zoom": 1,
+   "target": [
+    112,
+    96
+   ],
+   "labels": [
+    {
+     "id": "about",
+     "chip": {
+      "x": 693,
+      "y": 248,
+      "w": 110,
+      "h": 38
+     }
+    },
+    {
+     "id": "betta",
+     "chip": {
+      "x": 868,
+      "y": 375,
+      "w": 98,
+      "h": 38
+     }
+    },
+    {
+     "id": "education",
+     "chip": {
+      "x": 1040,
+      "y": 540,
+      "w": 139,
+      "h": 38
+     }
+    },
+    {
+     "id": "economics",
+     "chip": {
+      "x": 655,
+      "y": 116,
+      "w": 143,
+      "h": 38
+     }
+    },
+    {
+     "id": "writing",
+     "chip": {
+      "x": 458,
+      "y": 236,
+      "w": 117,
+      "h": 38
+     }
+    },
+    {
+     "id": "projects",
+     "chip": {
+      "x": 556,
+      "y": 506,
+      "w": 132,
+      "h": 38
+     }
+    },
+    {
+     "id": "contact",
+     "chip": {
+      "x": 677,
+      "y": 603,
+      "w": 120,
+      "h": 38
+     }
+    }
+   ],
+   "stops": {
+    "about": {
+     "x": 591,
+     "y": 305,
+     "w": 114,
+     "h": 196
+    },
+    "betta": {
+     "x": 720,
+     "y": 233,
+     "w": 277,
+     "h": 301
+    },
+    "education": {
+     "x": 953,
+     "y": 561,
+     "w": 146,
+     "h": 100
+    },
+    "economics": {
+     "x": 590,
+     "y": 135,
+     "w": 102,
+     "h": 103
+    },
+    "writing": {
+     "x": 399,
+     "y": 257,
+     "w": 89,
+     "h": 64
+    },
+    "projects": {
+     "x": 415,
+     "y": 385,
+     "w": 283,
+     "h": 216
+    },
+    "contact": {
+     "x": 404,
+     "y": 494,
+     "w": 259,
+     "h": 137
+    }
+   },
+   "labelOverlaps": [],
+   "labelOverStop": [],
+   "stopOverlaps": [],
+   "planOverlaps": [],
+   "labelFont": "14px 700",
+   "calls": 149,
+   "triangles": 36264,
+   "fps": 30.8
+  }
+ },
+ "close": [
+  "docs/circuit/v12/gate-a/gate-a-01-about.png",
+  "docs/circuit/v12/gate-a/gate-a-02-betta.png",
+  "docs/circuit/v12/gate-a/gate-a-03-education.png",
+  "docs/circuit/v12/gate-a/gate-a-04-economics.png",
+  "docs/circuit/v12/gate-a/gate-a-05-writing.png",
+  "docs/circuit/v12/gate-a/gate-a-06-projects.png",
+  "docs/circuit/v12/gate-a/gate-a-07-contact.png"
+ ],
+ "errors": []
+}

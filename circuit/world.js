@@ -130,6 +130,8 @@ export function mount(canvas, L) {
         M.neon[k] = new THREE.MeshBasicMaterial({ color: v, toneMapped: false });
     }
     const DISTRICT = { about: M.media, betta: null, education: M.cardinal, economics: M.green, writing: M.media, projects: M.gold, contact: M.grey };
+    /* the tower's internals, boards, details and Rep are placed relative to its box (V1.2) */
+    const TOWER = L.LOCATIONS.find(l => l.id === 'about').boxes[0], TU = TOWER[0], TV = TOWER[1];
 
     /* ------------------------------------------------ scene, camera */
     const scene = new THREE.Scene();
@@ -292,10 +294,10 @@ export function mount(canvas, L) {
             const gear = new THREE.Mesh(new THREE.TorusGeometry(1.6, 0.35, 6, 12), M.graphite); gear.position.set(10, 9.8, 44); gut('economics', gear);
         }
         {   // the tower: broadcast internals in neon, a core and stacked rings
-            gutBox('about', 100.1, 142.1, 0.8, 0.8, 33, 0.5, M.graphite);
+            gutBox('about', TU + 2.1, TV + 2.1, 0.8, 0.8, 33, 0.5, M.graphite);
             const ring = new THREE.TorusGeometry(1.7, 0.22, 6, 14), names = ['cyan', 'magenta', 'gold', 'lime', 'cyan', 'magenta'];
-            names.forEach((nm, i) => { const r = new THREE.Mesh(ring, M.neon[nm]); r.rotation.x = Math.PI / 2; r.position.set(100.5, 5 + i * 5, 142.5); gut('about', r); });
-            gutBox('about', 99.3, 141.3, 2.4, 2.4, 1.2, 35, M.neon.cyan);                    // the head's transmitter
+            names.forEach((nm, i) => { const r = new THREE.Mesh(ring, M.neon[nm]); r.rotation.x = Math.PI / 2; r.position.set(TU + 2.5, 5 + i * 5, TV + 2.5); gut('about', r); });
+            gutBox('about', TU + 1.3, TV + 1.3, 2.4, 2.4, 1.2, 35, M.neon.cyan);                    // the head's transmitter
         }
         {   // the press room: one magenta tube inside
             gutBox('writing', 3, 102.5, 8, 0.5, 0.5, 3.2, M.neon.magenta);
@@ -308,11 +310,12 @@ export function mount(canvas, L) {
             b.stroke([[u0 + w / 2, v0 + 1], [u0 + w / 2, v0 + d - 1]], 0.4, y, C.paper);
             const arc = (cu, dir) => { const a = []; for (let k = 0; k <= 16; k++) { const t = -Math.PI / 2 + k / 16 * Math.PI; a.push([cu + Math.cos(t) * 6 * dir, v0 + d / 2 + Math.sin(t) * 6]); } return a; };
             b.stroke(arc(u0 + 1, 1), 0.4, y, C.paper); b.stroke(arc(u0 + w - 1, -1), 0.4, y, C.paper);
-            b.box(97.6, 111.0, 0.2, 2.0, 1.2, 3.0, 'paper'); b.box(122.2, 111.0, 0.2, 2.0, 1.2, 3.0, 'paper');
+            b.box(u0 + 1.6, v0 + 7, 0.2, 2.0, 1.2, 3.0, 'paper'); b.box(u0 + w - 1.8, v0 + 7, 0.2, 2.0, 1.2, 3.0, 'paper');
             const ring = new THREE.TorusGeometry(0.45, 0.07, 5, 12), m = new THREE.Matrix4();
-            for (const x of [98.3, 121.7]) b.geometry(ring, C.accent, m.makeRotationX(Math.PI / 2).setPosition(x, 3.2, 112));
-            b.geometry(new THREE.SphereGeometry(0.75, 8, 6), C.accent, new THREE.Matrix4().makeTranslation(104, 3.6, 113.5));
+            for (const x of [u0 + 2.3, u0 + w - 2.3]) b.geometry(ring, C.accent, m.makeRotationX(Math.PI / 2).setPosition(x, 3.2, v0 + 8));
+            b.geometry(new THREE.SphereGeometry(0.75, 8, 6), C.accent, new THREE.Matrix4().makeTranslation(u0 + 8, 3.6, v0 + 9.5));
         }
+        buildArena();
         buildSleeve();
         buildSignage();
         buildMascot();
@@ -326,10 +329,67 @@ export function mount(canvas, L) {
             mergeStatic(g);
             g.add(new THREE.Mesh(lb[loc.id].build(), DISTRICT[loc.id] || flat));
             const bb = new THREE.Box3().setFromObject(g), size = bb.getSize(new THREE.Vector3()), ctr = bb.getCenter(new THREE.Vector3());
-            const hit = new THREE.Mesh(new THREE.BoxGeometry(size.x + 4, Math.max(size.y, 5) + 2, size.z + 4), flat);
-            hit.position.set(ctr.x, Math.max(size.y, 5) / 2, ctr.z); hit.layers.set(1); hit.userData.id = loc.id;
+            const top = Math.max(size.y, 5, loc.labelZ + 3);   // V1.2: the hit area covers the mesh and the label above it
+            const hit = new THREE.Mesh(new THREE.BoxGeometry(size.x + 4, top + 2, size.z + 4), flat);
+            hit.position.set(ctr.x, top / 2, ctr.z); hit.layers.set(1); hit.userData.id = loc.id;
             g.add(hit); hits.push(hit);
         }
+    }
+
+    /* ------------------------------------------------ the arena round the court (V1.2, section 4) */
+    /* Betta is the centre of gravity: the largest footprint on the plate, the
+       tallest silhouette, the brightest ground. A lit apron, gold candy stands
+       with a neon rail, three floodlights, and the scoreboard pylon at the
+       back corner, its shell lit from a gold core, BETTA in dots on the head. */
+    function shadowOf(u, v, w, d, h) {
+        const off = [SHADOW[0] * h * 0.9, SHADOW[1] * h * 0.9];
+        const foot = [[u, v], [u + w, v], [u + w, v + d], [u, v + d]];
+        sh.poly(hull(foot.concat(foot.map(p => [p[0] + off[0], p[1] + off[1]]))), 0.04, C.ink);
+    }
+    function buildArena() {
+        const A = L.LOCATIONS.find(l => l.id === 'betta').arena;
+        const [au, av, aw, ad] = A.apron;
+        st.poly([[au, av], [au + aw, av], [au + aw, av + ad], [au, av + ad]], 0.03, mix(C.plate, C.paper, 0.55));   // the lit apron
+        for (const sd of A.stands) {   // three stepped tiers, the top rail in neon gold
+            const [u, v, w, d, kind] = sd, steps = 3;
+            for (let i = 0; i < steps; i++) {
+                const t = d / steps, h = 1.6 * (i + 1);
+                if (kind === 'back') gutBox('betta', u, v + i * t, w, t, h, 0, M.gold);
+                else if (kind === 'front') gutBox('betta', u, v + (steps - 1 - i) * t, w, t, h, 0, M.gold);
+                else gutBox('betta', u + i * (w / steps), v, w / steps, d, 1.6 * (steps - i), 0, M.gold);
+            }
+            if (kind === 'back') gutBox('betta', u, v + d - 0.5, w, 0.3, 0.3, 4.8, M.neon.gold);
+            else if (kind === 'front') gutBox('betta', u, v + 0.2, w, 0.3, 0.3, 4.8, M.neon.gold);
+            else gutBox('betta', u + 0.2, v, 0.3, d, 0.3, 4.8, M.neon.gold);
+            shadowOf(u, v, w, d, 4.8);
+        }
+        for (const [lu, lv] of A.lights) {   // floodlight masts with a lit head turned to the court
+            gutBox('betta', lu - 0.3, lv - 0.3, 0.6, 0.6, A.lightH, 0, M.graphite);
+            const toward = lv < av + ad / 2 ? 1 : -1;
+            gutBox('betta', lu - 1.4, lv + (toward > 0 ? 0.2 : -1.4), 2.8, 1.2, 1.6, A.lightH - 1.2, M.neon.gold);
+            gutBox('betta', lu - 1.6, lv + (toward > 0 ? 0.1 : -1.5), 3.2, 0.2, 2.0, A.lightH - 1.4, M.graphite);
+            shadowOf(lu - 0.3, lv - 0.3, 0.6, 0.6, A.lightH);
+        }
+        {   // the pylon: a gold shell round a neon core, the scoreboard head on top
+            const [pu, pv, pw, pd, ph] = A.pylon, [hu, hv, hw, hd, hh, hz] = A.head;
+            gutBox('betta', pu, pv, pw, pd, ph, 0, M.gold);
+            gutBox('betta', pu + pw / 2 - 0.6, pv + pd / 2 - 0.6, 1.2, 1.2, ph - 1, 0.5, M.neon.gold);
+            gutBox('betta', hu, hv, hw, hd, hh, hz, M.gold);
+            gutBox('betta', hu + 0.8, hv + 0.8, hw - 1.6, hd - 1.6, hh - 1.6, hz + 0.8, M.graphite);
+            const big = bigText('BETTA', 3);
+            dotSign('betta', dotBoard(96, 27, [{ bitmap: big, col: 3, row: 3, color: NEON.gold, colors: { '#': NEON.gold } }]), hw - 0.8, hh - 0.8, [hu + hw / 2, hz + hh / 2, hv + hd + 0.03]);
+            shadowOf(pu, pv, pw, pd, ph);
+        }
+    }
+    /* the 5x7 dot glyphs scaled up k times, as a bitmap for a big sign */
+    function bigText(text, k) {
+        const rows = [];
+        for (let y = 0; y < 7; y++) {
+            let line = '';
+            for (const ch of text.toUpperCase()) { const g = DOTFONT[ch] || DOTFONT[' ']; for (const b of g[y]) line += (b === '#' ? '#' : '.').repeat(k); line += '.'.repeat(k); }
+            for (let r = 0; r < k; r++) rows.push(line);
+        }
+        return rows;
     }
 
     /* ------------------------------------------------ the sleeve monument (V1.1 Part 2) */
@@ -464,42 +524,49 @@ export function mount(canvas, L) {
         return { render, w: cols * cell, h: rows * cell };
     }
     const flickerBoards = [];
+    function dotSign(stop, spec, w, h, pos, rotY, flicker) {
+        const frames = flicker ? [spec.render(0), spec.render(7), spec.render(19)] : [spec.render(0)];
+        const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ map: frames[0], toneMapped: false }));
+        m.position.set(pos[0], pos[1], pos[2]); if (rotY) m.rotation.y = rotY;
+        guts[stop].push(m);
+        if (flicker) flickerBoards.push({ mesh: m, frames, i: 0, next: 0 });
+        return m;
+    }
     function buildSignage() {
-        const board = (spec, w, h, pos, rotY, flicker) => {
-            const frames = flicker ? [spec.render(0), spec.render(7), spec.render(19)] : [spec.render(0)];
-            const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ map: frames[0], toneMapped: false }));
-            m.position.set(pos[0], pos[1], pos[2]); if (rotY) m.rotation.y = rotY;
-            guts.about.push(m);
-            if (flicker) flickerBoards.push({ mesh: m, frames, i: 0, next: 0 });
-        };
+        const board = (spec, w, h, pos, rotY, flicker) => dotSign('about', spec, w, h, pos, rotY, flicker);
         const frame = (u, v, w, d, h, z0) => gutBox('about', u, v, w, d, h, z0, M.graphite);
-        const posts = (u1, u2, v) => { gutBox('about', u1, v, 0.5, 0.5, 6, 0, M.graphite); gutBox('about', u2, v, 0.5, 0.5, 6, 0, M.graphite); };
-        /* A: the shooter and BETTA, the big one right of the tower */
-        frame(104, 135.4, 14, 0.7, 9, 6); posts(105, 117.5, 135.5);
+        /* V1.2: the three boards stack on one wall right of the tower, the
+           Osaka density in a third of the old width, so the media district
+           keeps to its own zone and the garage label has clear air */
+        const SU = TU - 20, SV = TV + 7, SF = TV + 7.73;   // the stack: left of the tower, a step in front of it, and its face
+        const posts = (v, h) => { for (const u of [SU + 1, SU + 13.5, SU + 17]) gutBox('about', u, v, 0.5, 0.5, h, 0, M.graphite); };
+        posts(SV + 0.1, 26);
+        /* A: the shooter and BETTA, the big one at the foot of the stack */
+        frame(SU, SV, 14, 0.7, 9, 6);
         board(dotBoard(56, 36, [
             { bitmap: SHOOTER, col: 2, row: 6, color: NEON.cyan, colors: { '#': NEON.cyan, g: NEON.gold, o: NEON.white } },
             { text: 'BETTA', col: 22, row: 3, color: NEON.gold }, { text: 'FEEL', col: 22, row: 12, color: NEON.cyan },
             { text: 'EVERY', col: 22, row: 20, color: NEON.magenta }, { text: 'REP', col: 22, row: 28, color: NEON.white }
-        ]), 14, 9, [111, 10.5, 136.13]);
-        /* D: three projects, wide, left of the tower */
-        frame(70, 135.4, 18, 0.7, 5.6, 6); posts(71, 87.5, 135.5);
+        ]), 14, 9, [SU + 7, 10.5, SF]);
+        /* D: three projects, the wide board above it */
+        frame(SU, SV, 18, 0.7, 5.6, 15);
         board(dotBoard(90, 28, [
             { text: 'POSTURE CUE', col: 3, row: 2, color: NEON.cyan }, { text: 'VISUAL MAPPING', col: 3, row: 11, color: NEON.gold },
             { text: 'BLUETOOTH CAR', col: 3, row: 20, color: NEON.magenta }
-        ]), 18, 5.6, [79, 8.8, 136.13]);
-        /* E: the stat and the tap, far right; this one flickers */
-        frame(120, 135.4, 16, 0.7, 5.6, 6); posts(121, 135.5, 135.5);
+        ]), 18, 5.6, [SU + 9, 17.8, SF]);
+        /* E: the stat and the tap on top; this one flickers */
+        frame(SU, SV, 16, 0.7, 5.6, 20.6);
         board(dotBoard(80, 28, [
             { text: 'TOP 4 OF 221', col: 4, row: 2, color: NEON.gold }, { text: 'A TAP ON', col: 4, row: 11, color: NEON.white },
             { text: 'THE WRIST', col: 4, row: 20, color: NEON.cyan }
-        ]), 16, 5.6, [128, 8.8, 136.13], 0, true);
+        ]), 16, 5.6, [SU + 8, 23.4, SF], 0, true);
         /* B: the circuit name down the tower's right face, one letter under the next */
         const nameItems = [...'WADA RING'].map((ch, i) => ({ text: ch, col: 1, row: 1 + i * 8, color: i < 4 ? NEON.gold : NEON.white }));
-        board(dotBoard(7, 74, nameItems), 2.4, 25.4, [103.06, 20, 141.5], Math.PI / 2);
+        board(dotBoard(7, 74, nameItems), 2.4, 25.4, [TU + 5.06, 20, TV + 1.5], Math.PI / 2);
         /* C: his tools on the tower's front face */
         board(dotBoard(20, 26, [
             { text: 'C++', col: 1, row: 1, color: NEON.lime }, { text: 'IMU', col: 1, row: 9, color: NEON.cyan }, { text: 'SQL', col: 1, row: 17, color: NEON.magenta }
-        ]), 4.6, 6, [100.5, 8.5, 145.06]);
+        ]), 4.6, 6, [TU + 2.5, 8.5, TV + 5.06]);
     }
     function flickerStep(t) {
         for (const b of flickerBoards) {
@@ -518,15 +585,15 @@ export function mount(canvas, L) {
     }
     function buildDetails() {
         /* 01 the tower: a satellite dish on the head, a coil of cable at the base */
-        gutMesh('about', new THREE.SphereGeometry(2.2, 12, 8, 0, Math.PI * 2, 0, Math.PI / 2), M.media, [96.5, 40.2, 139.5], [Math.PI, 0.7, 0], [1, 0.7, 1]);
-        gutMesh('about', new THREE.CylinderGeometry(0.18, 0.18, 2.2, 6), M.graphite, [96.5, 40.6, 139.5], [0.5, 0, 0.6]);
-        for (let i = 0; i < 3; i++) gutMesh('about', new THREE.TorusGeometry(1.4, 0.22, 6, 18), M.graphite, [95, 0.3 + i * 0.45, 148], [Math.PI / 2, 0, 0]);
+        gutMesh('about', new THREE.SphereGeometry(2.2, 12, 8, 0, Math.PI * 2, 0, Math.PI / 2), M.media, [TU - 1.5, 40.2, TV - 0.5], [Math.PI, 0.7, 0], [1, 0.7, 1]);
+        gutMesh('about', new THREE.CylinderGeometry(0.18, 0.18, 2.2, 6), M.graphite, [TU - 1.5, 40.6, TV - 0.5], [0.5, 0, 0.6]);
+        for (let i = 0; i < 3; i++) gutMesh('about', new THREE.TorusGeometry(1.4, 0.22, 6, 18), M.graphite, [TU + 8, 0.3 + i * 0.45, TV + 6], [Math.PI / 2, 0, 0]);
         /* 02 the court: a rack of three gold balls, a bench with a folded sleeve on it */
-        gutBox('betta', 90.5, 121, 0.3, 0.3, 2.6, 0, M.graphite); gutBox('betta', 95.2, 121, 0.3, 0.3, 2.6, 0, M.graphite);
-        gutBox('betta', 90.5, 120.9, 5, 0.5, 0.25, 1.2, M.graphite);
-        for (const x of [91.5, 93, 94.5]) gutMesh('betta', new THREE.SphereGeometry(0.62, 10, 8, 0, Math.PI * 2, 0, Math.PI), M.gold, [x, 2.05, 121.15]);
-        gutBox('betta', 126, 122, 4.4, 1.2, 0.25, 1.0, M.graphite); gutBox('betta', 126.2, 122.2, 0.3, 0.3, 1, 0, M.graphite); gutBox('betta', 130.1, 122.9, 0.3, 0.3, 1, 0, M.graphite);
-        gutMesh('betta', new THREE.TorusGeometry(0.75, 0.42, 7, 14), M.smoke, [128.2, 1.65, 122.6], [Math.PI / 2, 0, 0]);
+        gutBox('betta', 101.5, 96.3, 0.3, 0.3, 2.6, 0, M.graphite); gutBox('betta', 106.2, 96.3, 0.3, 0.3, 2.6, 0, M.graphite);
+        gutBox('betta', 101.5, 96.2, 5, 0.5, 0.25, 1.2, M.graphite);
+        for (const x of [102.5, 104, 105.5]) gutMesh('betta', new THREE.SphereGeometry(0.62, 10, 8, 0, Math.PI * 2, 0, Math.PI), M.gold, [x, 2.05, 96.45]);
+        gutBox('betta', 126, 96, 4.4, 1.2, 0.25, 1.0, M.graphite); gutBox('betta', 126.2, 96.2, 0.3, 0.3, 1, 0, M.graphite); gutBox('betta', 130.1, 96.9, 0.3, 0.3, 1, 0, M.graphite);
+        gutMesh('betta', new THREE.TorusGeometry(0.75, 0.42, 7, 14), M.smoke, [128.2, 1.65, 96.6], [Math.PI / 2, 0, 0]);
         /* 03 campus: a stack of books, a mortarboard with a gold tassel */
         gutBox('education', 193, 98.5, 2.6, 1.8, 0.45, 1.0, M.cardinal); gutBox('education', 193.3, 98.3, 2.4, 1.9, 0.4, 1.45, M.gold); gutBox('education', 193.1, 98.6, 2.5, 1.7, 0.45, 1.85, M.cardinal);
         gutMesh('education', new THREE.CylinderGeometry(0.7, 0.8, 1.0, 10), M.graphite, [193.8, 1.5, 125.5]);
@@ -591,9 +658,10 @@ export function mount(canvas, L) {
         const other = new THREE.Mesh(new THREE.CapsuleGeometry(0.16, 0.7, 3, 8), M.gold); other.position.set(-1.05, 1.0, 0.1); other.rotation.z = 0.35; g.add(other);
         return g;
     }
+    const REP_AT = L.LOCATIONS.find(l => l.id === 'betta').arena.rep;
     const REP_SPOTS = [
-        { at: [132, 0.7, 108], scale: 2.6, yaw: Math.PI / 4, stop: 'betta' },     // the statue on the lawn beside the court
-        { at: [100.5, 45.2, 142.5], scale: 1.8, yaw: Math.PI / 4, stop: 'about' },  // on the tower head
+        { at: [REP_AT[0], 0.7, REP_AT[1]], scale: 2.6, yaw: Math.PI / 4, stop: 'betta' },     // the statue on the lawn beside the court
+        { at: [TU + 2.5, 45.2, TV + 2.5], scale: 1.8, yaw: Math.PI / 4, stop: 'about' },  // on the tower head
         { at: [86, 1.8, 171.7], scale: 0.75, yaw: Math.PI / 4, stop: 'contact' }   // on the pit wall by the flag
     ];
     let repFigure = null;
@@ -603,9 +671,10 @@ export function mount(canvas, L) {
             guts[sp.stop].push(g);
             if (!repFigure) repFigure = g;
         }
-        const plinth = new THREE.Mesh(new THREE.CylinderGeometry(3.2, 3.5, 0.7, 16), M.graphite); plinth.position.set(132, 0.35, 108);
+        const plinth = new THREE.Mesh(new THREE.CylinderGeometry(3.2, 3.5, 0.7, 16), M.graphite); plinth.position.set(REP_AT[0], 0.35, REP_AT[1]);
         guts.betta.push(plinth);
-        sh.poly([[129, 106], [136, 106], [141, 108], [141, 112], [134, 112], [129, 110]], 0.04, C.ink);
+        const [ru, rv] = REP_AT;
+        sh.poly([[ru - 3, rv - 2], [ru + 4, rv - 2], [ru + 9, rv], [ru + 9, rv + 4], [ru + 2, rv + 4], [ru - 3, rv + 2]], 0.04, C.ink);
     }
 
     /* ------------------------------------------------ stage C: shadows, trees, the static mesh */

@@ -27,7 +27,7 @@ export function mountPoster(L, dom, stops) {
         svg.appendChild(poly);
         const pin = document.createElement('span'); pin.className = 'ring-pin is-live'; pin.setAttribute('aria-hidden', 'true');
         pin.style.left = a.label[0] + '%'; pin.style.top = a.label[1] + '%';
-        pin.innerHTML = '<span class="ring-pin-dot"></span><span class="ring-pin-text"><span class="ring-pin-name">' + loc.num + '&nbsp;&nbsp;' + loc.name +
+        pin.innerHTML = '<span class="ring-pin-dot"></span><span class="ring-pin-text"><span class="ring-pin-name"><span class="ring-pin-num">' + loc.num + '</span>' + loc.name +
             '</span><span class="ring-pin-sub">' + loc.section + '</span></span>';
         box.appendChild(pin);
     }

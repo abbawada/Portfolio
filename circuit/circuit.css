@@ -118,7 +118,10 @@ body.circuit a:focus-visible, body.circuit button:focus-visible { outline: 2px s
 .ring-lap[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
 
 /* ------------------------------------------------------------
-   Pins: labels that fade in on approach
+   Pins: persistent labels (V1.2). One affordance grammar for
+   every stop and nothing else: the chip with the title, the
+   beacon on the dot as idle motion, the pointer cursor, and the
+   lift and glow on hover. Hover never adds information.
    ------------------------------------------------------------ */
 .ring-pins {
     position: fixed;
@@ -134,51 +137,95 @@ body.circuit a:focus-visible, body.circuit button:focus-visible { outline: 2px s
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.25rem 0.375rem 0.25rem 0;
-    margin: -0.375rem 0 0 -4px;
+    padding: 0;
+    margin: 0;
     border: 0;
     background: none;
     text-align: left;
     color: var(--ink);
-    opacity: 0;
-    pointer-events: none;
+    pointer-events: auto;
     cursor: pointer;
-    will-change: transform, opacity;
+    will-change: transform;
 }
-.ring-pin.is-live { pointer-events: auto; }
-.ring-pin:focus-visible { outline: 2px solid var(--accent-ink); outline-offset: 2px; opacity: 1; }
+.ring-pin.is-left { flex-direction: row-reverse; }
+.ring-pin.is-below { flex-direction: column; align-items: center; gap: 0.375rem; }
+.ring-pin:focus-visible { outline: 0; }
+.ring-pin:focus-visible .ring-pin-text { outline: 2px solid var(--accent-ink); outline-offset: 2px; }
 
 .ring-pin-dot {
+    position: relative;
     flex: none;
-    width: 8px; height: 8px;
+    width: 12px; height: 12px;
     border-radius: 50%;
     background: var(--ink);
-    box-shadow: 0 0 0 3px var(--paper);
+    box-shadow: 0 0 0 2px var(--paper);
+    transition: background 160ms ease, box-shadow 160ms ease;
 }
-.ring-pin.is-open .ring-pin-dot { background: var(--accent); }
+/* the beacon: a ring that leaves the dot every 2.8 s, staggered per stop */
+.ring-pin-dot::after {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    border: 2px solid var(--ink);
+    opacity: 0;
+    animation: ring-beacon 2.8s ease-out infinite;
+    animation-delay: var(--beacon-delay, 0s);
+}
+@keyframes ring-beacon {
+    0% { transform: scale(0.55); opacity: 0.6; }
+    70% { transform: scale(2); opacity: 0; }
+    100% { transform: scale(2); opacity: 0; }
+}
 
-.ring-pin-text { display: flex; flex-direction: column; gap: 1px; }
+.ring-pin-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 0.3125rem 0.625rem 0.3125rem 0.5rem;
+    background: var(--paper);
+    border: 1px solid var(--ink);
+    border-radius: 3px;
+    box-shadow: 0 1px 0 rgba(20, 20, 20, 0.16);
+    transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+}
 
 .ring-pin-name {
     font-family: var(--font-chrome);
     font-style: italic;
-    font-weight: 600;
-    font-size: 0.8125rem;
-    letter-spacing: 0.14em;
+    font-weight: 700;
+    font-size: 0.875rem;
+    line-height: 1;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     white-space: nowrap;
-    text-shadow: 0 0 2px var(--paper), 0 0 6px var(--paper), 0 0 10px var(--paper);
 }
+.ring-pin-num { color: var(--accent-ink); margin-right: 0.5em; }
 
 .ring-pin-sub {
     font-family: var(--font-display);
     font-weight: 600;
-    font-size: 0.5625rem;
+    font-size: 0.625rem;
+    line-height: 1;
     letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--muted);
     white-space: nowrap;
-    text-shadow: 0 0 2px var(--paper), 0 0 6px var(--paper);
+}
+
+/* feedback only: the stop lifts (in the world), the chip lifts and glows */
+.ring-pin.is-hot .ring-pin-text {
+    transform: translateY(-2px);
+    border-color: var(--accent-ink);
+    box-shadow: 0 0 0 3px rgba(198, 161, 91, 0.45), 0 8px 18px rgba(20, 20, 20, 0.18);
+}
+.ring-pin.is-hot .ring-pin-dot { background: var(--accent-ink); box-shadow: 0 0 0 2px var(--paper), 0 0 0 5px rgba(198, 161, 91, 0.5); }
+.ring-pin.is-open .ring-pin-dot { background: var(--accent); }
+.ring-pin.is-open .ring-pin-text { border-color: var(--accent-ink); }
+
+@media (prefers-reduced-motion: reduce) {
+    .ring-pin-dot::after { animation: none; }
+    .ring-pin-text, .ring-pin-dot { transition: none; }
 }
 
 /* ------------------------------------------------------------
@@ -248,6 +295,15 @@ body.circuit a:focus-visible, body.circuit button:focus-visible { outline: 2px s
     cursor: pointer;
 }
 .ring-map-stop:hover { fill: var(--accent-ink); }
+.ring-map-num {
+    font-family: var(--font-chrome);
+    font-style: italic;
+    font-weight: 700;
+    font-size: 7px;
+    letter-spacing: 0.08em;
+    fill: var(--ink);
+    pointer-events: none;
+}
 .ring-map-cam { fill: var(--accent); }
 
 /* ------------------------------------------------------------
@@ -395,7 +451,7 @@ body.circuit a:focus-visible, body.circuit button:focus-visible { outline: 2px s
    No WebGL: the poster with clickable regions
    ------------------------------------------------------------ */
 body.ring-no-webgl #world { display: none; }
-body.is-poster .ring-hud, body.is-poster .ring-pins, body.is-poster .ring-map { display: none; }
+body.is-poster .ring-hud, body.is-poster .ring-pins, body.is-poster .ring-map, body.is-poster .ring-broadcast { display: none; }
 
 .ring-poster {
     position: fixed;

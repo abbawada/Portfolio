@@ -1,7 +1,7 @@
-/* Wada Ring, navigation. Phase 3.
-   Explore (drag pans, wheel and pinch zoom), labels on approach, fly-to,
-   the mini-map, the lap guide and the keyboard. Nothing here moves on its
-   own: every camera move answers the visitor. */
+/* Wada Ring, navigation. Phase 3, V1.2 label pass.
+   Explore (drag pans, wheel and pinch zoom), persistent labels, fly-to,
+   the mini-map, the lap guide and the keyboard. Nothing here moves the
+   camera on its own: every camera move answers the visitor. */
 export function attach(world, L, dom) {
     'use strict';
     const { camera, canvas, view, fit, render, groups, hooks, project, groundAt, pick, frames: fr, poseAt, reduced } = world;
@@ -9,7 +9,9 @@ export function attach(world, L, dom) {
     /* a phone held upright sees a wide flat diamond; it gets a closer default
        and the world sits lower, under the timing block */
     const portrait = () => canvas.clientWidth / canvas.clientHeight < 0.8;
-    const homeView = () => ({ x: 105, z: 105, zoom: portrait() ? 1.35 : 1 });
+    /* the default framing leans toward the court (V1.2, section 4): the
+       plate still fits, Betta sits just above the centre of the screen */
+    const homeView = () => ({ x: 112, z: 96, zoom: portrait() ? 1.35 : 1 });
     const layoutShift = () => { view.shiftPx = portrait() ? Math.round(canvas.clientHeight * 0.12) : 0; };
     const FLY_MS = 750, LIFT = 1.2, STOP_ZOOM = 2.6, LAP_ZOOM = 2.0, LAP_SPEED = 16, LAP_PAUSE = 1700;
     const RIGHT = [Math.SQRT1_2, -Math.SQRT1_2], UP = [-Math.SQRT1_2, -Math.SQRT1_2], SIN30 = 0.5;
@@ -57,14 +59,19 @@ export function attach(world, L, dom) {
     }
     const refreshStill = () => { if (!world.isRunning()) { updatePins(1); render(); } };
 
-    /* ------------------------------------------------ pins: labels on approach */
+    /* ------------------------------------------------ pins: persistent labels (V1.2, sections 2 and 3) */
+    /* Every stop carries its title at rest, in screen space at a fixed pixel
+       size, on a paper chip that reads against grass and road. Hover and
+       focus add feedback only: the stop lifts, the chip glows. The idle
+       beacon on the dot is the one motion, staggered per stop, in CSS. */
     const pins = {};
-    for (const loc of L.LOCATIONS) {
+    L.LOCATIONS.forEach((loc, i) => {
         const el = document.createElement('button');
-        el.type = 'button'; el.className = 'ring-pin'; el.dataset.id = loc.id;
+        el.type = 'button'; el.className = 'ring-pin is-live' + (loc.labelSide ? ' is-' + loc.labelSide : ''); el.dataset.id = loc.id;
+        el.style.setProperty('--beacon-delay', (i * 0.4).toFixed(1) + 's');
         el.setAttribute('aria-label', 'Stop ' + loc.num + ', ' + loc.name + ', ' + loc.section);
         el.innerHTML = '<span class="ring-pin-dot" aria-hidden="true"></span><span class="ring-pin-text" aria-hidden="true">' +
-            '<span class="ring-pin-name">' + loc.num + '&nbsp;&nbsp;' + loc.name + '</span>' +
+            '<span class="ring-pin-name"><span class="ring-pin-num">' + loc.num + '</span>' + loc.name + '</span>' +
             '<span class="ring-pin-sub">' + loc.section + '</span></span>';
         el.addEventListener('click', e => { if (e.detail === 0) go(loc.id); });   // keyboard; pointer clicks arrive below
         el.addEventListener('focus', () => { focus = loc.id; refreshStill(); });
@@ -73,23 +80,19 @@ export function attach(world, L, dom) {
         el.addEventListener('pointerleave', () => { if (hover === loc.id) hover = null; refreshStill(); });
         dom.pins.appendChild(el);
         pins[loc.id] = { el, cur: 0, loc };
-    }
+    });
     function updatePins(dt) {
-        const vw = camera.right - camera.left;
-        const gate = clamp((view.zoom - homeView().zoom * 1.15) / 0.5, 0, 1);   // labels arrive on approach, never at the default view
         for (const id in pins) {
             const p = pins[id], loc = p.loc;
-            const dist = Math.hypot(loc.anchor[0] - view.target.x, loc.anchor[1] - view.target.z);
-            let f = clamp(1 - dist / (vw * 0.28), 0, 1) * gate;
-            if (hover === id || focus === id || open === id || lapMark === id || document.activeElement === p.el) f = 1;
+            const f = (hover === id || focus === id || open === id || lapMark === id || document.activeElement === p.el) ? 1 : 0;
             p.cur += (f - p.cur) * Math.min(1, dt * 9);
             if (Math.abs(f - p.cur) < 0.01) p.cur = f;
             const lift = p.cur * LIFT;
             groups[id].position.y = lift;
             const s = project(loc.anchor[0], loc.labelZ + lift, loc.anchor[1]);
-            p.el.style.transform = 'translate(' + s[0].toFixed(1) + 'px,' + s[1].toFixed(1) + 'px)';
-            p.el.style.opacity = p.cur.toFixed(3);
-            p.el.classList.toggle('is-live', p.cur > 0.5);
+            const side = loc.labelSide === 'left' ? 'translate(calc(-100% + 6px), -50%)' : loc.labelSide === 'below' ? 'translate(-50%, -6px)' : 'translate(-6px, -50%)';
+            p.el.style.transform = 'translate(' + s[0].toFixed(1) + 'px,' + s[1].toFixed(1) + 'px) ' + side;
+            p.el.classList.toggle('is-hot', p.cur > 0.5);
             p.el.classList.toggle('is-open', open === id);
         }
     }
@@ -105,9 +108,11 @@ export function attach(world, L, dom) {
         const pit = 'M' + L.sample(L.PIT, 8, false).map(p => mapXY(p[0], p[1]).map(f1).join(',')).join('L');
         let html = '<path d="' + path + '" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>' +
                    '<path d="' + pit + '" fill="none" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>';
-        for (const loc of L.LOCATIONS) {
-            const [x, y] = mapXY(loc.anchor[0], loc.anchor[1]);
-            html += '<circle class="ring-map-stop" data-id="' + loc.id + '" cx="' + f1(x) + '" cy="' + f1(y) + '" r="3"><title>' + loc.name + '</title></circle>';
+        const MAP_OFF = { about: [4, -4], betta: [5.5, 2.6], education: [-5.5, 2.6, 'end'], economics: [5.5, 2.6], writing: [-5.5, 2.6, 'end'], projects: [-5.5, 8, 'end'], contact: [5.5, 8] };
+        for (const loc of L.LOCATIONS) {   // the number sits beside each dot at rest; nothing waits for a hover
+            const [x, y] = mapXY(loc.anchor[0], loc.anchor[1]), o = MAP_OFF[loc.id] || [5.5, 2.6];
+            html += '<circle class="ring-map-stop" data-id="' + loc.id + '" cx="' + f1(x) + '" cy="' + f1(y) + '" r="3" role="button" aria-label="Stop ' + loc.num + ', ' + loc.name + '"/>' +
+                    '<text class="ring-map-num" x="' + f1(x + o[0]) + '" y="' + f1(y + o[1]) + '" text-anchor="' + (o[2] || 'start') + '">' + loc.num + '</text>';
         }
         html += '<circle class="ring-map-cam" cx="0" cy="0" r="3.6"/>';
         dom.map.setAttribute('viewBox', '0 0 ' + M.w + ' ' + M.h);
@@ -335,7 +340,7 @@ export function attach(world, L, dom) {
     window.addEventListener('resize', () => { layoutShift(); settle(); });
     buildMap();
     hooks.push((dt) => { const now = performance.now(); stepFly(now); stepLap(dt, now); updatePins(dt); updateMap(); });
-    layoutShift(); view.zoom = homeView().zoom; settle();
+    layoutShift(); { const hv = homeView(); view.target.x = hv.x; view.target.z = hv.z; view.zoom = hv.zoom; } settle();
 
     return { go, close, startLap, endLap, panBy, zoomAt, flyTo, FLY_MS, setStandings,
              state: () => ({ open, lap: lap.running, zoom: view.zoom, target: [view.target.x, view.target.z], hover, focus, flying: !!fly }) };

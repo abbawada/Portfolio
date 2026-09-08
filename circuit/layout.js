@@ -42,14 +42,27 @@
     ];
 
     /* The seven stops. anchor is where the label pin and the camera go;
-       boxes are blocked-in geometry: [u, v, w, d, h, z0, tone]. */
+       labelZ lifts the pin; labelSide 'left' or 'below' hangs the chip
+       that side of the dot; boxes are blocked-in geometry:
+       [u, v, w, d, h, z0, tone]. */
     var LOCATIONS = [
+        /* V1.2: the tower moves up the infield with clear grass to the
+           garage roof; the signage stack hangs on its front-left. The world
+           builds the internals, boards, details and Rep relative to boxes[0]. */
         { id: 'about', num: '01', name: 'About', section: 'Media tower', sector: 3,
-          anchor: [100.5, 142.5], labelZ: 50,
-          boxes: [[98, 140, 5, 5, 34, 0, 'wall'], [96.5, 138.5, 8, 8, 4, 34, 'roof'], [100, 142, 1.2, 1.2, 7, 38, 'roof']] },
+          anchor: [100.5, 122.5], labelZ: 55,
+          boxes: [[98, 120, 5, 5, 34, 0, 'wall'], [96.5, 118.5, 8, 8, 4, 34, 'roof'], [100, 122, 1.2, 1.2, 7, 38, 'roof']] },
+        /* V1.2: the court owns the upper infield, in front of the back
+           straight, with a lit apron, stands, floodlights and the pylon.
+           Largest footprint and tallest silhouette on the plate. */
         { id: 'betta', num: '02', name: 'Betta', section: 'The court', sector: 1,
-          anchor: [110, 112], labelZ: 12,
-          boxes: [[96, 104, 28, 16, 0.6, 0, 'wood'], [96.6, 111.2, 1, 1.6, 4, 0, 'roof'], [122.4, 111.2, 1, 1.6, 4, 0, 'roof']] },
+          anchor: [120, 87], labelZ: 16,
+          boxes: [[106, 79, 28, 16, 0.6, 0, 'wood'], [106.6, 86.2, 1, 1.6, 4, 0, 'roof'], [132.4, 86.2, 1, 1.6, 4, 0, 'roof']],
+          arena: { apron: [96, 70, 48, 34],
+                   stands: [[100, 70, 36, 6, 'back'], [100, 98, 40, 6, 'front'], [96, 76, 4, 22, 'end']],
+                   pylon: [138, 70, 6, 6, 50], head: [135, 69, 12, 4, 6, 50],
+                   lights: [[97, 71], [97, 103], [143, 103]], lightH: 26,
+                   rep: [150, 99] } },
         { id: 'education', num: '03', name: 'Education', section: 'Campus corner', sector: 1,
           anchor: [199, 112], labelZ: 16,
           boxes: [[192, 96, 14, 32, 1, 0, 'wall'],
@@ -64,10 +77,10 @@
           anchor: [7, 103], labelZ: 12,
           boxes: [[2, 96, 10, 14, 5, 0, 'wall'], [1, 95, 12, 16, 0.8, 5, 'roof']] },
         { id: 'projects', num: '06', name: 'Projects', section: 'Pit garage', sector: 3,
-          anchor: [112, 156], labelZ: 22,
+          anchor: [110, 150], labelZ: 12, labelSide: 'below',
           boxes: [[72, 150, 56, 12, 7, 0, 'wall'], [70, 148, 60, 15, 0.8, 7, 'roof']] },
         { id: 'contact', num: '07', name: 'Contact', section: 'Pit wall', sector: 3,
-          anchor: [92, 171], labelZ: 7,
+          anchor: [144, 171], labelZ: 1.5,
           boxes: [[64, 171, 80, 1.4, 1.8, 0, 'wall'], [96, 170.2, 6, 0.8, 3.6, 0, 'roof'], [106, 170.2, 3, 0.8, 2.6, 0, 'roof']],
           board: { text: 'ABBA.WADA10@GMAIL.COM' } }
     ];
@@ -93,10 +106,10 @@
         [200, 84, 6], [10, 120, 6], [6, 132, 5], [12, 140, 6], [8, 70, 5], [6, 84, 6],
         [40, 192, 5], [50, 196, 6], [120, 192, 5], [130, 196, 6], [150, 190, 5],
         [196, 150, 6], [200, 160, 5], [188, 182, 6], [180, 192, 5],
-        [60, 80, 5], [70, 74, 6], [150, 80, 6], [140, 74, 5], [60, 130, 5], [150, 132, 6], [80, 60, 5], [120, 60, 6],
+        [60, 80, 5], [70, 74, 6], [158, 84, 6], [156, 66, 5], [60, 130, 5], [150, 132, 6], [80, 60, 5], [120, 58, 6], [84, 90, 5], [78, 104, 6], [160, 108, 5], [72, 118, 5], [130, 124, 6], [120, 112, 5],
         [44, 26, 5], [36, 32, 6], [30, 24, 4], [176, 24, 5], [184, 30, 6], [190, 22, 4], [204, 40, 5], [206, 30, 6],
         [4, 176, 5], [10, 184, 6], [4, 192, 4], [20, 198, 5], [60, 200, 4], [90, 198, 6], [100, 204, 4], [160, 200, 5],
-        [204, 176, 5], [206, 190, 6], [200, 202, 4], [166, 150, 5], [160, 144, 6], [46, 120, 4], [50, 150, 5], [140, 100, 4]
+        [204, 176, 5], [206, 190, 6], [200, 202, 4], [166, 150, 5], [160, 144, 6], [46, 120, 4], [50, 150, 5], [150, 118, 4]
     ];
     var BLIMP = { at: [140, 30, 70], banner: 'BETTA' };
     var FLAG = { at: [100, 184] };
