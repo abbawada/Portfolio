@@ -1,0 +1,189 @@
+/* Wada Ring: the circuit in plan units. One file feeds the flat map
+   (tools/circuit/map.js) and, from Phase 2, the world itself.
+
+   Plan axes: u and v, 0 to 210. On screen u runs right and down, v runs
+   left and down, so the near corner of the plate is (210,210) at the
+   bottom and the far corner (0,0) at the top. z is up. One unit is about
+   a car length. Direction of travel follows the TRACK point order. */
+(function (root, factory) {
+    if (typeof module === 'object' && module.exports) module.exports = factory();
+    else root.CircuitLayout = factory();
+}(typeof self !== 'undefined' ? self : this, function () {
+    'use strict';
+
+    var NAME = 'Wada Ring';
+    var PLACE = 'Los Angeles, CA';
+    var SIZE = 210;
+
+    /* Closed loop, control points for a Catmull-Rom spline. */
+    var TRACK = [
+        [38, 178], [100, 178], [162, 178],     // pit straight, start line at u=100
+        [182, 170], [189, 150],                 // T1, a long right-hander up the right side
+        [178, 128], [188, 106],                 // the esses: Campus Corner
+        [180, 82], [162, 62],                   // fast sweep at the top right
+        [124, 46], [84, 40],                    // back straight, gently bowed
+        [48, 44], [24, 58], [22, 82],           // the hairpin around The Exchange
+        [40, 104], [28, 124],                   // return-leg chicane past the Press Room
+        [20, 150], [26, 170]                    // the last corner onto the straight
+    ];
+    var TRACK_WIDTH = 9;
+    var START = { u: 100, v: 178 };             // the start and finish line
+
+    /* Open, inside the straight. */
+    var PIT = [[30, 154], [42, 166], [156, 166], [172, 162]];
+    var PIT_WIDTH = 4;
+
+    /* Sector starts, nearest spline sample to each point. S1 starts at the
+       start line. Sectors follow the biography: origins, building, now. */
+    var SECTORS = [
+        { id: 1, at: [100, 178] },
+        { id: 2, at: [162, 62] },
+        { id: 3, at: [38, 102] }
+    ];
+
+    /* The seven stops. anchor is where the label pin and the camera go;
+       boxes are blocked-in geometry: [u, v, w, d, h, z0, tone]. */
+    var LOCATIONS = [
+        { id: 'about', num: '01', name: 'About', section: 'Media tower', sector: 3,
+          anchor: [100.5, 142.5], labelZ: 50,
+          boxes: [[98, 140, 5, 5, 34, 0, 'wall'], [96.5, 138.5, 8, 8, 4, 34, 'roof'], [100, 142, 1.2, 1.2, 7, 38, 'roof']] },
+        { id: 'betta', num: '02', name: 'Betta', section: 'The court', sector: 1,
+          anchor: [110, 112], labelZ: 12,
+          boxes: [[96, 104, 28, 16, 0.6, 0, 'wood'], [96.6, 111.2, 1, 1.6, 4, 0, 'roof'], [122.4, 111.2, 1, 1.6, 4, 0, 'roof']] },
+        { id: 'education', num: '03', name: 'Education', section: 'Campus corner', sector: 1,
+          anchor: [199, 112], labelZ: 16,
+          boxes: [[192, 96, 14, 32, 1, 0, 'wall'],
+                  [198, 100, 1.8, 1.8, 6, 1, 'wall'], [198, 105, 1.8, 1.8, 6, 1, 'wall'], [198, 110, 1.8, 1.8, 6, 1, 'wall'],
+                  [198, 115, 1.8, 1.8, 6, 1, 'wall'], [198, 120, 1.8, 1.8, 6, 1, 'wall'], [198, 125, 1.8, 1.8, 6, 1, 'wall'],
+                  [196, 98, 6, 30, 1.6, 7, 'wall'], [203, 100, 5, 28, 8, 0, 'wall']] },
+        { id: 'economics', num: '04', name: 'Economics', section: 'The exchange', sector: 2,
+          anchor: [10, 44], labelZ: 20,
+          boxes: [[2, 36, 16, 16, 12, 0, 'wall'], [4, 38, 12, 12, 3, 12, 'roof']],
+          ticker: { face: 'v', text: 'PLUME TOKEN YIELD VAULTS  ·  ETHEREUM VALIDATORS  ·  THE MEDICI NETWORK' } },
+        { id: 'writing', num: '05', name: 'Writing', section: 'Press room', sector: 3,
+          anchor: [7, 103], labelZ: 12,
+          boxes: [[2, 96, 10, 14, 5, 0, 'wall'], [1, 95, 12, 16, 0.8, 5, 'roof']] },
+        { id: 'projects', num: '06', name: 'Projects', section: 'Pit garage', sector: 3,
+          anchor: [112, 156], labelZ: 22,
+          boxes: [[72, 150, 56, 12, 7, 0, 'wall'], [70, 148, 60, 15, 0.8, 7, 'roof']] },
+        { id: 'contact', num: '07', name: 'Contact', section: 'Pit wall', sector: 3,
+          anchor: [92, 171], labelZ: 7,
+          boxes: [[64, 171, 80, 1.4, 1.8, 0, 'wall'], [96, 170.2, 6, 0.8, 3.6, 0, 'roof'], [106, 170.2, 3, 0.8, 2.6, 0, 'roof']],
+          board: { text: 'ABBA.WADA10@GMAIL.COM' } }
+    ];
+
+    /* The lap guide drives past the stops in this order. */
+    var LAP = ['about', 'betta', 'education', 'economics', 'writing', 'projects', 'contact'];
+
+    /* The five continuously animated things. Nothing else loops. */
+    var AMBIENT = ['car', 'start-flag', 'exchange-ticker', 'blimp', 'garage-scope'];
+
+    /* Scenery, blocked in. */
+    var GRANDSTAND = [[84, 30, 48, 6, 5, 0, 'wall'], [84, 26, 48, 5, 9, 0, 'wall'], [82, 24, 52, 13, 0.8, 9, 'roof']];
+    var PADDOCK = { slab: [64, 138, 80, 12], haulers: [[76, 140, 7, 3, 3, 0, 'wall'], [86, 140, 7, 3, 3, 0, 'wall'], [112, 140, 7, 3, 3, 0, 'wall'], [122, 140, 7, 3, 3, 0, 'wall']] };
+    var BILLBOARDS = [[100, 32, 10, 0.6, 4, 3, 'wall'], [176, 132, 0.6, 8, 4, 3, 'wall'], [8, 160, 0.6, 8, 4, 3, 'wall']];
+    var GRAVEL = [
+        [[186, 178], [198, 172], [203, 152], [195, 146], [190, 162], [184, 173]],
+        [[14, 54], [6, 62], [6, 84], [14, 86], [17, 70]]
+    ];
+    var CARPARK = { slab: [170, 178, 26, 16], cars: [[173, 181, 2.2, 1.2], [176.5, 181, 2.2, 1.2], [180, 181, 2.2, 1.2], [187, 181, 2.2, 1.2], [190.5, 181, 2.2, 1.2],
+                                                     [173, 188, 2.2, 1.2], [180, 188, 2.2, 1.2], [183.5, 188, 2.2, 1.2], [190.5, 188, 2.2, 1.2]] };
+    var TREES = [
+        [60, 30, 6], [52, 34, 5], [150, 30, 6], [160, 34, 5], [170, 42, 6], [190, 70, 6], [196, 60, 5],
+        [200, 84, 6], [10, 120, 6], [6, 132, 5], [12, 140, 6], [8, 70, 5], [6, 84, 6],
+        [40, 192, 5], [50, 196, 6], [120, 192, 5], [130, 196, 6], [150, 190, 5],
+        [196, 150, 6], [200, 160, 5], [188, 182, 6], [180, 192, 5],
+        [60, 80, 5], [70, 74, 6], [150, 80, 6], [140, 74, 5], [60, 130, 5], [150, 132, 6], [80, 60, 5], [120, 60, 6],
+        [44, 26, 5], [36, 32, 6], [30, 24, 4], [176, 24, 5], [184, 30, 6], [190, 22, 4], [204, 40, 5], [206, 30, 6],
+        [4, 176, 5], [10, 184, 6], [4, 192, 4], [20, 198, 5], [60, 200, 4], [90, 198, 6], [100, 204, 4], [160, 200, 5],
+        [204, 176, 5], [206, 190, 6], [200, 202, 4], [166, 150, 5], [160, 144, 6], [46, 120, 4], [50, 150, 5], [140, 100, 4]
+    ];
+    var BLIMP = { at: [140, 30, 70], banner: 'BETTA' };
+    var FLAG = { at: [100, 184] };
+    var CAR = { number: '10' };
+
+    var PALETTE = {
+        plate: '#e6e0d3', grass: '#b7bfa3', asphalt: '#3b3b3d', paper: '#f7f5f0',
+        wall: '#efece5', wallShade: '#c9c3b7', roof: '#6b675f', wood: '#d8bc93',
+        accent: '#c6a15b', ink: '#141414', cardinal: '#990000', campusGold: '#ffcc00'
+    };
+
+    /* Catmull-Rom sampling. */
+    function cr(p0, p1, p2, p3, t) {
+        var t2 = t * t, t3 = t2 * t;
+        return [
+            0.5 * ((2 * p1[0]) + (-p0[0] + p2[0]) * t + (2 * p0[0] - 5 * p1[0] + 4 * p2[0] - p3[0]) * t2 + (-p0[0] + 3 * p1[0] - 3 * p2[0] + p3[0]) * t3),
+            0.5 * ((2 * p1[1]) + (-p0[1] + p2[1]) * t + (2 * p0[1] - 5 * p1[1] + 4 * p2[1] - p3[1]) * t2 + (-p0[1] + 3 * p1[1] - 3 * p2[1] + p3[1]) * t3)
+        ];
+    }
+
+    function sample(pts, steps, closed) {
+        var out = [], n = pts.length, segs = closed ? n : n - 1, i, k;
+        for (i = 0; i < segs; i++) {
+            var p0 = pts[closed ? (i - 1 + n) % n : Math.max(0, i - 1)];
+            var p1 = pts[i];
+            var p2 = pts[closed ? (i + 1) % n : i + 1];
+            var p3 = pts[closed ? (i + 2) % n : Math.min(n - 1, i + 2)];
+            for (k = 0; k < steps; k++) out.push(cr(p0, p1, p2, p3, k / steps));
+        }
+        if (!closed) out.push(pts[n - 1].slice());
+        return out;
+    }
+
+    /* Per-sample frames: tangent, left normal (in plan, v down), arc
+       length s, signed curvature k. */
+    function frames(pts, closed) {
+        var n = pts.length, out = [], s = 0, i;
+        for (i = 0; i < n; i++) {
+            var a = pts[closed ? (i - 1 + n) % n : Math.max(0, i - 1)];
+            var b = pts[closed ? (i + 1) % n : Math.min(n - 1, i + 1)];
+            var tx = b[0] - a[0], ty = b[1] - a[1], L = Math.hypot(tx, ty) || 1;
+            tx /= L; ty /= L;
+            if (i > 0) s += Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]);
+            out.push({ p: pts[i], t: [tx, ty], n: [ty, -tx], s: s, k: 0 });
+        }
+        for (i = 0; i < n; i++) {
+            var f0 = out[closed ? (i - 1 + n) % n : Math.max(0, i - 1)];
+            var f1 = out[closed ? (i + 1) % n : Math.min(n - 1, i + 1)];
+            var cross = f0.t[0] * f1.t[1] - f0.t[1] * f1.t[0];
+            var dot = f0.t[0] * f1.t[0] + f0.t[1] * f1.t[1];
+            var ds = Math.abs(f1.s - f0.s) || 1;
+            if (closed && i === 0) ds = f1.s + (s - f0.s);
+            out[i].k = Math.atan2(cross, dot) / ds;
+        }
+        var total = s;
+        if (closed) total += Math.hypot(pts[0][0] - pts[n - 1][0], pts[0][1] - pts[n - 1][1]);
+        out.length_ = total;
+        return out;
+    }
+
+    function ribbon(fr, w) {
+        var L = [], R = [], i;
+        for (i = 0; i < fr.length; i++) {
+            var f = fr[i];
+            L.push([f.p[0] + f.n[0] * w / 2, f.p[1] + f.n[1] * w / 2]);
+            R.push([f.p[0] - f.n[0] * w / 2, f.p[1] - f.n[1] * w / 2]);
+        }
+        return { left: L, right: R };
+    }
+
+    function nearest(fr, pt) {
+        var best = 0, bd = Infinity, i;
+        for (i = 0; i < fr.length; i++) {
+            var d = Math.hypot(fr[i].p[0] - pt[0], fr[i].p[1] - pt[1]);
+            if (d < bd) { bd = d; best = i; }
+        }
+        return best;
+    }
+
+    return {
+        NAME: NAME, PLACE: PLACE, SIZE: SIZE,
+        TRACK: TRACK, TRACK_WIDTH: TRACK_WIDTH, START: START,
+        PIT: PIT, PIT_WIDTH: PIT_WIDTH, SECTORS: SECTORS,
+        LOCATIONS: LOCATIONS, LAP: LAP, AMBIENT: AMBIENT,
+        GRANDSTAND: GRANDSTAND, PADDOCK: PADDOCK, CARPARK: CARPARK, BILLBOARDS: BILLBOARDS,
+        GRAVEL: GRAVEL, TREES: TREES, BLIMP: BLIMP, FLAG: FLAG, CAR: CAR,
+        PALETTE: PALETTE,
+        sample: sample, frames: frames, ribbon: ribbon, nearest: nearest
+    };
+}));

@@ -1,0 +1,94 @@
+{
+ "motion": {
+  "loaded": true,
+  "running_loop": true,
+  "idle_camera_still": true,
+  "idle_lifts_zero": true,
+  "tab_order": [
+   "ring-lap",
+   "about"
+  ],
+  "focused_pin_visible": true,
+  "enter_opens_ms": 783,
+  "open_id": "about",
+  "focus_in_panel": "ringPanelClose",
+  "fly_ms_constant": 750,
+  "escape_closes": true,
+  "focus_back_on_pin": "about",
+  "camera_back_home": true,
+  "tab_cycles_all_stops": [
+   "betta",
+   "education",
+   "economics",
+   "writing",
+   "projects",
+   "contact"
+  ],
+  "last_stop_opens": "contact",
+  "arrows_and_plus_move": true,
+  "zero_returns_home": true,
+  "wheel_zooms": true,
+  "drag_pans": true,
+  "labels_after_zoom": [
+   "about"
+  ],
+  "hover_cursor_pointer": true,
+  "click_world_opens": "about",
+  "minimap_click_opens": "economics",
+  "lap_runs": true,
+  "lap_button_text": "Skip lap",
+  "lap_label_lit": [
+   "about",
+   "betta",
+   "economics"
+  ],
+  "escape_ends_lap": true,
+  "draw_calls": 145,
+  "fps": 60
+ },
+ "reduced": {
+  "loaded": true,
+  "running_loop": false,
+  "idle_camera_still": true,
+  "idle_lifts_zero": true,
+  "tab_order": [
+   "ring-lap",
+   "about"
+  ],
+  "focused_pin_visible": true,
+  "enter_opens_ms": 72,
+  "open_id": "about",
+  "focus_in_panel": "ringPanelClose",
+  "fly_ms_constant": 750,
+  "escape_closes": true,
+  "focus_back_on_pin": "about",
+  "camera_back_home": true,
+  "tab_cycles_all_stops": [
+   "betta",
+   "education",
+   "economics",
+   "writing",
+   "projects",
+   "contact"
+  ],
+  "last_stop_opens": "contact",
+  "arrows_and_plus_move": true,
+  "zero_returns_home": true,
+  "wheel_zooms": true,
+  "drag_pans": true,
+  "labels_after_zoom": [],
+  "hover_cursor_pointer": true,
+  "click_world_opens": "about",
+  "minimap_click_opens": "economics",
+  "lap_runs": true,
+  "lap_button_text": "Skip lap",
+  "lap_label_lit": [
+   "about",
+   "betta",
+   "economics"
+  ],
+  "escape_ends_lap": true,
+  "draw_calls": 145,
+  "fps": 0
+ }
+}

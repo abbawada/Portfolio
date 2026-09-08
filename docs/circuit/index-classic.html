@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abba Wada | Building Betta</title>
+    <meta name="description" content="Abba Wada, 23. Building Betta, a haptic shooting sleeve for basketball that learns your shot and taps your wrist when a rep drifts.">
+    <meta property="og:title" content="Abba Wada | Building Betta">
+    <meta property="og:description" content="Building Betta, a shooting sleeve that learns your shot and taps your wrist when a rep drifts.">
+    <meta property="og:image" content="https://abbawada.github.io/Portfolio/images/betta_hero_court.jpg">
+    <meta property="og:url" content="https://abbawada.github.io/Portfolio/">
+    <meta property="og:type" content="website">
+    <link rel="icon" href="favicon.ico" sizes="32x32">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;family=Schibsted+Grotesk:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+</head>
+<body class="home" data-wave="0.5">
+    <canvas id="wave" aria-hidden="true"></canvas>
+    <canvas id="portrait" aria-hidden="true"></canvas>
+
+    <main class="home-main">
+        <section class="home-intro">
+            <h1 class="home-name">Abba Wada</h1>
+            <p class="home-line">I'm 23, on a mission to put elite performance in the hands of every young dreamer.</p>
+            <p class="home-location">Los Angeles, CA</p>
+        </section>
+
+        <div class="home-lower">
+            <nav class="home-dir" aria-label="Site directory">
+                <a class="dir-row" href="betta.html">
+                    <span class="dir-name">Betta</span>
+                    <span class="dir-desc">a haptic shooting sleeve</span>
+                    <span class="dir-arrow" aria-hidden="true">→</span>
+                </a>
+                <a class="dir-row" href="projects.html">
+                    <span class="dir-name">Projects</span>
+                    <span class="dir-desc">Posture Cue, robots, IoT</span>
+                    <span class="dir-arrow" aria-hidden="true">→</span>
+                </a>
+                <a class="dir-row" href="writing.html">
+                    <span class="dir-name">Writing</span>
+                    <span class="dir-desc">essays on Medium</span>
+                    <span class="dir-arrow" aria-hidden="true">→</span>
+                </a>
+                <a class="dir-row" href="about.html">
+                    <span class="dir-name">About</span>
+                    <span class="dir-desc">who I am, education, skills, contact</span>
+                    <span class="dir-arrow" aria-hidden="true">→</span>
+                </a>
+            </nav>
+            <a class="home-feature" href="betta.html">
+                <img src="images/betta_thumb.jpg" alt="The Betta page" width="1400" height="747" decoding="async">
+                <span class="home-feature-kicker">Featured Project</span>
+            </a>
+        </div>
+    </main>
+
+    <script src="wave.js"></script>
+    <script src="halftone-live.js"></script>
+    <script src="script.js"></script>
+    <script>
+    (function () {
+        'use strict';
+        var portrait = document.getElementById('portrait');
+        if (portrait && window.HalftoneLive) {
+            window.HalftoneLive.mount(portrait, {
+                src: 'images/page_halftone.png',
+                region: { x: 0.00, y: 0.26, w: 0.82, h: 0.72 },
+                // his face, kept still
+                exclude: [{ cx: 0.425, cy: 0.525, rx: 0.14, ry: 0.16, feather: 0.55 }],
+                // down the left silhouette, round the shoulder, across the suit
+                spine: [
+                    { x: 0.30, y: 0.30 }, { x: 0.21, y: 0.41 }, { x: 0.15, y: 0.54 },
+                    { x: 0.15, y: 0.66 }, { x: 0.27, y: 0.75 }, { x: 0.44, y: 0.81 },
+                    { x: 0.62, y: 0.87 }, { x: 0.80, y: 0.95 }
+                ],
+                dragon: {
+                    cross: 30, rest: 15, length: 0.3,
+                    headWidth: 0.11, tailWidth: 0.014
+                },
+                lift: '#b8b2a6',
+                liftMax: 0.72,
+                sparkMax: 0.34,
+                ember: '#c6a15b',
+                emberMax: 0.66,
+                emberSpan: 0.3,
+                glyph: { threshold: 0.28, length: 1.15, width: 0.3 },
+                pitch: 11
+            });
+        }
+    })();
+    </script>
+</body>
+</html>

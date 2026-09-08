@@ -57,3 +57,7 @@ feTurbulence fractalNoise, baseFrequency 0.8, 2 octaves, white at 4 to 5% alpha,
 - Chrome frames the art. It never overlaps a face or the focal subject; only the spine region and the two bottom corners carry chrome.
 - Do not change any wording. Categories and serials above are the full set.
 - Spine type is legible at case widths of 220 px and up. The shelf currently renders cases at 244 px.
+
+
+## V1.1 Part 6 addition: the era spine
+A 9-unit stripe across the top of the 72-wide spine band (viewBox units): Wearables #c6a15b, Token Economics #3fa565, Robotics, IoT and Side Quests #9aa8b4, paper #f7f5f0 on a case with its own spineColor. An edition tag WADA RING, Chakra Petch 600 italic 6.5, letter-spacing 1.2, white at 85%, centred at y=866 above the serial. Everything else unchanged.

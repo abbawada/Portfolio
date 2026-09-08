@@ -1,0 +1,120 @@
+{
+ "stops": {
+  "about": {
+   "open": "about",
+   "title": "About",
+   "cases": 0,
+   "rows": 0,
+   "essays": 0,
+   "links": 0,
+   "images": 1,
+   "skills": 22,
+   "panel_closed": true,
+   "panel_body_empty": true
+  },
+  "betta": {
+   "open": "betta",
+   "title": "Betta",
+   "cases": 1,
+   "rows": 1,
+   "essays": 0,
+   "links": 0,
+   "images": 1,
+   "skills": 0,
+   "stage_open": true,
+   "spread_title": "Betta",
+   "spread_links": [
+    "betta.html",
+    "https://betta.live"
+   ],
+   "spread_focus": "back-close",
+   "capture_mounted": true,
+   "video_playing": true,
+   "stage_closed_panel_open": true,
+   "focus_back_on_case": "pcase",
+   "panel_closed": true,
+   "panel_body_empty": true
+  },
+  "education": {
+   "open": "education",
+   "title": "Education",
+   "cases": 0,
+   "rows": 0,
+   "essays": 0,
+   "links": 0,
+   "images": 1,
+   "skills": 0,
+   "panel_closed": true,
+   "panel_body_empty": true
+  },
+  "economics": {
+   "open": "economics",
+   "title": "Economics",
+   "cases": 2,
+   "rows": 1,
+   "essays": 0,
+   "links": 0,
+   "images": 2,
+   "skills": 0,
+   "stage_open": true,
+   "spread_title": "Plume Token Yield Vaults",
+   "spread_links": [
+    "https://1drv.ms/x/c/933edcbe437d6d8e/IQCObX1Dvtw-IICT8QAAAAAAAZDvoEZcrmQfKaM4GBRI_Q0"
+   ],
+   "spread_focus": "back-close",
+   "stage_closed_panel_open": true,
+   "focus_back_on_case": "pcase",
+   "panel_closed": true,
+   "panel_body_empty": true
+  },
+  "writing": {
+   "open": "writing",
+   "title": "Writing",
+   "cases": 0,
+   "rows": 0,
+   "essays": 3,
+   "links": 4,
+   "images": 0,
+   "skills": 0,
+   "panel_closed": true,
+   "panel_body_empty": true
+  },
+  "projects": {
+   "open": "projects",
+   "title": "Projects",
+   "cases": 4,
+   "rows": 0,
+   "essays": 0,
+   "links": 0,
+   "images": 4,
+   "skills": 0,
+   "stage_open": true,
+   "spread_title": "Posture Cue",
+   "spread_links": [
+    "https://www.youtube.com/watch?v=Hr_AOARKWCw"
+   ],
+   "spread_focus": "back-close",
+   "arrow_steps_to": "Visual Mapping for Autonomous Robots",
+   "stage_closed_panel_open": true,
+   "focus_back_on_case": "pcase",
+   "panel_closed": true,
+   "panel_body_empty": true
+  },
+  "contact": {
+   "open": "contact",
+   "title": "Contact",
+   "cases": 0,
+   "rows": 0,
+   "essays": 0,
+   "links": 2,
+   "images": 0,
+   "skills": 0,
+   "panel_closed": true,
+   "panel_body_empty": true
+  }
+ },
+ "js_errors": "[]",
+ "draw_calls": 40,
+ "fps": 60,
+ "stage_open_class_clean": "circuit"
+}

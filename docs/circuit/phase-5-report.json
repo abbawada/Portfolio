@@ -1,0 +1,52 @@
+{
+ "poster_by_query": {
+  "no_webgl_class": true,
+  "canvas_hidden": true,
+  "poster_image_loaded": true,
+  "regions": 7,
+  "labels": 7,
+  "tab_reaches_region": "Stop 01, About, Media tower",
+  "enter_opens": "About",
+  "escape_closes": true,
+  "click_region_cases": 4,
+  "case_flips": "Posture Cue",
+  "closed_clean": true,
+  "js_errors": "[]"
+ },
+ "webgl_disabled": {
+  "webgl_available": false,
+  "no_webgl_class": true,
+  "canvas_hidden": true,
+  "poster_image_loaded": true,
+  "regions": 7,
+  "labels": 7,
+  "tab_reaches_region": "Stop 01, About, Media tower",
+  "enter_opens": "About",
+  "escape_closes": true,
+  "click_region_cases": 4,
+  "case_flips": "Posture Cue",
+  "closed_clean": true,
+  "js_errors": "[]"
+ },
+ "mobile": {
+  "world_running": true,
+  "no_horizontal_scroll": true,
+  "touch_pan": true,
+  "pinch_zoom": 4.5,
+  "tap_opens": "projects",
+  "sheet_from_bottom": true,
+  "sheet_cases": 4,
+  "sheet_no_overflow": true,
+  "mobile_flip": "Posture Cue",
+  "mobile_spread_fits": true,
+  "closed_clean": true,
+  "fps": 58.8,
+  "js_errors": "[]"
+ },
+ "mobile_reduced": {
+  "loop_off": true,
+  "instant_open": true,
+  "car_parked": "[200.6173114011064,202.6173114011064]",
+  "js_errors": "[]"
+ }
+}

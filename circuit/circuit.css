@@ -1,0 +1,429 @@
+/* ============================================================
+   Wada Ring, page chrome. Paper and ink like the rest of the
+   site; Chakra Petch is the one condensed face for the
+   broadcast chrome (labels, mini-map, timing lines).
+   ============================================================ */
+
+/* the site tokens, repeated so the first paint does not wait for styles.css */
+:root {
+    --paper: #f7f5f0;
+    --ink: #141414;
+    --muted: #6b675f;
+    --hairline: rgba(20, 20, 20, 0.12);
+    --accent: #c6a15b;
+    --accent-ink: #8a6b2f;
+    --font-display: 'Schibsted Grotesk', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    --font-serif: 'Newsreader', Georgia, 'Times New Roman', serif;
+    --radius: 8px;
+    --font-chrome: 'Chakra Petch', 'Schibsted Grotesk', 'Helvetica Neue', Arial, sans-serif;
+    --ring-panel-w: min(600px, 92vw);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body.circuit { height: 100%; overflow: hidden; }
+body.circuit { background: var(--paper); color: var(--ink); font-family: var(--font-serif); -webkit-font-smoothing: antialiased; }
+body.circuit h1, body.circuit h2 { font-family: var(--font-display); }
+body.circuit a { color: var(--ink); text-decoration: none; }
+body.circuit a:focus-visible, body.circuit button:focus-visible { outline: 2px solid var(--accent-ink); outline-offset: 3px; }
+
+#world {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    touch-action: none;
+    cursor: grab;
+}
+#world.is-over { cursor: pointer; }
+#world.is-dragging { cursor: grabbing; }
+
+.ring-visually-hidden {
+    position: absolute;
+    width: 1px; height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+/* ------------------------------------------------------------
+   Timing-tower block, top left
+   ------------------------------------------------------------ */
+.ring-hud {
+    position: fixed;
+    top: clamp(1.25rem, 3.5vh, 2.25rem);
+    left: clamp(1.25rem, 3.5vw, 2.75rem);
+    z-index: 3;
+    max-width: 22rem;
+    pointer-events: none;
+}
+.ring-hud > * { pointer-events: auto; }
+.ring-hud-ring, .ring-hud-name, .ring-hud-line, .ring-hud-place {
+    text-shadow: 0 0 2px var(--paper), 0 0 6px var(--paper), 0 0 12px var(--paper), 0 0 18px var(--paper);
+}
+
+.ring-hud-ring {
+    font-family: var(--font-chrome);
+    font-style: italic;
+    font-weight: 700;
+    font-size: 0.8125rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin-bottom: 0.25rem;
+}
+
+.ring-hud-name {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(1.5rem, 2.4vw, 1.875rem);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin-bottom: 0.5rem;
+}
+
+.ring-hud-line {
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    line-height: 1.45;
+    margin-bottom: 0.375rem;
+}
+
+.ring-hud-place {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 0.625rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1.25rem;
+}
+
+.ring-lap {
+    min-height: 40px;
+    padding: 0.5rem 1.125rem;
+    border: 1px solid var(--ink);
+    border-radius: 999px;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-chrome);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+.ring-lap:hover { background: var(--ink); color: var(--paper); }
+.ring-lap[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+
+/* ------------------------------------------------------------
+   Pins: labels that fade in on approach
+   ------------------------------------------------------------ */
+.ring-pins {
+    position: fixed;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.ring-pin {
+    position: absolute;
+    left: 0; top: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0.375rem 0.25rem 0;
+    margin: -0.375rem 0 0 -4px;
+    border: 0;
+    background: none;
+    text-align: left;
+    color: var(--ink);
+    opacity: 0;
+    pointer-events: none;
+    cursor: pointer;
+    will-change: transform, opacity;
+}
+.ring-pin.is-live { pointer-events: auto; }
+.ring-pin:focus-visible { outline: 2px solid var(--accent-ink); outline-offset: 2px; opacity: 1; }
+
+.ring-pin-dot {
+    flex: none;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--ink);
+    box-shadow: 0 0 0 3px var(--paper);
+}
+.ring-pin.is-open .ring-pin-dot { background: var(--accent); }
+
+.ring-pin-text { display: flex; flex-direction: column; gap: 1px; }
+
+.ring-pin-name {
+    font-family: var(--font-chrome);
+    font-style: italic;
+    font-weight: 600;
+    font-size: 0.8125rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    text-shadow: 0 0 2px var(--paper), 0 0 6px var(--paper), 0 0 10px var(--paper);
+}
+
+.ring-pin-sub {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 0.5625rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+    text-shadow: 0 0 2px var(--paper), 0 0 6px var(--paper);
+}
+
+/* ------------------------------------------------------------
+   Mini-map, bottom right, monochrome
+   ------------------------------------------------------------ */
+.ring-broadcast {
+    position: fixed;
+    right: clamp(1rem, 3vw, 2.25rem);
+    bottom: clamp(1rem, 3vh, 1.75rem);
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+    pointer-events: none;
+}
+.ring-broadcast > * { pointer-events: auto; }
+.ring-map {
+    width: 190px;
+    height: 120px;
+    color: var(--ink);
+    overflow: visible;
+}
+
+/* the timing tower: three rows, broadcast face, real numbers only */
+.ring-tower {
+    width: 236px;
+    font-family: var(--font-chrome);
+    font-size: 0.6875rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink);
+}
+.ring-tower-head {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 0.375rem 0.25rem;
+    font-size: 0.5625rem;
+    letter-spacing: 0.16em;
+    color: var(--muted);
+    border-bottom: 1px solid var(--hairline);
+    margin-bottom: 0.25rem;
+}
+.ring-tower-row {
+    display: grid;
+    grid-template-columns: 1.5rem 2.1rem 1fr auto;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.2rem 0.375rem;
+    border-left: 3px solid var(--hairline);
+    background: rgba(247, 245, 240, 0.7);
+    will-change: transform;
+}
+.ring-tower-row + .ring-tower-row { margin-top: 2px; }
+.ring-tower-row[data-district="gold"] { border-left-color: #c6a15b; }
+.ring-tower-row[data-district="green"] { border-left-color: #3fa565; }
+.ring-tower-row[data-district="media"] { border-left-color: #3ad7e6; }
+.ring-tower-pos { font-style: italic; font-weight: 700; }
+.ring-tower-code { font-weight: 700; }
+.ring-tower-name { font-family: var(--font-display); font-weight: 600; font-size: 0.5625rem; letter-spacing: 0.12em; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ring-tower-val { font-weight: 700; font-variant-numeric: tabular-nums; }
+.ring-tower-val.is-garage { color: var(--muted); font-weight: 600; font-size: 0.5625rem; letter-spacing: 0.14em; }
+.ring-map-stop {
+    fill: var(--ink);
+    stroke: transparent;
+    stroke-width: 10px;
+    cursor: pointer;
+}
+.ring-map-stop:hover { fill: var(--accent-ink); }
+.ring-map-cam { fill: var(--accent); }
+
+/* ------------------------------------------------------------
+   The stop panel: section name, one line, then the shelf
+   ------------------------------------------------------------ */
+.ring-panel {
+    position: fixed;
+    top: 0; right: 0; bottom: 0;
+    width: var(--ring-panel-w);
+    z-index: 4;
+    overflow: auto;
+    background: var(--paper);
+    border-left: 1px solid var(--hairline);
+    padding: clamp(1.5rem, 4vh, 2.5rem) clamp(1.25rem, 4vw, 2.5rem) 3rem;
+    opacity: 0;
+    transition: opacity 250ms ease;
+}
+.ring-panel.is-open { opacity: 1; }
+
+.ring-panel-head {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas: "kicker close" "title close";
+    align-items: start;
+    column-gap: 1rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--hairline);
+    margin-bottom: 1.5rem;
+}
+.ring-panel-kicker {
+    grid-area: kicker;
+    font-family: var(--font-chrome);
+    font-style: italic;
+    font-weight: 600;
+    font-size: 0.6875rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.375rem;
+}
+.ring-panel-title {
+    grid-area: title;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(1.75rem, 3vw, 2.25rem);
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+}
+.ring-panel-close {
+    grid-area: close;
+    min-height: 40px;
+    padding: 0.5rem 0.875rem;
+    border: 1px solid var(--hairline);
+    border-radius: 999px;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-chrome);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+.ring-panel-close:hover { border-color: var(--ink); }
+
+/* narrow screens: the panel rises from below; Phase 5 finishes this */
+@media (max-width: 760px) {
+    :root { --ring-panel-w: 100vw; }
+    .ring-panel { top: auto; height: 54vh; border-left: 0; border-top: 1px solid var(--hairline); }
+    body.ring-open .ring-hud { display: none; }   /* the sheet and the stop share the screen; the block returns on close */
+    .ring-hud { max-width: 15rem; }
+    .ring-hud-line { font-size: 0.875rem; line-height: 1.4; }
+    .ring-map { width: 130px; height: 82px; }
+    .ring-tower { width: 150px; font-size: 0.625rem; }
+    body.ring-open .ring-broadcast { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ring-panel { transition: none; }
+}
+
+/* ------------------------------------------------------------
+   Inside the panel: the one line, the case grid, the rows
+   ------------------------------------------------------------ */
+.ring-panel-line {
+    font-family: var(--font-serif);
+    font-size: 1.0625rem;
+    color: var(--muted);
+    margin-bottom: 1.25rem;
+}
+
+/* the cases as objects in a grid; the case itself is the projects.html
+   component untouched, only its container differs */
+.ring-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 232px);
+    gap: 1.75rem;
+    justify-content: start;
+    padding: 1.25rem 0 2rem;
+    perspective: 1400px;
+}
+
+.ring-rows { margin-top: 0.5rem; }
+.ring-rows .plain-group + .plain-group { margin-top: 1.5rem; }
+
+.ring-portrait {
+    max-width: 300px;
+    margin: 1.75rem 0 2rem;
+    -webkit-mask-image: linear-gradient(to bottom, #000 70%, transparent);
+    mask-image: linear-gradient(to bottom, #000 70%, transparent);
+}
+
+.ring-viewall { margin-top: 1.5rem; }
+
+.ring-copy {
+    align-self: flex-start;
+    min-height: 40px;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--hairline);
+    border-radius: 999px;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-chrome);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+.ring-copy:hover { border-color: var(--ink); }
+
+/* page components, sized for a panel column */
+.ring-panel .betta-milestones { grid-template-columns: 1fr; }
+.ring-panel .betta-cheque { max-width: 360px; }
+.ring-panel .about-section { margin-top: 2rem; }
+.ring-panel .about-body + * { margin-top: 0; }
+.ring-panel .publications-list { margin-top: 0; }
+.ring-panel .plain-list video { max-width: 420px; }
+
+@media (max-width: 720px) {
+    .ring-grid { grid-template-columns: repeat(auto-fill, 176px); gap: 1.25rem; }
+}
+
+/* ------------------------------------------------------------
+   No WebGL: the poster with clickable regions
+   ------------------------------------------------------------ */
+body.ring-no-webgl #world { display: none; }
+body.is-poster .ring-hud, body.is-poster .ring-pins, body.is-poster .ring-map { display: none; }
+
+.ring-poster {
+    position: fixed;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    background: var(--paper);
+}
+.ring-poster-box {
+    position: relative;
+    width: min(100vw, calc(100vh * 16 / 9));
+    aspect-ratio: 16 / 9;
+}
+.ring-poster-box img { display: block; width: 100%; height: 100%; }
+.ring-poster-areas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.ring-poster-areas polygon { fill: transparent; cursor: pointer; outline: none; }
+.ring-poster-areas polygon:hover { fill: rgba(198, 161, 91, 0.12); }
+.ring-poster-areas polygon:focus-visible { stroke: var(--accent-ink); stroke-width: 0.3; vector-effect: non-scaling-stroke; }
+.ring-poster .ring-pin { position: absolute; opacity: 1; pointer-events: none; }
+.ring-poster-static { flex-direction: column; }
+.ring-poster-links {
+    display: flex;
+    gap: clamp(1rem, 3vw, 2rem);
+    justify-content: center;
+    padding: 1rem;
+    font-family: var(--font-display);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}

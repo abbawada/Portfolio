@@ -14,86 +14,109 @@
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="circuit/circuit.css?v=11.4">
+    <!-- the site stylesheet dresses the panels; it need not block the first paint.
+         Every script and stylesheet carries a build query so a deploy never pairs a new page with a cached module. -->
+    <link rel="stylesheet" href="styles.css?v=11.4" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="styles.css?v=11.4"></noscript>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;family=Schibsted+Grotesk:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,600;0,700;1,600;1,700&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;family=Schibsted+Grotesk:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,600;0,700;1,600;1,700&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;family=Schibsted+Grotesk:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"></noscript>
 </head>
-<body class="home" data-wave="0.5">
-    <canvas id="wave" aria-hidden="true"></canvas>
-    <canvas id="portrait" aria-hidden="true"></canvas>
+<body class="circuit">
+    <canvas id="world" aria-label="Wada Ring, an isometric circuit. Each stop opens a section of the portfolio."></canvas>
 
-    <main class="home-main">
-        <section class="home-intro">
-            <h1 class="home-name">Abba Wada</h1>
-            <p class="home-line">I'm 23, on a mission to put elite performance in the hands of every young dreamer.</p>
-            <p class="home-location">Los Angeles, CA</p>
-        </section>
+    <header class="ring-hud">
+        <p class="ring-hud-ring">Wada Ring</p>
+        <h1 class="ring-hud-name">Abba Wada</h1>
+        <p class="ring-hud-line">I'm 23, on a mission to put elite performance in the hands of every young dreamer.</p>
+        <p class="ring-hud-place">Los Angeles, CA</p>
+        <button class="ring-lap" id="ringLap" type="button" aria-pressed="false">Start lap</button>
+        <p class="ring-visually-hidden">Drag to explore, scroll to zoom. Tab moves between the seven stops, Enter opens one, Escape closes it.</p>
+    </header>
 
-        <div class="home-lower">
-            <nav class="home-dir" aria-label="Site directory">
-                <a class="dir-row" href="betta.html">
-                    <span class="dir-name">Betta</span>
-                    <span class="dir-desc">a haptic shooting sleeve</span>
-                    <span class="dir-arrow" aria-hidden="true">→</span>
-                </a>
-                <a class="dir-row" href="projects.html">
-                    <span class="dir-name">Projects</span>
-                    <span class="dir-desc">Posture Cue, robots, IoT</span>
-                    <span class="dir-arrow" aria-hidden="true">→</span>
-                </a>
-                <a class="dir-row" href="writing.html">
-                    <span class="dir-name">Writing</span>
-                    <span class="dir-desc">essays on Medium</span>
-                    <span class="dir-arrow" aria-hidden="true">→</span>
-                </a>
-                <a class="dir-row" href="about.html">
-                    <span class="dir-name">About</span>
-                    <span class="dir-desc">who I am, education, skills, contact</span>
-                    <span class="dir-arrow" aria-hidden="true">→</span>
-                </a>
+    <nav class="ring-pins" id="ringPins" aria-label="Stops on the lap"></nav>
+
+    <div class="ring-broadcast">
+        <div class="ring-tower" id="ringTower" role="group" hidden></div>
+        <svg class="ring-map" id="ringMap" aria-hidden="true" focusable="false"></svg>
+    </div>
+
+    <aside class="ring-panel" id="ringPanel" role="dialog" aria-labelledby="ringPanelTitle" hidden>
+        <header class="ring-panel-head">
+            <p class="ring-panel-kicker" id="ringPanelKicker"></p>
+            <h2 class="ring-panel-title" id="ringPanelTitle"></h2>
+            <button class="ring-panel-close" id="ringPanelClose" type="button">Close</button>
+        </header>
+        <div class="ring-panel-body" id="ringPanelBody"></div>
+    </aside>
+
+    <div class="stage" id="ringStage" hidden></div>
+
+    <div class="ring-poster" id="ringPoster" hidden></div>
+    <noscript>
+        <div class="ring-poster ring-poster-static">
+            <div class="ring-poster-box">
+                <img src="images/wada-ring-poster.jpg" alt="Wada Ring, an isometric circuit. Each stop opens a section of the portfolio." width="1600" height="900">
+            </div>
+            <nav class="ring-poster-links" aria-label="Sections">
+                <a href="betta.html">Betta</a>
+                <a href="projects.html">Projects</a>
+                <a href="writing.html">Writing</a>
+                <a href="about.html">About</a>
             </nav>
-            <a class="home-feature" href="betta.html">
-                <img src="images/betta_thumb.jpg" alt="The Betta page" width="1400" height="747" decoding="async">
-                <span class="home-feature-kicker">Featured Project</span>
-            </a>
         </div>
-    </main>
+    </noscript>
 
-    <script src="wave.js"></script>
-    <script src="halftone-live.js"></script>
-    <script src="script.js"></script>
-    <script>
-    (function () {
-        'use strict';
-        var portrait = document.getElementById('portrait');
-        if (portrait && window.HalftoneLive) {
-            window.HalftoneLive.mount(portrait, {
-                src: 'images/page_halftone.png',
-                region: { x: 0.00, y: 0.26, w: 0.82, h: 0.72 },
-                // his face, kept still
-                exclude: [{ cx: 0.425, cy: 0.525, rx: 0.14, ry: 0.16, feather: 0.55 }],
-                // down the left silhouette, round the shoulder, across the suit
-                spine: [
-                    { x: 0.30, y: 0.30 }, { x: 0.21, y: 0.41 }, { x: 0.15, y: 0.54 },
-                    { x: 0.15, y: 0.66 }, { x: 0.27, y: 0.75 }, { x: 0.44, y: 0.81 },
-                    { x: 0.62, y: 0.87 }, { x: 0.80, y: 0.95 }
-                ],
-                dragon: {
-                    cross: 30, rest: 15, length: 0.3,
-                    headWidth: 0.11, tailWidth: 0.014
-                },
-                lift: '#b8b2a6',
-                liftMax: 0.72,
-                sparkMax: 0.34,
-                ember: '#c6a15b',
-                emberMax: 0.66,
-                emberSpan: 0.3,
-                glyph: { threshold: 0.28, length: 1.15, width: 0.3 },
-                pitch: 11
-            });
+    <script defer src="circuit/layout.js?v=11.4"></script>
+    <script defer src="betta-capture.js?v=11.4"></script>
+    <script defer src="cases.js?v=11.4"></script>
+    <script type="module">
+        import { mount } from './circuit/world.js?v=11.4';
+        import { attach } from './circuit/nav.js?v=11.4';
+        import { createStops } from './circuit/stops.js?v=11.4';
+        const L = window.CircuitLayout;
+        const q = new URLSearchParams(location.search);
+        if (q.get('poster')) document.body.classList.add('is-poster');   // tools/circuit/poster.py: the world alone
+        const dom = {
+            pins: document.getElementById('ringPins'),
+            map: document.getElementById('ringMap'),
+            panel: document.getElementById('ringPanel'),
+            panelKicker: document.getElementById('ringPanelKicker'),
+            panelTitle: document.getElementById('ringPanelTitle'),
+            panelClose: document.getElementById('ringPanelClose'),
+            panelBody: document.getElementById('ringPanelBody'),
+            lapBtn: document.getElementById('ringLap'),
+            tower: document.getElementById('ringTower'),
+            stage: document.getElementById('ringStage'),
+            poster: document.getElementById('ringPoster')
+        };
+        const stops = createStops(L, { panelBody: dom.panelBody, stage: dom.stage });
+        let world = null;
+        if (!q.get('nowebgl')) {
+            try { world = mount(document.getElementById('world'), L); } catch (err) { world = null; }
         }
-    })();
+        if (world) {
+            const nav = attach(world, L, Object.assign(dom, { onOpen: loc => stops.render(loc), onClose: () => stops.clear() }));
+            window.__circuit = Object.assign(world, { nav, stops });
+            // the race: standings built at deploy time from commit counts, read here as a static file
+            fetch('circuit/standings.json?v=11.4', { cache: 'no-cache' }).then(r => r.ok ? r.json() : null)
+                .then(data => { world.setStandings(data); nav.setStandings(data); })
+                .catch(() => { world.setStandings(null); nav.setStandings(null); });
+            // tools/circuit/shot.py: ?zoom=2.5&at=100,170 frames a detail
+            if (q.get('zoom')) {
+                const at = (q.get('at') || '').split(',').map(Number);
+                nav.flyTo(Number.isFinite(at[0]) ? at[0] : 105, Number.isFinite(at[1]) ? at[1] : 105, parseFloat(q.get('zoom')) || 1);
+            }
+        } else {
+            // no WebGL: the poster with clickable regions replaces the canvas
+            document.body.classList.add('ring-no-webgl');
+            const s = document.createElement('script');
+            s.src = 'circuit/poster-areas.js?v=11.4';
+            s.onload = () => import('./circuit/poster.js?v=11.4').then(m => { window.__circuit = { poster: m.mountPoster(L, dom, stops), stops }; });
+            document.head.appendChild(s);
+        }
     </script>
 </body>
 </html>

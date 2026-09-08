@@ -1,0 +1,32 @@
+{
+ "cars_built": 3,
+ "cars_match_standings": true,
+ "lapping_equals_active": true,
+ "idle_parked_in_pit_lane": true,
+ "race": {
+  "lapping": 1,
+  "minDistance": null,
+  "leaderFirstAtLine": true,
+  "leadChangesPerLap": 0
+ },
+ "tower_rows": [
+  "P1PORPortfolio6",
+  "P2BETBetta firmwareGARAGE",
+  "P3CHOChoreographerGARAGE"
+ ],
+ "tower_no_slugs": true,
+ "tower_head": "30 DAYSCOMMITS",
+ "no_animation_when_unchanged": true,
+ "animates_when_changed": true,
+ "final_order_is_standings": true,
+ "synthetic": {
+  "lapping": 3,
+  "minDistance": 2.4,
+  "leaderFirstAtLine": true,
+  "leadChangesPerLap": 2,
+  "clear_of_each_other": true,
+  "lapping_all_three": true
+ },
+ "draw_calls": 145,
+ "fps": 61.1
+}
