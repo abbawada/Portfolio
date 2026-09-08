@@ -13,7 +13,7 @@ export function attach(world, L, dom) {
        plate still fits, Betta sits just above the centre of the screen */
     const homeView = () => ({ x: 112, z: 96, zoom: portrait() ? 1.35 : 1 });
     const layoutShift = () => { view.shiftPx = portrait() ? Math.round(canvas.clientHeight * 0.12) : 0; };
-    const FLY_MS = 750, LIFT = 1.2, STOP_ZOOM = 2.6, LAP_ZOOM = 2.0, LAP_SPEED = 16, LAP_PAUSE = 1700;
+    const FLY_MS = 750, LIFT = 1.2, STOP_ZOOM = 2.6, LAP_ZOOM = 2.0, LAP_PAUSE = 1700;
     const RIGHT = [Math.SQRT1_2, -Math.SQRT1_2], UP = [-Math.SQRT1_2, -Math.SQRT1_2], SIN30 = 0.5;
     const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
     const ease = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
@@ -89,7 +89,8 @@ export function attach(world, L, dom) {
             if (Math.abs(f - p.cur) < 0.01) p.cur = f;
             const lift = p.cur * LIFT;
             groups[id].position.y = lift;
-            const s = project(loc.anchor[0], loc.labelZ + lift, loc.anchor[1]);
+            const sky = loc.sky ? world.anchorOf(id) : null;
+            const s = sky ? project(sky[0], sky[2] + lift, sky[1]) : project(loc.anchor[0], loc.labelZ + lift, loc.anchor[1]);
             const side = loc.labelSide === 'left' ? 'translate(calc(-100% + 6px), -50%)' : loc.labelSide === 'below' ? 'translate(-50%, -6px)' : 'translate(-6px, -50%)';
             p.el.style.transform = 'translate(' + s[0].toFixed(1) + 'px,' + s[1].toFixed(1) + 'px) ' + side;
             p.el.classList.toggle('is-hot', p.cur > 0.5);
@@ -110,6 +111,7 @@ export function attach(world, L, dom) {
                    '<path d="' + pit + '" fill="none" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>';
         const MAP_OFF = { about: [4, -4], betta: [5.5, 2.6], education: [-5.5, 2.6, 'end'], economics: [5.5, 2.6], writing: [-5.5, 2.6, 'end'], projects: [-5.5, 8, 'end'], contact: [5.5, 8] };
         for (const loc of L.LOCATIONS) {   // the number sits beside each dot at rest; nothing waits for a hover
+            if (loc.sky) continue;
             const [x, y] = mapXY(loc.anchor[0], loc.anchor[1]), o = MAP_OFF[loc.id] || [5.5, 2.6];
             html += '<circle class="ring-map-stop" data-id="' + loc.id + '" cx="' + f1(x) + '" cy="' + f1(y) + '" r="3" role="button" aria-label="Stop ' + loc.num + ', ' + loc.name + '"/>' +
                     '<text class="ring-map-num" x="' + f1(x + o[0]) + '" y="' + f1(y + o[1]) + '" text-anchor="' + (o[2] || 'start') + '">' + loc.num + '</text>';
@@ -127,10 +129,18 @@ export function attach(world, L, dom) {
     }
 
     /* ------------------------------------------------ the panel */
+    const HOP = L.LAP.concat(L.LOCATIONS.filter(l => l.sky).map(l => l.id));   // the seven, then the blimp
+    function hopTargets(id) { const i = HOP.indexOf(id), n = HOP.length; return { prev: byId[HOP[(i - 1 + n) % n]], next: byId[HOP[(i + 1) % n]] }; }
     function openPanel(loc) {
         dom.panelKicker.textContent = loc.num + ' ' + loc.section;
         dom.panelTitle.textContent = loc.name;
         dom.panel.dataset.id = loc.id;
+        if (dom.hopPrev && dom.hopNext) {   // the neighbours on the lap, so a visitor never has to leave to move on
+            const h = hopTargets(loc.id);
+            dom.hopPrev.innerHTML = '<span class="ring-hop-arrow" aria-hidden="true">&larr;</span> ' + h.prev.num + '&nbsp;&nbsp;' + h.prev.name; dom.hopPrev.dataset.id = h.prev.id;
+            dom.hopNext.innerHTML = h.next.num + '&nbsp;&nbsp;' + h.next.name + ' <span class="ring-hop-arrow" aria-hidden="true">&rarr;</span>'; dom.hopNext.dataset.id = h.next.id;
+        }
+        dom.panel.scrollTop = 0;
         dom.panel.hidden = false;
         if (reduced.matches) dom.panel.classList.add('is-open');
         else setTimeout(() => dom.panel.classList.add('is-open'), 20);   // a timer, not a frame: throttled tabs still get the fade
@@ -147,33 +157,41 @@ export function attach(world, L, dom) {
     function go(id) {
         const loc = byId[id]; if (!loc) return;
         if (lap.running) endLap(false);
-        if (!open) prevView = { x: view.target.x, z: view.target.z, zoom: view.zoom };
         open = id; returnTo = pins[id].el;
         const aspect = canvas.clientWidth / canvas.clientHeight, sheet = window.innerWidth <= 760;
-        const zoom = sheet ? 3.2 : STOP_ZOOM;
+        const zoom = loc.sky ? 1.6 : sheet ? 3.2 : STOP_ZOOM;
         const vw = Math.max(view.width, 200 * aspect) / zoom, k = vw / canvas.clientWidth;
-        const panelPx = sheet ? 0 : Math.min(600, window.innerWidth * 0.92);
+        const panelPx = sheet ? 0 : Math.min(loc.id === 'board' ? 820 : 600, window.innerWidth * 0.92);
         const shift = panelPx / 2 * k;
         /* a sheet rises from below: aim the stop at about 30% down the screen, above it */
         const shiftY = sheet ? (window.innerHeight * 0.2 + (view.shiftPx || 0)) * k / SIN30 : 0;
-        const lift = loc.labelZ * 0.45 * 1.73;   // tall stops: centre halfway up, so the label stays in view
-        const x = loc.anchor[0] + RIGHT[0] * shift + UP[0] * (lift - shiftY), z = loc.anchor[1] + RIGHT[1] * shift + UP[1] * (lift - shiftY);
+        const sky = loc.sky ? world.anchorOf(id) : null;
+        const a = sky ? [sky[0], sky[1]] : loc.anchor;
+        const lift = (sky ? sky[2] * 0.9 : loc.labelZ * 0.45) * 1.73;   // tall stops: centre halfway up, so the label stays in view; the blimp: centre on it
+        const x = a[0] + RIGHT[0] * shift + UP[0] * (lift - shiftY), z = a[1] + RIGHT[1] * shift + UP[1] * (lift - shiftY);
         flyTo(x, z, zoom, () => openPanel(loc));
         refreshStill();
     }
+    /* closing never moves the camera (V1.2): the visitor stays where they
+       are, the labels are all around, the next stop is one click away */
     function close() {
         if (!open) return;
         open = null; closePanel();
-        const back = prevView || homeView(); prevView = null;
-        flyTo(back.x, back.z, back.zoom);
         if (returnTo) { returnTo.focus({ preventScroll: true }); returnTo = null; }
         refreshStill();
     }
 
     /* ------------------------------------------------ the lap guide */
     const startS = fr[L.nearest(fr, [L.START.u, L.START.v])].s;
-    const lap = { running: false, flying: false, rel: 0, next: 0, pauseUntil: 0, timer: 0,
+    /* V1.2: Start lap rides with the cars. The camera picks up the Betta
+       car wherever it is and follows it for one lap, a little ahead of its
+       nose; each stop's label lights as the car passes it, so the visitor
+       can step off at any of them. Under reduced motion it cuts between
+       the stops as before. */
+    const lap = { running: false, flying: false, rel: 0, next: 0, pauseUntil: 0, timer: 0, s0: 0,
         stops: L.LAP.map(id => { const at = byId[id].lapAt || byId[id].anchor; const s = fr[L.nearest(fr, at)].s; return { id, rel: ((s - startS) % lapLen + lapLen) % lapLen }; }).sort((a, b) => a.rel - b.rel) };
+    const CHASE_ID = L.GRID[0].id, CHASE_AHEAD = 7;
+    const chaseAim = car => ({ x: car.x + car.tx * CHASE_AHEAD, z: car.z + car.tz * CHASE_AHEAD });
     function setLapButton(on) { dom.lapBtn.textContent = on ? 'Skip lap' : 'Start lap'; dom.lapBtn.setAttribute('aria-pressed', String(on)); }
     function startLap() {
         if (lap.running) return endLap(true);
@@ -181,9 +199,11 @@ export function attach(world, L, dom) {
         lap.running = true; lap.rel = -12; lap.next = 0; lap.pauseUntil = 0; lapMark = null;
         setLapButton(true);
         if (reduced.matches) { lapCut(); return; }
-        const p = poseAt(startS + lap.rel);
-        lap.flying = true;
-        flyTo(p.x, p.z, LAP_ZOOM, () => { lap.flying = false; });
+        const car = world.carAt(CHASE_ID);
+        if (!car) return endLap(true);
+        lap.s0 = car.s; lap.flying = true;
+        const aim = chaseAim(car);
+        flyTo(aim.x, aim.z, LAP_ZOOM, () => { lap.flying = false; });
     }
     function lapCut() {   // reduced motion: cuts between the stops, no travelling
         if (!lap.running) return;
@@ -194,16 +214,14 @@ export function attach(world, L, dom) {
     }
     function stepLap(dt, now) {
         if (!lap.running || lap.flying || fly || reduced.matches) return;
-        if (now < lap.pauseUntil) return;
-        lapMark = null;
-        lap.rel += dt * LAP_SPEED;
-        const stop = lap.stops[lap.next];
-        if (stop && lap.rel >= stop.rel) {
-            lap.rel = stop.rel; lap.next++; lapMark = stop.id; lap.pauseUntil = now + LAP_PAUSE;
-        }
-        const p = poseAt(startS + lap.rel);
-        view.target.x = p.x; view.target.z = p.z; settle();
-        if (lap.rel >= lapLen + 2) endLap(true);
+        const car = world.carAt(CHASE_ID);
+        if (!car) return endLap(true);
+        const aim = chaseAim(car), k = Math.min(1, dt * 7);
+        view.target.x += (aim.x - view.target.x) * k; view.target.z += (aim.z - view.target.z) * k; settle();
+        const rel = ((car.s - startS) % lapLen + lapLen) % lapLen;
+        const near = lap.stops.find(st => { const d = Math.abs(st.rel - rel); return Math.min(d, lapLen - d) < 11; });
+        lapMark = near ? near.id : null;
+        if (car.s - lap.s0 >= lapLen + 6) endLap(true);
     }
     function endLap(home) {
         if (!lap.running) return;
@@ -251,7 +269,7 @@ export function attach(world, L, dom) {
     const up = e => {
         const was = ptrs.has(e.pointerId); ptrs.delete(e.pointerId);
         if (was && drag && e.pointerId === drag.id) {
-            if (!drag.moved && performance.now() - drag.t0 < 600) { const id = drag.pin || pick(e.clientX, e.clientY); if (id) go(id); }
+            if (!drag.moved && performance.now() - drag.t0 < 600) { const id = drag.pin || pick(e.clientX, e.clientY); if (id) go(id); else if (open) close(); }
             drag = null;
         }
         if (ptrs.size < 2) pinch = null;
@@ -274,6 +292,7 @@ export function attach(world, L, dom) {
         if (/INPUT|TEXTAREA|SELECT/.test(tag)) return;
         if (document.body.classList.contains('stage-open')) return;   // a case is on stage; its own keys apply
         if (e.key === 'Escape') { if (lap.running) endLap(true); else if (open) close(); return; }
+        if (open && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) { const h = hopTargets(open); go(e.key === 'ArrowLeft' ? h.prev.id : h.next.id); e.preventDefault(); return; }
         if (open || lap.running) return;
         const step = 60, cx = canvas.clientWidth / 2, cy = canvas.clientHeight / 2;
         let used = true;
@@ -290,46 +309,20 @@ export function attach(world, L, dom) {
         if (used) e.preventDefault();
     });
 
-    /* ------------------------------------------------ the timing tower (V1.1 Part 4) */
-    /* Three rows on the broadcast face above the mini-map: position, code,
-       name, and the real number, trailing 30-day commits, with the gap to
-       the leader for the cars behind and GARAGE for a car with none. Rows
-       move only when the standings changed since this browser last saw
-       them, which happens on a deploy, not while anyone watches. */
-    function setStandings(data) {
+    /* ------------------------------------------------ the grid (V1.2) */
+    /* Four rows on the broadcast face above the mini-map: the cars in
+       Abba's order, each a button that opens the stop its project lives
+       in. No numbers from anywhere, no clock, nothing that can go stale. */
+    function setGrid(grid) {
         const el = dom.tower; if (!el) return;
-        if (!data || !data.cars) { el.hidden = true; return; }
-        const order = data.order || data.cars.map(c => c.id);
-        const rows = data.cars.slice().sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
-        const lead = rows.find(c => (c.commits || 0) > 0);
-        let prev = null;
-        try { prev = JSON.parse(localStorage.getItem('wada-ring-standings') || 'null'); } catch (e) { prev = null; }
-        const changed = prev && prev.generated !== data.generated && Array.isArray(prev.order) && prev.order.join() !== order.join();
-        const drawOrder = changed ? rows.slice().sort((a, b) => prev.order.indexOf(a.id) - prev.order.indexOf(b.id)) : rows;
-        const since = data.since ? new Date(data.since) : null;
-        el.innerHTML = '<div class="ring-tower-head"><span>' + (data.window_days || 30) + ' DAYS</span><span>COMMITS</span></div>' +
-            drawOrder.map(c => {
-                const pos = rows.indexOf(c) + 1, n = c.commits || 0;
-                const val = n === 0 ? 'GARAGE' : (c === lead ? String(n) : '+' + ((lead.commits || 0) - n));
-                return '<div class="ring-tower-row" data-id="' + c.id + '" data-district="' + c.district + '">' +
-                    '<span class="ring-tower-pos">P' + pos + '</span><span class="ring-tower-code">' + c.code + '</span>' +
-                    '<span class="ring-tower-name">' + c.name + '</span><span class="ring-tower-val' + (n === 0 ? ' is-garage' : '') + '">' + val + '</span></div>';
-            }).join('');
+        if (!grid || !grid.length) { el.hidden = true; return; }
+        el.innerHTML = '<div class="ring-tower-head"><span>The grid</span><span>Wada Ring</span></div>' +
+            grid.map((c, i) => '<button type="button" class="ring-tower-row" data-id="' + c.id + '" data-stop="' + c.stop + '" data-livery="' + c.livery + '">' +
+                '<span class="ring-tower-pos">P' + (i + 1) + '</span><span class="ring-tower-code">' + c.code + '</span>' +
+                '<span class="ring-tower-name">' + c.name + '</span><span class="ring-tower-num">' + c.number + '</span></button>').join('');
         el.hidden = false;
-        el.setAttribute('aria-label', 'Standings, commits in the last ' + (data.window_days || 30) + ' days' + (since ? ', since ' + since.toISOString().slice(0, 10) : ''));
-        if (changed && !reduced.matches) {   // FLIP: from the old order to the new
-            const items = [...el.querySelectorAll('.ring-tower-row')];
-            const first = new Map(items.map(r => [r.dataset.id, r.getBoundingClientRect().top]));
-            rows.forEach(c => el.appendChild(el.querySelector('.ring-tower-row[data-id="' + c.id + '"]')));
-            items.forEach(r => {
-                const dy = first.get(r.dataset.id) - r.getBoundingClientRect().top;
-                r.style.transition = 'none'; r.style.transform = 'translateY(' + dy + 'px)';
-            });
-            requestAnimationFrame(() => items.forEach(r => { r.style.transition = 'transform 700ms cubic-bezier(0.2, 0.7, 0.2, 1)'; r.style.transform = ''; }));
-        } else if (changed) {
-            rows.forEach(c => el.appendChild(el.querySelector('.ring-tower-row[data-id="' + c.id + '"]')));
-        }
-        try { localStorage.setItem('wada-ring-standings', JSON.stringify({ generated: data.generated, order })); } catch (e) { /* private mode */ }
+        el.setAttribute('aria-label', 'The grid, four cars, one per project');
+        el.addEventListener('click', e => { const r = e.target.closest('.ring-tower-row'); if (r) go(r.dataset.stop); });
     }
 
     /* ------------------------------------------------ wiring */
@@ -337,11 +330,13 @@ export function attach(world, L, dom) {
     document.addEventListener('focusin', e => { if (pinOf(e.target)) { focus = pinOf(e.target).dataset.id; refreshStill(); } });
     document.addEventListener('focusout', e => { if (pinOf(e.target)) { focus = null; refreshStill(); } });
     dom.panelClose.addEventListener('click', close);
+    if (dom.hopPrev) dom.hopPrev.addEventListener('click', () => go(dom.hopPrev.dataset.id));
+    if (dom.hopNext) dom.hopNext.addEventListener('click', () => go(dom.hopNext.dataset.id));
     window.addEventListener('resize', () => { layoutShift(); settle(); });
     buildMap();
     hooks.push((dt) => { const now = performance.now(); stepFly(now); stepLap(dt, now); updatePins(dt); updateMap(); });
     layoutShift(); { const hv = homeView(); view.target.x = hv.x; view.target.z = hv.z; view.zoom = hv.zoom; } settle();
 
-    return { go, close, startLap, endLap, panBy, zoomAt, flyTo, FLY_MS, setStandings,
+    return { go, close, startLap, endLap, panBy, zoomAt, flyTo, FLY_MS, setGrid,
              state: () => ({ open, lap: lap.running, zoom: view.zoom, target: [view.target.x, view.target.z], hover, focus, flying: !!fly }) };
 }

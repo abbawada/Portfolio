@@ -77,24 +77,50 @@
           anchor: [7, 103], labelZ: 12,
           boxes: [[2, 96, 10, 14, 5, 0, 'wall'], [1, 95, 12, 16, 0.8, 5, 'roof']] },
         { id: 'projects', num: '06', name: 'Projects', section: 'Pit garage', sector: 3,
-          anchor: [110, 150], labelZ: 12, labelSide: 'below',
+          anchor: [118, 150], labelZ: 12, labelSide: 'below',
           boxes: [[72, 150, 56, 12, 7, 0, 'wall'], [70, 148, 60, 15, 0.8, 7, 'roof']] },
         { id: 'contact', num: '07', name: 'Contact', section: 'Pit wall', sector: 3,
           anchor: [144, 171], labelZ: 1.5,
           boxes: [[64, 171, 80, 1.4, 1.8, 0, 'wall'], [96, 170.2, 6, 0.8, 3.6, 0, 'roof'], [106, 170.2, 3, 0.8, 2.6, 0, 'roof']],
-          board: { text: 'ABBA.WADA10@GMAIL.COM' } }
+          board: { text: 'ABBA.WADA10@GMAIL.COM' } },
+        /* V1.2: the blimp is a stop. It drifts over the top-right corner
+           with a screen that cycles the Board's images; clicking it opens
+           the Board. sky: the world places its pin from the blimp itself. */
+        { id: 'board', num: '08', name: 'The Board', section: 'The blimp', sector: 2, sky: true,
+          anchor: [140, 30], labelZ: 80, boxes: [] }
+    ];
+
+    /* The hoardings (V1.2): big trackside boards carrying the Board's
+       images and the three lines of type, readable at the default zoom.
+       img panels take their width from the image; text panels give w.
+       face 'v' looks toward +v, face 'u' toward +u; both face the camera. */
+    var HOARDINGS = [
+        /* the top-right wall, behind the sweep, facing the track */
+        { at: [138, 12], face: 'v', gap: 1.2, panels: [{ img: 'monaco', h: 11 }, { img: 'osaka', h: 11 }, { img: 'ferrari', h: 13 }, { text: 'AWUS  ·  RATED W', w: 20, h: 7, z0: 5 }] },
+        /* the top-left wall, behind the hairpin entry */
+        { at: [30, 8], face: 'v', gap: 1.2, panels: [{ img: 'palace', h: 12 }, { img: 'lbp', h: 12 }, { text: 'C++  ·  PYTHON  ·  SQL', w: 22, h: 7, z0: 5 }] },
+        /* the left wall, outside the return leg, facing the track */
+        { at: [10, 116], face: 'u', gap: 1.2, panels: [{ img: 'senna', h: 12 }, { img: 'helmet', h: 12 }, { img: 'porsche', h: 12 }, { img: 'nigo', h: 12 }] },
+        /* the bottom-right wall, behind the car park */
+        { at: [150, 198], face: 'v', gap: 1.2, panels: [{ img: 'jeffhardy', h: 9.5 }, { img: 'imac', h: 9.5 }, { text: 'IMU  ·  HAPTICS  ·  FIRMWARE', w: 18, h: 6.5, z0: 2.5 }] },
+        /* the grandstand roof, the way Monaco stacks its rooftops */
+        { at: [84.5, 24.6], face: 'v', z0: 9.8, gap: 1, panels: [{ img: 'moreira', h: 6 }, { img: 'moreira-site', h: 6 }, { img: 'trio', h: 6 }, { img: 'fisheye', h: 6 }, { img: 'gta4', h: 6 }] },
+        /* posters on the faces: the Exchange under its ticker, the garage either side of the bay */
+        { at: [3, 52], face: 'v', z0: 1, gap: 1, flat: true, panels: [{ img: 'mouse', h: 6.5 }, { img: 'jordan', h: 6.5 }] },
+        { at: [76, 162], face: 'v', z0: 0.5, gap: 1.4, flat: true, panels: [{ img: 'sleeve', h: 5.5 }, { img: 'spiderman', h: 6 }] }
     ];
 
     /* The lap guide drives past the stops in this order. */
     var LAP = ['about', 'betta', 'education', 'economics', 'writing', 'projects', 'contact'];
 
-    /* The five continuously animated things. Nothing else loops. */
-    var AMBIENT = ['car', 'start-flag', 'exchange-ticker', 'blimp', 'garage-scope'];
+    /* What moves on its own: the four cars, the start flag, the sleeve
+       shimmer, one board flicker, the drifting blimp. Eight, the ceiling. */
+    var AMBIENT = ['grid-cars', 'start-flag', 'sleeve-shimmer', 'board-flicker', 'blimp'];
 
     /* Scenery, blocked in. */
     var GRANDSTAND = [[84, 30, 48, 6, 5, 0, 'wall'], [84, 26, 48, 5, 9, 0, 'wall'], [82, 24, 52, 13, 0.8, 9, 'roof']];
     var PADDOCK = { slab: [64, 138, 80, 12], haulers: [[76, 140, 7, 3, 3, 0, 'wall'], [86, 140, 7, 3, 3, 0, 'wall'], [112, 140, 7, 3, 3, 0, 'wall'], [122, 140, 7, 3, 3, 0, 'wall']] };
-    var BILLBOARDS = [[100, 32, 10, 0.6, 4, 3, 'wall'], [176, 132, 0.6, 8, 4, 3, 'wall'], [8, 160, 0.6, 8, 4, 3, 'wall']];
+    var BILLBOARDS = [];   // V1.2: replaced by HOARDINGS
     var GRAVEL = [
         [[186, 178], [198, 172], [203, 152], [195, 146], [190, 162], [184, 173]],
         [[14, 54], [6, 62], [6, 84], [14, 86], [17, 70]]
@@ -103,17 +129,26 @@
                                                      [173, 188, 2.2, 1.2], [180, 188, 2.2, 1.2], [183.5, 188, 2.2, 1.2], [190.5, 188, 2.2, 1.2]] };
     var TREES = [
         [60, 30, 6], [52, 34, 5], [150, 30, 6], [160, 34, 5], [170, 42, 6], [190, 70, 6], [196, 60, 5],
-        [200, 84, 6], [10, 120, 6], [6, 132, 5], [12, 140, 6], [8, 70, 5], [6, 84, 6],
+        [200, 84, 6], [8, 70, 5], [6, 84, 6],
         [40, 192, 5], [50, 196, 6], [120, 192, 5], [130, 196, 6], [150, 190, 5],
         [196, 150, 6], [200, 160, 5], [188, 182, 6], [180, 192, 5],
         [60, 80, 5], [70, 74, 6], [158, 84, 6], [156, 66, 5], [60, 130, 5], [150, 132, 6], [80, 60, 5], [120, 58, 6], [84, 90, 5], [78, 104, 6], [160, 108, 5], [72, 118, 5], [130, 124, 6], [120, 112, 5],
-        [44, 26, 5], [36, 32, 6], [30, 24, 4], [176, 24, 5], [184, 30, 6], [190, 22, 4], [204, 40, 5], [206, 30, 6],
-        [4, 176, 5], [10, 184, 6], [4, 192, 4], [20, 198, 5], [60, 200, 4], [90, 198, 6], [100, 204, 4], [160, 200, 5],
+        [36, 32, 6], [184, 30, 6], [204, 40, 5], [206, 30, 6],
+        [4, 176, 5], [10, 184, 6], [4, 192, 4], [20, 198, 5], [60, 200, 4], [90, 198, 6], [100, 204, 4],
         [204, 176, 5], [206, 190, 6], [200, 202, 4], [166, 150, 5], [160, 144, 6], [46, 120, 4], [50, 150, 5], [150, 118, 4]
     ];
     var BLIMP = { at: [140, 30, 70], banner: 'BETTA' };
     var FLAG = { at: [100, 184] };
-    var CAR = { number: '10' };
+
+    /* The grid (V1.2). One car per shelf project, in that project's
+       livery, lapping from the moment the world is built. The order is
+       curated here and nowhere else; nothing on the page reads a feed. */
+    var GRID = [
+        { id: 'betta', project: 'betta', name: 'Betta', code: 'BET', number: '10', livery: 'gold', stop: 'betta' },
+        { id: 'posture', project: 'posture-cue', name: 'Posture Cue', code: 'POS', number: '23', livery: 'white', stop: 'projects' },
+        { id: 'vaults', project: 'yield-vaults', name: 'Yield Vaults', code: 'YLD', number: '4', livery: 'green', stop: 'economics' },
+        { id: 'bluetooth', project: 'bluetooth-car', name: 'Bluetooth Car', code: 'BLU', number: '12', livery: 'red', stop: 'projects' }
+    ];
 
     var PALETTE = {
         plate: '#e6e0d3', grass: '#b7bfa3', asphalt: '#3b3b3d', paper: '#f7f5f0',
@@ -193,9 +228,9 @@
         NAME: NAME, PLACE: PLACE, SIZE: SIZE,
         TRACK: TRACK, TRACK_WIDTH: TRACK_WIDTH, START: START,
         PIT: PIT, PIT_WIDTH: PIT_WIDTH, SECTORS: SECTORS,
-        LOCATIONS: LOCATIONS, LAP: LAP, AMBIENT: AMBIENT,
+        LOCATIONS: LOCATIONS, LAP: LAP, AMBIENT: AMBIENT, HOARDINGS: HOARDINGS,
         GRANDSTAND: GRANDSTAND, PADDOCK: PADDOCK, CARPARK: CARPARK, BILLBOARDS: BILLBOARDS,
-        GRAVEL: GRAVEL, TREES: TREES, BLIMP: BLIMP, FLAG: FLAG, CAR: CAR,
+        GRAVEL: GRAVEL, TREES: TREES, BLIMP: BLIMP, FLAG: FLAG, GRID: GRID,
         PALETTE: PALETTE,
         sample: sample, frames: frames, ribbon: ribbon, nearest: nearest
     };

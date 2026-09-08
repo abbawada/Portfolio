@@ -183,7 +183,7 @@ L.CARPARK.cars.forEach((c, i) => addBox([c[0], c[1], c[2], c[3], 0.8, 0, i % 3 ?
     const body = [u - 1.3, v - 0.7, 2.6, 1.4, 0.7, 0, 'accent'];
     let s = boxSVG(body) + boxSVG([u - 0.4, v - 0.4, 0.9, 0.8, 0.6, 0.7, 'roof']);
     const t = P(u, v, 3.2);
-    s += `<text x="${f2(t[0])}" y="${f2(t[1])}" class="car" text-anchor="middle">${L.CAR.number}</text>`;
+    s += `<text x="${f2(t[0])}" y="${f2(t[1])}" class="car" text-anchor="middle">${L.GRID[0].number}</text>`;
     props.push({ key: u + v + 1.5, svg: s });
 }
 

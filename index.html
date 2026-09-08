@@ -14,11 +14,11 @@
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
-    <link rel="stylesheet" href="circuit/circuit.css?v=12.0">
+    <link rel="stylesheet" href="circuit/circuit.css?v=12.1">
     <!-- the site stylesheet dresses the panels; it need not block the first paint.
          Every script and stylesheet carries a build query so a deploy never pairs a new page with a cached module. -->
-    <link rel="stylesheet" href="styles.css?v=12.0" media="print" onload="this.media='all'">
-    <noscript><link rel="stylesheet" href="styles.css?v=12.0"></noscript>
+    <link rel="stylesheet" href="styles.css?v=12.1" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="styles.css?v=12.1"></noscript>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,600;0,700;1,600;1,700&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;family=Schibsted+Grotesk:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" media="print" onload="this.media='all'">
@@ -48,6 +48,10 @@
             <p class="ring-panel-kicker" id="ringPanelKicker"></p>
             <h2 class="ring-panel-title" id="ringPanelTitle"></h2>
             <button class="ring-panel-close" id="ringPanelClose" type="button">Close</button>
+            <nav class="ring-panel-hop" aria-label="Neighbouring stops">
+                <button class="ring-hop" id="ringHopPrev" type="button"></button>
+                <button class="ring-hop" id="ringHopNext" type="button"></button>
+            </nav>
         </header>
         <div class="ring-panel-body" id="ringPanelBody"></div>
     </aside>
@@ -69,13 +73,14 @@
         </div>
     </noscript>
 
-    <script defer src="circuit/layout.js?v=12.0"></script>
-    <script defer src="betta-capture.js?v=12.0"></script>
-    <script defer src="cases.js?v=12.0"></script>
+    <script defer src="circuit/layout.js?v=12.1"></script>
+    <script defer src="circuit/board.js?v=12.1"></script>
+    <script defer src="betta-capture.js?v=12.1"></script>
+    <script defer src="cases.js?v=12.1"></script>
     <script type="module">
-        import { mount } from './circuit/world.js?v=12.0';
-        import { attach } from './circuit/nav.js?v=12.0';
-        import { createStops } from './circuit/stops.js?v=12.0';
+        import { mount } from './circuit/world.js?v=12.1';
+        import { attach } from './circuit/nav.js?v=12.1';
+        import { createStops } from './circuit/stops.js?v=12.1';
         const L = window.CircuitLayout;
         const q = new URLSearchParams(location.search);
         if (q.get('poster')) document.body.classList.add('is-poster');   // tools/circuit/poster.py: the world alone
@@ -88,6 +93,8 @@
             panelClose: document.getElementById('ringPanelClose'),
             panelBody: document.getElementById('ringPanelBody'),
             lapBtn: document.getElementById('ringLap'),
+            hopPrev: document.getElementById('ringHopPrev'),
+            hopNext: document.getElementById('ringHopNext'),
             tower: document.getElementById('ringTower'),
             stage: document.getElementById('ringStage'),
             poster: document.getElementById('ringPoster')
@@ -100,10 +107,7 @@
         if (world) {
             const nav = attach(world, L, Object.assign(dom, { onOpen: loc => stops.render(loc), onClose: () => stops.clear() }));
             window.__circuit = Object.assign(world, { nav, stops });
-            // the race: standings built at deploy time from commit counts, read here as a static file
-            fetch('circuit/standings.json?v=12.0', { cache: 'no-cache' }).then(r => r.ok ? r.json() : null)
-                .then(data => { world.setStandings(data); nav.setStandings(data); })
-                .catch(() => { world.setStandings(null); nav.setStandings(null); });
+            nav.setGrid(L.GRID);   // the four cars in Abba's order; nothing on this page is fetched
             // tools/circuit/shot.py: ?zoom=2.5&at=100,170 frames a detail
             if (q.get('zoom')) {
                 const at = (q.get('at') || '').split(',').map(Number);
@@ -113,8 +117,8 @@
             // no WebGL: the poster with clickable regions replaces the canvas
             document.body.classList.add('ring-no-webgl');
             const s = document.createElement('script');
-            s.src = 'circuit/poster-areas.js?v=12.0';
-            s.onload = () => import('./circuit/poster.js?v=12.0').then(m => { window.__circuit = { poster: m.mountPoster(L, dom, stops), stops }; });
+            s.src = 'circuit/poster-areas.js?v=12.1';
+            s.onload = () => import('./circuit/poster.js?v=12.1').then(m => { window.__circuit = { poster: m.mountPoster(L, dom, stops), stops }; });
             document.head.appendChild(s);
         }
     </script>

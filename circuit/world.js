@@ -122,6 +122,7 @@ export function mount(canvas, L) {
         sage: candy('#b9d1a8', '#6f8f63', { transmission: 0.7, roughness: 0.4, thickness: 3 }),   // trees
         white: candy('#eceff2', '#aeb6bc'),          // the blimp
         smoke: candy('#aab1b7', '#3a3f45', { thickness: 2.5, roughness: 0.12, transmission: 0.94 }),   // the sleeve monument, graphite iMac
+        red: candy('#e08a90', '#a31621'),            // Bluetooth Car's livery, its spine red
         chrome: new THREE.MeshStandardMaterial({ color: '#e9eaec', metalness: 1, roughness: 0.08, envMapIntensity: 1.6 }),   // the visor
         graphite: new THREE.MeshStandardMaterial({ color: '#2a2b2e', roughness: 0.55, metalness: 0.35, flatShading: true }),
         neon: {}
@@ -182,7 +183,7 @@ export function mount(canvas, L) {
 
     const st = new Builder(), sh = new Builder(), gb = new Builder(true), lb = {}, guts = {};
     for (const loc of L.LOCATIONS) { lb[loc.id] = new Builder(!!DISTRICT[loc.id]); guts[loc.id] = []; }
-    const car = new THREE.Group(), blimp = new THREE.Group();
+    const blimp = new THREE.Group();
     let ticker = null, flagGeom = null, flagBase = null, scopeGeom = null, scopePos = null, glow = null, blimpShadow = null, built = false;
 
     /* ------------------------------------------------ stage A: ground and track */
@@ -323,7 +324,9 @@ export function mount(canvas, L) {
         buildBarriers();
         /* each stop is its own group so it can lift on approach; a hit box on
            layer 1 (never drawn) gives the pointer something generous to find */
+        buildHoardings();
         for (const loc of L.LOCATIONS) {
+            if (loc.sky) continue;   // the blimp builds itself in the ambient stage
             const g = groups[loc.id];
             for (const m of guts[loc.id]) g.add(m);
             mergeStatic(g);
@@ -677,6 +680,137 @@ export function mount(canvas, L) {
         sh.poly([[ru - 3, rv - 2], [ru + 4, rv - 2], [ru + 9, rv], [ru + 9, rv + 4], [ru + 2, rv + 4], [ru - 3, rv + 2]], 0.04, C.ink);
     }
 
+    /* ------------------------------------------------ the hoardings and the blimp screen (V1.2) */
+    /* Abba's images on the track. Frames and posts go up with the stops;
+       the pictures arrive on one atlas texture once the files and the
+       fonts are in, as one merged mesh, so the whole set costs one draw.
+       The blimp's screen reads the same atlas and cycles through it. */
+    const BOARD = window.CircuitBoard || { dir: 'images/board/', items: [] };
+    const boardItem = id => BOARD.items.find(it => it.id === id);
+    const hoardingPlanes = [];
+    function hoardingSize(p) {
+        const img = boardItem(p.img);
+        const height = p.h, width = p.w || (img ? height * img.w / img.h : height * 1.5);
+        return { width, height };
+    }
+    /* each wall lays its panels side by side along its face, bottoms on
+       the wall's base line; a flat wall is posters glued to a building */
+    function buildHoardings() {
+        for (const wall of L.HOARDINGS) {
+            let along = 0;
+            for (const p of wall.panels) {
+                const { width: w, height: hh } = hoardingSize(p), z0 = p.z0 != null ? p.z0 : (wall.z0 || 0);
+                const u = wall.face === 'u' ? wall.at[0] : wall.at[0] + along, v = wall.face === 'u' ? wall.at[1] + along : wall.at[1];
+                const off = wall.flat ? 0.03 : 0.62;
+                if (!wall.flat) {
+                    if (wall.face === 'u') {
+                        gb.box(u, v - 0.3, 0.6, w + 0.6, hh + 0.6, Math.max(0, z0 - 0.3), 'x');
+                        if (z0 > 0.6) for (const vv of [v + 0.2, v + w - 0.7]) gb.box(u + 0.05, vv, 0.5, 0.5, z0, 0, 'x');
+                        shadowOf(u, v - 0.3, 0.6, w + 0.6, z0 + hh);
+                    } else {
+                        gb.box(u - 0.3, v, w + 0.6, 0.6, hh + 0.6, Math.max(0, z0 - 0.3), 'x');
+                        if (z0 > 0.6) for (const uu of [u + 0.2, u + w - 0.7]) gb.box(uu, v + 0.05, 0.5, 0.5, z0, 0, 'x');
+                        shadowOf(u - 0.3, v, w + 0.6, 0.6, z0 + hh);
+                    }
+                }
+                if (wall.face === 'u') hoardingPlanes.push({ h: p, w, hh, pos: [u + off, z0 + hh / 2, v + w / 2], rotY: Math.PI / 2 });
+                else hoardingPlanes.push({ h: p, w, hh, pos: [u + w / 2, z0 + hh / 2, v + off], rotY: 0 });
+                along += w + (wall.gap || 0);
+            }
+        }
+    }
+    let atlas = null;   // { tex, rects: Map(key -> [x0, y0, x1, y1] in uv) }
+    const boardImages = new Map();
+    function loadBoardImages() {
+        return Promise.all(BOARD.items.map(it => new Promise(resolve => {
+            const im = new Image(); im.decoding = 'async';
+            im.onload = () => { boardImages.set(it.id, im); resolve(); }; im.onerror = () => resolve();
+            im.src = BOARD.dir + it.file;
+        })));
+    }
+    function buildAtlas() {
+        const W = 4096, H = 2048, cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+        const ctx = cv.getContext('2d'); ctx.fillStyle = C.paper; ctx.fillRect(0, 0, W, H);
+        const rects = new Map(), jobs = [];
+        for (const it of BOARD.items) {   // every image, the long side at 512: twenty of them and the type panels fit the sheet with room
+            const im = boardImages.get(it.id); if (!im) continue;
+            const k = 512 / Math.max(im.naturalWidth, im.naturalHeight);
+            jobs.push({ key: 'img:' + it.id, w: Math.round(im.naturalWidth * k), h: Math.round(im.naturalHeight * k), draw: (x, y, w, h) => ctx.drawImage(im, x, y, w, h) });
+        }
+        const textPanels = [].concat(...L.HOARDINGS.map(wall => wall.panels.filter(p => p.text)));
+        for (const h of textPanels) {   // the type panels, ink on paper like the old billboards but big
+            const { width, height } = hoardingSize(h), w = 768, hp = Math.round(768 * height / width);
+            jobs.push({ key: 'txt:' + h.text, w, h: hp, draw: (x, y) => {
+                ctx.save(); ctx.fillStyle = C.paper; ctx.fillRect(x, y, w, hp);
+                ctx.fillStyle = C.ink; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                if ('letterSpacing' in ctx) ctx.letterSpacing = '8px';
+                let size = Math.round(hp * 0.42); ctx.font = 'italic 700 ' + size + 'px ' + CHAKRA;
+                while (ctx.measureText(h.text).width > w * 0.9 && size > 12) { size -= 4; ctx.font = 'italic 700 ' + size + 'px ' + CHAKRA; }
+                ctx.fillText(h.text, x + w / 2, y + hp / 2); ctx.restore();
+            } });
+        }
+        jobs.sort((a, b) => b.h - a.h);
+        let x = 4, y = 4, rowH = 0;   // shelf packing with a 4 px gutter
+        for (const j of jobs) {
+            if (x + j.w + 4 > W) { x = 4; y += rowH + 4; rowH = 0; }
+            if (y + j.h + 4 > H) { console.warn('board atlas full, dropped', j.key); continue; }
+            j.draw(x, y, j.w, j.h);
+            rects.set(j.key, [x / W, 1 - (y + j.h) / H, (x + j.w) / W, 1 - y / H]);
+            x += j.w + 4; rowH = Math.max(rowH, j.h);
+        }
+        const tex = new THREE.CanvasTexture(cv); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 8; tex.generateMipmaps = true; tex.minFilter = THREE.LinearMipmapLinearFilter;
+        atlas = { tex, rects };
+    }
+    function dressHoardings() {
+        if (!hoardingPlanes.length && !BOARD.items.length) return;
+        buildAtlas();
+        const pos = [], uv = [], nor = [];
+        const q = new THREE.Quaternion(), vtx = new THREE.Vector3();
+        for (const p of hoardingPlanes) {
+            const key = p.h.img ? 'img:' + p.h.img : 'txt:' + p.h.text, r = atlas.rects.get(key); if (!r) continue;
+            q.setFromEuler(new THREE.Euler(0, p.rotY, 0));
+            const corners = [[-p.w / 2, -p.hh / 2, r[0], r[1]], [p.w / 2, -p.hh / 2, r[2], r[1]], [p.w / 2, p.hh / 2, r[2], r[3]], [-p.w / 2, p.hh / 2, r[0], r[3]]];
+            for (const i of [0, 1, 2, 0, 2, 3]) {
+                const c = corners[i]; vtx.set(c[0], c[1], 0).applyQuaternion(q);
+                pos.push(vtx.x + p.pos[0], vtx.y + p.pos[1], vtx.z + p.pos[2]); uv.push(c[2], c[3]);
+                const n = new THREE.Vector3(0, 0, 1).applyQuaternion(q); nor.push(n.x, n.y, n.z);
+            }
+        }
+        if (pos.length) {
+            const geo = new THREE.BufferGeometry();
+            geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); geo.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2)); geo.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3));
+            scene.add(new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ map: atlas.tex, side: THREE.DoubleSide, toneMapped: false })));
+        }
+        buildScreen();
+        if (!running) render();
+    }
+    /* the blimp screen: one plane either side, the same atlas, one image at a time */
+    const screen = { meshes: [], geo: null, i: -1, next: 0, items: [] };
+    function buildScreen() {
+        screen.items = BOARD.items.filter(it => atlas.rects.has('img:' + it.id));
+        if (!screen.items.length) return;
+        screen.geo = new THREE.PlaneGeometry(1, 1);
+        const mat = new THREE.MeshBasicMaterial({ map: atlas.tex, toneMapped: false });
+        for (const side of [1, -1]) {
+            const m = new THREE.Mesh(screen.geo, mat); m.position.set(0, 0.9, 5.62 * side); m.rotation.y = side < 0 ? Math.PI : 0;
+            blimp.add(m); screen.meshes.push(m);
+        }
+        showScreen(0);
+    }
+    function showScreen(i) {
+        const it = screen.items[i], r = atlas.rects.get('img:' + it.id), a = screen.geo.attributes.uv;
+        a.setXY(0, r[0], r[3]); a.setXY(1, r[2], r[3]); a.setXY(2, r[0], r[1]); a.setXY(3, r[2], r[1]); a.needsUpdate = true;
+        const fit = Math.min(17 / (it.w / it.h * 6), 1);   // contain inside 17 by 6
+        const hgt = 6 * fit, wid = hgt * it.w / it.h;
+        for (const m of screen.meshes) m.scale.set(wid, hgt, 1);
+        screen.i = i;
+    }
+    function screenStep(t) {
+        if (!screen.items.length || t < screen.next) return;
+        screen.next = t + 7;
+        showScreen((screen.i + 1) % screen.items.length);
+    }
+
     /* ------------------------------------------------ stage C: shadows, trees, the static mesh */
     function buildScenery() {
         for (const t of L.TREES) {
@@ -707,15 +841,14 @@ export function mount(canvas, L) {
         return { x: a.p[0] + (b.p[0] - a.p[0]) * t, z: a.p[1] + (b.p[1] - a.p[1]) * t, tx: a.t[0] + (b.t[0] - a.t[0]) * t, tz: a.t[1] + (b.t[1] - a.t[1]) * t, k: a.k };
     }
     const startS = fr[L.nearest(fr, [L.START.u, L.START.v])].s;
-    let carS = startS - 6;
-    function placeCar(s) { const p = poseAt(s); car.position.set(p.x, 0, p.z); car.rotation.y = Math.atan2(-p.tz, p.tx); return p; }
-    /* V1.1 Part 4: the race. Three cars in district colours, one per repo;
-       standings.json (built from trailing 30-day commit counts, never
-       fetched client-side) decides who laps, in what order, and how far
-       apart. A repo with no activity parks its car in the pit lane. */
+    /* V1.2, section 1: the grid. One car per shelf project in that
+       project's livery, lapping without pause from the moment the world is
+       built. Nothing here reads anything outside the page: the running
+       order starts as L.GRID, the racing line is a function of the track,
+       and a scripted pass swaps two neighbours every so often. */
     const cars = [];
-    const CAR_SHELL = { gold: () => M.gold, media: () => M.media, green: () => M.green };
-    function makeCar(district, number) {
+    const LIVERY = { gold: () => M.gold, green: () => M.green, red: () => M.red, white: () => M.white };   // Posture Cue runs white, the blimp's candy
+    function makeCar(livery, number) {
         const g = new THREE.Group();
         const shell = new Builder(true), dark = new Builder();
         shell.box(-1.3, -0.55, 2.6, 1.1, 0.55, 0.3, 'x');
@@ -727,55 +860,54 @@ export function mount(canvas, L) {
         dark.box(-0.9, -0.14, 1.2, 0.08, 0.06, 1.35, 'accent');
         dark.box(-0.9, 0.06, 1.2, 0.08, 0.06, 1.35, 'wood');
         g.add(new THREE.Mesh(dark.build(), flat));
-        g.add(new THREE.Mesh(shell.build(), (CAR_SHELL[district] || CAR_SHELL.gold)()));
+        g.add(new THREE.Mesh(shell.build(), (LIVERY[livery] || LIVERY.gold)()));
         const shadow = new THREE.Mesh(new THREE.CircleGeometry(1, 10), shadowMat);
         shadow.rotation.x = -Math.PI / 2; shadow.scale.set(2.2, 1.2, 1); shadow.position.set(0.5, 0.11, 0.3); g.add(shadow);
         g.userData.number = number;
         return g;
     }
-    const PIT_BOXES = [[94, 166], [108, 166], [122, 166]];
     function placeAt(g, s, lane) {
         const p = poseAt(s);
         const nx = p.tz, nz = -p.tx;   // the left normal in plan
         g.position.set(p.x + nx * lane, 0, p.z + nz * lane); g.rotation.y = Math.atan2(-p.tz, p.tx);
         return p;
     }
-    let raceS = startS - 6;
-    function setStandings(data) {
-        for (const c of cars) scene.remove(c.group);
-        cars.length = 0;
-        if (car.parent) scene.remove(car);
-        const list = data && data.cars ? data.cars.slice() : [];
-        const order = data && data.order ? data.order : list.map(c => c.id);
-        list.sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
-        const numbers = { betta: '10', media: '23', exchange: '4' };
-        let prevCommits = null, prevGap = 0, rank = 0, parked = 0;
-        list.forEach((c) => {
-            const lapping = (c.commits || 0) > 0;
-            const g = makeCar(c.district, numbers[c.id] || '');
-            scene.add(g);
-            const entry = { id: c.id, group: g, lapping, commits: c.commits || 0, lane: 0, gap: 0, swap: 0, name: c.name };
-            if (lapping) {
-                const gap = rank === 0 ? 0 : Math.min(40, prevGap + 8 + 2 * Math.max(0, prevCommits - entry.commits));
-                entry.gap = gap; entry.swap = rank === 1 ? gap * 1.3 : gap * 0.6;   // P2 gets a mid-lap look at the lead, P3 closes in
-                entry.lane = [0, 2.4, -2.4][rank] || 0;   // three lanes inside a 9-wide track, cars 1.8 wide: side by side, never touching
-                prevCommits = entry.commits; prevGap = gap; rank++;
-            } else {
-                const box = PIT_BOXES[parked++] || PIT_BOXES[0];
-                g.position.set(box[0], 0, box[1]); g.rotation.y = 0;   // parked in the pit lane, nose along it
-            }
-            cars.push(entry);
+    /* gap: slot spacing along the track (cars are 3.8 long); line: the
+       racing line's swing either side of centre; pass: how far outside the
+       passing car goes; the track is 9 wide, so 1.1 + 2.2 + a car's half
+       width stays inside the white line. */
+    const RACE = { speed: 8.5, gap: 7.2, line: 1.1, pass: 2.2, passSecs: 5.5, restMin: 7, restMax: 13 };
+    const race = { s: startS - 6, t: 0, order: [], pass: null, nextPass: 5 };
+    const easeIO = x => x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+    const racingLine = s => RACE.line * Math.sin(s / lap * Math.PI * 6 + 0.4);
+    function buildGrid() {
+        L.GRID.forEach((c, i) => {
+            const g = makeCar(c.livery, c.number); scene.add(g);
+            cars.push({ id: c.id, group: g, name: c.name, code: c.code, stop: c.stop, pose: null, lane: 0 });
+            race.order.push(i);
         });
-        placeCars(raceS);
-        if (fontsLoaded) numberCars();
-        if (!running) render();
+        placeCars(0);
     }
-    function placeCars(sL) {
-        const rel = sL - startS;
-        for (const c of cars) {
-            if (!c.lapping) continue;
-            const off = -c.gap + c.swap * Math.sin(Math.PI * 2 * rel / lap);
-            placeAt(c.group, sL + off, c.lane);
+    /* every frame: the pace advances (slower through the corners), each car
+       sits in its slot on the racing line, and a pass in progress carries
+       the car behind round the outside into the slot ahead */
+    function placeCars(dt) {
+        const lead = poseAt(race.s);
+        race.s += dt * RACE.speed * (1 - 0.45 * Math.min(1, Math.abs(lead.k) / 0.12));
+        race.t += dt;
+        if (!race.pass && race.t >= race.nextPass && cars.length > 1) race.pass = { k: Math.floor(Math.random() * (cars.length - 1)), t0: race.t };
+        const u = race.pass ? Math.min(1, (race.t - race.pass.t0) / RACE.passSecs) : 0, e = easeIO(u), bump = Math.sin(Math.PI * u);
+        race.order.forEach((ci, k) => {
+            const c = cars[ci];
+            let s = race.s - k * RACE.gap, lateral = 0;
+            if (race.pass && k === race.pass.k + 1) { s += e * RACE.gap; lateral = RACE.pass * bump; }
+            else if (race.pass && k === race.pass.k) { s -= e * RACE.gap; lateral = -0.5 * bump; }
+            c.lane = racingLine(s) + lateral;
+            c.pose = placeAt(c.group, s, c.lane); c.s = s;
+        });
+        if (race.pass && u >= 1) {
+            const k = race.pass.k, o = race.order; [o[k], o[k + 1]] = [o[k + 1], o[k]];
+            race.pass = null; race.nextPass = race.t + RACE.restMin + Math.random() * (RACE.restMax - RACE.restMin);
         }
     }
     let fontsLoaded = false;
@@ -788,10 +920,17 @@ export function mount(canvas, L) {
         }
     }
     const BY = L.BLIMP.at[2];
-    function placeBlimp(t) {
-        const a = t * Math.PI * 2 / 140, x = 130 + Math.cos(a) * 20, z = 30 + Math.sin(a) * 10;
-        blimp.position.set(x, BY, z); blimp.rotation.y = Math.atan2(-Math.cos(a) * 10, -Math.sin(a) * 20);
+    function placeBlimp(t) {   // a slow drift over the top-right corner, one round every four minutes
+        const a = t * Math.PI * 2 / 240, x = 140 + Math.cos(a) * 18, z = 30 + Math.sin(a) * 9;
+        blimp.position.set(x, BY, z); blimp.rotation.y = Math.atan2(-Math.cos(a) * 9, -Math.sin(a) * 18);
         if (blimpShadow) blimpShadow.position.set(x + SHADOW[0] * BY * 0.9, 0.05, z + SHADOW[1] * BY * 0.9);
+        screenStep(t);
+    }
+    /* where a sky stop's pin goes: over the blimp, wherever it is */
+    function anchorOf(id) {
+        const loc = L.LOCATIONS.find(l => l.id === id);
+        if (!loc || !loc.sky) return null;
+        return [blimp.position.x, blimp.position.z, blimp.position.y + 10];
     }
     function waveFlag(t) {
         const p = flagGeom.attributes.position.array;
@@ -808,22 +947,7 @@ export function mount(canvas, L) {
         glow.material.opacity = 0.09 + 0.05 * (0.5 + 0.5 * Math.sin(t * 3));
     }
     function buildAmbient() {
-        {   // 1. the car, number 10
-            const shell = new Builder(true), dark = new Builder();
-            shell.box(-1.3, -0.55, 2.6, 1.1, 0.55, 0.3, 'x');
-            shell.box(1.3, -0.3, 0.8, 0.6, 0.35, 0.35, 'x');
-            shell.box(-1.9, -0.8, 0.5, 1.6, 0.15, 1.0, 'x');
-            shell.box(1.9, -0.9, 0.4, 1.8, 0.15, 0.25, 'x');
-            dark.box(-0.9, -0.35, 1.2, 0.7, 0.5, 0.85, 'ink');                                  // the cockpit, the guts you see through the shell
-            for (const x of [1.15, -1.25]) for (const z of [-0.95, 0.55]) dark.box(x - 0.35, z, 0.7, 0.4, 0.7, 0, 'ink');
-            dark.box(-0.9, -0.14, 1.2, 0.08, 0.06, 1.35, 'accent');
-            dark.box(-0.9, 0.06, 1.2, 0.08, 0.06, 1.35, 'wood');
-            car.add(new THREE.Mesh(dark.build(), flat));
-            car.add(new THREE.Mesh(shell.build(), M.gold));
-            const shadow = new THREE.Mesh(new THREE.CircleGeometry(1, 10), shadowMat);
-            shadow.rotation.x = -Math.PI / 2; shadow.scale.set(2.2, 1.2, 1); shadow.position.set(0.5, 0.11, 0.3); car.add(shadow);
-            placeCar(carS);   // kept as the fallback field until standings arrive
-        }
+        buildGrid();   // 1. the four cars, lapping from the first frame
         {   // 2. the start flag
             flagGeom = new THREE.PlaneGeometry(4.6, 2.9, 10, 5); flagBase = flagGeom.attributes.position.array.slice();
             const flag = new THREE.Mesh(flagGeom, new THREE.MeshBasicMaterial({ color: C.accent, side: THREE.DoubleSide, toneMapped: false }));
@@ -839,7 +963,14 @@ export function mount(canvas, L) {
             const gondola = new Builder(true); gondola.box(-2, -1, 4, 2, 1.2, -6.4, 'x');
             blimp.add(new THREE.Mesh(gondola.build(), M.graphite));
             blimp.add(new THREE.Mesh(b.build(), M.white));
-            scene.add(blimp);
+            blimp.scale.setScalar(1.3);
+            const hb = new THREE.Mesh(new THREE.BoxGeometry(34, 13, 13), flat);   // the pointer target, never drawn
+            hb.layers.set(1); hb.userData.id = 'board'; blimp.add(hb); hits.push(hb);
+            for (const side of [1, -1]) {   // the screen: a black slab either side, the image lands on it once the atlas is built
+                const back = new THREE.Mesh(new THREE.PlaneGeometry(17.6, 6.4), new THREE.MeshBasicMaterial({ color: '#0b0b0c', toneMapped: false }));   // front-facing only, so the far one never shows through the shell
+                back.position.set(0, 0.9, 5.6 * side); back.rotation.y = side < 0 ? Math.PI : 0; blimp.add(back);
+            }
+            (groups.board || scene).add(blimp);
             blimpShadow = new THREE.Mesh(new THREE.CircleGeometry(1, 16), new THREE.MeshBasicMaterial({ color: C.ink, transparent: true, opacity: 0.1, depthWrite: false, toneMapped: false }));
             blimpShadow.rotation.x = -Math.PI / 2; blimpShadow.scale.set(15, 5.5, 1); blimpShadow.position.y = 0.05; scene.add(blimpShadow);
             placeBlimp(0);
@@ -908,9 +1039,9 @@ export function mount(canvas, L) {
         fontsLoaded = true; numberCars();
         barrierText();
         const ban = textTexture(L.BLIMP.banner, { w: 1024, h: 256, font: 'italic 700 190px ' + CHAKRA, fill: C.ink, spacing: '28px' });
-        for (const side of [1, -1]) {
-            const m = new THREE.Mesh(new THREE.PlaneGeometry(18, 4.5), new THREE.MeshBasicMaterial({ map: ban, transparent: true, side: THREE.DoubleSide, toneMapped: false }));
-            m.position.set(0, 0.2, 5.55 * side); m.rotation.y = side < 0 ? Math.PI : 0; blimp.add(m);
+        for (const side of [1, -1]) {   // the name under the screen
+            const m = new THREE.Mesh(new THREE.PlaneGeometry(10, 2.5), new THREE.MeshBasicMaterial({ map: ban, transparent: true, side: THREE.DoubleSide, toneMapped: false }));
+            m.position.set(0, -3.4, 5.1 * side); m.rotation.y = side < 0 ? Math.PI : 0; blimp.add(m);
         }
         if (!running) render();
     }
@@ -923,13 +1054,13 @@ export function mount(canvas, L) {
         renderer.render(scene, camera);
         stats.calls = renderer.info.render.calls; stats.triangles = renderer.info.render.triangles;
     }
-    /* V1.1 ambient list: up to three lapping cars, the flag, the sleeve
-       shimmer and one flickering board. The ticker, the blimp and the scope
-       hold still. Six of eight at most, two in reserve. */
+    /* V1.2 ambient list: the four cars, the flag, the sleeve shimmer, one
+       flickering board and the drifting blimp. Eight, the ceiling. The
+       ticker and the scope hold still. */
     function tick(dt, t) {
         if (!built) return;
-        const p = poseAt(raceS); raceS += dt * 8.5 * (1 - 0.45 * Math.min(1, Math.abs(p.k) / 0.12));
-        placeCars(raceS);
+        placeCars(dt);
+        placeBlimp(t);
         waveFlag(t);
         shimmerAt((t % 8) / 8);   // the sleeve shimmer, base to cuff every eight seconds
         flickerStep(t);           // one board flickers
@@ -946,7 +1077,7 @@ export function mount(canvas, L) {
     function start() { if (running || reduced.matches || !ready) return; running = true; last = performance.now(); secStart = last; secFrames = 0; raf = requestAnimationFrame(frame); }
     function stop() { running = false; cancelAnimationFrame(raf); }
     document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); else start(); });
-    const onReduced = () => { if (reduced.matches) { stop(); if (built) placeCars(raceS); render(); } else start(); };
+    const onReduced = () => { if (reduced.matches) { stop(); if (built) placeCars(0); render(); } else start(); };
     if (reduced.addEventListener) reduced.addEventListener('change', onReduced); else reduced.addListener(onReduced);
     window.addEventListener('resize', () => { fit(); if (!running) render(); });
 
@@ -964,6 +1095,8 @@ export function mount(canvas, L) {
     fit(); render();
     const fontsReady = document.fonts ? Promise.race([document.fonts.load("600 44px 'Chakra Petch'").then(() => document.fonts.ready), new Promise(r => setTimeout(r, 2500))]) : Promise.resolve();
     Promise.all([readyPromise, fontsReady]).then(addText, addText);
+    const imagesReady = loadBoardImages();
+    const dressed = Promise.all([readyPromise, fontsReady, imagesReady]).then(dressHoardings, dressHoardings);
 
     /* screen helpers for the navigation layer */
     const _v = new THREE.Vector3();
@@ -985,6 +1118,8 @@ export function mount(canvas, L) {
 
     return { scene, camera, renderer, canvas, view, fit, render, start, stop, stats, frames: fr, poseAt, ambient: L.AMBIENT,
              groups, hooks, project, groundAt, pick, DIR, isRunning: () => running, reduced, ready: readyPromise,
-             setStandings: data => readyPromise.then(() => setStandings(data)), cars, raceState: () => cars.map(c => ({ id: c.id, lapping: c.lapping, commits: c.commits, gap: c.gap, lane: c.lane, at: [c.group.position.x, c.group.position.z] })),
+             cars, carAt: id => { const c = cars.find(k => k.id === id); return c && c.pose ? { x: c.group.position.x, z: c.group.position.z, tx: c.pose.tx, tz: c.pose.tz, s: c.s } : null; },
+             gridState: () => race.order.map((ci, k) => ({ id: cars[ci].id, rank: k + 1, lane: +cars[ci].lane.toFixed(2), s: +(cars[ci].s || 0).toFixed(2), at: [cars[ci].group.position.x, cars[ci].group.position.z] })),
+             passing: () => !!race.pass, stepRace: dt => placeCars(dt), anchorOf, dressed, boardItems: () => BOARD.items.map(it => it.id),
              meanFps: () => stats.window.length ? stats.window.reduce((a, b) => a + b, 0) / stats.window.length : stats.fps };
 }

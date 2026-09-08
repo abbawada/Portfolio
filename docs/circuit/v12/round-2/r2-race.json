@@ -1,0 +1,18 @@
+{
+ "seconds": 240,
+ "cars": 4,
+ "minDistance": 2.69,
+ "minPair": [
+  "vaults",
+  "posture",
+  136.6
+ ],
+ "maxLateral": 3.27,
+ "orderChanges": 15,
+ "passingShare": 0.35,
+ "distanceLapped": 1848,
+ "calls": 176,
+ "triangles": 36708,
+ "errors": [],
+ "pass": true
+}

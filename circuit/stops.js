@@ -90,6 +90,19 @@ export function createStops(L, dom) {
             line('Posture Cue, robots, IoT') +
             grid(['posture-cue', 'visual-mapping', 'bluetooth-car', 'home-temp-monitor']),
 
+        /* V1.2: the Board. Every image he supplied, as itself, leaned on
+           three shelves with its title under it. The list is circuit/board.js. */
+        board: () => {
+            const B = window.CircuitBoard || { dir: '', items: [] };
+            const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+            return line('games, films, cars, machines, streets') +
+                '<div class="ring-board" aria-label="The Board">' +
+                B.items.map((it, i) => '<figure class="ring-board-card" style="--tilt:' + ((i % 5) - 2) * 1.4 + 'deg">' +
+                    '<img src="' + B.dir + it.file + '" alt="' + esc(it.title) + '" width="' + it.w + '" height="' + it.h + '" loading="lazy" decoding="async">' +
+                    '<figcaption>' + esc(it.title) + '</figcaption></figure>').join('') +
+                '</div>';
+        },
+
         contact: () =>
             '<section class="about-section contact">' +
                 '<h2 class="about-h">Contact</h2>' +

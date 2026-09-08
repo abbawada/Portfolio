@@ -36,7 +36,8 @@ async function load(width, height) {
     await page.waitForFunction(() => window.__circuit && window.__circuit.groups, null, { timeout: 20000 });
     await page.evaluate(() => window.__circuit.ready);
     await page.evaluate(() => document.fonts ? document.fonts.ready : null);
-    await page.waitForTimeout(2200);   // text planes and the standings arrive behind the build
+    await page.evaluate(() => window.__circuit.dressed);   // the hoarding atlas, after the images
+    await page.waitForTimeout(1800);   // text planes arrive behind the build
 }
 
 const AUDIT = `(() => {
@@ -51,6 +52,17 @@ const AUDIT = `(() => {
                     projects: [[59, 150, 14, 14, 19, 0], [132, 154, 6, 6, 4, 0]],
                     contact: [[96, 170.2, 6, 0.8, 3.6, 0], [111, 171, 2, 1.5, 3.6, 0]] };
     const sil = {};
+    /* the hoardings, as set dressing a label must not cover */
+    const B = window.CircuitBoard || { items: [] }, hoardBoxes = [];
+    for (const wall of L.HOARDINGS) {
+        let along = 0;
+        for (const p of wall.panels) {
+            const img = B.items.find(it => it.id === p.img), w = p.w || (img ? p.h * img.w / img.h : p.h * 1.5), z0 = p.z0 != null ? p.z0 : (wall.z0 || 0);
+            const u = wall.face === 'u' ? wall.at[0] : wall.at[0] + along, v = wall.face === 'u' ? wall.at[1] + along : wall.at[1];
+            hoardBoxes.push(wall.face === 'u' ? [u, v, 0.6, w, p.h, z0] : [u, v, w, 0.6, p.h, z0]);
+            along += w + (wall.gap || 0);
+        }
+    }
     for (const loc of L.LOCATIONS) {
         const boxes = loc.boxes.map(b => b.slice(0, 6)).concat(EXTRA[loc.id] || []);
         if (loc.arena) {
@@ -92,10 +104,22 @@ const AUDIT = `(() => {
         }
         return true;
     };
-    const labelPairs = [], labelVsStop = [], stopPairs = [];
+    const project6 = ([u, v, w, d, h, z0]) => {
+        const pts = [];
+        for (const x of [u, u + w]) for (const y of [z0, z0 + h]) for (const z of [v, v + d]) { const s = c.project(x, y, z); pts.push([s[0], s[1]]); }
+        pts.sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+        const cross = (o, a, b) => (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
+        const lo = [], up = [];
+        for (const q of pts) { while (lo.length >= 2 && cross(lo[lo.length - 2], lo[lo.length - 1], q) <= 0) lo.pop(); lo.push(q); }
+        for (const q of pts.slice().reverse()) { while (up.length >= 2 && cross(up[up.length - 2], up[up.length - 1], q) <= 0) up.pop(); up.push(q); }
+        return lo.slice(0, -1).concat(up.slice(0, -1));
+    };
+    const hoardPolys = hoardBoxes.map(project6);
+    const labelPairs = [], labelVsStop = [], stopPairs = [], labelVsHoarding = [];
     for (let i = 0; i < labels.length; i++) {
         for (let j = i + 1; j < labels.length; j++) if (hits(labels[i].pin, labels[j].pin)) labelPairs.push([labels[i].id, labels[j].id]);
         for (const id in sil) if (id !== labels[i].id && sil[id].some(poly => polyRect(poly, labels[i].chip))) labelVsStop.push([labels[i].id, id]);
+        if (hoardPolys.some(poly => polyRect(poly, labels[i].chip))) labelVsHoarding.push(labels[i].id);
     }
     const ids = Object.keys(sil);
     for (let i = 0; i < ids.length; i++) for (let j = i + 1; j < ids.length; j++)
@@ -116,7 +140,7 @@ const AUDIT = `(() => {
     return { viewport: [innerWidth, innerHeight], zoom: c.nav.state().zoom, target: c.nav.state().target,
              labels: labels.map(l => ({ id: l.id, chip: Object.fromEntries(Object.entries(l.chip).map(([k, v]) => [k, Math.round(v)])) })),
              stops: Object.fromEntries(ids.map(id => [id, bbox(sil[id])])),
-             labelOverlaps: labelPairs, labelOverStop: labelVsStop, stopOverlaps: stopPairs, planOverlaps: planPairs,
+             labelOverlaps: labelPairs, labelOverStop: labelVsStop, labelOverHoarding: labelVsHoarding, stopOverlaps: stopPairs, planOverlaps: planPairs,
              labelFont: chipStyle.fontSize + ' ' + chipStyle.fontWeight, calls: c.stats.calls, triangles: c.stats.triangles, fps: +c.meanFps().toFixed(1) };
 })()`;
 
@@ -126,16 +150,18 @@ for (const [w, h] of [[1600, 900], [1440, 900]]) {
     const file = path.join(outDir, `${prefix}-wide-${w}.png`);
     await page.screenshot({ path: file });
     report.wide[w] = await page.evaluate(AUDIT);
-    console.log(file, JSON.stringify({ labelOverlaps: report.wide[w].labelOverlaps, labelOverStop: report.wide[w].labelOverStop, planOverlaps: report.wide[w].planOverlaps, stopOverlaps: report.wide[w].stopOverlaps, fps: report.wide[w].fps, calls: report.wide[w].calls }));
+    console.log(file, JSON.stringify({ labelOverlaps: report.wide[w].labelOverlaps, labelOverStop: report.wide[w].labelOverStop, labelOverHoarding: report.wide[w].labelOverHoarding, planOverlaps: report.wide[w].planOverlaps, stopOverlaps: report.wide[w].stopOverlaps, fps: report.wide[w].fps, calls: report.wide[w].calls }));
 }
 if (!noClose) {
     await load(1600, 900);
-    const locs = await page.evaluate(() => window.CircuitLayout.LOCATIONS.map(l => ({ id: l.id, num: l.num, anchor: l.anchor, labelZ: l.labelZ })));
+    const locs = await page.evaluate(() => window.CircuitLayout.LOCATIONS.map(l => ({ id: l.id, num: l.num, anchor: l.anchor, labelZ: l.labelZ, sky: !!l.sky })));
     for (const loc of locs) {
-        await page.evaluate(([a, labelZ]) => {
-            const UP = [-Math.SQRT1_2, -Math.SQRT1_2], lift = labelZ * 0.45 * 1.73;
-            window.__circuit.nav.flyTo(a[0] + UP[0] * lift, a[1] + UP[1] * lift, 2.2);
-        }, [loc.anchor, loc.labelZ]);
+        await page.evaluate(([id, a, labelZ, sky]) => {
+            const UP = [-Math.SQRT1_2, -Math.SQRT1_2];
+            const s = sky ? window.__circuit.anchorOf(id) : null;
+            const at = s ? [s[0], s[1]] : a, lift = (s ? s[2] * 0.9 : labelZ * 0.45) * 1.73;
+            window.__circuit.nav.flyTo(at[0] + UP[0] * lift, at[1] + UP[1] * lift, sky ? 1.6 : 2.2);
+        }, [loc.id, loc.anchor, loc.labelZ, loc.sky]);
         await page.waitForTimeout(1200);
         const file = path.join(outDir, `${prefix}-${loc.num}-${loc.id}.png`);
         await page.screenshot({ path: file });

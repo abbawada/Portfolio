@@ -5,10 +5,11 @@ worked in order; each gate commits and stops for review.
 
 | gate | sections | state |
 | --- | --- | --- |
-| A | 2 to 5: persistent labels, one affordance grammar, Betta as the centre of gravity, the respaced map | built 2026-09-08, report in gate-a.md, waiting on review |
-| B | 1 and 6: cars off the GitHub data, the orphan ramp finished or cut | not started |
+| A | 2 to 5: persistent labels, one affordance grammar, Betta as the centre of gravity, the respaced map | built 2026-09-08, report in gate-a.md, reviewed by Abba the same night |
+| round 2 | Abba's six notes on Gate A: panel exit, the images on the track, cars as projects, the blimp, readable billboards, the lap that follows the cars | built 2026-09-08, report in round-2.md |
+| B | section 6, the sleeve monument finished or cut (section 1, the cars, landed in round 2) | open |
 | C | per-part reference gates | not started |
-| D | the Board audit (Part 7) | not started; assets/board/ does not exist in the repo |
+| D | the Board audit (Part 7): the images are in the world and the Board panel; the audit table is in round-2.md | ready for review |
 
 ## Tools added
 - tools/circuit/gate.mjs: Playwright over the installed Chrome (channel
@@ -19,4 +20,9 @@ worked in order; each gate commits and stops for review.
   the betta-live-site install next door.
 - tools/circuit/labeltest.mjs: the label contract per stop (title at rest,
   hover adds lift and glow only, cursor, click opens the right panel,
-  Escape closes, no hover-only titles in the world layer).
+  Escape closes without moving the camera, no hover-only titles).
+- tools/circuit/racetest.mjs: steps the race maths for N seconds and
+  checks clearance, lateral limits and that the order changes.
+- tools/circuit/shots.mjs: detail shots, name:u,v,zoom per frame.
+- tools/circuit/board.py: the Board pipeline, originals in
+  docs/circuit/refs/board/ to images/board/ and circuit/board.js.

@@ -38,9 +38,11 @@ for (const loc of locs) {
     s.panelOpen = await page.evaluate(() => !document.getElementById('ringPanel').hidden);
     s.panelTitle = await page.locator('#ringPanelTitle').innerText();
     s.opensRightStop = s.panelTitle === loc.name;
-    await page.keyboard.press('Escape'); await page.waitForTimeout(1100);
+    await page.keyboard.press('Escape'); await page.waitForTimeout(400);
     s.closed = await page.evaluate(() => document.getElementById('ringPanel').hidden);
-    s.pass = s.visibleAtRest && s.titleAtRest && s.hoverLift > 0.5 && s.hoverGlow && s.cursor === 'pointer' && s.hoverAddsNoText && s.panelOpen && s.opensRightStop && s.closed;
+    s.cameraStayed = await page.evaluate(() => Math.abs(window.__circuit.nav.state().zoom - 1) > 0.3);   // closing does not fly home (V1.2)
+    await page.keyboard.press('Home'); await page.waitForTimeout(1000);   // back to the default view for the next stop
+    s.pass = s.visibleAtRest && s.titleAtRest && s.hoverLift > 0.5 && s.hoverGlow && s.cursor === 'pointer' && s.hoverAddsNoText && s.panelOpen && s.opensRightStop && s.closed && s.cameraStayed;
     r.stops.push(s); console.log(loc.id, s.pass ? 'pass' : 'FAIL', JSON.stringify(s));
 }
 r.pass = r.stops.every(s => s.pass) && r.hoverOnlyTitles === 0 && errors.length === 0;

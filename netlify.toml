@@ -1,6 +1,3 @@
-# Static site, no bundler. The build step only tries to refresh the race
-# standings; without gh (as on Netlify) it keeps the committed
-# circuit/standings.json and still succeeds.
+# Static site, no bundler, no build step.
 [build]
   publish = "."
-  command = "python3 tools/circuit/standings.py"
