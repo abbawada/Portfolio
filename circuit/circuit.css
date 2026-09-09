@@ -244,7 +244,6 @@ body.circuit a:focus-visible, body.circuit button:focus-visible { outline: 2px s
 }
 .ring-broadcast > * { pointer-events: auto; }
 body.ring-open .ring-broadcast { right: calc(var(--ring-panel-w) + 1.5rem); }
-body.ring-open .ring-panel[data-id="board"] ~ .ring-broadcast { right: calc(min(820px, 92vw) + 1.5rem); }
 .ring-map {
     width: 190px;
     height: 120px;
@@ -332,7 +331,6 @@ body.ring-open .ring-panel[data-id="board"] ~ .ring-broadcast { right: calc(min(
     transition: opacity 250ms ease;
 }
 .ring-panel.is-open { opacity: 1; }
-.ring-panel[data-id="board"] { width: min(820px, 92vw); }
 
 /* the head stays put while the body scrolls: Close and the two
    neighbouring stops are always one click away (V1.2) */
@@ -459,46 +457,6 @@ body.ring-open .ring-panel[data-id="board"] ~ .ring-broadcast { right: calc(min(
 
 .ring-viewall { margin-top: 1.5rem; }
 
-/* the Board: cards leaned on shelves, tape at the top, titles under (V1.2) */
-.ring-board {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2.25rem 1.5rem;
-    padding: 1rem 0.5rem 2rem;
-}
-.ring-board-card {
-    position: relative;
-    margin: 0;
-    padding: 0.5rem 0.5rem 0.625rem;
-    background: #fff;
-    border: 1px solid var(--hairline);
-    box-shadow: 0 1px 0 rgba(20, 20, 20, 0.08), 0 10px 22px rgba(20, 20, 20, 0.16);
-    transform: rotate(var(--tilt, 0deg));
-    transition: transform 200ms ease, box-shadow 200ms ease;
-}
-.ring-board-card:hover { transform: rotate(0deg) translateY(-4px); box-shadow: 0 1px 0 rgba(20, 20, 20, 0.08), 0 16px 30px rgba(20, 20, 20, 0.22); }
-.ring-board-card::before {
-    content: '';
-    position: absolute;
-    top: -0.55rem; left: 50%;
-    width: 3.25rem; height: 1rem;
-    transform: translateX(-50%) rotate(-2deg);
-    background: rgba(198, 161, 91, 0.55);
-    box-shadow: 0 1px 2px rgba(20, 20, 20, 0.15);
-}
-.ring-board-card img { display: block; width: 100%; height: auto; }
-.ring-board-card figcaption {
-    margin-top: 0.5rem;
-    font-family: var(--font-chrome);
-    font-style: italic;
-    font-weight: 600;
-    font-size: 0.625rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--muted);
-}
-@media (max-width: 720px) { .ring-board { grid-template-columns: repeat(2, 1fr); gap: 1.75rem 1rem; } }
-@media (prefers-reduced-motion: reduce) { .ring-board-card { transition: none; } }
 
 .ring-copy {
     align-self: flex-start;

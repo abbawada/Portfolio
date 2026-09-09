@@ -11,7 +11,7 @@ export function attach(world, L, dom) {
     const portrait = () => canvas.clientWidth / canvas.clientHeight < 0.8;
     /* the default framing leans toward the court (V1.2, section 4): the
        plate still fits, Betta sits just above the centre of the screen */
-    const homeView = () => ({ x: 112, z: 96, zoom: portrait() ? 1.35 : 1 });
+    const homeView = () => ({ x: 108, z: 102, zoom: portrait() ? 1.45 : 1.1 });
     const layoutShift = () => { view.shiftPx = portrait() ? Math.round(canvas.clientHeight * 0.12) : 0; };
     const FLY_MS = 750, LIFT = 1.2, STOP_ZOOM = 2.6, LAP_ZOOM = 2.0, LAP_PAUSE = 1700;
     const RIGHT = [Math.SQRT1_2, -Math.SQRT1_2], UP = [-Math.SQRT1_2, -Math.SQRT1_2], SIN30 = 0.5;
@@ -89,8 +89,7 @@ export function attach(world, L, dom) {
             if (Math.abs(f - p.cur) < 0.01) p.cur = f;
             const lift = p.cur * LIFT;
             groups[id].position.y = lift;
-            const sky = loc.sky ? world.anchorOf(id) : null;
-            const s = sky ? project(sky[0], sky[2] + lift, sky[1]) : project(loc.anchor[0], loc.labelZ + lift, loc.anchor[1]);
+            const s = project(loc.anchor[0], loc.labelZ + lift, loc.anchor[1]);
             const side = loc.labelSide === 'left' ? 'translate(calc(-100% + 6px), -50%)' : loc.labelSide === 'below' ? 'translate(-50%, -6px)' : 'translate(-6px, -50%)';
             p.el.style.transform = 'translate(' + s[0].toFixed(1) + 'px,' + s[1].toFixed(1) + 'px) ' + side;
             p.el.classList.toggle('is-hot', p.cur > 0.5);
@@ -111,7 +110,6 @@ export function attach(world, L, dom) {
                    '<path d="' + pit + '" fill="none" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>';
         const MAP_OFF = { about: [4, -4], betta: [5.5, 2.6], education: [-5.5, 2.6, 'end'], economics: [5.5, 2.6], writing: [-5.5, 2.6, 'end'], projects: [-5.5, 8, 'end'], contact: [5.5, 8] };
         for (const loc of L.LOCATIONS) {   // the number sits beside each dot at rest; nothing waits for a hover
-            if (loc.sky) continue;
             const [x, y] = mapXY(loc.anchor[0], loc.anchor[1]), o = MAP_OFF[loc.id] || [5.5, 2.6];
             html += '<circle class="ring-map-stop" data-id="' + loc.id + '" cx="' + f1(x) + '" cy="' + f1(y) + '" r="3" role="button" aria-label="Stop ' + loc.num + ', ' + loc.name + '"/>' +
                     '<text class="ring-map-num" x="' + f1(x + o[0]) + '" y="' + f1(y + o[1]) + '" text-anchor="' + (o[2] || 'start') + '">' + loc.num + '</text>';
@@ -129,7 +127,7 @@ export function attach(world, L, dom) {
     }
 
     /* ------------------------------------------------ the panel */
-    const HOP = L.LAP.concat(L.LOCATIONS.filter(l => l.sky).map(l => l.id));   // the seven, then the blimp
+    const HOP = L.LAP.slice();   // the seven, round the lap
     function hopTargets(id) { const i = HOP.indexOf(id), n = HOP.length; return { prev: byId[HOP[(i - 1 + n) % n]], next: byId[HOP[(i + 1) % n]] }; }
     function openPanel(loc) {
         dom.panelKicker.textContent = loc.num + ' ' + loc.section;
@@ -159,16 +157,14 @@ export function attach(world, L, dom) {
         if (lap.running) endLap(false);
         open = id; returnTo = pins[id].el;
         const aspect = canvas.clientWidth / canvas.clientHeight, sheet = window.innerWidth <= 760;
-        const zoom = loc.sky ? 1.6 : sheet ? 3.2 : STOP_ZOOM;
+        const zoom = sheet ? 3.2 : STOP_ZOOM;
         const vw = Math.max(view.width, 200 * aspect) / zoom, k = vw / canvas.clientWidth;
-        const panelPx = sheet ? 0 : Math.min(loc.id === 'board' ? 820 : 600, window.innerWidth * 0.92);
+        const panelPx = sheet ? 0 : Math.min(600, window.innerWidth * 0.92);
         const shift = panelPx / 2 * k;
         /* a sheet rises from below: aim the stop at about 30% down the screen, above it */
         const shiftY = sheet ? (window.innerHeight * 0.2 + (view.shiftPx || 0)) * k / SIN30 : 0;
-        const sky = loc.sky ? world.anchorOf(id) : null;
-        const a = sky ? [sky[0], sky[1]] : loc.anchor;
-        const lift = (sky ? sky[2] * 0.9 : loc.labelZ * 0.45) * 1.73;   // tall stops: centre halfway up, so the label stays in view; the blimp: centre on it
-        const x = a[0] + RIGHT[0] * shift + UP[0] * (lift - shiftY), z = a[1] + RIGHT[1] * shift + UP[1] * (lift - shiftY);
+        const lift = loc.labelZ * 0.45 * 1.73;   // tall stops: centre halfway up, so the label stays in view
+        const x = loc.anchor[0] + RIGHT[0] * shift + UP[0] * (lift - shiftY), z = loc.anchor[1] + RIGHT[1] * shift + UP[1] * (lift - shiftY);
         flyTo(x, z, zoom, () => openPanel(loc));
         refreshStill();
     }

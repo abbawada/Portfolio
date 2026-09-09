@@ -131,8 +131,14 @@ export function mount(canvas, L) {
         M.neon[k] = new THREE.MeshBasicMaterial({ color: v, toneMapped: false });
     }
     const DISTRICT = { about: M.media, betta: null, education: M.cardinal, economics: M.green, writing: M.media, projects: M.gold, contact: M.grey };
-    /* the tower's internals, boards, details and Rep are placed relative to its box (V1.2) */
-    const TOWER = L.LOCATIONS.find(l => l.id === 'about').boxes[0], TU = TOWER[0], TV = TOWER[1];
+    /* every stop's internals, details and signs are placed relative to its layout box (V1.2, V1.3) */
+    const boxOf = id => L.LOCATIONS.find(l => l.id === id).boxes[0];
+    const TOWER = boxOf('about'), TU = TOWER[0], TV = TOWER[1];
+    const GAR = boxOf('projects'), GU = GAR[0], GV = GAR[1];
+    const WALL = boxOf('contact'), WU = WALL[0], WV = WALL[1];
+    const EXC = boxOf('economics'), EU = EXC[0], EV = EXC[1];
+    const PRS = boxOf('writing'), PU = PRS[0], PV = PRS[1];
+    const CAM = boxOf('education'), KU = CAM[0], KV = CAM[1];
 
     /* ------------------------------------------------ scene, camera */
     const scene = new THREE.Scene();
@@ -198,7 +204,7 @@ export function mount(canvas, L) {
         st.ribbon(rib.left, inset(1, L.TRACK_WIDTH / 2 - 0.45), 0.09, C.paper, true);
         st.ribbon(inset(-1, L.TRACK_WIDTH / 2 - 0.45), rib.right, 0.09, C.paper, true);
 
-        const campusA = L.nearest(fr, [186, 142]), campusB = L.nearest(fr, [178, 86]);
+        const campusA = L.nearest(fr, L.CAMPUS_CURBS[0]), campusB = L.nearest(fr, L.CAMPUS_CURBS[1]);
         for (let i = 0; i < n; i += 2) {
             if (Math.abs(fr[i].k) < 0.045) continue;
             const j = (i + 2) % n, campus = i >= campusA && i <= campusB;
@@ -278,21 +284,21 @@ export function mount(canvas, L) {
             for (const p of posts) gb.box(p[0], p[1], 0.5, 0.5, b[5], 0, 'roof');
         }
         L.CARPARK.cars.forEach((c) => gb.box(c[0], c[1], c[2], c[3], 0.8, 0, 'wall'));
-        st.box(99.8, 183.8, 0.4, 0.4, 7.2, 0, 'ink');                        // the flag pole
+        st.box(L.FLAG.at[0] - 0.2, L.FLAG.at[1] - 0.2, 0.4, 0.4, 7.2, 0, 'ink');   // the flag pole
         {   // the garage: the open bay reads as a dark mouth, the bench and the scope inside
-            const g = L.LOCATIONS.find(l => l.id === 'projects').boxes[0], zf = g[1] + g[3];
+            const zf = GV + GAR[3];
             const mouth = new Builder(true);
-            mouth.quad([96, 0.02, zf + 0.02], [104, 0.02, zf + 0.02], [104, 5.6, zf + 0.02], [96, 5.6, zf + 0.02], 'x');
+            mouth.quad([GU + 24, 0.02, zf + 0.02], [GU + 32, 0.02, zf + 0.02], [GU + 32, 5.6, zf + 0.02], [GU + 24, 5.6, zf + 0.02], 'x');
             gut('projects', new THREE.Mesh(mouth.build(), M.graphite));
-            gutBox('projects', 100.6, zf - 1.2, 2.6, 1.1, 1.3, 0, M.graphite);              // the workbench
-            gutBox('projects', 74, 151.2, 52, 0.4, 0.5, 5.4, M.neon.gold);                   // a light bar along the back wall
-            gutBox('projects', 78, 154, 10, 4, 1.2, 0, M.graphite);                          // the electronics bench inside
-            gutBox('projects', 112, 154, 10, 4, 1.2, 0, M.graphite);
+            gutBox('projects', GU + 28.6, zf - 1.2, 2.6, 1.1, 1.3, 0, M.graphite);           // the workbench
+            gutBox('projects', GU + 2, GV + 1.2, 52, 0.4, 0.5, 5.4, M.neon.gold);            // a light bar along the back wall
+            gutBox('projects', GU + 6, GV + 4, 10, 4, 1.2, 0, M.graphite);                   // the electronics bench inside
+            gutBox('projects', GU + 40, GV + 4, 10, 4, 1.2, 0, M.graphite);
         }
         {   // the Exchange: a ticker mechanism inside the green shell
-            gutBox('economics', 3.5, 39, 13, 1.2, 1.2, 4, M.graphite); gutBox('economics', 3.5, 47.8, 13, 1.2, 1.2, 8, M.graphite);   // rollers
-            gutBox('economics', 4.5, 43.4, 11, 0.3, 4.4, 4.6, M.neon.green);                // the tape
-            const gear = new THREE.Mesh(new THREE.TorusGeometry(1.6, 0.35, 6, 12), M.graphite); gear.position.set(10, 9.8, 44); gut('economics', gear);
+            gutBox('economics', EU + 1.5, EV + 3, 13, 1.2, 1.2, 4, M.graphite); gutBox('economics', EU + 1.5, EV + 11.8, 13, 1.2, 1.2, 8, M.graphite);   // rollers
+            gutBox('economics', EU + 2.5, EV + 7.4, 11, 0.3, 4.4, 4.6, M.neon.green);       // the tape
+            const gear = new THREE.Mesh(new THREE.TorusGeometry(1.6, 0.35, 6, 12), M.graphite); gear.position.set(EU + 8, 9.8, EV + 8); gut('economics', gear);
         }
         {   // the tower: broadcast internals in neon, a core and stacked rings
             gutBox('about', TU + 2.1, TV + 2.1, 0.8, 0.8, 33, 0.5, M.graphite);
@@ -301,7 +307,7 @@ export function mount(canvas, L) {
             gutBox('about', TU + 1.3, TV + 1.3, 2.4, 2.4, 1.2, 35, M.neon.cyan);                    // the head's transmitter
         }
         {   // the press room: one magenta tube inside
-            gutBox('writing', 3, 102.5, 8, 0.5, 0.5, 3.2, M.neon.magenta);
+            gutBox('writing', PU + 1, PV + 6.5, 8, 0.5, 0.5, 3.2, M.neon.magenta);
         }
         {   // court markings, hoops, the ball frozen mid-arc
             const b = lb.betta;
@@ -397,7 +403,7 @@ export function mount(canvas, L) {
 
     /* ------------------------------------------------ the sleeve monument (V1.1 Part 2) */
     let shimmer = null, sleeve = null;
-    const SLEEVE_AT = [66, 157], SLEEVE_N = 30, SLEEVE_SIDES = 12;
+    const SLEEVE_AT = [GU - 6, GV + 7], SLEEVE_N = 30, SLEEVE_SIDES = 12;   // the pit-lane end of the garage
     const sleeveRadius = t => 4.0 * (1 - t) + 2.5 * t + 0.3 * Math.exp(-Math.pow((t - 0.5) / 0.12, 2));
     function buildSleeve() {
         const curve = new THREE.CatmullRomCurve3([[0, 0, 0], [0, 4.5, 0], [0.6, 8.5, 0], [3.2, 12.2, 0.6], [7.2, 15.2, 1.4], [10.2, 16.4, 1.9]].map(a => new THREE.Vector3(a[0], a[1], a[2])), false, 'catmullrom', 0.5);
@@ -456,8 +462,8 @@ export function mount(canvas, L) {
         const disc = new THREE.Mesh(new THREE.CylinderGeometry(5, 5.4, 0.7, 16), M.graphite); disc.position.set(SLEEVE_AT[0], 0.35, SLEEVE_AT[1]);
         const post = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.6, 2.2, 8), M.graphite); post.position.set(SLEEVE_AT[0], 1.8, SLEEVE_AT[1]);
         guts.projects.push(disc, post, mon);
-        st.poly([[59, 150], [73, 150], [73, 164], [59, 164]], 0.03, C.plate);
-        sh.poly([[61, 152], [71, 152], [76, 155], [76, 166], [66, 166], [61, 163]], 0.04, C.ink);
+        st.poly([[GU - 13, GV], [GU + 1, GV], [GU + 1, GV + 14], [GU - 13, GV + 14]], 0.03, C.plate);
+        sh.poly([[GU - 11, GV + 2], [GU - 1, GV + 2], [GU + 4, GV + 5], [GU + 4, GV + 16], [GU - 6, GV + 16], [GU - 11, GV + 13]], 0.04, C.ink);
     }
     function shimmerAt(t) {
         if (!shimmer || !sleeve) return;
@@ -598,37 +604,32 @@ export function mount(canvas, L) {
         gutBox('betta', 126, 96, 4.4, 1.2, 0.25, 1.0, M.graphite); gutBox('betta', 126.2, 96.2, 0.3, 0.3, 1, 0, M.graphite); gutBox('betta', 130.1, 96.9, 0.3, 0.3, 1, 0, M.graphite);
         gutMesh('betta', new THREE.TorusGeometry(0.75, 0.42, 7, 14), M.smoke, [128.2, 1.65, 96.6], [Math.PI / 2, 0, 0]);
         /* 03 campus: a stack of books, a mortarboard with a gold tassel */
-        gutBox('education', 193, 98.5, 2.6, 1.8, 0.45, 1.0, M.cardinal); gutBox('education', 193.3, 98.3, 2.4, 1.9, 0.4, 1.45, M.gold); gutBox('education', 193.1, 98.6, 2.5, 1.7, 0.45, 1.85, M.cardinal);
-        gutMesh('education', new THREE.CylinderGeometry(0.7, 0.8, 1.0, 10), M.graphite, [193.8, 1.5, 125.5]);
-        gutBox('education', 192.6, 124.3, 2.4, 2.4, 0.16, 2.0, M.graphite);
-        gutBox('education', 194.9, 125.4, 0.12, 0.12, 1.4, 0.9, M.neon.gold);
+        gutBox('education', KU + 1, KV + 2.5, 2.6, 1.8, 0.45, 1.0, M.cardinal); gutBox('education', KU + 1.3, KV + 2.3, 2.4, 1.9, 0.4, 1.45, M.gold); gutBox('education', KU + 1.1, KV + 2.6, 2.5, 1.7, 0.45, 1.85, M.cardinal);
+        gutMesh('education', new THREE.CylinderGeometry(0.7, 0.8, 1.0, 10), M.graphite, [KU + 1.8, 1.5, KV + 29.5]);
+        gutBox('education', KU + 0.6, KV + 28.3, 2.4, 2.4, 0.16, 2.0, M.graphite);
+        gutBox('education', KU + 2.9, KV + 29.4, 0.12, 0.12, 1.4, 0.9, M.neon.gold);
         /* 04 the Exchange: a vault door on the side wall, a stack of coins by it */
-        gutMesh('economics', new THREE.CylinderGeometry(3.2, 3.2, 0.5, 20), M.green, [18.3, 6, 46], [0, 0, Math.PI / 2]);
-        gutMesh('economics', new THREE.TorusGeometry(1.4, 0.18, 6, 18), M.graphite, [18.6, 6, 46], [0, Math.PI / 2, 0]);
-        for (let i = 0; i < 3; i++) gutMesh('economics', new THREE.BoxGeometry(0.16, 2.8, 0.16), M.graphite, [18.62, 6, 46], [i * Math.PI / 3, 0, 0]);
-        for (let i = 0; i < 6; i++) gutMesh('economics', new THREE.CylinderGeometry(1.1, 1.1, 0.28, 14), M.gold, [21.5 + (i % 2) * 0.15, 0.14 + i * 0.3, 55]);
+        gutMesh('economics', new THREE.CylinderGeometry(3.2, 3.2, 0.5, 20), M.green, [EU + 16.3, 6, EV + 10], [0, 0, Math.PI / 2]);
+        gutMesh('economics', new THREE.TorusGeometry(1.4, 0.18, 6, 18), M.graphite, [EU + 16.6, 6, EV + 10], [0, Math.PI / 2, 0]);
+        for (let i = 0; i < 3; i++) gutMesh('economics', new THREE.BoxGeometry(0.16, 2.8, 0.16), M.graphite, [EU + 16.62, 6, EV + 10], [i * Math.PI / 3, 0, 0]);
+        for (let i = 0; i < 6; i++) gutMesh('economics', new THREE.CylinderGeometry(1.1, 1.1, 0.28, 14), M.gold, [EU + 19.5 + (i % 2) * 0.15, 0.14 + i * 0.3, EV + 19]);
         /* 05 the press room: a stack of paper with a pen, a paper box at the corner */
-        gutBox('writing', 13.2, 99.5, 2.2, 3, 0.9, 0, M.white);
-        gutMesh('writing', new THREE.CylinderGeometry(0.1, 0.1, 2.2, 6), M.graphite, [14.3, 1.02, 101], [Math.PI / 2, 0, 0.5]);
-        gutBox('writing', 12.6, 109, 1.3, 1.6, 1.3, 0, M.grey); gutBox('writing', 12.5, 108.9, 1.5, 1.8, 0.2, 1.3, M.graphite);
+        gutBox('writing', PU + 11.2, PV + 3.5, 2.2, 3, 0.9, 0, M.white);
+        gutMesh('writing', new THREE.CylinderGeometry(0.1, 0.1, 2.2, 6), M.graphite, [PU + 12.3, 1.02, PV + 5], [Math.PI / 2, 0, 0.5]);
+        gutBox('writing', PU + 10.6, PV + 13, 1.3, 1.6, 1.3, 0, M.grey); gutBox('writing', PU + 10.5, PV + 12.9, 1.5, 1.8, 0.2, 1.3, M.graphite);
         /* 06 the garage: a tyre stack on gold rims, a tool chest */
-        for (let i = 0; i < 4; i++) { gutMesh('projects', new THREE.TorusGeometry(1.1, 0.45, 7, 16), M.graphite, [132.5, 0.5 + i * 0.9, 159], [Math.PI / 2, 0, 0]); gutMesh('projects', new THREE.CylinderGeometry(0.65, 0.65, 0.5, 10), M.gold, [132.5, 0.5 + i * 0.9, 159]); }
-        gutBox('projects', 134.5, 154.5, 2.6, 1.6, 1.6, 0, M.gold);
-        for (let i = 0; i < 3; i++) gutBox('projects', 134.7, 156.11, 2.2, 0.08, 0.12, 0.3 + i * 0.45, M.graphite);
+        for (let i = 0; i < 4; i++) { gutMesh('projects', new THREE.TorusGeometry(1.1, 0.45, 7, 16), M.graphite, [GU + 60.5, 0.5 + i * 0.9, GV + 9], [Math.PI / 2, 0, 0]); gutMesh('projects', new THREE.CylinderGeometry(0.65, 0.65, 0.5, 10), M.gold, [GU + 60.5, 0.5 + i * 0.9, GV + 9]); }
+        gutBox('projects', GU + 62.5, GV + 4.5, 2.6, 1.6, 1.6, 0, M.gold);
+        for (let i = 0; i < 3; i++) gutBox('projects', GU + 62.7, GV + 6.11, 2.2, 0.08, 0.12, 0.3 + i * 0.45, M.graphite);
         /* 07 the pit wall: a headset, the chrome-visor helmet at rest by the board */
-        gutMesh('contact', new THREE.TorusGeometry(0.5, 0.09, 6, 16, Math.PI), M.graphite, [70, 2.3, 171.7], [0, 0, 0]);
-        gutBox('contact', 69.35, 171.45, 0.35, 0.5, 0.4, 2.0, M.graphite); gutBox('contact', 70.3, 171.45, 0.35, 0.5, 0.4, 2.0, M.graphite);
-        gutMesh('contact', new THREE.SphereGeometry(0.95, 18, 14), M.chrome, [112, 2.75, 171.7]);
-        gutBox('contact', 111.4, 171.9, 1.2, 0.8, 0.5, 1.9, M.graphite);
-        gutBox('contact', 111.95, 171.2, 0.1, 1.1, 0.55, 2.9, M.gold);
+        gutMesh('contact', new THREE.TorusGeometry(0.5, 0.09, 6, 16, Math.PI), M.graphite, [WU + 6, 2.3, WV + 0.7], [0, 0, 0]);
+        gutBox('contact', WU + 5.35, WV + 0.45, 0.35, 0.5, 0.4, 2.0, M.graphite); gutBox('contact', WU + 6.3, WV + 0.45, 0.35, 0.5, 0.4, 2.0, M.graphite);
+        gutMesh('contact', new THREE.SphereGeometry(0.95, 18, 14), M.chrome, [WU + 48, 2.75, WV + 0.7]);
+        gutBox('contact', WU + 47.4, WV + 0.9, 1.2, 0.8, 0.5, 1.9, M.graphite);
+        gutBox('contact', WU + 47.95, WV + 0.2, 0.1, 1.1, 0.55, 2.9, M.gold);
     }
-    /* low barrier walls with his marks in type: the pit straight, the hairpin, the back straight */
-    const BARRIERS = [
-        { box: [52, 185.4, 44, 0.6, 2.2, 0], face: 'v', text: 'WADA RING   ·   BETTA   ·   WADA RING' },
-        { box: [104, 185.4, 46, 0.6, 2.2, 0], face: 'v', text: 'FEEL EVERY REP   ·   AWUS   ·   TOP 4 OF 221' },
-        { box: [3.4, 56, 0.6, 28, 2.2, 0], face: 'u', text: 'BETTA   ·   BETTA' },
-        { box: [50, 36.4, 30, 0.6, 2.2, 0], face: 'v', text: 'AWUS   ·   WADA RING' }
-    ];
+    /* low barrier walls with his marks in type, placed in layout.js */
+    const BARRIERS = L.BARRIERS;
     function buildBarriers() { for (const b of BARRIERS) gb.box(b.box[0], b.box[1], b.box[2], b.box[3], b.box[4], b.box[5], 'x'); }
     function barrierText() {
         for (const b of BARRIERS) {
@@ -665,7 +666,7 @@ export function mount(canvas, L) {
     const REP_SPOTS = [
         { at: [REP_AT[0], 0.7, REP_AT[1]], scale: 2.6, yaw: Math.PI / 4, stop: 'betta' },     // the statue on the lawn beside the court
         { at: [TU + 2.5, 45.2, TV + 2.5], scale: 1.8, yaw: Math.PI / 4, stop: 'about' },  // on the tower head
-        { at: [86, 1.8, 171.7], scale: 0.75, yaw: Math.PI / 4, stop: 'contact' }   // on the pit wall by the flag
+        { at: [WU + 22, 1.8, WV + 0.7], scale: 0.75, yaw: Math.PI / 4, stop: 'contact' }   // on the pit wall by the flag
     ];
     let repFigure = null;
     function buildMascot() {
@@ -680,135 +681,38 @@ export function mount(canvas, L) {
         sh.poly([[ru - 3, rv - 2], [ru + 4, rv - 2], [ru + 9, rv], [ru + 9, rv + 4], [ru + 2, rv + 4], [ru - 3, rv + 2]], 0.04, C.ink);
     }
 
-    /* ------------------------------------------------ the hoardings and the blimp screen (V1.2) */
-    /* Abba's images on the track. Frames and posts go up with the stops;
-       the pictures arrive on one atlas texture once the files and the
-       fonts are in, as one merged mesh, so the whole set costs one draw.
-       The blimp's screen reads the same atlas and cycles through it. */
-    const BOARD = window.CircuitBoard || { dir: 'images/board/', items: [] };
-    const boardItem = id => BOARD.items.find(it => it.id === id);
+    /* ------------------------------------------------ the type hoardings (V1.2, V1.3) */
+    /* Three lines of type on trackside boards. Frames and posts go up with
+       the stops; the type lands once the fonts are in. No photographs
+       anywhere in the world (V1.3 Session 1). */
     const hoardingPlanes = [];
-    function hoardingSize(p) {
-        const img = boardItem(p.img);
-        const height = p.h, width = p.w || (img ? height * img.w / img.h : height * 1.5);
-        return { width, height };
-    }
-    /* each wall lays its panels side by side along its face, bottoms on
-       the wall's base line; a flat wall is posters glued to a building */
     function buildHoardings() {
         for (const wall of L.HOARDINGS) {
             let along = 0;
             for (const p of wall.panels) {
-                const { width: w, height: hh } = hoardingSize(p), z0 = p.z0 != null ? p.z0 : (wall.z0 || 0);
+                const w = p.w, hh = p.h, z0 = p.z0 != null ? p.z0 : (wall.z0 || 0);
                 const u = wall.face === 'u' ? wall.at[0] : wall.at[0] + along, v = wall.face === 'u' ? wall.at[1] + along : wall.at[1];
-                const off = wall.flat ? 0.03 : 0.62;
-                if (!wall.flat) {
-                    if (wall.face === 'u') {
-                        gb.box(u, v - 0.3, 0.6, w + 0.6, hh + 0.6, Math.max(0, z0 - 0.3), 'x');
-                        if (z0 > 0.6) for (const vv of [v + 0.2, v + w - 0.7]) gb.box(u + 0.05, vv, 0.5, 0.5, z0, 0, 'x');
-                        shadowOf(u, v - 0.3, 0.6, w + 0.6, z0 + hh);
-                    } else {
-                        gb.box(u - 0.3, v, w + 0.6, 0.6, hh + 0.6, Math.max(0, z0 - 0.3), 'x');
-                        if (z0 > 0.6) for (const uu of [u + 0.2, u + w - 0.7]) gb.box(uu, v + 0.05, 0.5, 0.5, z0, 0, 'x');
-                        shadowOf(u - 0.3, v, w + 0.6, 0.6, z0 + hh);
-                    }
+                if (wall.face === 'u') {
+                    gb.box(u, v - 0.3, 0.6, w + 0.6, hh + 0.6, Math.max(0, z0 - 0.3), 'x');
+                    if (z0 > 0.6) for (const vv of [v + 0.2, v + w - 0.7]) gb.box(u + 0.05, vv, 0.5, 0.5, z0, 0, 'x');
+                    shadowOf(u, v - 0.3, 0.6, w + 0.6, z0 + hh);
+                    hoardingPlanes.push({ p, w, hh, pos: [u + 0.62, z0 + hh / 2, v + w / 2], rotY: Math.PI / 2 });
+                } else {
+                    gb.box(u - 0.3, v, w + 0.6, 0.6, hh + 0.6, Math.max(0, z0 - 0.3), 'x');
+                    if (z0 > 0.6) for (const uu of [u + 0.2, u + w - 0.7]) gb.box(uu, v + 0.05, 0.5, 0.5, z0, 0, 'x');
+                    shadowOf(u - 0.3, v, w + 0.6, 0.6, z0 + hh);
+                    hoardingPlanes.push({ p, w, hh, pos: [u + w / 2, z0 + hh / 2, v + 0.62], rotY: 0 });
                 }
-                if (wall.face === 'u') hoardingPlanes.push({ h: p, w, hh, pos: [u + off, z0 + hh / 2, v + w / 2], rotY: Math.PI / 2 });
-                else hoardingPlanes.push({ h: p, w, hh, pos: [u + w / 2, z0 + hh / 2, v + off], rotY: 0 });
                 along += w + (wall.gap || 0);
             }
         }
     }
-    let atlas = null;   // { tex, rects: Map(key -> [x0, y0, x1, y1] in uv) }
-    const boardImages = new Map();
-    function loadBoardImages() {
-        return Promise.all(BOARD.items.map(it => new Promise(resolve => {
-            const im = new Image(); im.decoding = 'async';
-            im.onload = () => { boardImages.set(it.id, im); resolve(); }; im.onerror = () => resolve();
-            im.src = BOARD.dir + it.file;
-        })));
-    }
-    function buildAtlas() {
-        const W = 4096, H = 2048, cv = document.createElement('canvas'); cv.width = W; cv.height = H;
-        const ctx = cv.getContext('2d'); ctx.fillStyle = C.paper; ctx.fillRect(0, 0, W, H);
-        const rects = new Map(), jobs = [];
-        for (const it of BOARD.items) {   // every image, the long side at 512: twenty of them and the type panels fit the sheet with room
-            const im = boardImages.get(it.id); if (!im) continue;
-            const k = 512 / Math.max(im.naturalWidth, im.naturalHeight);
-            jobs.push({ key: 'img:' + it.id, w: Math.round(im.naturalWidth * k), h: Math.round(im.naturalHeight * k), draw: (x, y, w, h) => ctx.drawImage(im, x, y, w, h) });
-        }
-        const textPanels = [].concat(...L.HOARDINGS.map(wall => wall.panels.filter(p => p.text)));
-        for (const h of textPanels) {   // the type panels, ink on paper like the old billboards but big
-            const { width, height } = hoardingSize(h), w = 768, hp = Math.round(768 * height / width);
-            jobs.push({ key: 'txt:' + h.text, w, h: hp, draw: (x, y) => {
-                ctx.save(); ctx.fillStyle = C.paper; ctx.fillRect(x, y, w, hp);
-                ctx.fillStyle = C.ink; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-                if ('letterSpacing' in ctx) ctx.letterSpacing = '8px';
-                let size = Math.round(hp * 0.42); ctx.font = 'italic 700 ' + size + 'px ' + CHAKRA;
-                while (ctx.measureText(h.text).width > w * 0.9 && size > 12) { size -= 4; ctx.font = 'italic 700 ' + size + 'px ' + CHAKRA; }
-                ctx.fillText(h.text, x + w / 2, y + hp / 2); ctx.restore();
-            } });
-        }
-        jobs.sort((a, b) => b.h - a.h);
-        let x = 4, y = 4, rowH = 0;   // shelf packing with a 4 px gutter
-        for (const j of jobs) {
-            if (x + j.w + 4 > W) { x = 4; y += rowH + 4; rowH = 0; }
-            if (y + j.h + 4 > H) { console.warn('board atlas full, dropped', j.key); continue; }
-            j.draw(x, y, j.w, j.h);
-            rects.set(j.key, [x / W, 1 - (y + j.h) / H, (x + j.w) / W, 1 - y / H]);
-            x += j.w + 4; rowH = Math.max(rowH, j.h);
-        }
-        const tex = new THREE.CanvasTexture(cv); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 8; tex.generateMipmaps = true; tex.minFilter = THREE.LinearMipmapLinearFilter;
-        atlas = { tex, rects };
-    }
     function dressHoardings() {
-        if (!hoardingPlanes.length && !BOARD.items.length) return;
-        buildAtlas();
-        const pos = [], uv = [], nor = [];
-        const q = new THREE.Quaternion(), vtx = new THREE.Vector3();
-        for (const p of hoardingPlanes) {
-            const key = p.h.img ? 'img:' + p.h.img : 'txt:' + p.h.text, r = atlas.rects.get(key); if (!r) continue;
-            q.setFromEuler(new THREE.Euler(0, p.rotY, 0));
-            const corners = [[-p.w / 2, -p.hh / 2, r[0], r[1]], [p.w / 2, -p.hh / 2, r[2], r[1]], [p.w / 2, p.hh / 2, r[2], r[3]], [-p.w / 2, p.hh / 2, r[0], r[3]]];
-            for (const i of [0, 1, 2, 0, 2, 3]) {
-                const c = corners[i]; vtx.set(c[0], c[1], 0).applyQuaternion(q);
-                pos.push(vtx.x + p.pos[0], vtx.y + p.pos[1], vtx.z + p.pos[2]); uv.push(c[2], c[3]);
-                const n = new THREE.Vector3(0, 0, 1).applyQuaternion(q); nor.push(n.x, n.y, n.z);
-            }
+        for (const hp of hoardingPlanes) {
+            const tex = textTexture(hp.p.text, { w: 1024, h: Math.round(1024 * hp.hh / hp.w), font: 'italic 700 ' + Math.round(1024 * hp.hh / hp.w * 0.42) + 'px ' + CHAKRA, fill: C.ink, bg: C.paper, spacing: '8px' });
+            textPlane(tex, hp.w, hp.hh, hp.pos, hp.rotY);
         }
-        if (pos.length) {
-            const geo = new THREE.BufferGeometry();
-            geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); geo.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2)); geo.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3));
-            scene.add(new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ map: atlas.tex, side: THREE.DoubleSide, toneMapped: false })));
-        }
-        buildScreen();
         if (!running) render();
-    }
-    /* the blimp screen: one plane either side, the same atlas, one image at a time */
-    const screen = { meshes: [], geo: null, i: -1, next: 0, items: [] };
-    function buildScreen() {
-        screen.items = BOARD.items.filter(it => atlas.rects.has('img:' + it.id));
-        if (!screen.items.length) return;
-        screen.geo = new THREE.PlaneGeometry(1, 1);
-        const mat = new THREE.MeshBasicMaterial({ map: atlas.tex, toneMapped: false });
-        for (const side of [1, -1]) {
-            const m = new THREE.Mesh(screen.geo, mat); m.position.set(0, 0.9, 5.62 * side); m.rotation.y = side < 0 ? Math.PI : 0;
-            blimp.add(m); screen.meshes.push(m);
-        }
-        showScreen(0);
-    }
-    function showScreen(i) {
-        const it = screen.items[i], r = atlas.rects.get('img:' + it.id), a = screen.geo.attributes.uv;
-        a.setXY(0, r[0], r[3]); a.setXY(1, r[2], r[3]); a.setXY(2, r[0], r[1]); a.setXY(3, r[2], r[1]); a.needsUpdate = true;
-        const fit = Math.min(17 / (it.w / it.h * 6), 1);   // contain inside 17 by 6
-        const hgt = 6 * fit, wid = hgt * it.w / it.h;
-        for (const m of screen.meshes) m.scale.set(wid, hgt, 1);
-        screen.i = i;
-    }
-    function screenStep(t) {
-        if (!screen.items.length || t < screen.next) return;
-        screen.next = t + 7;
-        showScreen((screen.i + 1) % screen.items.length);
     }
 
     /* ------------------------------------------------ stage C: shadows, trees, the static mesh */
@@ -920,17 +824,10 @@ export function mount(canvas, L) {
         }
     }
     const BY = L.BLIMP.at[2];
-    function placeBlimp(t) {   // a slow drift over the top-right corner, one round every four minutes
-        const a = t * Math.PI * 2 / 240, x = 140 + Math.cos(a) * 18, z = 30 + Math.sin(a) * 9;
+    function placeBlimp(t) {   // a slow drift over its corner, one round every four minutes
+        const a = t * Math.PI * 2 / 240, x = L.BLIMP.at[0] + Math.cos(a) * 18, z = L.BLIMP.at[1] + Math.sin(a) * 9;
         blimp.position.set(x, BY, z); blimp.rotation.y = Math.atan2(-Math.cos(a) * 9, -Math.sin(a) * 18);
         if (blimpShadow) blimpShadow.position.set(x + SHADOW[0] * BY * 0.9, 0.05, z + SHADOW[1] * BY * 0.9);
-        screenStep(t);
-    }
-    /* where a sky stop's pin goes: over the blimp, wherever it is */
-    function anchorOf(id) {
-        const loc = L.LOCATIONS.find(l => l.id === id);
-        if (!loc || !loc.sky) return null;
-        return [blimp.position.x, blimp.position.z, blimp.position.y + 10];
     }
     function waveFlag(t) {
         const p = flagGeom.attributes.position.array;
@@ -951,7 +848,7 @@ export function mount(canvas, L) {
         {   // 2. the start flag
             flagGeom = new THREE.PlaneGeometry(4.6, 2.9, 10, 5); flagBase = flagGeom.attributes.position.array.slice();
             const flag = new THREE.Mesh(flagGeom, new THREE.MeshBasicMaterial({ color: C.accent, side: THREE.DoubleSide, toneMapped: false }));
-            flag.position.set(102.5, 5.6, 184); scene.add(flag);
+            flag.position.set(L.FLAG.at[0] + 2.5, 5.6, L.FLAG.at[1]); scene.add(flag);
         }
         {   // 4. the blimp
             const b = new Builder(true);
@@ -964,13 +861,7 @@ export function mount(canvas, L) {
             blimp.add(new THREE.Mesh(gondola.build(), M.graphite));
             blimp.add(new THREE.Mesh(b.build(), M.white));
             blimp.scale.setScalar(1.3);
-            const hb = new THREE.Mesh(new THREE.BoxGeometry(34, 13, 13), flat);   // the pointer target, never drawn
-            hb.layers.set(1); hb.userData.id = 'board'; blimp.add(hb); hits.push(hb);
-            for (const side of [1, -1]) {   // the screen: a black slab either side, the image lands on it once the atlas is built
-                const back = new THREE.Mesh(new THREE.PlaneGeometry(17.6, 6.4), new THREE.MeshBasicMaterial({ color: '#0b0b0c', toneMapped: false }));   // front-facing only, so the far one never shows through the shell
-                back.position.set(0, 0.9, 5.6 * side); back.rotation.y = side < 0 ? Math.PI : 0; blimp.add(back);
-            }
-            (groups.board || scene).add(blimp);
+            scene.add(blimp);   // decoration only: no label, no hit box (V1.3)
             blimpShadow = new THREE.Mesh(new THREE.CircleGeometry(1, 16), new THREE.MeshBasicMaterial({ color: C.ink, transparent: true, opacity: 0.1, depthWrite: false, toneMapped: false }));
             blimpShadow.rotation.x = -Math.PI / 2; blimpShadow.scale.set(15, 5.5, 1); blimpShadow.position.y = 0.05; scene.add(blimpShadow);
             placeBlimp(0);
@@ -979,9 +870,9 @@ export function mount(canvas, L) {
             scopePos = new Float32Array(scopeN * 3);
             scopeGeom = new THREE.BufferGeometry(); scopeGeom.setAttribute('position', new THREE.BufferAttribute(scopePos, 3));
             const scope = new THREE.Line(scopeGeom, new THREE.LineBasicMaterial({ color: C.accent, toneMapped: false }));
-            scope.position.set(98.4, 3.05, 162.09); groups.projects.add(scope);
+            scope.position.set(GU + 26.4, 3.05, GV + 12.09); groups.projects.add(scope);
             glow = new THREE.Mesh(new THREE.PlaneGeometry(3.6, 2.6), new THREE.MeshBasicMaterial({ color: C.accent, transparent: true, opacity: 0.12, depthWrite: false, toneMapped: false }));
-            glow.position.set(98.4, 3.05, 162.07); groups.projects.add(glow);
+            glow.position.set(GU + 26.4, 3.05, GV + 12.07); groups.projects.add(glow);
             traceScope(0);
         }
         built = true;
@@ -1023,8 +914,8 @@ export function mount(canvas, L) {
             ticker = textPlane(tex, pw, ph, [eb[0] + eb[2] / 2, 9.3, eb[1] + eb[3] + 0.03], 0, groups.economics);
         }
         const board = L.LOCATIONS.find(l => l.id === 'contact');
-        textPlane(textTexture(board.board.text, { w: 1024, h: 256, font: '700 96px ' + SCHIB, fill: C.ink, bg: C.paper, spacing: '2px' }), 5.6, 1.4, [99, 2.5, 171.02], 0, groups.contact);
-        textPlane(textTexture('TRACK 29°', { w: 512, h: 192, font: '700 96px ' + CHAKRA, fill: C.accent, bg: C.ink }), 2.7, 1.0, [107.5, 1.7, 171.02], 0, groups.contact);
+        textPlane(textTexture(board.board.text, { w: 1024, h: 256, font: '700 96px ' + SCHIB, fill: C.ink, bg: C.paper, spacing: '2px' }), 5.6, 1.4, [WU + 35, 2.5, WV + 0.02], 0, groups.contact);
+        textPlane(textTexture('TRACK 29°', { w: 512, h: 192, font: '700 96px ' + CHAKRA, fill: C.accent, bg: C.ink }), 2.7, 1.0, [WU + 43.5, 1.7, WV + 0.02], 0, groups.contact);
         const signs = ['AWUS  ·  RATED W', 'C++  ·  PYTHON  ·  SQL', 'IMU  ·  HAPTICS  ·  FIRMWARE'];
         L.BILLBOARDS.forEach((b, i) => {
             const tex = textTexture(signs[i], { w: 1024, h: 384, font: 'italic 700 92px ' + CHAKRA, fill: C.ink, bg: C.paper, spacing: '6px' });
@@ -1032,16 +923,17 @@ export function mount(canvas, L) {
             else textPlane(tex, b[3] - 0.6, b[4] - 0.4, [b[0] + b[2] + 0.02, b[5] + b[4] / 2, b[1] + b[3] / 2], Math.PI / 2);
         });
         textPlane(textTexture(L.NAME.toUpperCase(), { w: 2048, h: 96, font: 'italic 600 60px ' + CHAKRA, fill: C.paper, spacing: '18px' }), 72, 3.4, [105, -2.5, 210.03]);
-        {   // BETTA painted on the T1 run-off, the way circuits paint their own name
-            const m = textPlane(textTexture(L.BLIMP.banner, { w: 1024, h: 256, font: 'italic 700 200px ' + CHAKRA, fill: C.paper, spacing: '30px' }), 18, 4.5, [193.5, 0.06, 161]);
-            m.rotation.order = 'YXZ'; m.rotation.y = Math.atan2(26, 14); m.rotation.x = -Math.PI / 2;
+        {   // BETTA painted inside T1 along the track, the way circuits paint their own name
+            const f = fr[L.nearest(fr, L.RUNOFF.at)];
+            const m = textPlane(textTexture(L.BLIMP.banner, { w: 1024, h: 256, font: 'italic 700 200px ' + CHAKRA, fill: C.paper, spacing: '30px' }), 18, 4.5, [L.RUNOFF.at[0], 0.06, L.RUNOFF.at[1]]);
+            m.rotation.order = 'YXZ'; m.rotation.y = Math.atan2(-f.t[1], f.t[0]); m.rotation.x = -Math.PI / 2;
         }
         fontsLoaded = true; numberCars();
         barrierText();
         const ban = textTexture(L.BLIMP.banner, { w: 1024, h: 256, font: 'italic 700 190px ' + CHAKRA, fill: C.ink, spacing: '28px' });
-        for (const side of [1, -1]) {   // the name under the screen
-            const m = new THREE.Mesh(new THREE.PlaneGeometry(10, 2.5), new THREE.MeshBasicMaterial({ map: ban, transparent: true, side: THREE.DoubleSide, toneMapped: false }));
-            m.position.set(0, -3.4, 5.1 * side); m.rotation.y = side < 0 ? Math.PI : 0; blimp.add(m);
+        for (const side of [1, -1]) {   // the BETTA banner, both sides
+            const m = new THREE.Mesh(new THREE.PlaneGeometry(18, 4.5), new THREE.MeshBasicMaterial({ map: ban, transparent: true, side: THREE.DoubleSide, toneMapped: false }));
+            m.position.set(0, 0.2, 5.55 * side); m.rotation.y = side < 0 ? Math.PI : 0; blimp.add(m);
         }
         if (!running) render();
     }
@@ -1095,8 +987,7 @@ export function mount(canvas, L) {
     fit(); render();
     const fontsReady = document.fonts ? Promise.race([document.fonts.load("600 44px 'Chakra Petch'").then(() => document.fonts.ready), new Promise(r => setTimeout(r, 2500))]) : Promise.resolve();
     Promise.all([readyPromise, fontsReady]).then(addText, addText);
-    const imagesReady = loadBoardImages();
-    const dressed = Promise.all([readyPromise, fontsReady, imagesReady]).then(dressHoardings, dressHoardings);
+    const dressed = Promise.all([readyPromise, fontsReady]).then(dressHoardings, dressHoardings);
 
     /* screen helpers for the navigation layer */
     const _v = new THREE.Vector3();
@@ -1120,6 +1011,6 @@ export function mount(canvas, L) {
              groups, hooks, project, groundAt, pick, DIR, isRunning: () => running, reduced, ready: readyPromise,
              cars, carAt: id => { const c = cars.find(k => k.id === id); return c && c.pose ? { x: c.group.position.x, z: c.group.position.z, tx: c.pose.tx, tz: c.pose.tz, s: c.s } : null; },
              gridState: () => race.order.map((ci, k) => ({ id: cars[ci].id, rank: k + 1, lane: +cars[ci].lane.toFixed(2), s: +(cars[ci].s || 0).toFixed(2), at: [cars[ci].group.position.x, cars[ci].group.position.z] })),
-             passing: () => !!race.pass, stepRace: dt => placeCars(dt), anchorOf, dressed, boardItems: () => BOARD.items.map(it => it.id),
+             passing: () => !!race.pass, stepRace: dt => placeCars(dt), dressed,
              meanFps: () => stats.window.length ? stats.window.reduce((a, b) => a + b, 0) / stats.window.length : stats.fps };
 }

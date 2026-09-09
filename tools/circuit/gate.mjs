@@ -47,17 +47,17 @@ const AUDIT = `(() => {
     const labels = [...document.querySelectorAll('.ring-pin')].map(el => ({ id: el.dataset.id, chip: rect(el.querySelector('.ring-pin-text')), pin: rect(el) }));
     /* silhouettes: each stop's layout boxes plus the pieces the world adds
        beside them, projected box by box to convex screen polygons */
-    const T = L.LOCATIONS.find(l => l.id === 'about').boxes[0];
+    const T = L.LOCATIONS.find(l => l.id === 'about').boxes[0], G = L.LOCATIONS.find(l => l.id === 'projects').boxes[0], W = L.LOCATIONS.find(l => l.id === 'contact').boxes[0];
     const EXTRA = { about: [[T[0] - 20, T[1] + 7, 18, 0.7, 26.2, 0], [T[0] + 6.6, T[1] + 4.6, 2.8, 2.8, 1.4, 0]],
-                    projects: [[59, 150, 14, 14, 19, 0], [132, 154, 6, 6, 4, 0]],
-                    contact: [[96, 170.2, 6, 0.8, 3.6, 0], [111, 171, 2, 1.5, 3.6, 0]] };
+                    projects: [[G[0] - 13, G[1], 14, 14, 19, 0], [G[0] + 60, G[1] + 4, 6, 6, 4, 0]],
+                    contact: [[W[0] + 32, W[1] - 0.8, 6, 0.8, 3.6, 0], [W[0] + 47, W[1], 2, 1.5, 3.6, 0]] };
     const sil = {};
     /* the hoardings, as set dressing a label must not cover */
-    const B = window.CircuitBoard || { items: [] }, hoardBoxes = [];
+    const hoardBoxes = [];
     for (const wall of L.HOARDINGS) {
         let along = 0;
         for (const p of wall.panels) {
-            const img = B.items.find(it => it.id === p.img), w = p.w || (img ? p.h * img.w / img.h : p.h * 1.5), z0 = p.z0 != null ? p.z0 : (wall.z0 || 0);
+            const w = p.w, z0 = p.z0 != null ? p.z0 : (wall.z0 || 0);
             const u = wall.face === 'u' ? wall.at[0] : wall.at[0] + along, v = wall.face === 'u' ? wall.at[1] + along : wall.at[1];
             hoardBoxes.push(wall.face === 'u' ? [u, v, 0.6, w, p.h, z0] : [u, v, w, 0.6, p.h, z0]);
             along += w + (wall.gap || 0);
@@ -156,12 +156,10 @@ if (!noClose) {
     await load(1600, 900);
     const locs = await page.evaluate(() => window.CircuitLayout.LOCATIONS.map(l => ({ id: l.id, num: l.num, anchor: l.anchor, labelZ: l.labelZ, sky: !!l.sky })));
     for (const loc of locs) {
-        await page.evaluate(([id, a, labelZ, sky]) => {
-            const UP = [-Math.SQRT1_2, -Math.SQRT1_2];
-            const s = sky ? window.__circuit.anchorOf(id) : null;
-            const at = s ? [s[0], s[1]] : a, lift = (s ? s[2] * 0.9 : labelZ * 0.45) * 1.73;
-            window.__circuit.nav.flyTo(at[0] + UP[0] * lift, at[1] + UP[1] * lift, sky ? 1.6 : 2.2);
-        }, [loc.id, loc.anchor, loc.labelZ, loc.sky]);
+        await page.evaluate(([id, a, labelZ]) => {
+            const UP = [-Math.SQRT1_2, -Math.SQRT1_2], lift = labelZ * 0.45 * 1.73;
+            window.__circuit.nav.flyTo(a[0] + UP[0] * lift, a[1] + UP[1] * lift, 2.2);
+        }, [loc.id, loc.anchor, loc.labelZ]);
         await page.waitForTimeout(1200);
         const file = path.join(outDir, `${prefix}-${loc.num}-${loc.id}.png`);
         await page.screenshot({ path: file });

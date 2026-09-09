@@ -1,0 +1,18 @@
+{
+ "seconds": 240,
+ "cars": 4,
+ "minDistance": 2.69,
+ "minPair": [
+  "posture",
+  "bluetooth",
+  141.3
+ ],
+ "maxLateral": 3.29,
+ "orderChanges": 15,
+ "passingShare": 0.34,
+ "distanceLapped": 1877,
+ "calls": 156,
+ "triangles": 37156,
+ "errors": [],
+ "pass": true
+}

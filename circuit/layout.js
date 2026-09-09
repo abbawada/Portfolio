@@ -15,46 +15,46 @@
     var PLACE = 'Los Angeles, CA';
     var SIZE = 210;
 
-    /* Closed loop, control points for a Catmull-Rom spline. */
+    /* Closed loop, control points for a Catmull-Rom spline. V1.3: the loop
+       fills the plate, longer straights, wider corners, every district
+       inside it with grass between neighbours. */
     var TRACK = [
-        [38, 178], [100, 178], [162, 178],     // pit straight, start line at u=100
-        [182, 170], [189, 150],                 // T1, a long right-hander up the right side
-        [178, 128], [188, 106],                 // the esses: Campus Corner
-        [180, 82], [162, 62],                   // fast sweep at the top right
-        [124, 46], [84, 40],                    // back straight, gently bowed
-        [48, 44], [24, 58], [22, 82],           // the hairpin around The Exchange
-        [40, 104], [28, 124],                   // return-leg chicane past the Press Room
-        [20, 150], [26, 170]                    // the last corner onto the straight
+        [30, 190], [100, 190], [170, 190],     // pit straight, start line at u=100
+        [190, 182], [199, 160],                 // T1, a long right-hander up the right side
+        [186, 134], [198, 108],                 // the esses: Campus Corner
+        [190, 80], [168, 54],                   // fast sweep at the top right
+        [128, 36], [84, 32],                    // back straight, gently bowed
+        [40, 38], [14, 58], [12, 86],           // the hairpin round The Exchange
+        [34, 110], [18, 136],                   // return-leg chicane past the Press Room
+        [10, 164], [18, 186]                    // the last corner onto the straight
     ];
     var TRACK_WIDTH = 9;
-    var START = { u: 100, v: 178 };             // the start and finish line
+    var START = { u: 100, v: 190 };             // the start and finish line
 
     /* Open, inside the straight. */
-    var PIT = [[30, 154], [42, 166], [156, 166], [172, 162]];
+    var PIT = [[26, 168], [40, 178], [160, 178], [176, 174]];
     var PIT_WIDTH = 4;
 
     /* Sector starts, nearest spline sample to each point. S1 starts at the
        start line. Sectors follow the biography: origins, building, now. */
     var SECTORS = [
-        { id: 1, at: [100, 178] },
-        { id: 2, at: [162, 62] },
-        { id: 3, at: [38, 102] }
+        { id: 1, at: [100, 190] },
+        { id: 2, at: [168, 54] },
+        { id: 3, at: [34, 110] }
     ];
 
     /* The seven stops. anchor is where the label pin and the camera go;
        labelZ lifts the pin; labelSide 'left' or 'below' hangs the chip
        that side of the dot; boxes are blocked-in geometry:
-       [u, v, w, d, h, z0, tone]. */
+       [u, v, w, d, h, z0, tone]. The world places each stop's internals,
+       details and signs relative to boxes[0], so a stop moves as one. */
     var LOCATIONS = [
-        /* V1.2: the tower moves up the infield with clear grass to the
-           garage roof; the signage stack hangs on its front-left. The world
-           builds the internals, boards, details and Rep relative to boxes[0]. */
         { id: 'about', num: '01', name: 'About', section: 'Media tower', sector: 3,
-          anchor: [100.5, 122.5], labelZ: 55,
-          boxes: [[98, 120, 5, 5, 34, 0, 'wall'], [96.5, 118.5, 8, 8, 4, 34, 'roof'], [100, 122, 1.2, 1.2, 7, 38, 'roof']] },
-        /* V1.2: the court owns the upper infield, in front of the back
-           straight, with a lit apron, stands, floodlights and the pylon.
-           Largest footprint and tallest silhouette on the plate. */
+          anchor: [62.5, 118.5], labelZ: 61, labelSide: 'left',
+          boxes: [[60, 116, 5, 5, 34, 0, 'wall'], [58.5, 114.5, 8, 8, 4, 34, 'roof'], [62, 118, 1.2, 1.2, 7, 38, 'roof']] },
+        /* the court owns the upper infield, in front of the back straight,
+           with a lit apron, stands, floodlights and the pylon. Largest
+           footprint and tallest silhouette on the plate. Locked as built. */
         { id: 'betta', num: '02', name: 'Betta', section: 'The court', sector: 1,
           anchor: [120, 87], labelZ: 16,
           boxes: [[106, 79, 28, 16, 0.6, 0, 'wood'], [106.6, 86.2, 1, 1.6, 4, 0, 'roof'], [132.4, 86.2, 1, 1.6, 4, 0, 'roof']],
@@ -64,50 +64,35 @@
                    lights: [[97, 71], [97, 103], [143, 103]], lightH: 26,
                    rep: [150, 99] } },
         { id: 'education', num: '03', name: 'Education', section: 'Campus corner', sector: 1,
-          anchor: [199, 112], labelZ: 16,
-          boxes: [[192, 96, 14, 32, 1, 0, 'wall'],
-                  [198, 100, 1.8, 1.8, 6, 1, 'wall'], [198, 105, 1.8, 1.8, 6, 1, 'wall'], [198, 110, 1.8, 1.8, 6, 1, 'wall'],
-                  [198, 115, 1.8, 1.8, 6, 1, 'wall'], [198, 120, 1.8, 1.8, 6, 1, 'wall'], [198, 125, 1.8, 1.8, 6, 1, 'wall'],
-                  [196, 98, 6, 30, 1.6, 7, 'wall'], [203, 100, 5, 28, 8, 0, 'wall']] },
+          anchor: [168, 131], labelZ: 11,
+          boxes: [[160, 116, 14, 32, 1, 0, 'wall'],
+                  [166, 120, 1.8, 1.8, 6, 1, 'wall'], [166, 125, 1.8, 1.8, 6, 1, 'wall'], [166, 130, 1.8, 1.8, 6, 1, 'wall'],
+                  [166, 135, 1.8, 1.8, 6, 1, 'wall'], [166, 140, 1.8, 1.8, 6, 1, 'wall'], [166, 145, 1.8, 1.8, 6, 1, 'wall'],
+                  [164, 118, 6, 30, 1.6, 7, 'wall'], [171, 120, 5, 28, 8, 0, 'wall']] },
         { id: 'economics', num: '04', name: 'Economics', section: 'The exchange', sector: 2,
-          anchor: [10, 44], labelZ: 20,
-          boxes: [[2, 36, 16, 16, 12, 0, 'wall'], [4, 38, 12, 12, 3, 12, 'roof']],
+          anchor: [40, 62], labelZ: 20,
+          boxes: [[32, 54, 16, 16, 12, 0, 'wall'], [34, 56, 12, 12, 3, 12, 'roof']],
           ticker: { face: 'v', text: 'PLUME TOKEN YIELD VAULTS  ·  ETHEREUM VALIDATORS  ·  THE MEDICI NETWORK' } },
         { id: 'writing', num: '05', name: 'Writing', section: 'Press room', sector: 3,
-          anchor: [7, 103], labelZ: 12,
-          boxes: [[2, 96, 10, 14, 5, 0, 'wall'], [1, 95, 12, 16, 0.8, 5, 'roof']] },
+          anchor: [79, 107], labelZ: 10, labelSide: 'below',
+          boxes: [[74, 100, 10, 14, 5, 0, 'wall'], [73, 99, 12, 16, 0.8, 5, 'roof']] },
         { id: 'projects', num: '06', name: 'Projects', section: 'Pit garage', sector: 3,
-          anchor: [118, 150], labelZ: 12, labelSide: 'below',
-          boxes: [[72, 150, 56, 12, 7, 0, 'wall'], [70, 148, 60, 15, 0.8, 7, 'roof']] },
+          anchor: [118, 162], labelZ: 12, labelSide: 'below',
+          boxes: [[72, 162, 56, 12, 7, 0, 'wall'], [70, 160, 60, 15, 0.8, 7, 'roof']] },
         { id: 'contact', num: '07', name: 'Contact', section: 'Pit wall', sector: 3,
-          anchor: [144, 171], labelZ: 1.5,
-          boxes: [[64, 171, 80, 1.4, 1.8, 0, 'wall'], [96, 170.2, 6, 0.8, 3.6, 0, 'roof'], [106, 170.2, 3, 0.8, 2.6, 0, 'roof']],
-          board: { text: 'ABBA.WADA10@GMAIL.COM' } },
-        /* V1.2: the blimp is a stop. It drifts over the top-right corner
-           with a screen that cycles the Board's images; clicking it opens
-           the Board. sky: the world places its pin from the blimp itself. */
-        { id: 'board', num: '08', name: 'The Board', section: 'The blimp', sector: 2, sky: true,
-          anchor: [140, 30], labelZ: 80, boxes: [] }
+          anchor: [144, 183], labelZ: 1.5,
+          boxes: [[64, 183, 80, 1.4, 1.8, 0, 'wall'], [96, 182.2, 6, 0.8, 3.6, 0, 'roof'], [106, 182.2, 3, 0.8, 2.6, 0, 'roof']],
+          board: { text: 'ABBA.WADA10@GMAIL.COM' } }
     ];
 
-    /* The hoardings (V1.2): big trackside boards carrying the Board's
-       images and the three lines of type, readable at the default zoom.
-       img panels take their width from the image; text panels give w.
+    /* The hoardings: three lines of type on trackside boards, big enough
+       to read at the default zoom (V1.3 Session 1: the photographs are
+       gone; the world is modeled geometry, type and emissive signage).
        face 'v' looks toward +v, face 'u' toward +u; both face the camera. */
     var HOARDINGS = [
-        /* the top-right wall, behind the sweep, facing the track */
-        { at: [138, 12], face: 'v', gap: 1.2, panels: [{ img: 'monaco', h: 11 }, { img: 'osaka', h: 11 }, { img: 'ferrari', h: 13 }, { text: 'AWUS  ·  RATED W', w: 20, h: 7, z0: 5 }] },
-        /* the top-left wall, behind the hairpin entry */
-        { at: [30, 8], face: 'v', gap: 1.2, panels: [{ img: 'palace', h: 12 }, { img: 'lbp', h: 12 }, { text: 'C++  ·  PYTHON  ·  SQL', w: 22, h: 7, z0: 5 }] },
-        /* the left wall, outside the return leg, facing the track */
-        { at: [10, 116], face: 'u', gap: 1.2, panels: [{ img: 'senna', h: 12 }, { img: 'helmet', h: 12 }, { img: 'porsche', h: 12 }, { img: 'nigo', h: 12 }] },
-        /* the bottom-right wall, behind the car park */
-        { at: [150, 198], face: 'v', gap: 1.2, panels: [{ img: 'jeffhardy', h: 9.5 }, { img: 'imac', h: 9.5 }, { text: 'IMU  ·  HAPTICS  ·  FIRMWARE', w: 18, h: 6.5, z0: 2.5 }] },
-        /* the grandstand roof, the way Monaco stacks its rooftops */
-        { at: [84.5, 24.6], face: 'v', z0: 9.8, gap: 1, panels: [{ img: 'moreira', h: 6 }, { img: 'moreira-site', h: 6 }, { img: 'trio', h: 6 }, { img: 'fisheye', h: 6 }, { img: 'gta4', h: 6 }] },
-        /* posters on the faces: the Exchange under its ticker, the garage either side of the bay */
-        { at: [3, 52], face: 'v', z0: 1, gap: 1, flat: true, panels: [{ img: 'mouse', h: 6.5 }, { img: 'jordan', h: 6.5 }] },
-        { at: [76, 162], face: 'v', z0: 0.5, gap: 1.4, flat: true, panels: [{ img: 'sleeve', h: 5.5 }, { img: 'spiderman', h: 6 }] }
+        { at: [42, 12], face: 'v', panels: [{ text: 'C++  ·  PYTHON  ·  SQL', w: 22, h: 7, z0: 4 }] },
+        { at: [140, 12], face: 'v', panels: [{ text: 'AWUS  ·  RATED W', w: 20, h: 7, z0: 4 }] },
+        { at: [203, 126], face: 'u', panels: [{ text: 'IMU  ·  HAPTICS  ·  FIRMWARE', w: 18, h: 6.5, z0: 3 }] }
     ];
 
     /* The lap guide drives past the stops in this order. */
@@ -118,27 +103,39 @@
     var AMBIENT = ['grid-cars', 'start-flag', 'sleeve-shimmer', 'board-flicker', 'blimp'];
 
     /* Scenery, blocked in. */
-    var GRANDSTAND = [[84, 30, 48, 6, 5, 0, 'wall'], [84, 26, 48, 5, 9, 0, 'wall'], [82, 24, 52, 13, 0.8, 9, 'roof']];
-    var PADDOCK = { slab: [64, 138, 80, 12], haulers: [[76, 140, 7, 3, 3, 0, 'wall'], [86, 140, 7, 3, 3, 0, 'wall'], [112, 140, 7, 3, 3, 0, 'wall'], [122, 140, 7, 3, 3, 0, 'wall']] };
-    var BILLBOARDS = [];   // V1.2: replaced by HOARDINGS
+    var GRANDSTAND = [[84, 14, 48, 6, 5, 0, 'wall'], [84, 10, 48, 5, 9, 0, 'wall'], [82, 8, 52, 13, 0.8, 9, 'roof']];
+    var PADDOCK = { slab: [64, 146, 80, 12], haulers: [[76, 148, 7, 3, 3, 0, 'wall'], [86, 148, 7, 3, 3, 0, 'wall'], [112, 148, 7, 3, 3, 0, 'wall'], [122, 148, 7, 3, 3, 0, 'wall']] };
+    var BILLBOARDS = [];   // replaced by HOARDINGS
     var GRAVEL = [
-        [[186, 178], [198, 172], [203, 152], [195, 146], [190, 162], [184, 173]],
-        [[14, 54], [6, 62], [6, 84], [14, 86], [17, 70]]
+        [[195, 188], [206, 186], [207, 162], [203, 158], [202, 174], [196, 184]],
+        [[9, 50], [4, 58], [4, 84], [9, 90], [7, 70]]
     ];
-    var CARPARK = { slab: [170, 178, 26, 16], cars: [[173, 181, 2.2, 1.2], [176.5, 181, 2.2, 1.2], [180, 181, 2.2, 1.2], [187, 181, 2.2, 1.2], [190.5, 181, 2.2, 1.2],
-                                                     [173, 188, 2.2, 1.2], [180, 188, 2.2, 1.2], [183.5, 188, 2.2, 1.2], [190.5, 188, 2.2, 1.2]] };
-    var TREES = [
-        [60, 30, 6], [52, 34, 5], [150, 30, 6], [160, 34, 5], [170, 42, 6], [190, 70, 6], [196, 60, 5],
-        [200, 84, 6], [8, 70, 5], [6, 84, 6],
-        [40, 192, 5], [50, 196, 6], [120, 192, 5], [130, 196, 6], [150, 190, 5],
-        [196, 150, 6], [200, 160, 5], [188, 182, 6], [180, 192, 5],
-        [60, 80, 5], [70, 74, 6], [158, 84, 6], [156, 66, 5], [60, 130, 5], [150, 132, 6], [80, 60, 5], [120, 58, 6], [84, 90, 5], [78, 104, 6], [160, 108, 5], [72, 118, 5], [130, 124, 6], [120, 112, 5],
-        [36, 32, 6], [184, 30, 6], [204, 40, 5], [206, 30, 6],
-        [4, 176, 5], [10, 184, 6], [4, 192, 4], [20, 198, 5], [60, 200, 4], [90, 198, 6], [100, 204, 4],
-        [204, 176, 5], [206, 190, 6], [200, 202, 4], [166, 150, 5], [160, 144, 6], [46, 120, 4], [50, 150, 5], [150, 118, 4]
+    var CARPARK = { slab: [150, 152, 26, 14], cars: [[153, 155, 2.2, 1.2], [156.5, 155, 2.2, 1.2], [160, 155, 2.2, 1.2], [167, 155, 2.2, 1.2], [170.5, 155, 2.2, 1.2],
+                                                     [153, 161, 2.2, 1.2], [160, 161, 2.2, 1.2], [163.5, 161, 2.2, 1.2], [170.5, 161, 2.2, 1.2]] };
+    /* low barrier walls with his marks in type: the pit straight, the hairpin, the back straight */
+    var BARRIERS = [
+        { box: [52, 197, 44, 0.6, 2.2, 0], face: 'v', text: 'WADA RING   ·   BETTA   ·   WADA RING' },
+        { box: [104, 197, 46, 0.6, 2.2, 0], face: 'v', text: 'FEEL EVERY REP   ·   AWUS   ·   TOP 4 OF 221' },
+        { box: [3, 48, 0.6, 28, 2.2, 0], face: 'u', text: 'BETTA   ·   BETTA' },
+        { box: [50, 22, 30, 0.6, 2.2, 0], face: 'v', text: 'AWUS   ·   WADA RING' }
     ];
-    var BLIMP = { at: [140, 30, 70], banner: 'BETTA' };
-    var FLAG = { at: [100, 184] };
+    var CAMPUS_CURBS = [[196, 150], [192, 88]];   // cardinal and gold curbs from the T1 exit to the sweep
+    var RUNOFF = { at: [182, 168] };                // BETTA painted inside T1, along the track
+    var TREES = [   // seeded by tools/circuit/trees.js
+        [17, 8, 4], [33, 9, 5], [52, 6, 4], [71, 11, 4], [138, 8, 4], [153, 7, 4], [165, 6, 5], [171, 9, 6],
+        [7, 20, 6], [18, 19, 5], [32, 19, 5], [150, 20, 4], [165, 19, 5], [173, 16, 6], [196, 20, 6], [30, 32, 4],
+        [128, 27, 5], [142, 29, 5], [152, 28, 4], [185, 30, 5], [198, 30, 4], [11, 42, 6], [77, 42, 5], [82, 44, 5],
+        [95, 43, 5], [107, 44, 4], [183, 39, 4], [197, 40, 5], [52, 50, 5], [76, 52, 6], [118, 50, 4], [141, 55, 5],
+        [186, 53, 5], [53, 62, 5], [63, 60, 6], [76, 63, 5], [95, 66, 6], [107, 66, 4], [127, 60, 5], [143, 65, 5],
+        [52, 75, 6], [61, 71, 6], [76, 76, 6], [82, 73, 4], [160, 74, 5], [29, 84, 5], [41, 88, 5], [65, 83, 5],
+        [148, 85, 5], [159, 85, 5], [170, 87, 5], [44, 95, 6], [50, 98, 5], [159, 98, 5], [53, 110, 6], [97, 109, 6],
+        [150, 110, 4], [161, 106, 6], [175, 105, 5], [184, 109, 5], [10, 120, 5], [16, 120, 4], [119, 117, 4], [130, 120, 5],
+        [11, 128, 5], [44, 131, 6], [64, 132, 5], [104, 131, 6], [118, 129, 4], [44, 139, 5], [66, 137, 4], [73, 137, 5],
+        [94, 140, 6], [109, 142, 4], [120, 138, 5], [132, 141, 4], [142, 137, 5], [150, 143, 5], [43, 150, 5], [49, 153, 5],
+        [148, 148, 4], [181, 150, 5], [30, 163, 4], [7, 186, 4], [186, 197, 5]
+    ];
+    var BLIMP = { at: [150, 22, 70], banner: 'BETTA' };
+    var FLAG = { at: [100, 196] };
 
     /* The grid (V1.2). One car per shelf project, in that project's
        livery, lapping from the moment the world is built. The order is
@@ -230,7 +227,7 @@
         PIT: PIT, PIT_WIDTH: PIT_WIDTH, SECTORS: SECTORS,
         LOCATIONS: LOCATIONS, LAP: LAP, AMBIENT: AMBIENT, HOARDINGS: HOARDINGS,
         GRANDSTAND: GRANDSTAND, PADDOCK: PADDOCK, CARPARK: CARPARK, BILLBOARDS: BILLBOARDS,
-        GRAVEL: GRAVEL, TREES: TREES, BLIMP: BLIMP, FLAG: FLAG, GRID: GRID,
+        GRAVEL: GRAVEL, TREES: TREES, BLIMP: BLIMP, FLAG: FLAG, GRID: GRID, BARRIERS: BARRIERS, CAMPUS_CURBS: CAMPUS_CURBS, RUNOFF: RUNOFF,
         PALETTE: PALETTE,
         sample: sample, frames: frames, ribbon: ribbon, nearest: nearest
     };
