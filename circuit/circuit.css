@@ -155,7 +155,7 @@ body.circuit a:focus-visible, body.circuit button:focus-visible { outline: 2px s
 .ring-pin-dot {
     position: relative;
     flex: none;
-    width: 12px; height: 12px;
+    width: 10px; height: 10px;
     border-radius: 50%;
     background: var(--ink);
     box-shadow: 0 0 0 2px var(--paper);
@@ -182,7 +182,7 @@ body.circuit a:focus-visible, body.circuit button:focus-visible { outline: 2px s
     display: flex;
     flex-direction: column;
     gap: 2px;
-    padding: 0.3125rem 0.625rem 0.3125rem 0.5rem;
+    padding: 0.25rem 0.5rem 0.25rem 0.4375rem;
     background: var(--paper);
     border: 1px solid var(--ink);
     border-radius: 3px;
@@ -194,7 +194,7 @@ body.circuit a:focus-visible, body.circuit button:focus-visible { outline: 2px s
     font-family: var(--font-chrome);
     font-style: italic;
     font-weight: 700;
-    font-size: 0.875rem;
+    font-size: 0.6875rem;
     line-height: 1;
     letter-spacing: 0.12em;
     text-transform: uppercase;

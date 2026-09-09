@@ -27,7 +27,7 @@ for (const loc of locs) {
     const s = { id: loc.id };
     s.visibleAtRest = await pin.isVisible() && (await pin.evaluate(el => getComputedStyle(el).opacity === '1'));
     s.chipText = (await pin.locator('.ring-pin-text').innerText()).replace(/\s+/g, ' ').trim();
-    s.titleAtRest = s.chipText.includes(loc.num) && s.chipText.toUpperCase().includes(loc.name.toUpperCase()) && s.chipText.toUpperCase().includes(loc.section.toUpperCase());
+    s.titleAtRest = s.chipText.includes(loc.num) && s.chipText.toUpperCase().includes(loc.name.toUpperCase());   // V1.3: number and name; the section lives on the mark and in the panel
     await pin.hover(); await page.waitForTimeout(350);
     s.hoverLift = await page.evaluate(id => +window.__circuit.groups[id].position.y.toFixed(2), loc.id);
     s.hoverGlow = await pin.evaluate(el => el.classList.contains('is-hot'));

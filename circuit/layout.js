@@ -49,14 +49,23 @@
        [u, v, w, d, h, z0, tone]. The world places each stop's internals,
        details and signs relative to boxes[0], so a stop moves as one. */
     var LOCATIONS = [
+        /* V1.3 Session 2: every stop carries one saturated signature colour
+           (on its mark and its accents, nowhere else) and one dimensional
+           mark in Chakra Petch Bold on a shared graphite mount: text, the
+           mount's plan centre and base height, cap height h, the face it
+           looks at. The massings below are the blocked-in silhouettes; the
+           world adds the sculpture relative to boxes[0]. */
         { id: 'about', num: '01', name: 'About', section: 'Media tower', sector: 3,
-          anchor: [62.5, 118.5], labelZ: 61, labelSide: 'left',
-          boxes: [[60, 116, 5, 5, 34, 0, 'wall'], [58.5, 114.5, 8, 8, 4, 34, 'roof'], [62, 118, 1.2, 1.2, 7, 38, 'roof']] },
+          anchor: [50, 120], labelZ: 70, labelSide: 'left', signature: '#22c6e0',
+          mark: { text: 'ABOUT', at: [50, 120, 49.2], h: 6, face: 'v' },
+          boxes: [[45, 115, 10, 10, 2, 0, 'wall'], [48, 118, 4, 4, 46, 2, 'roof'], [46.5, 116.5, 7, 7, 1, 26, 'roof'],
+                  [46, 116, 8, 8, 1.2, 48, 'roof'], [53, 123, 1.2, 1.2, 12, 49.2, 'roof']] },
         /* the court owns the upper infield, in front of the back straight,
            with a lit apron, stands, floodlights and the pylon. Largest
            footprint and tallest silhouette on the plate. Locked as built. */
         { id: 'betta', num: '02', name: 'Betta', section: 'The court', sector: 1,
-          anchor: [120, 87], labelZ: 16,
+          anchor: [120, 87], labelZ: 22, signature: '#f2b632',
+          mark: { text: 'BETTA', at: [141, 71, 56], h: 7, face: 'v' },
           boxes: [[106, 79, 28, 16, 0.6, 0, 'wood'], [106.6, 86.2, 1, 1.6, 4, 0, 'roof'], [132.4, 86.2, 1, 1.6, 4, 0, 'roof']],
           arena: { apron: [96, 70, 48, 34],
                    stands: [[100, 70, 36, 6, 'back'], [100, 98, 40, 6, 'front'], [96, 76, 4, 22, 'end']],
@@ -64,24 +73,28 @@
                    lights: [[97, 71], [97, 103], [143, 103]], lightH: 26,
                    rep: [150, 99] } },
         { id: 'education', num: '03', name: 'Education', section: 'Campus corner', sector: 1,
-          anchor: [168, 131], labelZ: 11,
-          boxes: [[160, 116, 14, 32, 1, 0, 'wall'],
-                  [166, 120, 1.8, 1.8, 6, 1, 'wall'], [166, 125, 1.8, 1.8, 6, 1, 'wall'], [166, 130, 1.8, 1.8, 6, 1, 'wall'],
-                  [166, 135, 1.8, 1.8, 6, 1, 'wall'], [166, 140, 1.8, 1.8, 6, 1, 'wall'], [166, 145, 1.8, 1.8, 6, 1, 'wall'],
-                  [164, 118, 6, 30, 1.6, 7, 'wall'], [171, 120, 5, 28, 8, 0, 'wall']] },
+          anchor: [158, 134], labelZ: 14, labelSide: 'left', signature: '#c8102e',
+          mark: { text: 'EDUCATION', at: [165, 142, 9], h: 4.6, face: 'v' },
+          boxes: [[158, 116, 18, 30, 0.6, 0, 'wall'], [158, 138, 18, 8, 9, 0, 'wall'], [170, 116, 6, 22, 7, 0, 'wall'],
+                  [158, 116, 12, 8, 9, 0, 'wall'], [163, 145.4, 7, 1.2, 5, 0, 'wall']] },
         { id: 'economics', num: '04', name: 'Economics', section: 'The exchange', sector: 2,
-          anchor: [40, 62], labelZ: 20,
-          boxes: [[32, 54, 16, 16, 12, 0, 'wall'], [34, 56, 12, 12, 3, 12, 'roof']],
+          anchor: [37, 58], labelZ: 30, signature: '#1fb46a',
+          mark: { text: 'ECONOMICS', at: [37, 58, 14], h: 4.6, face: 'v' },
+          boxes: [[22, 50, 30, 18, 10, 0, 'wall'], [31, 52, 12, 12, 14, 0, 'wall'], [22, 49, 31, 20, 0.4, 10, 'roof']],
           ticker: { face: 'v', text: 'PLUME TOKEN YIELD VAULTS  ·  ETHEREUM VALIDATORS  ·  THE MEDICI NETWORK' } },
         { id: 'writing', num: '05', name: 'Writing', section: 'Press room', sector: 3,
-          anchor: [79, 107], labelZ: 10, labelSide: 'below',
-          boxes: [[74, 100, 10, 14, 5, 0, 'wall'], [73, 99, 12, 16, 0.8, 5, 'roof']] },
+          anchor: [79, 104], labelZ: 26, labelSide: 'below', signature: '#ff3d8a',
+          mark: { text: 'WRITING', at: [79, 104, 11.6], h: 4.8, face: 'v' },
+          boxes: [[73, 98, 12, 12, 11, 0, 'wall'], [72, 97, 14, 14, 0.6, 11, 'roof'], [74, 111, 10, 4, 1, 0, 'wall']] },
         { id: 'projects', num: '06', name: 'Projects', section: 'Pit garage', sector: 3,
-          anchor: [118, 162], labelZ: 12, labelSide: 'below',
-          boxes: [[72, 162, 56, 12, 7, 0, 'wall'], [70, 160, 60, 15, 0.8, 7, 'roof']] },
+          anchor: [118, 162], labelZ: 12, labelSide: 'below', signature: '#ff6a1f',
+          mark: { text: 'PROJECTS', at: [100, 168, 11], h: 6, face: 'v' },
+          boxes: [[72, 162, 60, 12, 8, 0, 'wall'], [70, 160, 64, 15, 0.6, 8, 'roof']] },
         { id: 'contact', num: '07', name: 'Contact', section: 'Pit wall', sector: 3,
-          anchor: [144, 183], labelZ: 1.5,
-          boxes: [[64, 183, 80, 1.4, 1.8, 0, 'wall'], [96, 182.2, 6, 0.8, 3.6, 0, 'roof'], [106, 182.2, 3, 0.8, 2.6, 0, 'roof']],
+          anchor: [150, 183], labelZ: 1.5, signature: '#2f5bff',
+          mark: { text: 'CONTACT', at: [52, 183.7, 1.8], h: 4.4, face: 'v' },
+          boxes: [[37, 183, 113, 1.4, 1.8, 0, 'wall'], [96, 182.2, 6, 0.8, 3.6, 0, 'roof'], [106, 182.2, 3, 0.8, 2.6, 0, 'roof'],
+                  [75, 181, 2.4, 1.6, 3.2, 0, 'wall'], [83, 181, 2.4, 1.6, 3.2, 0, 'wall'], [111, 181, 2.4, 1.6, 3.2, 0, 'wall'], [125, 181, 2.4, 1.6, 3.2, 0, 'wall'], [139, 181, 2.4, 1.6, 3.2, 0, 'wall']],
           board: { text: 'ABBA.WADA10@GMAIL.COM' } }
     ];
 
@@ -125,14 +138,15 @@
         [17, 8, 4], [33, 9, 5], [52, 6, 4], [71, 11, 4], [138, 8, 4], [153, 7, 4], [165, 6, 5], [171, 9, 6],
         [7, 20, 6], [18, 19, 5], [32, 19, 5], [150, 20, 4], [165, 19, 5], [173, 16, 6], [196, 20, 6], [30, 32, 4],
         [128, 27, 5], [142, 29, 5], [152, 28, 4], [185, 30, 5], [198, 30, 4], [11, 42, 6], [77, 42, 5], [82, 44, 5],
-        [95, 43, 5], [107, 44, 4], [183, 39, 4], [197, 40, 5], [52, 50, 5], [76, 52, 6], [118, 50, 4], [141, 55, 5],
-        [186, 53, 5], [53, 62, 5], [63, 60, 6], [76, 63, 5], [95, 66, 6], [107, 66, 4], [127, 60, 5], [143, 65, 5],
-        [52, 75, 6], [61, 71, 6], [76, 76, 6], [82, 73, 4], [160, 74, 5], [29, 84, 5], [41, 88, 5], [65, 83, 5],
-        [148, 85, 5], [159, 85, 5], [170, 87, 5], [44, 95, 6], [50, 98, 5], [159, 98, 5], [53, 110, 6], [97, 109, 6],
-        [150, 110, 4], [161, 106, 6], [175, 105, 5], [184, 109, 5], [10, 120, 5], [16, 120, 4], [119, 117, 4], [130, 120, 5],
-        [11, 128, 5], [44, 131, 6], [64, 132, 5], [104, 131, 6], [118, 129, 4], [44, 139, 5], [66, 137, 4], [73, 137, 5],
-        [94, 140, 6], [109, 142, 4], [120, 138, 5], [132, 141, 4], [142, 137, 5], [150, 143, 5], [43, 150, 5], [49, 153, 5],
-        [148, 148, 4], [181, 150, 5], [30, 163, 4], [7, 186, 4], [186, 197, 5]
+        [95, 43, 5], [107, 44, 4], [183, 39, 4], [197, 40, 5], [61, 51, 5], [71, 49, 5], [95, 50, 4], [104, 54, 4],
+        [118, 50, 4], [141, 55, 5], [186, 53, 5], [62, 62, 5], [71, 62, 5], [85, 63, 5], [93, 60, 6], [109, 66, 6],
+        [118, 60, 5], [139, 62, 6], [195, 61, 5], [49, 73, 5], [71, 76, 6], [87, 74, 4], [171, 74, 5], [29, 82, 5],
+        [43, 85, 6], [53, 84, 5], [75, 85, 6], [82, 85, 4], [148, 85, 5], [159, 85, 5], [170, 87, 5], [44, 95, 6],
+        [50, 98, 5], [175, 99, 4], [181, 94, 6], [6, 107, 4], [53, 110, 6], [97, 109, 6], [150, 110, 4], [161, 106, 6],
+        [175, 105, 5], [184, 109, 5], [10, 120, 5], [16, 120, 4], [119, 117, 4], [130, 120, 5], [11, 128, 5], [44, 131, 6],
+        [64, 132, 5], [104, 131, 6], [118, 129, 4], [44, 139, 5], [66, 137, 4], [73, 137, 5], [94, 140, 6], [109, 142, 4],
+        [120, 138, 5], [132, 141, 4], [142, 137, 5], [150, 143, 5], [43, 150, 5], [49, 153, 5], [148, 148, 4], [181, 150, 5],
+        [30, 163, 4], [7, 186, 4], [186, 197, 5]
     ];
     var BLIMP = { at: [150, 22, 70], banner: 'BETTA' };
     var FLAG = { at: [100, 196] };

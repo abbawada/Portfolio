@@ -71,8 +71,7 @@ export function attach(world, L, dom) {
         el.style.setProperty('--beacon-delay', (i * 0.4).toFixed(1) + 's');
         el.setAttribute('aria-label', 'Stop ' + loc.num + ', ' + loc.name + ', ' + loc.section);
         el.innerHTML = '<span class="ring-pin-dot" aria-hidden="true"></span><span class="ring-pin-text" aria-hidden="true">' +
-            '<span class="ring-pin-name"><span class="ring-pin-num">' + loc.num + '</span>' + loc.name + '</span>' +
-            '<span class="ring-pin-sub">' + loc.section + '</span></span>';
+            '<span class="ring-pin-name"><span class="ring-pin-num">' + loc.num + '</span>' + loc.name + '</span></span>';   // V1.3: the mark on the building is the title; this tag is wayfinding
         el.addEventListener('click', e => { if (e.detail === 0) go(loc.id); });   // keyboard; pointer clicks arrive below
         el.addEventListener('focus', () => { focus = loc.id; refreshStill(); });
         el.addEventListener('blur', () => { if (focus === loc.id) focus = null; refreshStill(); });

@@ -130,10 +130,18 @@ export function mount(canvas, L) {
     for (const [k, v] of Object.entries({ cyan: '#3ad7e6', magenta: '#ff4f9d', gold: '#f0b64a', lime: '#a4ec5c', green: '#42d67a' })) {
         M.neon[k] = new THREE.MeshBasicMaterial({ color: v, toneMapped: false });
     }
-    const DISTRICT = { about: M.media, betta: null, education: M.cardinal, economics: M.green, writing: M.media, projects: M.gold, contact: M.grey };
+    /* V1.3 Session 2: the buildings are muted candy; each stop's one
+       saturated signature colour lives on its mark and its accents only */
+    const DISTRICT = { about: M.grey, betta: null, education: M.white, economics: M.white, writing: M.white, projects: M.grey, contact: M.grey };
+    const SIG = {}; M.sig = {}; M.sigFlat = {};
+    for (const loc of L.LOCATIONS) if (loc.signature) {
+        SIG[loc.id] = loc.signature;
+        M.sig[loc.id] = new THREE.MeshStandardMaterial({ color: loc.signature, emissive: loc.signature, emissiveIntensity: 0.18, roughness: 0.45, metalness: 0.05, flatShading: true });
+        M.sigFlat[loc.id] = new THREE.MeshBasicMaterial({ color: loc.signature, toneMapped: false });   // strips, screens, lit bars
+    }
     /* every stop's internals, details and signs are placed relative to its layout box (V1.2, V1.3) */
     const boxOf = id => L.LOCATIONS.find(l => l.id === id).boxes[0];
-    const TOWER = boxOf('about'), TU = TOWER[0], TV = TOWER[1];
+    const TOWER = boxOf('about'), TMARK = L.LOCATIONS.find(l => l.id === 'about').mark.at, TU = TMARK[0] - 2.5, TV = TMARK[1] - 2.5;   // a virtual 5 by 5 on the core's centre
     const GAR = boxOf('projects'), GU = GAR[0], GV = GAR[1];
     const WALL = boxOf('contact'), WU = WALL[0], WV = WALL[1];
     const EXC = boxOf('economics'), EU = EXC[0], EV = EXC[1];
@@ -208,7 +216,7 @@ export function mount(canvas, L) {
         for (let i = 0; i < n; i += 2) {
             if (Math.abs(fr[i].k) < 0.045) continue;
             const j = (i + 2) % n, campus = i >= campusA && i <= campusB;
-            const pair = campus ? [C.cardinal, C.campusGold] : [C.ink, C.paper];
+            const pair = campus ? [SIG.education, C.paper] : [C.ink, C.paper];
             const col = pair[Math.floor(i / 2) % 2];
             for (const side of [1, -1]) {
                 const hw = L.TRACK_WIDTH / 2;
@@ -274,7 +282,7 @@ export function mount(canvas, L) {
         const m = new THREE.Mesh(b.build(), mat); gut(id, m); return m;
     }
     function buildStops() {
-        for (const loc of L.LOCATIONS) for (const b of loc.boxes) groundBox(b, lb[loc.id]);
+        for (const loc of L.LOCATIONS) for (const b of loc.boxes) groundBox(loc.id === 'education' && b === loc.boxes[3] ? [b[0], b[1], b[2], b[3], 6, b[5], b[6]] : b, lb[loc.id]);   // the campus hall's walls stop at 6; its gable rides the rest
         for (const b of L.GRANDSTAND) groundBox(b, gb);
         for (const b of L.PADDOCK.haulers) groundBox(b, gb);
         for (const b of L.BILLBOARDS) {
@@ -285,30 +293,7 @@ export function mount(canvas, L) {
         }
         L.CARPARK.cars.forEach((c) => gb.box(c[0], c[1], c[2], c[3], 0.8, 0, 'wall'));
         st.box(L.FLAG.at[0] - 0.2, L.FLAG.at[1] - 0.2, 0.4, 0.4, 7.2, 0, 'ink');   // the flag pole
-        {   // the garage: the open bay reads as a dark mouth, the bench and the scope inside
-            const zf = GV + GAR[3];
-            const mouth = new Builder(true);
-            mouth.quad([GU + 24, 0.02, zf + 0.02], [GU + 32, 0.02, zf + 0.02], [GU + 32, 5.6, zf + 0.02], [GU + 24, 5.6, zf + 0.02], 'x');
-            gut('projects', new THREE.Mesh(mouth.build(), M.graphite));
-            gutBox('projects', GU + 28.6, zf - 1.2, 2.6, 1.1, 1.3, 0, M.graphite);           // the workbench
-            gutBox('projects', GU + 2, GV + 1.2, 52, 0.4, 0.5, 5.4, M.neon.gold);            // a light bar along the back wall
-            gutBox('projects', GU + 6, GV + 4, 10, 4, 1.2, 0, M.graphite);                   // the electronics bench inside
-            gutBox('projects', GU + 40, GV + 4, 10, 4, 1.2, 0, M.graphite);
-        }
-        {   // the Exchange: a ticker mechanism inside the green shell
-            gutBox('economics', EU + 1.5, EV + 3, 13, 1.2, 1.2, 4, M.graphite); gutBox('economics', EU + 1.5, EV + 11.8, 13, 1.2, 1.2, 8, M.graphite);   // rollers
-            gutBox('economics', EU + 2.5, EV + 7.4, 11, 0.3, 4.4, 4.6, M.neon.green);       // the tape
-            const gear = new THREE.Mesh(new THREE.TorusGeometry(1.6, 0.35, 6, 12), M.graphite); gear.position.set(EU + 8, 9.8, EV + 8); gut('economics', gear);
-        }
-        {   // the tower: broadcast internals in neon, a core and stacked rings
-            gutBox('about', TU + 2.1, TV + 2.1, 0.8, 0.8, 33, 0.5, M.graphite);
-            const ring = new THREE.TorusGeometry(1.7, 0.22, 6, 14), names = ['cyan', 'magenta', 'gold', 'lime', 'cyan', 'magenta'];
-            names.forEach((nm, i) => { const r = new THREE.Mesh(ring, M.neon[nm]); r.rotation.x = Math.PI / 2; r.position.set(TU + 2.5, 5 + i * 5, TV + 2.5); gut('about', r); });
-            gutBox('about', TU + 1.3, TV + 1.3, 2.4, 2.4, 1.2, 35, M.neon.cyan);                    // the head's transmitter
-        }
-        {   // the press room: one magenta tube inside
-            gutBox('writing', PU + 1, PV + 6.5, 8, 0.5, 0.5, 3.2, M.neon.magenta);
-        }
+        buildLandmarks();
         {   // court markings, hoops, the ball frozen mid-arc
             const b = lb.betta;
             const c = L.LOCATIONS.find(l => l.id === 'betta').boxes[0];
@@ -340,7 +325,7 @@ export function mount(canvas, L) {
             const bb = new THREE.Box3().setFromObject(g), size = bb.getSize(new THREE.Vector3()), ctr = bb.getCenter(new THREE.Vector3());
             const top = Math.max(size.y, 5, loc.labelZ + 3);   // V1.2: the hit area covers the mesh and the label above it
             const hit = new THREE.Mesh(new THREE.BoxGeometry(size.x + 4, top + 2, size.z + 4), flat);
-            hit.position.set(ctr.x, top / 2, ctr.z); hit.layers.set(1); hit.userData.id = loc.id;
+            hit.position.set(ctr.x, top / 2, ctr.z); hit.layers.set(1); hit.userData.id = loc.id; hit.userData.box = bb;
             g.add(hit); hits.push(hit);
         }
     }
@@ -403,7 +388,7 @@ export function mount(canvas, L) {
 
     /* ------------------------------------------------ the sleeve monument (V1.1 Part 2) */
     let shimmer = null, sleeve = null;
-    const SLEEVE_AT = [GU - 6, GV + 7], SLEEVE_N = 30, SLEEVE_SIDES = 12;   // the pit-lane end of the garage
+    const SLEEVE_AT = [GU - 3, GV + 7], SLEEVE_N = 30, SLEEVE_SIDES = 12;   // the pit-lane end of the garage
     const sleeveRadius = t => 4.0 * (1 - t) + 2.5 * t + 0.3 * Math.exp(-Math.pow((t - 0.5) / 0.12, 2));
     function buildSleeve() {
         const curve = new THREE.CatmullRomCurve3([[0, 0, 0], [0, 4.5, 0], [0.6, 8.5, 0], [3.2, 12.2, 0.6], [7.2, 15.2, 1.4], [10.2, 16.4, 1.9]].map(a => new THREE.Vector3(a[0], a[1], a[2])), false, 'catmullrom', 0.5);
@@ -462,8 +447,8 @@ export function mount(canvas, L) {
         const disc = new THREE.Mesh(new THREE.CylinderGeometry(5, 5.4, 0.7, 16), M.graphite); disc.position.set(SLEEVE_AT[0], 0.35, SLEEVE_AT[1]);
         const post = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.6, 2.2, 8), M.graphite); post.position.set(SLEEVE_AT[0], 1.8, SLEEVE_AT[1]);
         guts.projects.push(disc, post, mon);
-        st.poly([[GU - 13, GV], [GU + 1, GV], [GU + 1, GV + 14], [GU - 13, GV + 14]], 0.03, C.plate);
-        sh.poly([[GU - 11, GV + 2], [GU - 1, GV + 2], [GU + 4, GV + 5], [GU + 4, GV + 16], [GU - 6, GV + 16], [GU - 11, GV + 13]], 0.04, C.ink);
+        st.poly([[GU - 10, GV], [GU + 4, GV], [GU + 4, GV + 14], [GU - 10, GV + 14]], 0.03, C.plate);
+        sh.poly([[GU - 8, GV + 2], [GU + 2, GV + 2], [GU + 7, GV + 5], [GU + 7, GV + 16], [GU - 3, GV + 16], [GU - 8, GV + 13]], 0.04, C.ink);
     }
     function shimmerAt(t) {
         if (!shimmer || !sleeve) return;
@@ -507,7 +492,7 @@ export function mount(canvas, L) {
         '.##...####......', '......####......', '......####......', '.....##.##......', '....##...##.....', '...##.....##....',
         '..##.......##...', '.##.........##..', '.##..........##.', '##............##', '##............##'
     ];
-    const NEON = { cyan: '#3ad7e6', magenta: '#ff4f9d', gold: '#f0b64a', lime: '#a4ec5c', white: '#f4f2ee' };
+    const NEON = { cyan: SIG.about, gold: SIG.betta, white: '#f4f2ee' };   // V1.3: each district's own colour and white
     function dotBoard(cols, rows, items, cell) {
         cell = cell || 10;
         const grid = new Array(cols * rows).fill(null);
@@ -547,35 +532,35 @@ export function mount(canvas, L) {
         /* V1.2: the three boards stack on one wall right of the tower, the
            Osaka density in a third of the old width, so the media district
            keeps to its own zone and the garage label has clear air */
-        const SU = TU - 20, SV = TV + 7, SF = TV + 7.73;   // the stack: left of the tower, a step in front of it, and its face
+        const SU = TU + 8, SV = TV + 7, SF = TV + 7.73;   // the stack: right of the tower's base, a step in front of it, and its face
         const posts = (v, h) => { for (const u of [SU + 1, SU + 13.5, SU + 17]) gutBox('about', u, v, 0.5, 0.5, h, 0, M.graphite); };
         posts(SV + 0.1, 26);
         /* A: the shooter and BETTA, the big one at the foot of the stack */
         frame(SU, SV, 14, 0.7, 9, 6);
         board(dotBoard(56, 36, [
-            { bitmap: SHOOTER, col: 2, row: 6, color: NEON.cyan, colors: { '#': NEON.cyan, g: NEON.gold, o: NEON.white } },
-            { text: 'BETTA', col: 22, row: 3, color: NEON.gold }, { text: 'FEEL', col: 22, row: 12, color: NEON.cyan },
-            { text: 'EVERY', col: 22, row: 20, color: NEON.magenta }, { text: 'REP', col: 22, row: 28, color: NEON.white }
+            { bitmap: SHOOTER, col: 2, row: 6, color: NEON.cyan, colors: { '#': NEON.cyan, g: NEON.white, o: NEON.white } },
+            { text: 'BETTA', col: 22, row: 3, color: NEON.white }, { text: 'FEEL', col: 22, row: 12, color: NEON.cyan },
+            { text: 'EVERY', col: 22, row: 20, color: NEON.white }, { text: 'REP', col: 22, row: 28, color: NEON.cyan }
         ]), 14, 9, [SU + 7, 10.5, SF]);
         /* D: three projects, the wide board above it */
         frame(SU, SV, 18, 0.7, 5.6, 15);
         board(dotBoard(90, 28, [
-            { text: 'POSTURE CUE', col: 3, row: 2, color: NEON.cyan }, { text: 'VISUAL MAPPING', col: 3, row: 11, color: NEON.gold },
-            { text: 'BLUETOOTH CAR', col: 3, row: 20, color: NEON.magenta }
+            { text: 'POSTURE CUE', col: 3, row: 2, color: NEON.cyan }, { text: 'VISUAL MAPPING', col: 3, row: 11, color: NEON.white },
+            { text: 'BLUETOOTH CAR', col: 3, row: 20, color: NEON.cyan }
         ]), 18, 5.6, [SU + 9, 17.8, SF]);
         /* E: the stat and the tap on top; this one flickers */
         frame(SU, SV, 16, 0.7, 5.6, 20.6);
         board(dotBoard(80, 28, [
-            { text: 'TOP 4 OF 221', col: 4, row: 2, color: NEON.gold }, { text: 'A TAP ON', col: 4, row: 11, color: NEON.white },
+            { text: 'TOP 4 OF 221', col: 4, row: 2, color: NEON.cyan }, { text: 'A TAP ON', col: 4, row: 11, color: NEON.white },
             { text: 'THE WRIST', col: 4, row: 20, color: NEON.cyan }
         ]), 16, 5.6, [SU + 8, 23.4, SF], 0, true);
         /* B: the circuit name down the tower's right face, one letter under the next */
-        const nameItems = [...'WADA RING'].map((ch, i) => ({ text: ch, col: 1, row: 1 + i * 8, color: i < 4 ? NEON.gold : NEON.white }));
-        board(dotBoard(7, 74, nameItems), 2.4, 25.4, [TU + 5.06, 20, TV + 1.5], Math.PI / 2);
+        const nameItems = [...'WADA RING'].map((ch, i) => ({ text: ch, col: 1, row: 1 + i * 8, color: i < 4 ? NEON.cyan : NEON.white }));
+        board(dotBoard(7, 74, nameItems), 2.4, 25.4, [TU + 4.56, 20, TV + 2.5], Math.PI / 2);
         /* C: his tools on the tower's front face */
         board(dotBoard(20, 26, [
-            { text: 'C++', col: 1, row: 1, color: NEON.lime }, { text: 'IMU', col: 1, row: 9, color: NEON.cyan }, { text: 'SQL', col: 1, row: 17, color: NEON.magenta }
-        ]), 4.6, 6, [TU + 2.5, 8.5, TV + 5.06]);
+            { text: 'C++', col: 1, row: 1, color: NEON.cyan }, { text: 'IMU', col: 1, row: 9, color: NEON.white }, { text: 'SQL', col: 1, row: 17, color: NEON.cyan }
+        ]), 4.6, 6, [TU + 2.5, 8.5, TV + 4.56]);
     }
     function flickerStep(t) {
         for (const b of flickerBoards) {
@@ -593,40 +578,154 @@ export function mount(canvas, L) {
         guts[id].push(m); return m;
     }
     function buildDetails() {
-        /* 01 the tower: a satellite dish on the head, a coil of cable at the base */
-        gutMesh('about', new THREE.SphereGeometry(2.2, 12, 8, 0, Math.PI * 2, 0, Math.PI / 2), M.media, [TU - 1.5, 40.2, TV - 0.5], [Math.PI, 0.7, 0], [1, 0.7, 1]);
-        gutMesh('about', new THREE.CylinderGeometry(0.18, 0.18, 2.2, 6), M.graphite, [TU - 1.5, 40.6, TV - 0.5], [0.5, 0, 0.6]);
-        for (let i = 0; i < 3; i++) gutMesh('about', new THREE.TorusGeometry(1.4, 0.22, 6, 18), M.graphite, [TU + 8, 0.3 + i * 0.45, TV + 6], [Math.PI / 2, 0, 0]);
         /* 02 the court: a rack of three gold balls, a bench with a folded sleeve on it */
         gutBox('betta', 101.5, 96.3, 0.3, 0.3, 2.6, 0, M.graphite); gutBox('betta', 106.2, 96.3, 0.3, 0.3, 2.6, 0, M.graphite);
         gutBox('betta', 101.5, 96.2, 5, 0.5, 0.25, 1.2, M.graphite);
         for (const x of [102.5, 104, 105.5]) gutMesh('betta', new THREE.SphereGeometry(0.62, 10, 8, 0, Math.PI * 2, 0, Math.PI), M.gold, [x, 2.05, 96.45]);
         gutBox('betta', 126, 96, 4.4, 1.2, 0.25, 1.0, M.graphite); gutBox('betta', 126.2, 96.2, 0.3, 0.3, 1, 0, M.graphite); gutBox('betta', 130.1, 96.9, 0.3, 0.3, 1, 0, M.graphite);
         gutMesh('betta', new THREE.TorusGeometry(0.75, 0.42, 7, 14), M.smoke, [128.2, 1.65, 96.6], [Math.PI / 2, 0, 0]);
-        /* 03 campus: a stack of books, a mortarboard with a gold tassel */
-        gutBox('education', KU + 1, KV + 2.5, 2.6, 1.8, 0.45, 1.0, M.cardinal); gutBox('education', KU + 1.3, KV + 2.3, 2.4, 1.9, 0.4, 1.45, M.gold); gutBox('education', KU + 1.1, KV + 2.6, 2.5, 1.7, 0.45, 1.85, M.cardinal);
-        gutMesh('education', new THREE.CylinderGeometry(0.7, 0.8, 1.0, 10), M.graphite, [KU + 1.8, 1.5, KV + 29.5]);
-        gutBox('education', KU + 0.6, KV + 28.3, 2.4, 2.4, 0.16, 2.0, M.graphite);
-        gutBox('education', KU + 2.9, KV + 29.4, 0.12, 0.12, 1.4, 0.9, M.neon.gold);
-        /* 04 the Exchange: a vault door on the side wall, a stack of coins by it */
-        gutMesh('economics', new THREE.CylinderGeometry(3.2, 3.2, 0.5, 20), M.green, [EU + 16.3, 6, EV + 10], [0, 0, Math.PI / 2]);
-        gutMesh('economics', new THREE.TorusGeometry(1.4, 0.18, 6, 18), M.graphite, [EU + 16.6, 6, EV + 10], [0, Math.PI / 2, 0]);
-        for (let i = 0; i < 3; i++) gutMesh('economics', new THREE.BoxGeometry(0.16, 2.8, 0.16), M.graphite, [EU + 16.62, 6, EV + 10], [i * Math.PI / 3, 0, 0]);
-        for (let i = 0; i < 6; i++) gutMesh('economics', new THREE.CylinderGeometry(1.1, 1.1, 0.28, 14), M.gold, [EU + 19.5 + (i % 2) * 0.15, 0.14 + i * 0.3, EV + 19]);
-        /* 05 the press room: a stack of paper with a pen, a paper box at the corner */
-        gutBox('writing', PU + 11.2, PV + 3.5, 2.2, 3, 0.9, 0, M.white);
-        gutMesh('writing', new THREE.CylinderGeometry(0.1, 0.1, 2.2, 6), M.graphite, [PU + 12.3, 1.02, PV + 5], [Math.PI / 2, 0, 0.5]);
-        gutBox('writing', PU + 10.6, PV + 13, 1.3, 1.6, 1.3, 0, M.grey); gutBox('writing', PU + 10.5, PV + 12.9, 1.5, 1.8, 0.2, 1.3, M.graphite);
-        /* 06 the garage: a tyre stack on gold rims, a tool chest */
-        for (let i = 0; i < 4; i++) { gutMesh('projects', new THREE.TorusGeometry(1.1, 0.45, 7, 16), M.graphite, [GU + 60.5, 0.5 + i * 0.9, GV + 9], [Math.PI / 2, 0, 0]); gutMesh('projects', new THREE.CylinderGeometry(0.65, 0.65, 0.5, 10), M.gold, [GU + 60.5, 0.5 + i * 0.9, GV + 9]); }
-        gutBox('projects', GU + 62.5, GV + 4.5, 2.6, 1.6, 1.6, 0, M.gold);
-        for (let i = 0; i < 3; i++) gutBox('projects', GU + 62.7, GV + 6.11, 2.2, 0.08, 0.12, 0.3 + i * 0.45, M.graphite);
-        /* 07 the pit wall: a headset, the chrome-visor helmet at rest by the board */
-        gutMesh('contact', new THREE.TorusGeometry(0.5, 0.09, 6, 16, Math.PI), M.graphite, [WU + 6, 2.3, WV + 0.7], [0, 0, 0]);
-        gutBox('contact', WU + 5.35, WV + 0.45, 0.35, 0.5, 0.4, 2.0, M.graphite); gutBox('contact', WU + 6.3, WV + 0.45, 0.35, 0.5, 0.4, 2.0, M.graphite);
-        gutMesh('contact', new THREE.SphereGeometry(0.95, 18, 14), M.chrome, [WU + 48, 2.75, WV + 0.7]);
-        gutBox('contact', WU + 47.4, WV + 0.9, 1.2, 0.8, 0.5, 1.9, M.graphite);
-        gutBox('contact', WU + 47.95, WV + 0.2, 0.1, 1.1, 0.55, 2.9, M.gold);
+        /* 03 campus: books and the mortarboard on the lawn, cardinal and white */
+        gutBox('education', KU + 7, KV + 8, 2.6, 1.8, 0.45, 0.6, M.sig.education); gutBox('education', KU + 7.3, KV + 7.8, 2.4, 1.9, 0.4, 1.05, M.white); gutBox('education', KU + 7.1, KV + 8.1, 2.5, 1.7, 0.45, 1.45, M.sig.education);
+        gutMesh('education', new THREE.CylinderGeometry(0.7, 0.8, 1.0, 10), M.graphite, [KU + 9, 1.1, KV + 14]);
+        gutBox('education', KU + 7.8, KV + 12.8, 2.4, 2.4, 0.16, 1.6, M.graphite);
+        gutBox('education', KU + 10.1, KV + 13.9, 0.12, 0.12, 1.4, 0.5, M.sigFlat.education);
+        /* 04 the Exchange: the vault door on the side wall, coins by it, silver */
+        gutMesh('economics', new THREE.CylinderGeometry(3.2, 3.2, 0.5, 20), M.sig.economics, [EU + 30.3, 6, EV + 9], [0, 0, Math.PI / 2]);
+        gutMesh('economics', new THREE.TorusGeometry(1.4, 0.18, 6, 18), M.graphite, [EU + 30.6, 6, EV + 9], [0, Math.PI / 2, 0]);
+        for (let i = 0; i < 3; i++) gutMesh('economics', new THREE.BoxGeometry(0.16, 2.8, 0.16), M.graphite, [EU + 30.62, 6, EV + 9], [i * Math.PI / 3, 0, 0]);
+        for (let i = 0; i < 6; i++) gutMesh('economics', new THREE.CylinderGeometry(1.1, 1.1, 0.28, 14), M.white, [EU + 33 + (i % 2) * 0.15, 0.14 + i * 0.3, EV + 16]);
+        /* 05 the press room: a stack of paper with a pen by the door, the paper box on the dock */
+        gutBox('writing', PU + 12.4, PV + 3.5, 2.2, 3, 0.9, 0, M.white);
+        gutMesh('writing', new THREE.CylinderGeometry(0.1, 0.1, 2.2, 6), M.graphite, [PU + 13.5, 1.02, PV + 5], [Math.PI / 2, 0, 0.5]);
+        gutBox('writing', PU + 10.2, PV + 13.6, 1.3, 1.6, 1.3, 1, M.grey); gutBox('writing', PU + 10.1, PV + 13.5, 1.5, 1.8, 0.2, 2.3, M.graphite);
+        /* 06 the garage: the tyre stack on orange rims and the tool chest, under the gantry */
+        for (let i = 0; i < 4; i++) { gutMesh('projects', new THREE.TorusGeometry(1.1, 0.45, 7, 16), M.graphite, [GU + 66, 0.5 + i * 0.9, GV + 9], [Math.PI / 2, 0, 0]); gutMesh('projects', new THREE.CylinderGeometry(0.65, 0.65, 0.5, 10), M.sig.projects, [GU + 66, 0.5 + i * 0.9, GV + 9]); }
+        gutBox('projects', GU + 70, GV + 4, 2.6, 1.6, 1.6, 0, M.sig.projects);
+        for (let i = 0; i < 3; i++) gutBox('projects', GU + 70.2, GV + 5.61, 2.2, 0.08, 0.12, 0.3 + i * 0.45, M.graphite);
+        /* 07 the pit wall: a headset, the chrome-visor helmet at rest by the board, its fin in the wall's blue */
+        gutMesh('contact', new THREE.TorusGeometry(0.5, 0.09, 6, 16, Math.PI), M.graphite, [WU + 43, 2.3, WV + 0.7], [0, 0, 0]);
+        gutBox('contact', WU + 42.35, WV + 0.45, 0.35, 0.5, 0.4, 2.0, M.graphite); gutBox('contact', WU + 43.3, WV + 0.45, 0.35, 0.5, 0.4, 2.0, M.graphite);
+        gutMesh('contact', new THREE.SphereGeometry(0.95, 18, 14), M.chrome, [WU + 50, 2.75, WV + 0.7]);
+        gutBox('contact', WU + 49.4, WV + 0.9, 1.2, 0.8, 0.5, 1.9, M.graphite);
+        gutBox('contact', WU + 49.95, WV + 0.2, 0.1, 1.1, 0.55, 2.9, M.sig.contact);
+    }
+    /* ------------------------------------------------ the landmarks (V1.3 Session 2) */
+    /* Six massings a stranger can name from shape alone: a lattice broadcast
+       tower, a colonnaded trading hall with its ticker band, a campus quad
+       with a campanile, a newsroom block with paper rolls on its dock, a
+       sawtooth garage with four bays and a gantry, a pit wall with its
+       perches. Bodies in muted candy; each stop's signature colour on its
+       accents only. The court is as built. */
+    function strut(b, a, c, r, tone) {   // a box from point a to point c, r thick, into builder b
+        const A = new THREE.Vector3(a[0], a[1], a[2]), Cc = new THREE.Vector3(c[0], c[1], c[2]);
+        const dir = Cc.clone().sub(A), len = dir.length(); dir.normalize();
+        const q = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir);
+        const m = new THREE.Matrix4().compose(A.clone().lerp(Cc, 0.5), q, new THREE.Vector3(1, 1, 1));
+        b.geometry(new THREE.BoxGeometry(r, len, r), tone || 'x', m);
+    }
+    function buildLandmarks() {
+        {   // 01 the broadcast tower: four legs to the deck, ring beams, X braces, a dish on the platform, a beacon on the needle
+            const cx = TU + 2.5, cz = TV + 2.5, lat = new Builder(true);
+            const levels = [[2, 4.6], [14, 3.8], [26, 3.1], [38, 2.5], [48, 2.1]];
+            for (let k = 0; k < levels.length - 1; k++) {
+                const [y0, h0] = levels[k], [y1, h1] = levels[k + 1];
+                for (const sx of [-1, 1]) for (const sz of [-1, 1]) strut(lat, [cx + sx * h0, y0, cz + sz * h0], [cx + sx * h1, y1, cz + sz * h1], 0.5);
+                for (const sx of [-1, 1]) {   // X braces on the two faces the camera sees
+                    strut(lat, [cx + sx * h0, y0, cz - h0], [cx + sx * h1, y1, cz + h1], 0.22); strut(lat, [cx + sx * h0, y0, cz + h0], [cx + sx * h1, y1, cz - h1], 0.22);
+                    strut(lat, [cx - h0, y0, cz + sx * h0], [cx + h1, y1, cz + sx * h1], 0.22); strut(lat, [cx + h0, y0, cz + sx * h0], [cx - h1, y1, cz + sx * h1], 0.22);
+                }
+                for (const [sx, sz, ex, ez] of [[-1, -1, 1, -1], [1, -1, 1, 1], [1, 1, -1, 1], [-1, 1, -1, -1]]) strut(lat, [cx + sx * h1, y1, cz + sz * h1], [cx + ex * h1, y1, cz + ez * h1], 0.3);
+            }
+            gut('about', new THREE.Mesh(lat.build(), M.graphite));
+            gutBox('about', TU + 2.1, TV + 2.1, 0.8, 0.8, 45, 2.5, M.graphite);   // the core's spine
+            const ring = new THREE.TorusGeometry(1.5, 0.2, 6, 14);
+            for (let i = 0; i < 6; i++) { const r = new THREE.Mesh(ring, M.sigFlat.about); r.rotation.x = Math.PI / 2; r.position.set(cx, 6 + i * 6.5, cz); gut('about', r); }
+            gutMesh('about', new THREE.SphereGeometry(2.4, 12, 8, 0, Math.PI * 2, 0, Math.PI / 2), M.white, [TU - 1.2, 28.6, TV - 0.4], [Math.PI, 0.7, 0], [1, 0.7, 1]);   // the dish on the platform
+            gutMesh('about', new THREE.CylinderGeometry(0.18, 0.18, 2.4, 6), M.graphite, [TU - 1.2, 29, TV - 0.4], [0.5, 0, 0.6]);
+            gutMesh('about', new THREE.SphereGeometry(1.4, 10, 7, 0, Math.PI * 2, 0, Math.PI / 2), M.white, [TU + 6.2, 28.2, TV + 6], [Math.PI, -0.8, 0], [1, 0.7, 1]);
+            gutBox('about', TU + 4.9, TV + 6.9, 1.4, 1.4, 1.4, 61.2, M.sigFlat.about);   // the beacon on the needle
+            for (let i = 0; i < 3; i++) gutMesh('about', new THREE.TorusGeometry(1.4, 0.22, 6, 18), M.graphite, [TU + 8, 0.3 + i * 0.45, TV + 6], [Math.PI / 2, 0, 0]);   // the cable coil
+        }
+        {   // 04 the Exchange: a colonnade with its entablature, a parapet carrying the ticker, the stepped top, the tape and rollers inside
+            const w = EXC[2], d = EXC[3], h = EXC[4], zf = EV + d;
+            for (let i = 0; i < 9; i++) gutBox('economics', EU + 1.4 + i * 3.4, zf + 0.5, 1.2, 1.2, h - 1, 0, M.white);
+            gutBox('economics', EU + 0.6, zf + 0.2, w - 1.2, 1.8, 1.4, h - 1.2, M.white);            // the entablature
+            gutBox('economics', EU + 0.6, zf + 2.0, w - 1.2, 0.2, 0.5, h - 0.7, M.sigFlat.economics); // the frieze in green
+            gutBox('economics', EU, zf - 1, w, 1, 3.2, h, M.white);                                  // the parapet, the ticker rides on it
+            gutBox('economics', EU + 11, EV + 4, 8, 8, 2, 14, M.white); gutBox('economics', EU + 13, EV + 6, 4, 4, 1.4, 16, M.white);   // the stepped top
+            gutBox('economics', EU + 1.5, EV + 3, 13, 1.2, 1.2, 4, M.graphite); gutBox('economics', EU + 1.5, EV + 11.8, 13, 1.2, 1.2, 8, M.graphite);   // rollers
+            gutBox('economics', EU + 2.5, EV + 7.4, 11, 0.3, 4.4, 4.6, M.sigFlat.economics);       // the tape
+            const gear = new THREE.Mesh(new THREE.TorusGeometry(1.6, 0.35, 6, 12), M.graphite); gear.position.set(EU + 8, 9.8, EV + 8); gut('economics', gear);
+            gutBox('economics', EU + 13, zf + 0.06, 4, 0.3, 4.2, 0.3, M.graphite);                  // the doors
+        }
+        {   // 03 the campus: an arcade on the front wing, a cardinal roof on the campanile, its clock, the gateway
+            const front = boxOf('education'); const fw = L.LOCATIONS.find(l => l.id === 'education').boxes[1];
+            const zf = fw[1] + fw[3];
+            for (let i = 0; i < 6; i++) gutBox('education', fw[0] + 0.6 + i * 3.4, zf - 0.2, 0.8, 0.8, 5, 0, M.white);
+            gutBox('education', fw[0] + 0.3, zf - 0.4, fw[2] - 0.6, 1.2, 0.8, 5, M.white);          // the arcade's lintel
+            gutBox('education', fw[0] + 0.2, zf + 0.02, fw[2] - 0.4, 0.15, 0.5, fw[4] - 1.6, M.sigFlat.education);   // the cardinal band under the roof line
+            gutBox('education', fw[0] + fw[2] + 0.02, fw[1] + 0.2, 0.15, fw[3] - 0.4, 0.5, fw[4] - 1.6, M.sigFlat.education);
+            for (let i = 0; i < 4; i++) gutBox('education', fw[0] + 2 + i * 4.2, zf + 0.04, 2, 0.1, 1.6, 6, M.graphite);   // the upper windows, dark
+            const hall = L.LOCATIONS.find(l => l.id === 'education').boxes[3], hw = hall[2], hd = hall[3], hh = 6;   // the hall's walls are 6, the gable rides to 9
+            const gable = new THREE.Shape(); gable.moveTo(0, 0); gable.lineTo(hd, 0); gable.lineTo(hd / 2, 3); gable.lineTo(0, 0);
+            const g = new THREE.ExtrudeGeometry(gable, { depth: hw + 0.8, bevelEnabled: false });
+            gutMesh('education', g, M.sig.education, [hall[0] + hw + 0.4, hh, hall[1]], [0, -Math.PI / 2, 0]);   // the cardinal gable roof, along u
+            gutBox('education', hall[0] - 0.4, hall[1] - 0.4, hw + 0.8, hd + 0.8, 0.3, hh - 0.3, M.white);   // the eaves line
+            gutBox('education', hall[0] + 0.3, hall[1] + hd + 0.02, hw - 0.6, 0.15, 0.5, hh - 1.5, M.sigFlat.education);
+            gutMesh('education', new THREE.CylinderGeometry(0.12, 0.12, 16, 6), M.graphite, [hall[0] + hw + 1.2, 8, hall[1] + 1]);   // the flagpole
+            gutBox('education', hall[0] + hw + 1.2, hall[1] + 0.95, 2.6, 0.1, 1.5, 14.3, M.sigFlat.education);
+            const gate = L.LOCATIONS.find(l => l.id === 'education').boxes[4];
+            gutBox('education', gate[0] + 2.2, gate[1] - 0.2, 2.6, 1.6, 4.2, 0, M.graphite);        // the gate, dark inside the arch
+            gutBox('education', gate[0], gate[1] + gate[3] + 0.02, gate[2], 0.15, 0.5, 4.3, M.sigFlat.education);
+            const side = L.LOCATIONS.find(l => l.id === 'education').boxes[2];
+            gutBox('education', side[0] + side[2] + 0.02, side[1] + 2, 0.15, 2.4, 3, 0, M.sig.education);   // the side wing's door
+        }
+        {   // 05 the press room: a glazed band in magenta round the top floor, the paper rolls on the dock, a water tank on the roof
+            const b = PRS, zf = PV + b[3], uf = PU + b[2];
+            gutBox('writing', PU + 0.4, zf + 0.02, b[2] - 0.8, 0.15, 2.2, 7.4, M.sigFlat.writing);
+            gutBox('writing', uf + 0.02, PV + 0.4, 0.15, b[3] - 0.8, 2.2, 7.4, M.sigFlat.writing);
+            gutBox('writing', PU + 1, zf + 0.06, 2.6, 0.3, 4, 0.3, M.graphite);                   // the door
+            for (let i = 0; i < 3; i++) gutMesh('writing', new THREE.CylinderGeometry(1.5, 1.5, 3.2, 14), M.white, [PU + 3 + i * 3.4, 2.6, zf + 3.2], [0, 0, Math.PI / 2]);   // the rolls
+            gutBox('writing', PU + 1.2, zf + 1.4, 9.6, 3.6, 0.3, 0.9, M.graphite);                 // their rack
+            gutMesh('writing', new THREE.CylinderGeometry(1.2, 1.2, 2.2, 10), M.graphite, [PU + 9.5, b[4] + 2.2, PV + 2.5]);   // the tank
+            for (const [dx, dz] of [[-0.8, -0.8], [0.8, -0.8], [-0.8, 0.8], [0.8, 0.8]]) gutBox('writing', PU + 9.5 + dx - 0.1, PV + 2.5 + dz - 0.1, 0.2, 0.2, 1.2, b[4], M.graphite);
+            gutBox('writing', PU + 1, PV + 6.5, 8, 0.5, 0.5, 3.2, M.sigFlat.writing);            // the tube inside
+        }
+        {   // 06 the garage: four bays with half-open doors, a sawtooth roof with glazed faces, the gantry at the end
+            const zf = GV + GAR[3], w = GAR[2], h = GAR[4];
+            for (let i = 0; i < 4; i++) {
+                const u0 = GU + 4 + i * 15;
+                const mouth = new Builder(true);
+                mouth.quad([u0, 0.02, zf + 0.02], [u0 + 7, 0.02, zf + 0.02], [u0 + 7, 5.4, zf + 0.02], [u0, 5.4, zf + 0.02], 'x');
+                gut('projects', new THREE.Mesh(mouth.build(), M.graphite));
+                gutBox('projects', u0, zf - 0.2, 7, 0.4, 1.8, 3.6, M.sig.projects);               // the door, rolled half up
+                gutBox('projects', u0 + 0.4, zf - 1.4, 2.6, 1.1, 1.3, 0, M.graphite);              // a bench in the bay
+            }
+            const tooth = new THREE.Shape(); tooth.moveTo(0, 0); tooth.lineTo(15, 0); tooth.lineTo(15, 3); tooth.lineTo(0, 0);
+            for (let i = 0; i < 4; i++) {
+                const g = new THREE.ExtrudeGeometry(tooth, { depth: GAR[3] + 0.6, bevelEnabled: false });
+                gutMesh('projects', g, M.grey, [GU + i * 15, h, GV - 0.3]);
+                gutBox('projects', GU + i * 15 + 14.75, GV, 0.2, GAR[3], 2.6, h + 0.2, M.sigFlat.projects);   // the glazed face of each tooth
+            }
+            gutBox('projects', GU + 2, GV + 1.2, w - 8, 0.4, 0.5, h - 2.6, M.sigFlat.projects);  // the light bar along the back wall
+            gutBox('projects', GU + 6, GV + 4, 10, 4, 1.2, 0, M.graphite); gutBox('projects', GU + 40, GV + 4, 10, 4, 1.2, 0, M.graphite);   // the benches inside
+            const gan = new Builder(true), gx0 = GU + w + 2, gx1 = GU + w + 12, gz0 = GV + 2, gz1 = GV + 10, gy = 9;
+            for (const x of [gx0, gx1]) { strut(gan, [x, 0, gz0], [x, gy, (gz0 + gz1) / 2], 0.5); strut(gan, [x, 0, gz1], [x, gy, (gz0 + gz1) / 2], 0.5); }
+            strut(gan, [gx0, gy, (gz0 + gz1) / 2], [gx1, gy, (gz0 + gz1) / 2], 0.7);
+            gut('projects', new THREE.Mesh(gan.build(), M.graphite));
+            gutBox('projects', gx0 + 4.4, (gz0 + gz1) / 2 - 0.5, 1.2, 1, 1.2, gy - 3.6, M.sig.projects);   // the hook block
+            gutBox('projects', gx0 + 4.9, (gz0 + gz1) / 2 - 0.1, 0.2, 0.2, 2.4, gy - 2.4, M.graphite);
+        }
+        {   // 07 the pit wall: a blue rail along the top, umbrellas and screens on the perches
+            const b = WALL;
+            gutBox('contact', WU, WV - 0.02, b[2], 0.2, 0.15, b[4], M.sigFlat.contact);
+            for (const p of L.LOCATIONS.find(l => l.id === 'contact').boxes.slice(3)) {
+                const cu = p[0] + p[2] / 2, cv = p[1] + p[3] / 2, top = p[5] + p[4];
+                gutBox('contact', cu - 0.08, cv - 0.08, 0.16, 0.16, 2.6, top, M.graphite);
+                gutMesh('contact', new THREE.CylinderGeometry(1.7, 1.7, 0.14, 12), M.sig.contact, [cu, top + 2.6, cv]);
+                gutBox('contact', p[0] + 0.3, p[1] + p[3] + 0.02, p[2] - 0.6, 0.15, 0.9, top + 0.2, M.sigFlat.contact);   // the screens
+            }
+        }
     }
     /* low barrier walls with his marks in type, placed in layout.js */
     const BARRIERS = L.BARRIERS;
@@ -665,8 +764,8 @@ export function mount(canvas, L) {
     const REP_AT = L.LOCATIONS.find(l => l.id === 'betta').arena.rep;
     const REP_SPOTS = [
         { at: [REP_AT[0], 0.7, REP_AT[1]], scale: 2.6, yaw: Math.PI / 4, stop: 'betta' },     // the statue on the lawn beside the court
-        { at: [TU + 2.5, 45.2, TV + 2.5], scale: 1.8, yaw: Math.PI / 4, stop: 'about' },  // on the tower head
-        { at: [WU + 22, 1.8, WV + 0.7], scale: 0.75, yaw: Math.PI / 4, stop: 'contact' }   // on the pit wall by the flag
+        { at: [TU - 0.5, 49.2, TV + 5.5], scale: 1.8, yaw: Math.PI / 4, stop: 'about' },  // on the tower's deck, beside the mark
+        { at: [WU + 80, 1.8, WV + 0.7], scale: 0.75, yaw: Math.PI / 4, stop: 'contact' }   // on the pit wall, past the board
     ];
     let repFigure = null;
     function buildMascot() {
@@ -680,6 +779,70 @@ export function mount(canvas, L) {
         const [ru, rv] = REP_AT;
         sh.poly([[ru - 3, rv - 2], [ru + 4, rv - 2], [ru + 9, rv], [ru + 9, rv + 4], [ru + 2, rv + 4], [ru - 3, rv + 2]], 0.04, C.ink);
     }
+
+    /* ------------------------------------------------ the dimensional marks (V1.3 Session 2) */
+    /* One giant wordmark per stop in Chakra Petch Bold, extruded in the
+       stop's signature colour, standing on a graphite mount on its
+       building. The glyph parser is three's Font logic (typeface.json
+       commands m, l, q, b) on the core's ShapePath. Letters and mount are
+       one mesh per stop with vertex colours, so a stop lifts as one. */
+    const MARK_DEPTH = 1.5, MARK_TRACKING = 0.92;
+    const markMat = new THREE.MeshStandardMaterial({ vertexColors: true, flatShading: true, roughness: 0.5, metalness: 0.06 });
+    const markBoxes = [];
+    function fontShapes(data, text, capHeight) {
+        const scale = capHeight / 700 / data.resolution * 1000, shapes = [];   // 700 units of cap height per em in this face
+        let offsetX = 0;
+        for (const ch of Array.from(text)) {
+            const glyph = data.glyphs[ch] || data.glyphs['?']; if (!glyph) continue;
+            const path = new THREE.ShapePath();
+            if (glyph.o) {
+                const o = glyph.o.split(' ');
+                for (let i = 0; i < o.length;) {
+                    const a = o[i++];
+                    if (a === 'm') path.moveTo(o[i++] * scale + offsetX, o[i++] * scale);
+                    else if (a === 'l') path.lineTo(o[i++] * scale + offsetX, o[i++] * scale);
+                    else if (a === 'q') { const x = o[i++] * scale + offsetX, y = o[i++] * scale, x1 = o[i++] * scale + offsetX, y1 = o[i++] * scale; path.quadraticCurveTo(x1, y1, x, y); }
+                    else if (a === 'b') { const x = o[i++] * scale + offsetX, y = o[i++] * scale, x1 = o[i++] * scale + offsetX, y1 = o[i++] * scale, x2 = o[i++] * scale + offsetX, y2 = o[i++] * scale; path.bezierCurveTo(x1, y1, x2, y2, x, y); }
+                }
+            }
+            offsetX += glyph.ha * scale * MARK_TRACKING;
+            shapes.push(...path.toShapes());
+        }
+        return shapes;
+    }
+    function buildMarks(font) {
+        const col = new THREE.Color();
+        for (const loc of L.LOCATIONS) {
+            if (!loc.mark || !loc.signature) continue;
+            const mk = loc.mark, letters = new THREE.ExtrudeGeometry(fontShapes(font, mk.text, mk.h), { depth: MARK_DEPTH, bevelEnabled: false, curveSegments: 5 });
+            letters.computeBoundingBox();
+            const bb = letters.boundingBox, w = bb.max.x - bb.min.x;
+            letters.translate(-(bb.min.x + bb.max.x) / 2, -bb.min.y + 0.6, -MARK_DEPTH / 2);   // centred, standing on the mount
+            const mount = new THREE.BoxGeometry(w + 2.4, 0.6, MARK_DEPTH + 1.4); mount.translate(0, 0.3, 0);
+            const parts = [[letters, loc.signature], [mount, '#2a2b2e']], pos = [], nor = [], colr = [];
+            for (const [g, hexc] of parts) {
+                const ng = g.index ? g.toNonIndexed() : g; col.set(hexc);
+                pos.push(...ng.attributes.position.array); nor.push(...ng.attributes.normal.array);
+                for (let i = 0; i < ng.attributes.position.count; i++) colr.push(col.r, col.g, col.b);
+            }
+            const geo = new THREE.BufferGeometry();
+            geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); geo.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3)); geo.setAttribute('color', new THREE.Float32BufferAttribute(colr, 3));
+            const m = new THREE.Mesh(geo, markMat);
+            m.position.set(mk.at[0], mk.at[2], mk.at[1]); if (mk.face === 'u') m.rotation.y = Math.PI / 2;
+            groups[loc.id].add(m);
+            const depth = MARK_DEPTH + 1.4, top = mk.h + 0.6;
+            const box = mk.face === 'u' ? [mk.at[0] - depth / 2, mk.at[1] - (w + 2.4) / 2, depth, w + 2.4, top, mk.at[2]] : [mk.at[0] - (w + 2.4) / 2, mk.at[1] - depth / 2, w + 2.4, depth, top, mk.at[2]];
+            markBoxes.push({ id: loc.id, box });
+            const hit = hits.find(h => h.userData.id === loc.id);   // the hit area grows to take the mark in
+            if (hit && hit.userData.box) {
+                const b0 = hit.userData.box.clone().expandByPoint(new THREE.Vector3(box[0], box[5], box[1])).expandByPoint(new THREE.Vector3(box[0] + box[2], box[5] + box[4] + 1, box[1] + box[3]));
+                const size = b0.getSize(new THREE.Vector3()), ctr = b0.getCenter(new THREE.Vector3()), tp = Math.max(size.y, 5, loc.labelZ + 3);
+                hit.geometry.dispose(); hit.geometry = new THREE.BoxGeometry(size.x + 4, tp + 2, size.z + 4); hit.position.set(ctr.x, tp / 2, ctr.z); hit.userData.box = b0;
+            }
+        }
+        if (!running) render();
+    }
+    const fontJson = fetch('circuit/vendor/chakra-petch-bold.typeface.json?v=13.1').then(r => r.json());
 
     /* ------------------------------------------------ the type hoardings (V1.2, V1.3) */
     /* Three lines of type on trackside boards. Frames and posts go up with
@@ -869,10 +1032,10 @@ export function mount(canvas, L) {
         {   // 5. the garage scope
             scopePos = new Float32Array(scopeN * 3);
             scopeGeom = new THREE.BufferGeometry(); scopeGeom.setAttribute('position', new THREE.BufferAttribute(scopePos, 3));
-            const scope = new THREE.Line(scopeGeom, new THREE.LineBasicMaterial({ color: C.accent, toneMapped: false }));
-            scope.position.set(GU + 26.4, 3.05, GV + 12.09); groups.projects.add(scope);
-            glow = new THREE.Mesh(new THREE.PlaneGeometry(3.6, 2.6), new THREE.MeshBasicMaterial({ color: C.accent, transparent: true, opacity: 0.12, depthWrite: false, toneMapped: false }));
-            glow.position.set(GU + 26.4, 3.05, GV + 12.07); groups.projects.add(glow);
+            const scope = new THREE.Line(scopeGeom, new THREE.LineBasicMaterial({ color: SIG.projects, toneMapped: false }));
+            scope.position.set(GU + 37.5, 3.05, GV + 12.09); groups.projects.add(scope);
+            glow = new THREE.Mesh(new THREE.PlaneGeometry(3.6, 2.6), new THREE.MeshBasicMaterial({ color: SIG.projects, transparent: true, opacity: 0.12, depthWrite: false, toneMapped: false }));
+            glow.position.set(GU + 37.5, 3.05, GV + 12.07); groups.projects.add(glow);
             traceScope(0);
         }
         built = true;
@@ -908,14 +1071,15 @@ export function mount(canvas, L) {
             cv.width = tw; cv.height = 96;
             ctx.fillStyle = C.ink; ctx.fillRect(0, 0, tw, 96);
             ctx.font = '600 44px ' + CHAKRA; if ('letterSpacing' in ctx) ctx.letterSpacing = '4px';
-            ctx.fillStyle = C.accent; ctx.textBaseline = 'middle'; ctx.fillText(s, 0, 50);
+            ctx.fillStyle = SIG.economics; ctx.textBaseline = 'middle'; ctx.fillText(s, 0, 50);
             const tex = new THREE.CanvasTexture(cv); tex.colorSpace = THREE.SRGBColorSpace; tex.wrapS = THREE.RepeatWrapping;
             const pw = eb[2] - 1.6, ph = 2.2; tex.repeat.set((pw / ph) / (tw / 96), 1);
-            ticker = textPlane(tex, pw, ph, [eb[0] + eb[2] / 2, 9.3, eb[1] + eb[3] + 0.03], 0, groups.economics);
+            ticker = textPlane(tex, pw, ph, [eb[0] + eb[2] / 2, eb[5] + eb[4] + 1.5, eb[1] + eb[3] + 0.03], 0, groups.economics);
         }
         const board = L.LOCATIONS.find(l => l.id === 'contact');
-        textPlane(textTexture(board.board.text, { w: 1024, h: 256, font: '700 96px ' + SCHIB, fill: C.ink, bg: C.paper, spacing: '2px' }), 5.6, 1.4, [WU + 35, 2.5, WV + 0.02], 0, groups.contact);
-        textPlane(textTexture('TRACK 29°', { w: 512, h: 192, font: '700 96px ' + CHAKRA, fill: C.accent, bg: C.ink }), 2.7, 1.0, [WU + 43.5, 1.7, WV + 0.02], 0, groups.contact);
+        const bd = L.LOCATIONS.find(l => l.id === 'contact').boxes;   // the email board and the temperature board sit on their own boxes
+        textPlane(textTexture(board.board.text, { w: 1024, h: 256, font: '700 96px ' + SCHIB, fill: C.ink, bg: C.paper, spacing: '2px' }), 5.6, 1.4, [bd[1][0] + 3, 2.5, WV + 0.02], 0, groups.contact);
+        textPlane(textTexture('TRACK 29°', { w: 512, h: 192, font: '700 96px ' + CHAKRA, fill: SIG.contact, bg: C.ink }), 2.7, 1.0, [bd[2][0] + 1.5, 1.7, WV + 0.02], 0, groups.contact);
         const signs = ['AWUS  ·  RATED W', 'C++  ·  PYTHON  ·  SQL', 'IMU  ·  HAPTICS  ·  FIRMWARE'];
         L.BILLBOARDS.forEach((b, i) => {
             const tex = textTexture(signs[i], { w: 1024, h: 384, font: 'italic 700 92px ' + CHAKRA, fill: C.ink, bg: C.paper, spacing: '6px' });
@@ -988,6 +1152,7 @@ export function mount(canvas, L) {
     const fontsReady = document.fonts ? Promise.race([document.fonts.load("600 44px 'Chakra Petch'").then(() => document.fonts.ready), new Promise(r => setTimeout(r, 2500))]) : Promise.resolve();
     Promise.all([readyPromise, fontsReady]).then(addText, addText);
     const dressed = Promise.all([readyPromise, fontsReady]).then(dressHoardings, dressHoardings);
+    const marked = Promise.all([readyPromise, fontJson]).then(([, font]) => buildMarks(font)).catch(err => console.warn('marks', err));
 
     /* screen helpers for the navigation layer */
     const _v = new THREE.Vector3();
@@ -1011,6 +1176,6 @@ export function mount(canvas, L) {
              groups, hooks, project, groundAt, pick, DIR, isRunning: () => running, reduced, ready: readyPromise,
              cars, carAt: id => { const c = cars.find(k => k.id === id); return c && c.pose ? { x: c.group.position.x, z: c.group.position.z, tx: c.pose.tx, tz: c.pose.tz, s: c.s } : null; },
              gridState: () => race.order.map((ci, k) => ({ id: cars[ci].id, rank: k + 1, lane: +cars[ci].lane.toFixed(2), s: +(cars[ci].s || 0).toFixed(2), at: [cars[ci].group.position.x, cars[ci].group.position.z] })),
-             passing: () => !!race.pass, stepRace: dt => placeCars(dt), dressed,
+             passing: () => !!race.pass, stepRace: dt => placeCars(dt), dressed, marked, marks: () => markBoxes,
              meanFps: () => stats.window.length ? stats.window.reduce((a, b) => a + b, 0) / stats.window.length : stats.fps };
 }

@@ -14,8 +14,8 @@ for (const loc of L.LOCATIONS) {
     for (const b of loc.boxes) rects.push(pad(b, 3));
     if (loc.arena) { rects.push(pad(loc.arena.apron, 3)); rects.push([loc.arena.rep[0] - 6, loc.arena.rep[1] - 6, loc.arena.rep[0] + 6, loc.arena.rep[1] + 6]); }
 }
-const T = L.LOCATIONS.find(l => l.id === 'about').boxes[0]; rects.push([T[0] - 23, T[1] + 4, T[0] + 1, T[1] + 11]); rects.push([T[0] + 3, T[1] + 3, T[0] + 12, T[1] + 10]);
-const G = L.LOCATIONS.find(l => l.id === 'projects').boxes[0]; rects.push([G[0] - 16, G[1] - 3, G[0] + 4, G[1] + 17]); rects.push([G[0] + 57, G[1] + 1, G[0] + 70, G[1] + 12]);
+const TM = L.LOCATIONS.find(l => l.id === 'about').mark.at, TU = TM[0] - 2.5, TV = TM[1] - 2.5; rects.push([TU + 6, TV + 4, TU + 28, TV + 11]); rects.push([TU + 5, TV + 3, TU + 12, TV + 10]);
+const G = L.LOCATIONS.find(l => l.id === 'projects').boxes[0]; rects.push([G[0] - 13, G[1] - 3, G[0] + 7, G[1] + 17]); rects.push([G[0] + 57, G[1] - 1, G[0] + 76, G[1] + 13]);
 for (const b of L.GRANDSTAND) rects.push(pad(b, 3));
 rects.push(pad(L.PADDOCK.slab, 2)); rects.push(pad(L.CARPARK.slab, 2));
 for (const w of L.HOARDINGS) { const len = w.panels.reduce((a, p) => a + p.w + (w.gap || 0), 0); rects.push(w.face === 'u' ? [w.at[0] - 2, w.at[1] - 2, w.at[0] + 3, w.at[1] + len + 2] : [w.at[0] - 2, w.at[1] - 2, w.at[0] + len + 2, w.at[1] + 3]); }

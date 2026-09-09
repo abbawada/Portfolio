@@ -36,7 +36,8 @@ async function load(width, height) {
     await page.waitForFunction(() => window.__circuit && window.__circuit.groups, null, { timeout: 20000 });
     await page.evaluate(() => window.__circuit.ready);
     await page.evaluate(() => document.fonts ? document.fonts.ready : null);
-    await page.evaluate(() => window.__circuit.dressed);   // the hoarding atlas, after the images
+    await page.evaluate(() => window.__circuit.dressed);   // the type hoardings, after the fonts
+    await page.evaluate(() => window.__circuit.marked);    // the dimensional marks, after the typeface
     await page.waitForTimeout(1800);   // text planes arrive behind the build
 }
 
@@ -48,9 +49,10 @@ const AUDIT = `(() => {
     /* silhouettes: each stop's layout boxes plus the pieces the world adds
        beside them, projected box by box to convex screen polygons */
     const T = L.LOCATIONS.find(l => l.id === 'about').boxes[0], G = L.LOCATIONS.find(l => l.id === 'projects').boxes[0], W = L.LOCATIONS.find(l => l.id === 'contact').boxes[0];
-    const EXTRA = { about: [[T[0] - 20, T[1] + 7, 18, 0.7, 26.2, 0], [T[0] + 6.6, T[1] + 4.6, 2.8, 2.8, 1.4, 0]],
-                    projects: [[G[0] - 13, G[1], 14, 14, 19, 0], [G[0] + 60, G[1] + 4, 6, 6, 4, 0]],
-                    contact: [[W[0] + 32, W[1] - 0.8, 6, 0.8, 3.6, 0], [W[0] + 47, W[1], 2, 1.5, 3.6, 0]] };
+    const TM = L.LOCATIONS.find(l => l.id === 'about').mark.at, TU = TM[0] - 2.5, TV = TM[1] - 2.5;
+    const EXTRA = { about: [[TU + 8, TV + 7, 18, 0.7, 26.2, 0], [TU + 6.6, TV + 4.6, 2.8, 2.8, 1.4, 0]],
+                    projects: [[G[0] - 10, G[1], 14, 14, 19, 0], [G[0] + 64, G[1] + 7, 6, 6, 4, 0], [G[0] + 62, G[1] + 2, 12, 8, 9, 0]],
+                    contact: [] };
     const sil = {};
     /* the hoardings, as set dressing a label must not cover */
     const hoardBoxes = [];
@@ -63,8 +65,10 @@ const AUDIT = `(() => {
             along += w + (wall.gap || 0);
         }
     }
+    const markBoxes = c.marks ? c.marks() : [], srcBoxes = {};
     for (const loc of L.LOCATIONS) {
-        const boxes = loc.boxes.map(b => b.slice(0, 6)).concat(EXTRA[loc.id] || []);
+        const boxes = loc.boxes.map(b => b.slice(0, 6)).concat(EXTRA[loc.id] || []).concat(markBoxes.filter(m => m.id === loc.id).map(m => m.box));
+        srcBoxes[loc.id] = boxes;
         if (loc.arena) {
             const A = loc.arena; boxes.push(A.apron.concat([0.1, 0]));
             for (const sd of A.stands) boxes.push([sd[0], sd[1], sd[2], sd[3], 4.8, 0]);
@@ -121,9 +125,13 @@ const AUDIT = `(() => {
         for (const id in sil) if (id !== labels[i].id && sil[id].some(poly => polyRect(poly, labels[i].chip))) labelVsStop.push([labels[i].id, id]);
         if (hoardPolys.some(poly => polyRect(poly, labels[i].chip))) labelVsHoarding.push(labels[i].id);
     }
-    const ids = Object.keys(sil);
-    for (let i = 0; i < ids.length; i++) for (let j = i + 1; j < ids.length; j++)
-        if (sil[ids[i]].some(P => sil[ids[j]].some(Q => polyPoly(P, Q)))) stopPairs.push([ids[i], ids[j]]);
+    const ids = Object.keys(sil), detail = [];
+    for (let i = 0; i < ids.length; i++) for (let j = i + 1; j < ids.length; j++) {
+        let hit = null;
+        sil[ids[i]].forEach((P, a) => sil[ids[j]].forEach((Q, b) => { if (!hit && polyPoly(P, Q)) hit = [a, b]; }));
+        if (hit) { stopPairs.push([ids[i], ids[j]]); detail.push({ pair: [ids[i], ids[j]], a: srcBoxes[ids[i]][hit[0]].map(n => +n.toFixed(1)), b: srcBoxes[ids[j]][hit[1]].map(n => +n.toFixed(1)) }); }
+    }
+    for (const l of labels) for (const id in sil) if (id !== l.id) sil[id].forEach((poly, k) => { if (polyRect(poly, l.chip)) detail.push({ label: l.id, over: id, box: srcBoxes[id][k].map(n => +n.toFixed(1)), chip: l.chip }); });
     /* plan footprints: every box of a stop plus the arena pieces, as rects in plan */
     const plan = {};
     for (const loc of L.LOCATIONS) {
@@ -140,7 +148,7 @@ const AUDIT = `(() => {
     return { viewport: [innerWidth, innerHeight], zoom: c.nav.state().zoom, target: c.nav.state().target,
              labels: labels.map(l => ({ id: l.id, chip: Object.fromEntries(Object.entries(l.chip).map(([k, v]) => [k, Math.round(v)])) })),
              stops: Object.fromEntries(ids.map(id => [id, bbox(sil[id])])),
-             labelOverlaps: labelPairs, labelOverStop: labelVsStop, labelOverHoarding: labelVsHoarding, stopOverlaps: stopPairs, planOverlaps: planPairs,
+             labelOverlaps: labelPairs, labelOverStop: labelVsStop, labelOverHoarding: labelVsHoarding, stopOverlaps: stopPairs, planOverlaps: planPairs, detail,
              labelFont: chipStyle.fontSize + ' ' + chipStyle.fontWeight, calls: c.stats.calls, triangles: c.stats.triangles, fps: +c.meanFps().toFixed(1) };
 })()`;
 

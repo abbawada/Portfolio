@@ -12,11 +12,16 @@ as the centre of gravity.
 
 | session | what | state |
 | --- | --- | --- |
-| 1 | demolition and canvas: the Board gone, no photographs in the world, the circuit spread to fill the plate | built 2026-09-08, report in session-1.md, waiting on review |
-| 2 | landmark identity, the Silicon Valley pass: one giant dimensional mark per stop, distinct silhouettes, seven signature colours | not started |
+| 1 | demolition and canvas: the Board gone, no photographs in the world, the circuit spread to fill the plate | built 2026-09-08, approved |
+| 2 | landmark identity, the Silicon Valley pass: one giant dimensional mark per stop, distinct silhouettes, seven signature colours | built 2026-09-08, report in session-2.md, waiting on review |
 | 3 | the race: cars in the Valkyrie language, a live simulated race with live timing, a chase camera for Start lap | not started |
 
 ## Tools added
+- circuit/vendor/chakra-petch-bold.typeface.json: the OFL face as glyph
+  outlines for the extruded marks, made by a scratch converter over
+  opentype.js from Google's TTF; the licence sits beside it.
+- The gate audit names the colliding pieces (detail in the report) when
+  silhouettes or chips overlap.
 - tools/circuit/trees.js seeds the trees from the layout (a jittered
   grid kept clear of the track, the pit lane and every footprint) and
   writes them into circuit/layout.js. Run it after any move.

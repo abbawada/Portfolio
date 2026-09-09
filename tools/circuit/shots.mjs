@@ -14,7 +14,7 @@ const browser = await chromium.launch({ channel: 'chrome', headless: true });
 const page = await browser.newPage({ viewport: { width: 1600, height: 900 } });
 await page.goto(url + (url.includes('?') ? '&' : '?') + 't=' + Date.now(), { waitUntil: 'load' });
 await page.waitForFunction(() => window.__circuit && window.__circuit.groups);
-await page.evaluate(() => window.__circuit.ready); await page.evaluate(() => window.__circuit.dressed); await page.waitForTimeout(1500);
+await page.evaluate(() => window.__circuit.ready); await page.evaluate(() => window.__circuit.dressed); await page.evaluate(() => window.__circuit.marked); await page.waitForTimeout(1500);
 for (const spec of specs) {
     const [name, rest] = spec.split(':'); const [u, v, zoom] = rest.split(',').map(Number);
     await page.evaluate(([u, v, zoom]) => window.__circuit.nav.flyTo(u, v, zoom), [u, v, zoom || 2.5]);
