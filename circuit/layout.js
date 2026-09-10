@@ -56,10 +56,10 @@
            looks at. The massings below are the blocked-in silhouettes; the
            world adds the sculpture relative to boxes[0]. */
         { id: 'about', num: '01', name: 'About', section: 'Media tower', sector: 3,
-          anchor: [50, 120], labelZ: 70, labelSide: 'left', signature: '#22c6e0',
-          mark: { text: 'ABOUT', at: [50, 120, 49.2], h: 6, face: 'v' },
+          anchor: [50, 120], labelZ: 70, signature: '#22c6e0',
+          mark: { text: 'ABOUT', at: [36.5, 120, 49.2], h: 6, face: 'v' },   // slid left along its mount so the deck sits under the T; Rep stands past the T on the deck's back-right corner
           boxes: [[45, 115, 10, 10, 2, 0, 'wall'], [48, 118, 4, 4, 46, 2, 'roof'], [46.5, 116.5, 7, 7, 1, 26, 'roof'],
-                  [46, 116, 8, 8, 1.2, 48, 'roof'], [65.5, 119.5, 1, 1, 12, 49.2, 'roof']] },
+                  [46, 116, 8, 8, 1.2, 48, 'roof'], [20, 119.5, 1, 1, 12, 49.2, 'roof']] },
         /* the court owns the upper infield, in front of the back straight,
            with a lit apron, stands, floodlights and the pylon. Largest
            footprint and tallest silhouette on the plate. Locked as built. */

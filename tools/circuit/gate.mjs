@@ -51,7 +51,7 @@ const AUDIT = `(() => {
     /* silhouettes: each stop's layout boxes plus the pieces the world adds
        beside them, projected box by box to convex screen polygons */
     const T = L.LOCATIONS.find(l => l.id === 'about').boxes[0], G = L.LOCATIONS.find(l => l.id === 'projects').boxes[0], W = L.LOCATIONS.find(l => l.id === 'contact').boxes[0];
-    const TM = L.LOCATIONS.find(l => l.id === 'about').mark.at, TU = TM[0] - 2.5, TV = TM[1] - 2.5;
+    const TD = L.LOCATIONS.find(l => l.id === 'about').boxes[3], TU = TD[0] + TD[2] / 2 - 2.5, TV = TD[1] + TD[3] / 2 - 2.5;   // the core's centre, from the deck
     const EXTRA = { about: [[TU + 8, TV + 7, 18, 0.7, 26.2, 0], [TU + 6.6, TV + 4.6, 2.8, 2.8, 1.4, 0]],
                     projects: [[G[0] - 10, G[1], 14, 14, 19, 0], [G[0] + 64, G[1] + 7, 6, 6, 4, 0], [G[0] + 62, G[1] + 2, 12, 8, 9, 0]],
                     contact: [] };

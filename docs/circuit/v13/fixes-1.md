@@ -111,10 +111,38 @@ deck, both for your call:
   the deck. That is Session 2 geometry and is waiting on your Gate 2
   review, so it was not touched.
 
+## Follow-up, next day: the sign slides left, the deck under the T
+Asked for after the Rep move. The ABOUT mark slides 13.5 units left
+along its mount, from u 50 to u 36.5, so the T stands over the deck (the
+T spans u 44.9 to 49.6, the deck 46 to 54) and the word cantilevers off
+the tower's left side. The tower itself stays put: its pieces now take
+their centre from the deck box instead of the mark (world.js, gate.mjs,
+trees.js), so the sign is free to slide on its own. Rep steps from the
+deck's front-right corner to its back-right corner (53.1, 116.9), past
+the T. The beacon needle and its outrigger arm move to the mount's left
+end: the deck's right side cannot hold the T's edge, the needle and the
+mascot at once (a search over the mark offset, every deck spot for Rep
+and every deck spot for the needle tops out under 5 px once the T is
+over the deck). The About chip hangs right of its dot now, above the
+deck, clear of the sign's new top-left.
+
+Measured at the default view: Rep's nearest part, the arm, clears the T
+by 9 px in the screen model; the A clears the needle by 12 px; the About
+chip clears its mark by 34 px (22 before); zero overlaps in every audit
+category at 1600 and 1440; label test seven of seven; 173 draw calls.
+Captures: f1-about-slide-zoom4.png, f1-about-slide-close.png,
+f1-about-slide-wide-1440.png; report f1-about-slide-report.json. Poster
+and flat map regenerated.
+
+The trade-off, for your call: the T fully over the deck (its left edge
+at 46 needs the mark at u 37.6 or further right) leaves Rep under 2 px
+from the T. At u 36.5 the T's left arm overhangs the deck's edge by 1.1
+units, invisible at the default view, and Rep keeps its 9 px.
+
 ## Flags
-- Rep now stands in front of the O of ABOUT; no deck position avoids
-  covering some letter (above). The mascot geometry and scale are as
-  designed; only the spot moved.
+- Rep clears every letter of ABOUT now that the sign has slid left (the
+  follow-up below the Rep note). The mascot geometry and scale are as
+  designed; only its spot and the sign moved.
 - The Writing chip moved without being asked, because the measure that
   found the two listed overlaps found the same one there.
 - The camera's target for Education and Writing follows the anchor, so

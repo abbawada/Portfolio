@@ -141,7 +141,7 @@ export function mount(canvas, L) {
     }
     /* every stop's internals, details and signs are placed relative to its layout box (V1.2, V1.3) */
     const boxOf = id => L.LOCATIONS.find(l => l.id === id).boxes[0];
-    const TOWER = boxOf('about'), TMARK = L.LOCATIONS.find(l => l.id === 'about').mark.at, TU = TMARK[0] - 2.5, TV = TMARK[1] - 2.5;   // a virtual 5 by 5 on the core's centre
+    const TOWER = boxOf('about'), TDECK = L.LOCATIONS.find(l => l.id === 'about').boxes[3], TU = TDECK[0] + TDECK[2] / 2 - 2.5, TV = TDECK[1] + TDECK[3] / 2 - 2.5;   // a virtual 5 by 5 on the core's centre, from the deck (the mark slides on its own)
     const GAR = boxOf('projects'), GU = GAR[0], GV = GAR[1];
     const WALL = boxOf('contact'), WU = WALL[0], WV = WALL[1];
     const EXC = boxOf('economics'), EU = EXC[0], EV = EXC[1];
@@ -624,8 +624,8 @@ export function mount(canvas, L) {
         b.geometry(new THREE.BoxGeometry(r, len, r), tone || 'x', m);
     }
     function buildLandmarks() {
-        {   // 01 the broadcast tower: four legs to the deck, ring beams, X braces, a dish on the platform, a beacon on the needle at the mark's end (off the deck, so nothing stands in front of the letters)
-            const cx = TU + 2.5, cz = TV + 2.5, lat = new Builder(true);
+        {   // 01 the broadcast tower: four legs to the deck, ring beams, X braces, a dish on the platform, a beacon on the needle at the mark's far end (off the deck, so nothing stands in front of the letters)
+            const cx = TU + 2.5, cz = TV + 2.5, lat = new Builder(true), MU = L.LOCATIONS.find(l => l.id === 'about').mark.at[0];
             const levels = [[2, 4.6], [14, 3.8], [26, 3.1], [38, 2.5], [48, 2.1]];
             for (let k = 0; k < levels.length - 1; k++) {
                 const [y0, h0] = levels[k], [y1, h1] = levels[k + 1];
@@ -643,8 +643,8 @@ export function mount(canvas, L) {
             gutMesh('about', new THREE.SphereGeometry(2.4, 12, 8, 0, Math.PI * 2, 0, Math.PI / 2), M.white, [TU - 1.2, 28.6, TV - 0.4], [Math.PI, 0.7, 0], [1, 0.7, 1]);   // the dish on the platform
             gutMesh('about', new THREE.CylinderGeometry(0.18, 0.18, 2.4, 6), M.graphite, [TU - 1.2, 29, TV - 0.4], [0.5, 0, 0.6]);
             gutMesh('about', new THREE.SphereGeometry(1.4, 10, 7, 0, Math.PI * 2, 0, Math.PI / 2), M.white, [TU + 6.2, 28.2, TV + 6], [Math.PI, -0.8, 0], [1, 0.7, 1]);
-            gutBox('about', TU + 16.6, TV + 2.1, 1.6, 0.8, 0.6, 49.2, M.graphite);   // the outrigger arm off the mount's right end, carrying the needle clear of the last letter
-            gutBox('about', TU + 17.8, TV + 1.8, 1.4, 1.4, 1.4, 61.2, M.sigFlat.about);   // the beacon on the needle
+            gutBox('about', MU - 16.3, TV + 2.1, 2.2, 0.8, 0.6, 49.2, M.graphite);   // the outrigger arm off the mount's left end, carrying the needle clear of the first letter
+            gutBox('about', MU - 16.7, TV + 1.8, 1.4, 1.4, 1.4, 61.2, M.sigFlat.about);   // the beacon on the needle
             for (let i = 0; i < 3; i++) gutMesh('about', new THREE.TorusGeometry(1.4, 0.22, 6, 18), M.graphite, [TU + 8, 0.3 + i * 0.45, TV + 6], [Math.PI / 2, 0, 0]);   // the cable coil
         }
         {   // 04 the Exchange: a colonnade with its entablature, a parapet carrying the ticker, the stepped top, the tape and rollers inside
@@ -765,7 +765,7 @@ export function mount(canvas, L) {
     const REP_AT = L.LOCATIONS.find(l => l.id === 'betta').arena.rep;
     const REP_SPOTS = [
         { at: [REP_AT[0], 0.7, REP_AT[1]], scale: 2.6, yaw: Math.PI / 4, stop: 'betta' },     // the statue on the lawn beside the court
-        { at: [TU + 5.7, 49.2, TV + 4.8], scale: 1.8, yaw: Math.PI / 4, stop: 'about' },  // on the deck's front-right corner, past the B of the mark
+        { at: [TU + 5.6, 49.2, TV - 0.6], scale: 1.8, yaw: Math.PI / 4, stop: 'about' },  // on the deck's back-right corner, past the T of the mark
         { at: [WU + 80, 1.8, WV + 0.7], scale: 0.75, yaw: Math.PI / 4, stop: 'contact' }   // on the pit wall, past the board
     ];
     let repFigure = null;
