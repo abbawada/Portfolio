@@ -186,7 +186,8 @@ body.circuit a:focus-visible, body.circuit button:focus-visible { outline: 2px s
     background: var(--paper);
     border: 1px solid var(--ink);
     border-radius: 3px;
-    box-shadow: 0 1px 0 rgba(20, 20, 20, 0.16);
+    /* a tag floating over the world, its own object: a soft drop shadow at rest */
+    box-shadow: 0 1px 0 rgba(20, 20, 20, 0.16), 0 3px 8px rgba(20, 20, 20, 0.14);
     transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
 }
 

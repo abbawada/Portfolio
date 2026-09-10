@@ -3,7 +3,9 @@
    Writes: <prefix>-wide-1600.png and <prefix>-wide-1440.png at the default
    view, one close shot per stop, and <prefix>-report.json with the overlap
    audit: label chips against each other, label chips against the other
-   stops' screen boxes, and plan footprints against each other.
+   stops' screen boxes, each chip's clearance from its own stop's mark
+   (markClear, px; labelOverMark lists any that touch), and plan
+   footprints against each other.
    Playwright resolves from $PLAYWRIGHT, then ./node_modules, then the
    sibling betta-live-site install. Never downloads a browser. */
 import fs from 'node:fs';
@@ -125,6 +127,16 @@ const AUDIT = `(() => {
         for (const id in sil) if (id !== labels[i].id && sil[id].some(poly => polyRect(poly, labels[i].chip))) labelVsStop.push([labels[i].id, id]);
         if (hoardPolys.some(poly => polyRect(poly, labels[i].chip))) labelVsHoarding.push(labels[i].id);
     }
+    /* each chip against its own stop's mark: the tag must read as its own
+       object, so the report carries the clearance in px (negative = overlap) */
+    const grow = (r, m) => ({ x: r.x - m, y: r.y - m, w: r.w + 2 * m, h: r.h + 2 * m });
+    const markClear = {}, labelOverMark = [];
+    for (const l of labels) {
+        const mk = markBoxes.find(m => m.id === l.id); if (!mk) continue;
+        const poly = project6(mk.box); let m = 0;
+        if (polyRect(poly, l.chip)) { m = -1; labelOverMark.push(l.id); } else while (m < 200 && !polyRect(poly, grow(l.chip, m + 1))) m += 1;
+        markClear[l.id] = m;
+    }
     const ids = Object.keys(sil), detail = [];
     for (let i = 0; i < ids.length; i++) for (let j = i + 1; j < ids.length; j++) {
         let hit = null;
@@ -148,7 +160,7 @@ const AUDIT = `(() => {
     return { viewport: [innerWidth, innerHeight], zoom: c.nav.state().zoom, target: c.nav.state().target,
              labels: labels.map(l => ({ id: l.id, chip: Object.fromEntries(Object.entries(l.chip).map(([k, v]) => [k, Math.round(v)])) })),
              stops: Object.fromEntries(ids.map(id => [id, bbox(sil[id])])),
-             labelOverlaps: labelPairs, labelOverStop: labelVsStop, labelOverHoarding: labelVsHoarding, stopOverlaps: stopPairs, planOverlaps: planPairs, detail,
+             labelOverlaps: labelPairs, labelOverStop: labelVsStop, labelOverHoarding: labelVsHoarding, labelOverMark, markClear, stopOverlaps: stopPairs, planOverlaps: planPairs, detail,
              labelFont: chipStyle.fontSize + ' ' + chipStyle.fontWeight, calls: c.stats.calls, triangles: c.stats.triangles, fps: +c.meanFps().toFixed(1) };
 })()`;
 
@@ -158,7 +170,7 @@ for (const [w, h] of [[1600, 900], [1440, 900]]) {
     const file = path.join(outDir, `${prefix}-wide-${w}.png`);
     await page.screenshot({ path: file });
     report.wide[w] = await page.evaluate(AUDIT);
-    console.log(file, JSON.stringify({ labelOverlaps: report.wide[w].labelOverlaps, labelOverStop: report.wide[w].labelOverStop, labelOverHoarding: report.wide[w].labelOverHoarding, planOverlaps: report.wide[w].planOverlaps, stopOverlaps: report.wide[w].stopOverlaps, fps: report.wide[w].fps, calls: report.wide[w].calls }));
+    console.log(file, JSON.stringify({ labelOverlaps: report.wide[w].labelOverlaps, labelOverStop: report.wide[w].labelOverStop, labelOverHoarding: report.wide[w].labelOverHoarding, labelOverMark: report.wide[w].labelOverMark, markClear: report.wide[w].markClear, planOverlaps: report.wide[w].planOverlaps, stopOverlaps: report.wide[w].stopOverlaps, fps: report.wide[w].fps, calls: report.wide[w].calls }));
 }
 if (!noClose) {
     await load(1600, 900);

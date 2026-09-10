@@ -624,7 +624,7 @@ export function mount(canvas, L) {
         b.geometry(new THREE.BoxGeometry(r, len, r), tone || 'x', m);
     }
     function buildLandmarks() {
-        {   // 01 the broadcast tower: four legs to the deck, ring beams, X braces, a dish on the platform, a beacon on the needle
+        {   // 01 the broadcast tower: four legs to the deck, ring beams, X braces, a dish on the platform, a beacon on the needle at the mark's end (off the deck, so nothing stands in front of the letters)
             const cx = TU + 2.5, cz = TV + 2.5, lat = new Builder(true);
             const levels = [[2, 4.6], [14, 3.8], [26, 3.1], [38, 2.5], [48, 2.1]];
             for (let k = 0; k < levels.length - 1; k++) {
@@ -643,7 +643,8 @@ export function mount(canvas, L) {
             gutMesh('about', new THREE.SphereGeometry(2.4, 12, 8, 0, Math.PI * 2, 0, Math.PI / 2), M.white, [TU - 1.2, 28.6, TV - 0.4], [Math.PI, 0.7, 0], [1, 0.7, 1]);   // the dish on the platform
             gutMesh('about', new THREE.CylinderGeometry(0.18, 0.18, 2.4, 6), M.graphite, [TU - 1.2, 29, TV - 0.4], [0.5, 0, 0.6]);
             gutMesh('about', new THREE.SphereGeometry(1.4, 10, 7, 0, Math.PI * 2, 0, Math.PI / 2), M.white, [TU + 6.2, 28.2, TV + 6], [Math.PI, -0.8, 0], [1, 0.7, 1]);
-            gutBox('about', TU + 4.9, TV + 6.9, 1.4, 1.4, 1.4, 61.2, M.sigFlat.about);   // the beacon on the needle
+            gutBox('about', TU + 16.6, TV + 2.1, 1.6, 0.8, 0.6, 49.2, M.graphite);   // the outrigger arm off the mount's right end, carrying the needle clear of the last letter
+            gutBox('about', TU + 17.8, TV + 1.8, 1.4, 1.4, 1.4, 61.2, M.sigFlat.about);   // the beacon on the needle
             for (let i = 0; i < 3; i++) gutMesh('about', new THREE.TorusGeometry(1.4, 0.22, 6, 18), M.graphite, [TU + 8, 0.3 + i * 0.45, TV + 6], [Math.PI / 2, 0, 0]);   // the cable coil
         }
         {   // 04 the Exchange: a colonnade with its entablature, a parapet carrying the ticker, the stepped top, the tape and rollers inside
