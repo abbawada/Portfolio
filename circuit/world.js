@@ -765,7 +765,7 @@ export function mount(canvas, L) {
     const REP_AT = L.LOCATIONS.find(l => l.id === 'betta').arena.rep;
     const REP_SPOTS = [
         { at: [REP_AT[0], 0.7, REP_AT[1]], scale: 2.6, yaw: Math.PI / 4, stop: 'betta' },     // the statue on the lawn beside the court
-        { at: [TU - 0.5, 49.2, TV + 5.5], scale: 1.8, yaw: Math.PI / 4, stop: 'about' },  // on the tower's deck, beside the mark
+        { at: [TU + 5.7, 49.2, TV + 4.8], scale: 1.8, yaw: Math.PI / 4, stop: 'about' },  // on the deck's front-right corner, past the B of the mark
         { at: [WU + 80, 1.8, WV + 0.7], scale: 0.75, yaw: Math.PI / 4, stop: 'contact' }   // on the pit wall, past the board
     ];
     let repFigure = null;

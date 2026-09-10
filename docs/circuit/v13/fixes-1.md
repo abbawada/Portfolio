@@ -79,11 +79,42 @@ reads cleanly (f1-*-390.png). The phone pass is not in v1.2 or v1.3 and
 was flagged untuned in every report since Gate A; it needs its own chip
 mode, not another anchor move.
 
+## Follow-up, same day: Rep off the B
+Asked for after the report above. Rep's tower copy moves along the deck
+from its front-left corner (47, 123) to its front-right corner
+(53.2, 122.3), the far end of the ledge in front of the mark's mount.
+The A and the B now read clean: the ball clears the B's lower-right
+corner by 0.6 units, about 3 px at the default view and 11 px at the
+zoom-4 capture. Before and after in fixes-1/f1-about-rep-before-zoom4
+.png and f1-about-rep-zoom4.png; the default-view capture
+f1-about-1440.png is re-shot.
+
+What it cannot do, measured rather than judged: no position on that deck
+clears the whole word. The deck is 8 units square under a word 26 units
+wide, and the ledge in front of the mount is 2.55 units deep, so the
+mascot is always inside the letters' screen band. A search over the
+whole deck on a 0.1 grid, at scales from 1.8 down to 1.0, returns no
+position that clears every letter, and none at all that clears the B
+with the feet strictly inside the deck's edges: the chosen spot leaves
+the outermost leg 0.1 units past the corner, under a pixel at the
+default view. Rep now stands in front of the O and grazes the U, where
+before it covered the A, the B and the O.
+
+Two ways to clear the word completely, neither of them a move along the
+deck, both for your call:
+- Step Rep down to the dish platform at z 27, one level below the mark.
+  Every letter clears by roughly 100 px, but the lattice and the signage
+  stack swallow the figure: it reads as trapped in the tower rather than
+  standing on it. Rendered and rejected on that basis, not on the
+  clearance.
+- Slide the mark itself along its mount so the word's centre is not over
+  the deck. That is Session 2 geometry and is waiting on your Gate 2
+  review, so it was not touched.
+
 ## Flags
-- Rep on the tower deck stands in front of the lower-left of the ABOUT
-  letters (the B) at close range; visible in f1-about-1440.png. The
-  mascot is locked and was not moved; say if the statue should step
-  along the deck.
+- Rep now stands in front of the O of ABOUT; no deck position avoids
+  covering some letter (above). The mascot geometry and scale are as
+  designed; only the spot moved.
 - The Writing chip moved without being asked, because the measure that
   found the two listed overlaps found the same one there.
 - The camera's target for Education and Writing follows the anchor, so
