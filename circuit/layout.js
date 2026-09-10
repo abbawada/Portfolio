@@ -151,9 +151,12 @@
     var BLIMP = { at: [150, 22, 70], banner: 'BETTA' };
     var FLAG = { at: [100, 196] };
 
-    /* The grid (V1.2). One car per shelf project, in that project's
-       livery, lapping from the moment the world is built. The order is
-       curated here and nowhere else; nothing on the page reads a feed. */
+    /* The grid. One car per shelf project, lapping from the moment the
+       world is built. V1.3 Session 3: the race is simulated live, so this
+       list is the field, not the order; the order and the gaps come from
+       the cars' distance along the track. number is the car number on the
+       plate; stop is where its project lives and sets its accent colour.
+       Nothing on the page reads a feed. */
     var GRID = [
         { id: 'betta', project: 'betta', name: 'Betta', code: 'BET', number: '10', livery: 'gold', stop: 'betta' },
         { id: 'posture', project: 'posture-cue', name: 'Posture Cue', code: 'POS', number: '23', livery: 'white', stop: 'projects' },

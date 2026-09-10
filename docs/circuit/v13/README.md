@@ -14,7 +14,7 @@ as the centre of gravity.
 | --- | --- | --- |
 | 1 | demolition and canvas: the Board gone, no photographs in the world, the circuit spread to fill the plate | built 2026-09-08, approved |
 | 2 | landmark identity, the Silicon Valley pass: one giant dimensional mark per stop, distinct silhouettes, seven signature colours | built 2026-09-08, report in session-2.md, waiting on review |
-| 3 | the race: cars in the Valkyrie language, a live simulated race with live timing, a chase camera for Start lap | not started |
+| 3 | the race: cars in the Valkyrie language, a live simulated race with live timing, a chase camera for Start lap | built 2026-09-10, report in session-3.md, waiting on review |
 | fix round 1 | three visual fixes on Gate 2 (the Education and Projects tags off their titles, the tower's needle out of ABOUT) plus the audit of v1.3 and the v1.1 reference contract | built 2026-09-09, report in fixes-1.md, audit in audit-2026-09-09.md; follow-ups 2026-09-10: Rep along the deck, then the ABOUT sign slid left so the deck sits under the T (fixes-1.md); waiting on review |
 
 ## Tools added
@@ -27,6 +27,9 @@ as the centre of gravity.
   mark (markClear, px) and lists any chip touching its mark
   (labelOverMark). shots.mjs takes --size WxH and a bare name: for the
   rest view, for phone captures.
+- tools/circuit/racetest.mjs is the Session 3 race contract (touches, lines,
+  idling, the interval between changes of order) and tools/circuit/lap.mjs
+  records Start lap as video, frames and the Grid mid-race.
 - tools/circuit/trees.js seeds the trees from the layout (a jittered
   grid kept clear of the track, the pit lane and every footprint) and
   writes them into circuit/layout.js. Run it after any move.

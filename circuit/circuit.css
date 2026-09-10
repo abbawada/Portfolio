@@ -117,6 +117,41 @@ body.circuit a:focus-visible, body.circuit button:focus-visible { outline: 2px s
 .ring-lap:hover { background: var(--ink); color: var(--paper); }
 .ring-lap[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
 
+/* V1.3 Session 3: the obvious exit from the lap, bottom centre while the
+   camera is riding; the lap button and Escape leave too */
+.ring-lap-exit {
+    position: fixed;
+    left: 50%;
+    bottom: clamp(1rem, 4vh, 2rem);
+    z-index: 4;
+    transform: translateX(-50%);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    min-height: 44px;
+    padding: 0.625rem 1.25rem;
+    border: 1px solid var(--ink);
+    border-radius: 999px;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--font-chrome);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    box-shadow: 0 8px 22px rgba(20, 20, 20, 0.22);
+    cursor: pointer;
+}
+.ring-lap-exit kbd {
+    font: inherit;
+    font-size: 0.625rem;
+    padding: 0.1rem 0.4rem;
+    border: 1px solid rgba(247, 245, 240, 0.5);
+    border-radius: 4px;
+}
+.ring-lap-exit:hover { background: var(--paper); color: var(--ink); }
+.ring-lap-exit:hover kbd { border-color: rgba(20, 20, 20, 0.4); }
+
 /* ------------------------------------------------------------
    Pins: persistent labels (V1.2). One affordance grammar for
    every stop and nothing else: the chip with the title, the
@@ -290,14 +325,15 @@ body.ring-open .ring-broadcast { right: calc(var(--ring-panel-w) + 1.5rem); }
 }
 .ring-tower-row:hover { background: var(--paper); border-left-width: 5px; }
 .ring-tower-row + .ring-tower-row { margin-top: 2px; }
-.ring-tower-row[data-livery="gold"] { border-left-color: #c6a15b; }
-.ring-tower-row[data-livery="green"] { border-left-color: #3fa565; }
-.ring-tower-row[data-livery="red"] { border-left-color: #a31621; }
-.ring-tower-row[data-livery="white"] { border-left-color: #aeb6bc; }
+/* live timing (V1.3 Session 3): the stripe is the car's accent, the rows
+   slide when the order changes, a pair in a fight is marked */
+.ring-tower-row { border-left-color: var(--sig, var(--hairline)); transition: transform 360ms cubic-bezier(0.2, 0.7, 0.2, 1), background 160ms ease; }
+.ring-tower-row.is-fight .ring-tower-pos { color: var(--sig); }
 .ring-tower-pos { font-style: italic; font-weight: 700; }
 .ring-tower-code { font-weight: 700; }
 .ring-tower-name { font-family: var(--font-display); font-weight: 600; font-size: 0.5625rem; letter-spacing: 0.12em; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.ring-tower-num { font-style: italic; font-weight: 700; color: var(--accent-ink); font-variant-numeric: tabular-nums; }
+.ring-tower-num { font-style: italic; font-weight: 700; color: var(--accent-ink); font-variant-numeric: tabular-nums; min-width: 3.6em; text-align: right; }
+.ring-tower-lap { font-variant-numeric: tabular-nums; }
 .ring-map-stop {
     fill: var(--ink);
     stroke: transparent;
@@ -423,6 +459,7 @@ body.ring-open .ring-broadcast { right: calc(var(--ring-panel-w) + 1.5rem); }
 
 @media (prefers-reduced-motion: reduce) {
     .ring-panel { transition: none; }
+    .ring-tower-row { transition: none; }
 }
 
 /* ------------------------------------------------------------

@@ -909,28 +909,34 @@ export function mount(canvas, L) {
         return { x: a.p[0] + (b.p[0] - a.p[0]) * t, z: a.p[1] + (b.p[1] - a.p[1]) * t, tx: a.t[0] + (b.t[0] - a.t[0]) * t, tz: a.t[1] + (b.t[1] - a.t[1]) * t, k: a.k };
     }
     const startS = fr[L.nearest(fr, [L.START.u, L.START.v])].s;
-    /* V1.2, section 1: the grid. One car per shelf project in that
-       project's livery, lapping without pause from the moment the world is
-       built. Nothing here reads anything outside the page: the running
-       order starts as L.GRID, the racing line is a function of the track,
-       and a scripted pass swaps two neighbours every so often. */
+    /* V1.3 Session 3: the cars, in the Valkyrie language. Low and wide, a
+       glossy near-black body with sculpted haunches and a canopy, four dark
+       wheels, and one thin neon accent in the project's signature colour
+       from Session 2: Betta gold, Yield Vaults the Exchange's green,
+       Posture Cue and Bluetooth Car the garage's orange (both live in
+       Projects). 5.8 long, 2.6 wide, so a car reads at the default zoom.
+       Nothing here reads anything outside the page. */
     const cars = [];
-    const LIVERY = { gold: () => M.gold, green: () => M.green, red: () => M.red, white: () => M.white };   // Posture Cue runs white, the blimp's candy
-    function makeCar(livery, number) {
-        const g = new THREE.Group();
-        const shell = new Builder(true), dark = new Builder();
-        shell.box(-1.3, -0.55, 2.6, 1.1, 0.55, 0.3, 'x');
-        shell.box(1.3, -0.3, 0.8, 0.6, 0.35, 0.35, 'x');
-        shell.box(-1.9, -0.8, 0.5, 1.6, 0.15, 1.0, 'x');
-        shell.box(1.9, -0.9, 0.4, 1.8, 0.15, 0.25, 'x');
-        dark.box(-0.9, -0.35, 1.2, 0.7, 0.5, 0.85, 'ink');
-        for (const x of [1.15, -1.25]) for (const z of [-0.95, 0.55]) dark.box(x - 0.35, z, 0.7, 0.4, 0.7, 0, 'ink');
-        dark.box(-0.9, -0.14, 1.2, 0.08, 0.06, 1.35, 'accent');
-        dark.box(-0.9, 0.06, 1.2, 0.08, 0.06, 1.35, 'wood');
-        g.add(new THREE.Mesh(dark.build(), flat));
-        g.add(new THREE.Mesh(shell.build(), (LIVERY[livery] || LIVERY.gold)()));
+    const CAR = { length: 5.8, width: 2.6 };
+    const gloss = new THREE.MeshPhysicalMaterial({ color: '#15171b', roughness: 0.1, metalness: 0.45, clearcoat: 1, clearcoatRoughness: 0.04, envMapIntensity: 2.4, flatShading: true });
+    function makeCar(stop, number) {
+        const g = new THREE.Group(), body = new Builder(true), neon = new Builder(true);
+        body.box(-2.4, -1.05, 4.8, 2.1, 0.5, 0.35, 'x');                                            // the tub, low and wide
+        for (const z of [-1.3, 0.85]) { body.box(-2.2, z, 1.8, 0.45, 0.72, 0.3, 'x'); body.box(1.0, z, 1.3, 0.45, 0.58, 0.3, 'x'); }   // rear haunches, front fenders
+        body.box(-2.3, -0.38, 1.6, 0.76, 0.34, 0.85, 'x');                                           // the spine behind the canopy
+        body.box(2.4, -0.8, 0.9, 1.6, 0.3, 0.3, 'x'); body.box(2.85, -1.25, 0.5, 2.5, 0.1, 0.24, 'x');   // the nose and the splitter
+        body.box(-2.95, -1.25, 0.42, 2.5, 0.12, 0.98, 'x');                                          // the rear wing
+        body.geometry(new THREE.SphereGeometry(1, 10, 7, 0, Math.PI * 2, 0, Math.PI / 2), 'x',
+            new THREE.Matrix4().compose(new THREE.Vector3(-0.35, 0.84, 0), new THREE.Quaternion(), new THREE.Vector3(1.05, 0.55, 0.62)));   // the canopy
+        for (const x of [1.55, -1.65]) for (const z of [-1.28, 0.83]) body.box(x - 0.42, z, 0.84, 0.45, 0.82, 0, 'x');   // wheels, gloss black like the body
+        for (const z of [-0.7, 0.55]) body.box(-2.75, z, 0.2, 0.15, 0.4, 0.58, 'x');             // wing pylons
+        for (const z of [-1.16, 1.04]) neon.box(-2.3, z, 4.5, 0.12, 0.08, 0.86, 'x');             // the flank lines, one accent per car
+        neon.box(-3.0, -1.05, 0.1, 2.1, 0.12, 1.0, 'x');                                           // the wing's lit edge
+        neon.box(2.9, -0.65, 0.1, 1.3, 0.1, 0.5, 'x');                                             // the nose tip
+        g.add(new THREE.Mesh(body.build(), gloss));
+        g.add(new THREE.Mesh(neon.build(), M.sigFlat[stop] || M.sigFlat.betta));
         const shadow = new THREE.Mesh(new THREE.CircleGeometry(1, 10), shadowMat);
-        shadow.rotation.x = -Math.PI / 2; shadow.scale.set(2.2, 1.2, 1); shadow.position.set(0.5, 0.11, 0.3); g.add(shadow);
+        shadow.rotation.x = -Math.PI / 2; shadow.scale.set(3.1, 1.7, 1); shadow.position.set(0.3, 0.11, 0); g.add(shadow);
         g.userData.number = number;
         return g;
     }
@@ -940,50 +946,115 @@ export function mount(canvas, L) {
         g.position.set(p.x + nx * lane, 0, p.z + nz * lane); g.rotation.y = Math.atan2(-p.tz, p.tx);
         return p;
     }
-    /* gap: slot spacing along the track (cars are 3.8 long); line: the
-       racing line's swing either side of centre; pass: how far outside the
-       passing car goes; the track is 9 wide, so 1.1 + 2.2 + a car's half
-       width stays inside the white line. */
-    const RACE = { speed: 8.5, gap: 7.2, line: 1.1, pass: 2.2, passSecs: 5.5, restMin: 7, restMax: 13 };
-    const race = { s: startS - 6, t: 0, order: [], pass: null, nextPass: 5 };
+    /* V1.3 Session 3: a live race, simulated. Seeded fresh each visit
+       (?seed=N repeats a run), four pace personalities (base pace, corner
+       grip, a slow form curve), a tow behind the car ahead and a mild
+       rubber band that keep the field close enough to fight. A pass is a
+       real move round the outside: it starts on a straight with a real
+       pace edge, the car goes by with a commit, the passed car tucks in.
+       Order and gaps come from each car's distance along the track and
+       nowhere else; the Grid reads them. A race, presented as one, and
+       nothing more.
+       Geometry: line is the racing line's swing either side of the
+       centre, pass how far outside the passing car goes, inside how far
+       the passed car tucks in; 1.1 + 2.1 + half a car's width stays inside
+       the white line on a track 9 wide, and 2.1 + 0.7 keeps two cars 2.6
+       wide clear of each other side by side. follow is the closest a car
+       sits behind another in line. */
+    const seedParam = new URLSearchParams(location.search).get('seed');
+    const SEED = seedParam ? (parseInt(seedParam, 10) >>> 0) : (Math.random() * 4294967296) >>> 0;
+    const rng = (a => () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; })(SEED);
+    const RACE = { speed: 9.2, line: 1.0, pass: 2.1, inside: 0.9, follow: CAR.length + 0.9, ahead: CAR.length + 1.2, clear: CAR.width + 0.25, towReach: 16, tow: 0.06, band: 0.12, drag: 0.03, edge: 0.1, commit: 0.16, lift: 0.05, rest: 4, patience: 18 };
+    const race = { t: 0, lap: 0, seed: SEED, order: [], pass: null, passes: 0, aborts: 0, lastPass: -10, changes: 0 };
     const easeIO = x => x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
     const racingLine = s => RACE.line * Math.sin(s / lap * Math.PI * 6 + 0.4);
     function buildGrid() {
+        const gridStart = startS - 4, slots = L.GRID.map((c, i) => i);
+        for (let i = slots.length - 1; i > 0; i--) { const j = Math.floor(rng() * (i + 1)); [slots[i], slots[j]] = [slots[j], slots[i]]; }   // a fresh order each visit
         L.GRID.forEach((c, i) => {
-            const g = makeCar(c.livery, c.number); scene.add(g);
-            cars.push({ id: c.id, group: g, name: c.name, code: c.code, stop: c.stop, pose: null, lane: 0 });
-            race.order.push(i);
+            const g = makeCar(c.stop, c.number); scene.add(g);
+            cars.push({ id: c.id, group: g, name: c.name, code: c.code, stop: c.stop, number: c.number, pose: null, lane: 0, lateral: 0,
+                s: gridStart - slots.indexOf(i) * (RACE.follow + 1.5), v: RACE.speed * 0.8,
+                pace: 0.99 + rng() * 0.02, grip: 0.36 + rng() * 0.12, top: 1 + rng() * 0.015,
+                f1: 18 + rng() * 22, f2: 31 + rng() * 25, p1: rng() * 6.28, p2: rng() * 6.28 });
         });
+        race.order = cars.map((c, i) => i).sort((a, b) => cars[b].s - cars[a].s);
         placeCars(0);
     }
-    /* every frame: the pace advances (slower through the corners), each car
-       sits in its slot on the racing line, and a pass in progress carries
-       the car behind round the outside into the slot ahead */
+    /* every frame: pace, the tow and the band set what each car wants;
+       a car in line behind another holds station; a pass carries one
+       round the outside; positions and gaps fall out of the distances */
     function placeCars(dt) {
-        const lead = poseAt(race.s);
-        race.s += dt * RACE.speed * (1 - 0.45 * Math.min(1, Math.abs(lead.k) / 0.12));
         race.t += dt;
-        if (!race.pass && race.t >= race.nextPass && cars.length > 1) race.pass = { k: Math.floor(Math.random() * (cars.length - 1)), t0: race.t };
-        const u = race.pass ? Math.min(1, (race.t - race.pass.t0) / RACE.passSecs) : 0, e = easeIO(u), bump = Math.sin(Math.PI * u);
-        race.order.forEach((ci, k) => {
-            const c = cars[ci];
-            let s = race.s - k * RACE.gap, lateral = 0;
-            if (race.pass && k === race.pass.k + 1) { s += e * RACE.gap; lateral = RACE.pass * bump; }
-            else if (race.pass && k === race.pass.k) { s -= e * RACE.gap; lateral = -0.5 * bump; }
-            c.lane = racingLine(s) + lateral;
-            c.pose = placeAt(c.group, s, c.lane); c.s = s;
-        });
-        if (race.pass && u >= 1) {
-            const k = race.pass.k, o = race.order; [o[k], o[k + 1]] = [o[k + 1], o[k]];
-            race.pass = null; race.nextPass = race.t + RACE.restMin + Math.random() * (RACE.restMax - RACE.restMin);
+        const t = race.t, order = cars.map((c, i) => i).sort((a, b) => cars[b].s - cars[a].s);
+        if (race.order.length && order.some((ci, k) => ci !== race.order[k])) race.changes++;
+        race.order = order;
+        for (let k = 0; k < order.length; k++) {
+            const c = cars[order[k]], ahead = k > 0 ? cars[order[k - 1]] : null;
+            let blocker = null, bi = -1;   // the nearest car ahead on a line this one would run into; a car alongside on a clear line is not one
+            for (let j = k - 1; j >= 0; j--) { const o = cars[order[j]]; if (Math.abs(o.lateral - c.lateral) < RACE.clear) { blocker = o; bi = order[j]; break; } }
+            const pose = poseAt(c.s), corner = Math.min(1, Math.abs(pose.k) / 0.12);
+            const form = 1 + 0.022 * Math.sin(t / c.f1 + c.p1) + 0.012 * Math.sin(t / c.f2 + c.p2);
+            let want = RACE.speed * c.pace * c.top * form * (1 - c.grip * corner);
+            const passing = race.pass && race.pass.car === order[k], passed = race.pass && race.pass.over === order[k];
+            if (ahead) {
+                const gap = ahead.s - c.s;
+                if (gap < RACE.towReach) want *= 1 + RACE.tow * (1 - gap / RACE.towReach);          // the tow
+                want *= 1 + RACE.band * Math.min(1, Math.max(0, (gap - 7) / 20));                   // the band: nobody drifts away
+            }
+            let held = false;
+            if (blocker) {   // everyone holds station behind the car it would run into, passing or not
+                const gap = blocker.s - c.s;
+                if (gap < RACE.follow) {
+                    const edge = want - blocker.v;
+                    if (!passing && !race.pass && corner < 0.25 && edge > RACE.edge && gap >= CAR.length + 0.4 && t - race.lastPass > RACE.rest)
+                        race.pass = { car: order[k], over: bi, t0: t, side: race.passes % 2 ? -1 : 1 };
+                    else { want = Math.min(want, blocker.v * (gap < RACE.follow - 0.8 ? 0.96 : 1)); held = true; }
+                }
+            }
+            if (!ahead) {
+                const behind = order.length > 1 ? c.s - cars[order[1]].s : 0;
+                want *= 1 - RACE.drag * Math.min(1, Math.max(0, (behind - 8) / 20));                // the leader in clean air, reeled in
+            }
+            if (passing) {   // pull out at the other car's pace, commit once clear of it across the track and nothing blocks; an abort drops back first, still offset
+                const over = cars[race.pass.over], clear = Math.abs(c.lateral - over.lateral) >= RACE.clear, gap = over.s - c.s;
+                if (race.pass.abort) want = Math.min(want, over.v * 0.93);
+                else if (clear) { if (!held) want *= 1 + RACE.commit; }
+                else if (gap < CAR.length + 0.8) want = Math.min(want, over.v * 0.94);
+            }
+            if (passed && !race.pass.abort && Math.abs(c.lateral - cars[race.pass.car].lateral) >= RACE.clear) want *= 1 - RACE.lift;
+            c.v += (want - c.v) * Math.min(1, dt * (want < c.v ? 7 : 2.4));   // the brakes bite, the throttle builds
+            c.s += c.v * dt;
+            const side = race.pass ? race.pass.side : 0, aimLat = passing ? RACE.pass * side : passed ? -RACE.inside * side : 0;
+            c.lateral += (aimLat - c.lateral) * Math.min(1, dt * 2.6);
+            c.lane = racingLine(c.s) + c.lateral;
+            c.pose = placeAt(c.group, c.s, c.lane);
         }
+        if (race.pass) {
+            const a = cars[race.pass.car], b = cars[race.pass.over], d = a.s - b.s;
+            if (!race.pass.abort && d >= RACE.ahead) { race.pass = null; race.passes++; race.lastPass = t; }   // a length clear: back on the line
+            else if (!race.pass.abort && t - race.pass.t0 > RACE.patience) { race.pass.abort = true; race.aborts++; }   // no way through: drop back, then tuck in
+            else if (race.pass.abort && d <= -RACE.follow) { race.pass = null; race.lastPass = t; }
+        }
+        const leader = cars[order[0]];
+        race.lap = Math.max(1, Math.floor((leader.s - startS) / lap) + 1);
     }
+    const gridState = () => {
+        if (!cars.length || !race.order.length) return [];
+        const leader = cars[race.order[0]], lv = Math.max(1, leader.v);
+        return race.order.map((ci, k) => { const c = cars[ci]; return { id: c.id, rank: k + 1, code: c.code, name: c.name, stop: c.stop, number: c.number,
+            gap: +((leader.s - c.s) / lv).toFixed(2), s: +c.s.toFixed(2), v: +c.v.toFixed(2), lane: +c.lane.toFixed(2),
+            at: [c.group.position.x, c.group.position.z], tx: c.pose ? c.pose.tx : 1, tz: c.pose ? c.pose.tz : 0,
+            passing: !!(race.pass && race.pass.car === ci), passed: !!(race.pass && race.pass.over === ci) }; });
+    };
+    const raceState = () => !cars.length ? { seed: race.seed, t: 0, lap: 1, passes: 0, aborts: 0, changes: 0, pass: null, leader: null } : ({ seed: race.seed, t: +race.t.toFixed(2), lap: race.lap, passes: race.passes, aborts: race.aborts, changes: race.changes,
+        pass: race.pass ? { car: cars[race.pass.car].id, over: cars[race.pass.over].id, since: +(race.t - race.pass.t0).toFixed(1) } : null, leader: cars[race.order[0]].id });
     let fontsLoaded = false;
     function numberCars() {
         for (const c of cars) {
             if (c.group.userData.plated || !c.group.userData.number) continue;
             const plate = new THREE.Mesh(new THREE.PlaneGeometry(0.7, 0.5), new THREE.MeshBasicMaterial({ map: textTexture(c.group.userData.number, { w: 128, h: 96, font: 'italic 700 72px ' + CHAKRA, fill: C.ink, bg: C.paper }), side: THREE.DoubleSide, toneMapped: false }));
-            plate.position.set(1.7, 0.72, 0); plate.rotation.set(-Math.PI / 2, 0, -Math.PI / 2); c.group.add(plate);
+            plate.position.set(1.95, 0.63, 0); plate.rotation.set(-Math.PI / 2, 0, -Math.PI / 2); c.group.add(plate);
             c.group.userData.plated = true;
         }
     }
@@ -1175,8 +1246,7 @@ export function mount(canvas, L) {
 
     return { scene, camera, renderer, canvas, view, fit, render, start, stop, stats, frames: fr, poseAt, ambient: L.AMBIENT,
              groups, hooks, project, groundAt, pick, DIR, isRunning: () => running, reduced, ready: readyPromise,
-             cars, carAt: id => { const c = cars.find(k => k.id === id); return c && c.pose ? { x: c.group.position.x, z: c.group.position.z, tx: c.pose.tx, tz: c.pose.tz, s: c.s } : null; },
-             gridState: () => race.order.map((ci, k) => ({ id: cars[ci].id, rank: k + 1, lane: +cars[ci].lane.toFixed(2), s: +(cars[ci].s || 0).toFixed(2), at: [cars[ci].group.position.x, cars[ci].group.position.z] })),
-             passing: () => !!race.pass, stepRace: dt => placeCars(dt), dressed, marked, marks: () => markBoxes,
+             cars, carAt: id => { const c = cars.find(k => k.id === id); return c && c.pose ? { x: c.group.position.x, z: c.group.position.z, tx: c.pose.tx, tz: c.pose.tz, s: c.s, v: c.v } : null; },
+             gridState, raceState, passing: () => !!race.pass, stepRace: dt => placeCars(dt), dressed, marked, marks: () => markBoxes,
              meanFps: () => stats.window.length ? stats.window.reduce((a, b) => a + b, 0) / stats.window.length : stats.fps };
 }
