@@ -17,6 +17,10 @@ as the centre of gravity.
 | 3 | the race: cars in the Valkyrie language, a live simulated race with live timing, a chase camera for Start lap | built 2026-09-10, report in session-3.md, waiting on review |
 | fix round 1 | three visual fixes on Gate 2 (the Education and Projects tags off their titles, the tower's needle out of ABOUT) plus the audit of v1.3 and the v1.1 reference contract | built 2026-09-09, report in fixes-1.md, audit in audit-2026-09-09.md; follow-ups 2026-09-10: Rep along the deck, then the ABOUT sign slid left so the deck sits under the T (fixes-1.md); waiting on review |
 
+Round 4 (2026-09-10) is in docs/circuit/v14/round-4.md: the live order
+from the visitor's own tour (circuit/pulse.js), seven cars, the candy
+tech bench, the blimp over the leader, and the AWUS boards replaced.
+
 ## Tools added
 - circuit/vendor/chakra-petch-bold.typeface.json: the OFL face as glyph
   outlines for the extruded marks, made by a scratch converter over

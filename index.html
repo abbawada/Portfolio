@@ -14,11 +14,11 @@
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
-    <link rel="stylesheet" href="circuit/circuit.css?v=13.2">
+    <link rel="stylesheet" href="circuit/circuit.css?v=14.0">
     <!-- the site stylesheet dresses the panels; it need not block the first paint.
          Every script and stylesheet carries a build query so a deploy never pairs a new page with a cached module. -->
-    <link rel="stylesheet" href="styles.css?v=13.2" media="print" onload="this.media='all'">
-    <noscript><link rel="stylesheet" href="styles.css?v=13.2"></noscript>
+    <link rel="stylesheet" href="styles.css?v=14.0" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="styles.css?v=14.0"></noscript>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,600;0,700;1,600;1,700&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;family=Schibsted+Grotesk:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" media="print" onload="this.media='all'">
@@ -75,13 +75,14 @@
         </div>
     </noscript>
 
-    <script defer src="circuit/layout.js?v=13.2"></script>
-    <script defer src="betta-capture.js?v=13.2"></script>
-    <script defer src="cases.js?v=13.2"></script>
+    <script defer src="circuit/layout.js?v=14.0"></script>
+    <script defer src="circuit/pulse.js?v=14.0"></script>
+    <script defer src="betta-capture.js?v=14.0"></script>
+    <script defer src="cases.js?v=14.0"></script>
     <script type="module">
-        import { mount } from './circuit/world.js?v=13.2';
-        import { attach } from './circuit/nav.js?v=13.2';
-        import { createStops } from './circuit/stops.js?v=13.2';
+        import { mount } from './circuit/world.js?v=14.0';
+        import { attach } from './circuit/nav.js?v=14.0';
+        import { createStops } from './circuit/stops.js?v=14.0';
         const L = window.CircuitLayout;
         const q = new URLSearchParams(location.search);
         if (q.get('poster')) document.body.classList.add('is-poster');   // tools/circuit/poster.py: the world alone
@@ -101,7 +102,8 @@
             stage: document.getElementById('ringStage'),
             poster: document.getElementById('ringPoster')
         };
-        const stops = createStops(L, { panelBody: dom.panelBody, stage: dom.stage });
+        const bridge = {};   // stops is built before nav exists, so the shelf reports case opens through a holder
+        const stops = createStops(L, { panelBody: dom.panelBody, stage: dom.stage, onCase: (id, kind) => bridge.onCase && bridge.onCase(id, kind) });
         let world = null;
         if (!q.get('nowebgl')) {
             try { world = mount(document.getElementById('world'), L); } catch (err) { world = null; }
@@ -109,7 +111,8 @@
         if (world) {
             const nav = attach(world, L, Object.assign(dom, { onOpen: loc => stops.render(loc), onClose: () => stops.clear() }));
             window.__circuit = Object.assign(world, { nav, stops });
-            nav.setGrid(L.GRID);   // the four cars; the order and the gaps are the simulated race's, nothing on this page is fetched
+            bridge.onCase = nav.attendCase;
+            nav.setGrid(L.GRID);   // the field; the order and the gaps are the race's own, and the visitor's tour is its one live input. Nothing on this page is fetched.
             // tools/circuit/shot.py: ?zoom=2.5&at=100,170 frames a detail
             if (q.get('zoom')) {
                 const at = (q.get('at') || '').split(',').map(Number);
@@ -119,8 +122,8 @@
             // no WebGL: the poster with clickable regions replaces the canvas
             document.body.classList.add('ring-no-webgl');
             const s = document.createElement('script');
-            s.src = 'circuit/poster-areas.js?v=13.2';
-            s.onload = () => import('./circuit/poster.js?v=13.2').then(m => { window.__circuit = { poster: m.mountPoster(L, dom, stops), stops }; });
+            s.src = 'circuit/poster-areas.js?v=14.0';
+            s.onload = () => import('./circuit/poster.js?v=14.0').then(m => { window.__circuit = { poster: m.mountPoster(L, dom, stops), stops }; });
             document.head.appendChild(s);
         }
     </script>

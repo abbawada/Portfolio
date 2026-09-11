@@ -104,15 +104,16 @@
        face 'v' looks toward +v, face 'u' toward +u; both face the camera. */
     var HOARDINGS = [
         { at: [42, 12], face: 'v', panels: [{ text: 'C++  ·  PYTHON  ·  SQL', w: 22, h: 7, z0: 4 }] },
-        { at: [140, 12], face: 'v', panels: [{ text: 'AWUS  ·  RATED W', w: 20, h: 7, z0: 4 }] },
+        { at: [140, 12], face: 'v', panels: [{ text: 'ARSENAL  ·  FORMULA ONE', w: 20, h: 7, z0: 4 }] },
         { at: [203, 126], face: 'u', panels: [{ text: 'IMU  ·  HAPTICS  ·  FIRMWARE', w: 18, h: 6.5, z0: 3 }] }
     ];
 
     /* The lap guide drives past the stops in this order. */
     var LAP = ['about', 'betta', 'education', 'economics', 'writing', 'projects', 'contact'];
 
-    /* What moves on its own: the four cars, the start flag, the sleeve
-       shimmer, one board flicker, the drifting blimp. Eight, the ceiling. */
+    /* What moves on its own: the seven cars (one system, not seven), the
+       start flag, the sleeve shimmer, one board flicker, and the blimp,
+       which now shadows the race leader instead of drifting in a corner. */
     var AMBIENT = ['grid-cars', 'start-flag', 'sleeve-shimmer', 'board-flicker', 'blimp'];
 
     /* Scenery, blocked in. */
@@ -128,9 +129,9 @@
     /* low barrier walls with his marks in type: the pit straight, the hairpin, the back straight */
     var BARRIERS = [
         { box: [52, 197, 44, 0.6, 2.2, 0], face: 'v', text: 'WADA RING   ·   BETTA   ·   WADA RING' },
-        { box: [104, 197, 46, 0.6, 2.2, 0], face: 'v', text: 'FEEL EVERY REP   ·   AWUS   ·   TOP 4 OF 221' },
+        { box: [104, 197, 46, 0.6, 2.2, 0], face: 'v', text: 'FEEL EVERY REP   ·   USC   ·   TOP 4 OF 221' },
         { box: [3, 48, 0.6, 28, 2.2, 0], face: 'u', text: 'BETTA   ·   BETTA' },
-        { box: [50, 22, 30, 0.6, 2.2, 0], face: 'v', text: 'AWUS   ·   WADA RING' }
+        { box: [50, 22, 30, 0.6, 2.2, 0], face: 'v', text: 'LOS ANGELES   ·   WADA RING' }
     ];
     var CAMPUS_CURBS = [[196, 150], [192, 88]];   // cardinal and gold curbs from the T1 exit to the sweep
     var RUNOFF = { at: [182, 168] };                // BETTA painted inside T1, along the track
@@ -142,26 +143,33 @@
         [118, 50, 4], [141, 55, 5], [186, 53, 5], [62, 62, 5], [71, 62, 5], [85, 63, 5], [93, 60, 6], [109, 66, 6],
         [118, 60, 5], [139, 62, 6], [195, 61, 5], [49, 73, 5], [71, 76, 6], [87, 74, 4], [171, 74, 5], [29, 82, 5],
         [43, 85, 6], [53, 84, 5], [75, 85, 6], [82, 85, 4], [148, 85, 5], [159, 85, 5], [170, 87, 5], [44, 95, 6],
-        [50, 98, 5], [175, 99, 4], [181, 94, 6], [6, 107, 4], [53, 110, 6], [97, 109, 6], [150, 110, 4], [161, 106, 6],
-        [175, 105, 5], [184, 109, 5], [10, 120, 5], [16, 120, 4], [119, 117, 4], [130, 120, 5], [11, 128, 5], [44, 131, 6],
-        [64, 132, 5], [104, 131, 6], [118, 129, 4], [44, 139, 5], [66, 137, 4], [73, 137, 5], [94, 140, 6], [109, 142, 4],
-        [120, 138, 5], [132, 141, 4], [142, 137, 5], [150, 143, 5], [43, 150, 5], [49, 153, 5], [148, 148, 4], [181, 150, 5],
-        [30, 163, 4], [7, 186, 4], [186, 197, 5]
+        [50, 98, 5], [175, 99, 4], [181, 94, 6], [6, 107, 4], [53, 110, 6], [150, 105, 6], [165, 104, 5], [175, 110, 4],
+        [183, 108, 6], [10, 120, 5], [62, 116, 5], [137, 119, 5], [148, 119, 6], [5, 126, 5], [40, 130, 6], [55, 131, 6],
+        [65, 130, 4], [71, 130, 6], [83, 126, 5], [115, 131, 6], [129, 129, 4], [27, 138, 5], [55, 139, 5], [77, 137, 4],
+        [84, 137, 5], [105, 140, 6], [120, 142, 4], [131, 138, 5], [143, 141, 4], [153, 137, 5], [27, 153, 6], [54, 150, 5],
+        [60, 153, 5], [183, 154, 4], [41, 160, 5], [39, 172, 6], [55, 170, 5], [152, 170, 5], [7, 186, 4], [186, 197, 5]
     ];
-    var BLIMP = { at: [150, 22, 70], banner: 'BETTA' };
+    var BLIMP = { at: [150, 22, 70], banner: 'BETTA', height: 62, lead: 16, ease: 0.55 };   // it flies over the race leader: height above the plate, how far ahead of the leader's nose it sits, how fast it closes
     var FLAG = { at: [100, 196] };
 
     /* The grid. One car per shelf project, lapping from the moment the
-       world is built. V1.3 Session 3: the race is simulated live, so this
-       list is the field, not the order; the order and the gaps come from
-       the cars' distance along the track. number is the car number on the
-       plate; stop is where its project lives and sets its accent colour.
-       Nothing on the page reads a feed. */
+       world is built. The race is simulated live: this list is the field,
+       not the order. The order and the gaps come from the cars' distance
+       along the track, and the visitor's own tour of the page feeds the
+       car of whatever they open (see circuit/pulse.js). Nothing on the
+       page reads a feed.
+       number is the plate; stop is where the project lives, and opening
+       that stop feeds this car; accent is the car's own colour, a candy
+       flavour set so seven cars stay apart from each other on the road.
+       project matches an id in cases.js, so opening a case feeds its car. */
     var GRID = [
-        { id: 'betta', project: 'betta', name: 'Betta', code: 'BET', number: '10', livery: 'gold', stop: 'betta' },
-        { id: 'posture', project: 'posture-cue', name: 'Posture Cue', code: 'POS', number: '23', livery: 'white', stop: 'projects' },
-        { id: 'vaults', project: 'yield-vaults', name: 'Yield Vaults', code: 'YLD', number: '4', livery: 'green', stop: 'economics' },
-        { id: 'bluetooth', project: 'bluetooth-car', name: 'Bluetooth Car', code: 'BLU', number: '12', livery: 'red', stop: 'projects' }
+        { id: 'betta', project: 'betta', name: 'Betta', code: 'BET', number: '10', accent: '#f2b632', stop: 'betta' },
+        { id: 'posture', project: 'posture-cue', name: 'Posture Cue', code: 'POS', number: '23', accent: '#ff8a00', stop: 'projects' },
+        { id: 'vaults', project: 'yield-vaults', name: 'Yield Vaults', code: 'YLD', number: '4', accent: '#a8e02a', stop: 'economics' },
+        { id: 'bluetooth', project: 'bluetooth-car', name: 'Bluetooth Car', code: 'BLU', number: '12', accent: '#ff3d6e', stop: 'projects' },
+        { id: 'mapping', project: 'visual-mapping', name: 'Visual Mapping', code: 'MAP', number: '7', accent: '#00b8d4', stop: 'projects' },
+        { id: 'validators', project: 'ethereum-validators', name: 'Validators', code: 'ETH', number: '32', accent: '#8a63ff', stop: 'economics' },
+        { id: 'temp', project: 'home-temp-monitor', name: 'Temp Monitor', code: 'TMP', number: '21', accent: '#00d6a1', stop: 'projects' }
     ];
 
     var PALETTE = {

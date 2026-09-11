@@ -18,6 +18,7 @@ const TD = L.LOCATIONS.find(l => l.id === 'about').boxes[3], TU = TD[0] + TD[2] 
 const G = L.LOCATIONS.find(l => l.id === 'projects').boxes[0]; rects.push([G[0] - 13, G[1] - 3, G[0] + 7, G[1] + 17]); rects.push([G[0] + 57, G[1] - 1, G[0] + 76, G[1] + 13]);
 for (const b of L.GRANDSTAND) rects.push(pad(b, 3));
 rects.push(pad(L.PADDOCK.slab, 2)); rects.push(pad(L.CARPARK.slab, 2));
+rects.push([90, 107, 134, 119]);   // the candy tech bench on the lawn between the court and the garage
 for (const w of L.HOARDINGS) { const len = w.panels.reduce((a, p) => a + p.w + (w.gap || 0), 0); rects.push(w.face === 'u' ? [w.at[0] - 2, w.at[1] - 2, w.at[0] + 3, w.at[1] + len + 2] : [w.at[0] - 2, w.at[1] - 2, w.at[0] + len + 2, w.at[1] + 3]); }
 for (const b of L.BARRIERS) rects.push(pad(b.box, 2));
 for (const g of L.GRAVEL) { const us = g.map(p => p[0]), vs = g.map(p => p[1]); rects.push([Math.min(...us) - 1, Math.min(...vs) - 1, Math.max(...us) + 1, Math.max(...vs) + 1]); }

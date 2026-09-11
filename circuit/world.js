@@ -130,6 +130,18 @@ export function mount(canvas, L) {
     for (const [k, v] of Object.entries({ cyan: '#3ad7e6', magenta: '#ff4f9d', gold: '#f0b64a', lime: '#a4ec5c', green: '#42d67a' })) {
         M.neon[k] = new THREE.MeshBasicMaterial({ color: v, toneMapped: false });
     }
+    /* V1.4: the candy tech family. A transmissive shell whose colour comes
+       per vertex, so any number of flavours cost one draw call. Everything
+       meant to be SEEN through these shells must be opaque: a transmissive
+       material does not render another transmissive material behind it,
+       which is why the guts below are built with the unlit flat material
+       and not with candy(). */
+    const candyVC = new THREE.MeshPhysicalMaterial({
+        vertexColors: true, transmission: 0.92, thickness: 3.2, roughness: 0.14, ior: 1.45,
+        attenuationColor: '#ffffff', attenuationDistance: 40, flatShading: true,
+        envMapIntensity: 1.3, specularIntensity: 1, side: THREE.FrontSide
+    });
+
     /* V1.3 Session 2: the buildings are muted candy; each stop's one
        saturated signature colour lives on its mark and its accents only */
     const DISTRICT = { about: M.grey, betta: null, education: M.white, economics: M.white, writing: M.white, projects: M.grey, contact: M.grey };
@@ -292,6 +304,7 @@ export function mount(canvas, L) {
             for (const p of posts) gb.box(p[0], p[1], 0.5, 0.5, b[5], 0, 'roof');
         }
         L.CARPARK.cars.forEach((c) => gb.box(c[0], c[1], c[2], c[3], 0.8, 0, 'wall'));
+        buildCandyTech();
         st.box(L.FLAG.at[0] - 0.2, L.FLAG.at[1] - 0.2, 0.4, 0.4, 7.2, 0, 'ink');   // the flag pole
         buildLandmarks();
         {   // court markings, hoops, the ball frozen mid-arc
@@ -623,6 +636,46 @@ export function mount(canvas, L) {
         const m = new THREE.Matrix4().compose(A.clone().lerp(Cc, 0.5), q, new THREE.Vector3(1, 1, 1));
         b.geometry(new THREE.BoxGeometry(r, len, r), tone || 'x', m);
     }
+    /* The bench behind the garage: five translucent machines in the candy
+       flavours, guts showing through the shell, a white bezel on the face
+       the camera sees. This is the material the rest of the world only ever
+       hints at, built as objects instead of colour on a wall. Two draw
+       calls: every shell is one vertex-coloured transmissive mesh, every
+       gut and bezel is one unlit mesh behind it. */
+    const TECH = [
+        { u: 93, flavour: '#ff8a00' },    // tangerine
+        { u: 101, flavour: '#a8e02a' },   // lime
+        { u: 109, flavour: '#00b8d4' },   // bondi
+        { u: 117, flavour: '#8a63ff' },   // grape
+        { u: 125, flavour: '#ff3d6e' }    // strawberry
+    ];
+    const TECH_V = 111, TECH_K = 1.55;   // the open lawn between the court and the garage, where nothing stands in front of them
+    function buildCandyTech() {
+        const shells = new Builder(), guts = new Builder(), K = TECH_K;
+        const box = (b, u, v, w, d, h, z, tone) => b.box(u, v, w * K, d * K, h * K, z * K, tone);
+        for (const t of TECH) {
+            const u = t.u, v = TECH_V, f = t.flavour;
+            /* the guts first, so the shell goes over them. Everything here is
+               unlit and opaque on purpose: a transmissive shell will not show
+               another transmissive object behind it. */
+            box(guts, u + 0.3, v + 0.1, 3.4, 2.8, 0.22, 0, 'ink');                    // the foot
+            box(guts, u + 0.45, v + 0.3, 3.1, 2.4, 0.5, 0.2, 'roof');                 // the chassis
+            box(guts, u + 0.62, v + 0.5, 2.9, 0.3, 2.3, 1.1, 'ink');                  // the board on edge, big enough to read through the shell
+            for (let i = 0; i < 3; i++) box(guts, u + 0.95 + i * 0.8 * K, v + 0.4, 0.34, 0.34, 1.5, 1.3, 'roof');   // the ribs
+            /* the face sits proud of the shell, so the machine reads as a
+               machine and not as a coloured block */
+            box(guts, u + 0.62, v + 3.78, 2.85, 0.22, 2.25, 1.0, 'paper');            // the bezel
+            box(guts, u + 0.92, v + 3.9, 2.25, 0.12, 1.62, 1.28, 'ink');              // the screen
+            box(guts, u + 1.5, v + 3.9, 0.5, 0.12, 0.16, 0.62, 'roof');               // the slot under it
+            /* the shell over all of it, tapered by stacking */
+            box(shells, u + 0.2, v + 0.2, 3.6, 2.6, 1.0, 0.15, f);
+            box(shells, u + 0.45, v + 0.35, 3.1, 2.3, 2.6, 1.0, f);
+            box(shells, u + 0.75, v + 0.5, 2.5, 1.9, 0.5, 3.6, f);                    // the handle shoulder
+        }
+        scene.add(new THREE.Mesh(guts.build(), flat));
+        scene.add(new THREE.Mesh(shells.build(), candyVC));
+    }
+
     function buildLandmarks() {
         {   // 01 the broadcast tower: four legs to the deck, ring beams, X braces, a dish on the platform, a beacon on the needle at the mark's far end (off the deck, so nothing stands in front of the letters)
             const cx = TU + 2.5, cz = TV + 2.5, lat = new Builder(true), MU = L.LOCATIONS.find(l => l.id === 'about').mark.at[0];
@@ -843,7 +896,7 @@ export function mount(canvas, L) {
         }
         if (!running) render();
     }
-    const fontJson = fetch('circuit/vendor/chakra-petch-bold.typeface.json?v=13.1').then(r => r.json());
+    const fontJson = fetch('circuit/vendor/chakra-petch-bold.typeface.json?v=14.0').then(r => r.json());
 
     /* ------------------------------------------------ the type hoardings (V1.2, V1.3) */
     /* Three lines of type on trackside boards. Frames and posts go up with
@@ -919,7 +972,16 @@ export function mount(canvas, L) {
     const cars = [];
     const CAR = { length: 5.8, width: 2.6 };
     const gloss = new THREE.MeshPhysicalMaterial({ color: '#15171b', roughness: 0.1, metalness: 0.45, clearcoat: 1, clearcoatRoughness: 0.04, envMapIntensity: 2.4, flatShading: true });
-    function makeCar(stop, number) {
+    /* one unlit material per accent colour: seven cars, seven flavours, so
+       the field stays apart on the road without touching the stops' own
+       colours on the buildings */
+    const accentMats = new Map();
+    const accentMat = hex => {
+        let m = accentMats.get(hex);
+        if (!m) { m = new THREE.MeshBasicMaterial({ color: hex, toneMapped: false }); accentMats.set(hex, m); }
+        return m;
+    };
+    function makeCar(accent, number) {
         const g = new THREE.Group(), body = new Builder(true), neon = new Builder(true);
         body.box(-2.4, -1.05, 4.8, 2.1, 0.5, 0.35, 'x');                                            // the tub, low and wide
         for (const z of [-1.3, 0.85]) { body.box(-2.2, z, 1.8, 0.45, 0.72, 0.3, 'x'); body.box(1.0, z, 1.3, 0.45, 0.58, 0.3, 'x'); }   // rear haunches, front fenders
@@ -934,7 +996,7 @@ export function mount(canvas, L) {
         neon.box(-3.0, -1.05, 0.1, 2.1, 0.12, 1.0, 'x');                                           // the wing's lit edge
         neon.box(2.9, -0.65, 0.1, 1.3, 0.1, 0.5, 'x');                                             // the nose tip
         g.add(new THREE.Mesh(body.build(), gloss));
-        g.add(new THREE.Mesh(neon.build(), M.sigFlat[stop] || M.sigFlat.betta));
+        g.add(new THREE.Mesh(neon.build(), accentMat(accent)));
         const shadow = new THREE.Mesh(new THREE.CircleGeometry(1, 10), shadowMat);
         shadow.rotation.x = -Math.PI / 2; shadow.scale.set(3.1, 1.7, 1); shadow.position.set(0.3, 0.11, 0); g.add(shadow);
         g.userData.number = number;
@@ -964,6 +1026,29 @@ export function mount(canvas, L) {
     const seedParam = new URLSearchParams(location.search).get('seed');
     const SEED = seedParam ? (parseInt(seedParam, 10) >>> 0) : (Math.random() * 4294967296) >>> 0;
     const rng = (a => () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; })(SEED);
+    /* V1.4: the one live input. The visitor's own tour of the page feeds
+       the car of whatever they open, so the order answers the person
+       watching it instead of a fixed list. Attention decays, so the order
+       is about the last couple of minutes and never freezes; it is read as
+       a share of the field, so no car runs away; and it buys a small,
+       capped pace edge, so what runs underneath is still a race. Nothing
+       is fetched and nothing leaves this browser. */
+    const carsByStop = {}, carByProject = {};
+    L.GRID.forEach(c => { (carsByStop[c.stop] = carsByStop[c.stop] || []).push(c.id); carByProject[c.project] = c.id; });
+    const pulse = (typeof CircuitPulse !== 'undefined') ? CircuitPulse.create(L.GRID.map(c => c.id)) : null;
+    const ATTEND_SMOOTH = 1.6;   // seconds for a car to take up its new pace, so a click nudges rather than teleports
+    const attend = (carId, kind) => { if (pulse && carId) pulse.bump(carId, kind); };
+    /* one open is worth the same wherever it lands, so a stop with four
+       projects does not outweigh a stop with one */
+    const attendStop = (stopId, kind) => {
+        const ids = carsByStop[stopId]; if (!pulse || !ids || !ids.length) return;
+        const each = (pulse.WORTH[kind || 'open'] || 0) / ids.length;
+        ids.forEach(id => pulse.bump(id, kind || 'open', each));
+    };
+    const attendDwell = (stopId, dt) => { if (pulse && carsByStop[stopId]) pulse.dwell(carsByStop[stopId], dt); };
+    const attendCase = (projectId, kind) => { const id = carByProject[projectId]; if (pulse && id) pulse.bump(id, kind || 'case'); return !!id; };
+    const attendCaseDwell = (projectId, dt) => { const id = carByProject[projectId]; if (pulse && id) pulse.dwell([id], dt); };
+
     const RACE = { speed: 9.2, line: 1.0, pass: 2.1, inside: 0.9, follow: CAR.length + 0.9, ahead: CAR.length + 1.2, clear: CAR.width + 0.25, towReach: 16, tow: 0.06, band: 0.12, drag: 0.03, edge: 0.1, commit: 0.16, lift: 0.05, rest: 4, patience: 18 };
     const race = { t: 0, lap: 0, seed: SEED, order: [], pass: null, passes: 0, aborts: 0, lastPass: -10, changes: 0 };
     const easeIO = x => x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
@@ -972,10 +1057,10 @@ export function mount(canvas, L) {
         const gridStart = startS - 4, slots = L.GRID.map((c, i) => i);
         for (let i = slots.length - 1; i > 0; i--) { const j = Math.floor(rng() * (i + 1)); [slots[i], slots[j]] = [slots[j], slots[i]]; }   // a fresh order each visit
         L.GRID.forEach((c, i) => {
-            const g = makeCar(c.stop, c.number); scene.add(g);
-            cars.push({ id: c.id, group: g, name: c.name, code: c.code, stop: c.stop, number: c.number, pose: null, lane: 0, lateral: 0,
+            const g = makeCar(c.accent, c.number); scene.add(g);
+            cars.push({ id: c.id, group: g, name: c.name, code: c.code, stop: c.stop, number: c.number, accent: c.accent, pose: null, lane: 0, lateral: 0,
                 s: gridStart - slots.indexOf(i) * (RACE.follow + 1.5), v: RACE.speed * 0.8,
-                pace: 0.99 + rng() * 0.02, grip: 0.36 + rng() * 0.12, top: 1 + rng() * 0.015,
+                attendNow: 1, pace: 0.99 + rng() * 0.02, grip: 0.36 + rng() * 0.12, top: 1 + rng() * 0.015,
                 f1: 18 + rng() * 22, f2: 31 + rng() * 25, p1: rng() * 6.28, p2: rng() * 6.28 });
         });
         race.order = cars.map((c, i) => i).sort((a, b) => cars[b].s - cars[a].s);
@@ -986,6 +1071,7 @@ export function mount(canvas, L) {
        round the outside; positions and gaps fall out of the distances */
     function placeCars(dt) {
         race.t += dt;
+        if (pulse) pulse.tick();
         const t = race.t, order = cars.map((c, i) => i).sort((a, b) => cars[b].s - cars[a].s);
         if (race.order.length && order.some((ci, k) => ci !== race.order[k])) race.changes++;
         race.order = order;
@@ -995,7 +1081,9 @@ export function mount(canvas, L) {
             for (let j = k - 1; j >= 0; j--) { const o = cars[order[j]]; if (Math.abs(o.lateral - c.lateral) < RACE.clear) { blocker = o; bi = order[j]; break; } }
             const pose = poseAt(c.s), corner = Math.min(1, Math.abs(pose.k) / 0.12);
             const form = 1 + 0.022 * Math.sin(t / c.f1 + c.p1) + 0.012 * Math.sin(t / c.f2 + c.p2);
-            let want = RACE.speed * c.pace * c.top * form * (1 - c.grip * corner);
+            const aimAttend = pulse ? pulse.pace(c.id) : 1;   // what the visitor's tour is worth to this car right now
+            c.attendNow += (aimAttend - c.attendNow) * Math.min(1, dt / ATTEND_SMOOTH);
+            let want = RACE.speed * c.pace * c.top * form * c.attendNow * (1 - c.grip * corner);
             const passing = race.pass && race.pass.car === order[k], passed = race.pass && race.pass.over === order[k];
             if (ahead) {
                 const gap = ahead.s - c.s;
@@ -1042,7 +1130,8 @@ export function mount(canvas, L) {
     const gridState = () => {
         if (!cars.length || !race.order.length) return [];
         const leader = cars[race.order[0]], lv = Math.max(1, leader.v);
-        return race.order.map((ci, k) => { const c = cars[ci]; return { id: c.id, rank: k + 1, code: c.code, name: c.name, stop: c.stop, number: c.number,
+        return race.order.map((ci, k) => { const c = cars[ci]; return { id: c.id, rank: k + 1, code: c.code, name: c.name, stop: c.stop, number: c.number, accent: c.accent,
+            share: pulse ? +pulse.share(c.id).toFixed(3) : 0, attend: +(c.attendNow - 1).toFixed(4), flashedAt: pulse ? pulse.flashedAt(c.id) : 0,
             gap: +((leader.s - c.s) / lv).toFixed(2), s: +c.s.toFixed(2), v: +c.v.toFixed(2), lane: +c.lane.toFixed(2),
             at: [c.group.position.x, c.group.position.z], tx: c.pose ? c.pose.tx : 1, tz: c.pose ? c.pose.tz : 0,
             passing: !!(race.pass && race.pass.car === ci), passed: !!(race.pass && race.pass.over === ci) }; });
@@ -1058,11 +1147,35 @@ export function mount(canvas, L) {
             c.group.userData.plated = true;
         }
     }
-    const BY = L.BLIMP.at[2];
-    function placeBlimp(t) {   // a slow drift over its corner, one round every four minutes
-        const a = t * Math.PI * 2 / 240, x = L.BLIMP.at[0] + Math.cos(a) * 18, z = L.BLIMP.at[1] + Math.sin(a) * 9;
-        blimp.position.set(x, BY, z); blimp.rotation.y = Math.atan2(-Math.cos(a) * 9, -Math.sin(a) * 18);
-        if (blimpShadow) blimpShadow.position.set(x + SHADOW[0] * BY * 0.9, 0.05, z + SHADOW[1] * BY * 0.9);
+    const BY = L.BLIMP.height != null ? L.BLIMP.height : L.BLIMP.at[2];
+    const air = { x: L.BLIMP.at[0], z: L.BLIMP.at[1], yaw: 0, set: false };
+    /* The blimp is the camera ship. It rides over whoever is leading, a
+       little ahead of their nose, so the front of the race is findable in
+       the wide shot without reading the Grid. It is slow and high on
+       purpose: it lags the leader, so a pass shows as the airship drifting
+       across to the other car. No label, no hit box, not a stop. */
+    function placeBlimp(t, dt) {
+        const lead = (cars.length && race.order.length) ? cars[race.order[0]] : null;
+        let tx, tz;
+        if (lead && lead.pose) { tx = lead.group.position.x + lead.pose.tx * L.BLIMP.lead; tz = lead.group.position.z + lead.pose.tz * L.BLIMP.lead; }
+        else { const a = t * Math.PI * 2 / 240; tx = L.BLIMP.at[0] + Math.cos(a) * 18; tz = L.BLIMP.at[1] + Math.sin(a) * 9; }
+        if (!air.set) { air.x = tx; air.z = tz; air.set = true; }
+        const k = Math.min(1, Math.max(0, dt || 0.016) * (L.BLIMP.ease || 0.55));
+        const px = air.x, pz = air.z;
+        air.x += (tx - air.x) * k; air.z += (tz - air.z) * k;
+        const dx = air.x - px, dz = air.z - pz;
+        if (dx * dx + dz * dz > 1e-6) {
+            const want = Math.atan2(-dz, dx);                       // local +x is the nose
+            let d = want - air.yaw;
+            while (d > Math.PI) d -= Math.PI * 2;
+            while (d < -Math.PI) d += Math.PI * 2;
+            air.yaw += d * Math.min(1, Math.max(0, dt || 0.016) * 1.1);   // it turns like an airship, not a drone
+        }
+        blimp.position.set(air.x, BY, air.z); blimp.rotation.y = air.yaw;
+        if (blimpShadow) {
+            blimpShadow.position.set(air.x + SHADOW[0] * BY * 0.9, 0.05, air.z + SHADOW[1] * BY * 0.9);
+            blimpShadow.rotation.set(-Math.PI / 2, air.yaw, 0);      // the shadow turns with the hull
+        }
     }
     function waveFlag(t) {
         const p = flagGeom.attributes.position.array;
@@ -1090,16 +1203,23 @@ export function mount(canvas, L) {
             b.geometry(new THREE.SphereGeometry(1, 12, 8), 'x', new THREE.Matrix4().makeScale(16, 5.5, 5.5));
             b.box(-15.5, -0.3, 4, 0.6, 4.5, 0.5, 'x'); b.box(-15.5, -0.3, 4, 0.6, 4.5, -5, 'x');
             b.box(-15.5, -4.8, 4, 4.4, 0.5, -0.3, 'x'); b.box(-15.5, 0.4, 4, 4.4, 0.5, -0.3, 'x');
-            const frame = new THREE.TorusGeometry(4.6, 0.18, 6, 16);   // the gas-cell frame, faint inside the shell
-            for (const x of [-9, -4, 1, 6, 11]) { const r = new THREE.Mesh(frame, M.graphite); r.rotation.y = Math.PI / 2; r.position.x = x; r.scale.setScalar(1 - Math.abs(x) / 24); blimp.add(r); }
-            const gondola = new Builder(true); gondola.box(-2, -1, 4, 2, 1.2, -6.4, 'x');
-            blimp.add(new THREE.Mesh(gondola.build(), M.graphite));
+            /* the gas-cell frame and the gondola are one merged mesh: the
+               rings read through the candy envelope, and six draw calls
+               become one */
+            const frame = new THREE.TorusGeometry(4.6, 0.18, 6, 16), dark = new Builder(true), q = new THREE.Quaternion();
+            q.setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI / 2);
+            for (const x of [-9, -4, 1, 6, 11]) {
+                const sc = 1 - Math.abs(x) / 24;
+                dark.geometry(frame, 'x', new THREE.Matrix4().compose(new THREE.Vector3(x, 0, 0), q, new THREE.Vector3(sc, sc, sc)));
+            }
+            dark.box(-2, -1, 4, 2, 1.2, -6.4, 'x');
+            blimp.add(new THREE.Mesh(dark.build(), M.graphite));
             blimp.add(new THREE.Mesh(b.build(), M.white));
             blimp.scale.setScalar(1.3);
             scene.add(blimp);   // decoration only: no label, no hit box (V1.3)
             blimpShadow = new THREE.Mesh(new THREE.CircleGeometry(1, 16), new THREE.MeshBasicMaterial({ color: C.ink, transparent: true, opacity: 0.1, depthWrite: false, toneMapped: false }));
-            blimpShadow.rotation.x = -Math.PI / 2; blimpShadow.scale.set(15, 5.5, 1); blimpShadow.position.y = 0.05; scene.add(blimpShadow);
-            placeBlimp(0);
+            blimpShadow.rotation.order = 'YXZ'; blimpShadow.rotation.x = -Math.PI / 2; blimpShadow.scale.set(15, 5.5, 1); blimpShadow.position.y = 0.05; scene.add(blimpShadow);
+            placeBlimp(0, 0);
         }
         {   // 5. the garage scope
             scopePos = new Float32Array(scopeN * 3);
@@ -1152,12 +1272,6 @@ export function mount(canvas, L) {
         const bd = L.LOCATIONS.find(l => l.id === 'contact').boxes;   // the email board and the temperature board sit on their own boxes
         textPlane(textTexture(board.board.text, { w: 1024, h: 256, font: '700 96px ' + SCHIB, fill: C.ink, bg: C.paper, spacing: '2px' }), 5.6, 1.4, [bd[1][0] + 3, 2.5, WV + 0.02], 0, groups.contact);
         textPlane(textTexture('TRACK 29°', { w: 512, h: 192, font: '700 96px ' + CHAKRA, fill: SIG.contact, bg: C.ink }), 2.7, 1.0, [bd[2][0] + 1.5, 1.7, WV + 0.02], 0, groups.contact);
-        const signs = ['AWUS  ·  RATED W', 'C++  ·  PYTHON  ·  SQL', 'IMU  ·  HAPTICS  ·  FIRMWARE'];
-        L.BILLBOARDS.forEach((b, i) => {
-            const tex = textTexture(signs[i], { w: 1024, h: 384, font: 'italic 700 92px ' + CHAKRA, fill: C.ink, bg: C.paper, spacing: '6px' });
-            if (b[2] > b[3]) textPlane(tex, b[2] - 0.6, b[4] - 0.4, [b[0] + b[2] / 2, b[5] + b[4] / 2, b[1] + b[3] + 0.02]);
-            else textPlane(tex, b[3] - 0.6, b[4] - 0.4, [b[0] + b[2] + 0.02, b[5] + b[4] / 2, b[1] + b[3] / 2], Math.PI / 2);
-        });
         textPlane(textTexture(L.NAME.toUpperCase(), { w: 2048, h: 96, font: 'italic 600 60px ' + CHAKRA, fill: C.paper, spacing: '18px' }), 72, 3.4, [105, -2.5, 210.03]);
         {   // BETTA painted inside T1 along the track, the way circuits paint their own name
             const f = fr[L.nearest(fr, L.RUNOFF.at)];
@@ -1188,7 +1302,7 @@ export function mount(canvas, L) {
     function tick(dt, t) {
         if (!built) return;
         placeCars(dt);
-        placeBlimp(t);
+        placeBlimp(t, dt);
         waveFlag(t);
         shimmerAt((t % 8) / 8);   // the sleeve shimmer, base to cuff every eight seconds
         flickerStep(t);           // one board flickers
@@ -1248,5 +1362,8 @@ export function mount(canvas, L) {
              groups, hooks, project, groundAt, pick, DIR, isRunning: () => running, reduced, ready: readyPromise,
              cars, carAt: id => { const c = cars.find(k => k.id === id); return c && c.pose ? { x: c.group.position.x, z: c.group.position.z, tx: c.pose.tx, tz: c.pose.tz, s: c.s, v: c.v } : null; },
              gridState, raceState, passing: () => !!race.pass, stepRace: dt => placeCars(dt), dressed, marked, marks: () => markBoxes,
+             attend, attendStop, attendDwell, attendCase, attendCaseDwell, carsByStop, carByProject,
+             attention: () => pulse ? L.GRID.map(c => ({ id: c.id, score: +pulse.scoreOf(c.id).toFixed(2), share: +pulse.share(c.id).toFixed(3) })) : [],
+             anyAttention: () => !!pulse && pulse.anyAttention(),
              meanFps: () => stats.window.length ? stats.window.reduce((a, b) => a + b, 0) / stats.window.length : stats.fps };
 }

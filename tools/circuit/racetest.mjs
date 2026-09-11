@@ -49,9 +49,9 @@ const r = await page.evaluate(secs => {
              lap: rs.lap, calls: c.stats.calls, triangles: c.stats.triangles };
 }, secs);
 r.errors = errors;
-/* cars are 5.8 long and 2.6 wide: a touch is both within a length along the track and within a width across it;
+/* the field is whatever layout.js lists. Cars are 5.8 long and 2.6 wide: a touch is both within a length along the track and within a width across it;
    inside the lines when a centre sits within 3.2 of the middle (the track is 9 wide); never idle; an order change every 15 to 20 s on average, never a wait over 50 s */
-r.pass = r.cars === 4 && r.touches === 0 && r.maxLateral <= 3.2 && r.minSpeed > 2 && r.meanChangeInterval !== null && r.meanChangeInterval >= 10 && r.meanChangeInterval <= 24 && r.longestWait <= 50 && errors.length === 0;
+r.pass = r.cars >= 4 && r.touches === 0 && r.maxLateral <= 3.2 && r.minSpeed > 2 && r.meanChangeInterval !== null && r.meanChangeInterval >= 10 && r.meanChangeInterval <= 24 && r.longestWait <= 50 && errors.length === 0;
 console.log(JSON.stringify(r));
 if (out) fs.writeFileSync(out, JSON.stringify(r, null, 1));
 await browser.close();

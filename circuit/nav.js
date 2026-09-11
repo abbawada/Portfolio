@@ -143,6 +143,7 @@ export function attach(world, L, dom) {
         else setTimeout(() => dom.panel.classList.add('is-open'), 20);   // a timer, not a frame: throttled tabs still get the fade
         document.body.classList.add('ring-open');
         dom.panelClose.focus({ preventScroll: true });
+        if (world.attendStop) world.attendStop(loc.id, 'open');   // the visitor's tour is the race's one live input
         if (dom.onOpen) dom.onOpen(loc);
     }
     function closePanel() {
@@ -153,6 +154,7 @@ export function attach(world, L, dom) {
     }
     function go(id) {
         const loc = byId[id]; if (!loc) return;
+        if (open === id && !lap.running) return;   // already here: no second deposit, no second fly
         if (lap.running) endLap(false);
         open = id; returnTo = pins[id].el;
         const aspect = canvas.clientWidth / canvas.clientHeight, sheet = window.innerWidth <= 760;
@@ -345,19 +347,21 @@ export function attach(world, L, dom) {
        leader's lap. Order and gaps are the world's, read every frame and
        written at ten a second; nothing on the page is fetched. Each row is
        a button that opens the stop its project lives in. */
-    const grid = { rows: {}, order: '', lapEl: null, at: 0 };
+    const grid = { rows: {}, order: '', lapEl: null, footEl: null, at: 0 };
     function setGrid(list) {
         const el = dom.tower; if (!el) return;
         if (!list || !list.length) { el.hidden = true; return; }
         el.innerHTML = '<div class="ring-tower-head"><span>The grid</span><span class="ring-tower-lap" id="ringTowerLap">Lap 1</span></div>' +
-            list.map((c, i) => { const loc = byId[c.stop]; return '<button type="button" class="ring-tower-row" data-id="' + c.id + '" data-stop="' + c.stop + '" style="--sig:' + (loc && loc.signature || '#c6a15b') + '">' +
+            list.map((c, i) => '<button type="button" class="ring-tower-row" data-id="' + c.id + '" data-stop="' + c.stop + '" style="--sig:' + (c.accent || '#c6a15b') + '">' +
                 '<span class="ring-tower-pos">P' + (i + 1) + '</span><span class="ring-tower-code">' + c.code + '</span>' +
-                '<span class="ring-tower-name">' + c.name + '</span><span class="ring-tower-num">' + c.number + '</span></button>'; }).join('');
+                '<span class="ring-tower-name">' + c.name + '</span><span class="ring-tower-num">' + c.number + '</span>' +
+                '<span class="ring-tower-bar" aria-hidden="true"><i></i></span></button>').join('') +
+            '<p class="ring-tower-foot" id="ringTowerFoot">Open a section and its car picks up pace. Your visit only, kept on this device.</p>';
         el.hidden = false;
         el.setAttribute('aria-label', 'The grid: live timing of the simulated race, four cars, one per project');
         el.addEventListener('click', e => { const r = e.target.closest('.ring-tower-row'); if (r) go(r.dataset.stop); });
         grid.rows = {}; el.querySelectorAll('.ring-tower-row').forEach(r => { grid.rows[r.dataset.id] = r; });
-        grid.lapEl = el.querySelector('#ringTowerLap'); grid.order = '';
+        grid.lapEl = el.querySelector('#ringTowerLap'); grid.footEl = el.querySelector('#ringTowerFoot'); grid.order = '';
         updateGrid(true);
     }
     function updateGrid(force) {
@@ -369,7 +373,7 @@ export function attach(world, L, dom) {
         const order = g.map(x => x.id).join('>');
         if (order !== grid.order) {   // a pass on track: the rows swap, and slide into place
             const before = {}; for (const id in grid.rows) before[id] = grid.rows[id].getBoundingClientRect().top;
-            for (const row of g) dom.tower.appendChild(grid.rows[row.id]);
+            for (const row of g) dom.tower.insertBefore(grid.rows[row.id], grid.footEl || null);   // the caption stays last
             if (grid.order && !reduced.matches) for (const id in grid.rows) {
                 const el = grid.rows[id], dy = before[id] - el.getBoundingClientRect().top;
                 if (!dy) continue;
@@ -378,14 +382,30 @@ export function attach(world, L, dom) {
             }
             grid.order = order;
         }
+        const now2 = Date.now() / 1000;
         g.forEach((row, k) => {
             const el = grid.rows[row.id]; if (!el) return;
             el.querySelector('.ring-tower-pos').textContent = 'P' + (k + 1);
             el.querySelector('.ring-tower-num').textContent = k === 0 ? 'Lead' : '+' + row.gap.toFixed(2);
             el.classList.toggle('is-fight', row.passing || row.passed);
+            /* the bar is this car's share of the attention in the room, so
+               the visitor can see their own reading moving the race */
+            const bar = el.querySelector('.ring-tower-bar > i');
+            if (bar) bar.style.transform = 'scaleX(' + Math.max(0, Math.min(1, row.share || 0)).toFixed(3) + ')';
+            el.classList.toggle('is-attended', (row.share || 0) > 0.02);
+            el.classList.toggle('is-just-read', row.flashedAt && (now2 - row.flashedAt) < 1.1);
         });
         const rs = world.raceState ? world.raceState() : null;
         if (grid.lapEl && rs) { const txt = 'Lap ' + rs.lap; if (grid.lapEl.textContent !== txt) grid.lapEl.textContent = txt; }
+    }
+
+    /* the shelf tells us which project case is open, so the visitor
+       reading a case feeds that project's car and no other */
+    let caseOpen = null;
+    function attendCase(projectId, kind) {
+        if (kind === 'close' || !projectId) { caseOpen = null; return; }
+        if (world.attendCase && world.attendCase(projectId, 'case')) caseOpen = projectId;
+        else caseOpen = null;   // a case with no car on the grid moves nothing, and claims nothing
     }
 
     /* ------------------------------------------------ wiring */
@@ -398,9 +418,16 @@ export function attach(world, L, dom) {
     if (dom.hopNext) dom.hopNext.addEventListener('click', () => go(dom.hopNext.dataset.id));
     window.addEventListener('resize', () => { layoutShift(); settle(); });
     buildMap();
-    hooks.push((dt) => { const now = performance.now(); stepFly(now); stepLap(dt, now); updatePins(dt); updateMap(); updateGrid(); });
+    hooks.push((dt) => {
+        const now = performance.now();
+        stepFly(now); stepLap(dt, now);
+        /* a case sits on top of a stop, so it wins; they never double-count */
+        if (caseOpen && world.attendCaseDwell) world.attendCaseDwell(caseOpen, dt);
+        else if (open && world.attendDwell) world.attendDwell(open, dt);
+        updatePins(dt); updateMap(); updateGrid();
+    });
     layoutShift(); { const hv = homeView(); view.target.x = hv.x; view.target.z = hv.z; view.zoom = hv.zoom; } settle();
 
-    return { go, close, startLap, endLap, panBy, zoomAt, flyTo, FLY_MS, setGrid,
+    return { go, close, startLap, endLap, panBy, zoomAt, flyTo, FLY_MS, setGrid, attendCase,
              state: () => ({ open, lap: lap.running, zoom: view.zoom, target: [view.target.x, view.target.z], hover, focus, flying: !!fly }) };
 }
