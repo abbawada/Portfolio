@@ -20,6 +20,20 @@ as the centre of gravity.
 Round 4 (2026-09-10) is in docs/circuit/v14/round-4.md: the live order
 from the visitor's own tour (circuit/pulse.js), seven cars, the candy
 tech bench, the blimp over the leader, and the AWUS boards replaced.
+This is the active system.
+
+Round 5 (2026-09-12, docs/circuit/v14/round-5.md) replaced round 4's
+race with one driven by yesterday's real Wikipedia pageviews: nine
+cars, one per data/race-standings.json entry, a daily GitHub Action,
+strict order by view count, Grid rows linking out to Wikipedia. Abba
+reviewed it and asked to go back: the shelf-project cars were better,
+and sending a Grid click off the site to Wikipedia worked against the
+actual goal, getting people to explore the portfolio itself. Reverted
+whole (commit 807358d, `git revert 9370127`) back to round 4's exact
+state; re-verified after the revert (the race contract, a live click
+through the Grid, and the attention mechanism all confirmed working).
+The Wikipedia pipeline is gone from the working tree but intact in git
+history at 9370127 if it is ever wanted again.
 
 ## Tools added
 - circuit/vendor/chakra-petch-bold.typeface.json: the OFL face as glyph
