@@ -143,7 +143,6 @@ export function attach(world, L, dom) {
         else setTimeout(() => dom.panel.classList.add('is-open'), 20);   // a timer, not a frame: throttled tabs still get the fade
         document.body.classList.add('ring-open');
         dom.panelClose.focus({ preventScroll: true });
-        if (world.attendStop) world.attendStop(loc.id, 'open');   // the visitor's tour is the race's one live input
         if (dom.onOpen) dom.onOpen(loc);
     }
     function closePanel() {
@@ -180,38 +179,19 @@ export function attach(world, L, dom) {
 
     /* ------------------------------------------------ the lap guide */
     const startS = fr[L.nearest(fr, [L.START.u, L.START.v])].s;
-    /* V1.3 Session 3: Start lap is a chase camera on the live race. It
-       picks up the leader wherever the leader is and rides a little ahead
-       of its nose with smooth easing; when two cars close to within
-       striking distance it moves to that battle and holds it until they
-       separate or a subject has had its few seconds; it never loses its
-       subject. The lap ends when the leader has covered one lap, or the
-       moment the visitor leaves: the exit pill, Escape, the lap button, a
-       label, the map, a drag. Each stop's label lights as the subject
-       passes it. Under reduced motion it cuts between the stops. */
+    /* Start lap is a chase camera on the day's race. It picks up the
+       leader, rides a little ahead of its nose with smooth easing, and
+       never changes subject: the order is fixed for the day, so there is
+       no fight to cut to. The lap ends when the leader has covered one
+       lap, or the moment the visitor leaves: the exit pill, Escape, the
+       lap button, a label, the map, a drag. Each stop's label lights as
+       the leader passes it. Under reduced motion it cuts between the
+       stops. */
     const lap = { running: false, flying: false, rel: 0, next: 0, pauseUntil: 0, timer: 0, s0: 0,
         stops: L.LAP.map(id => { const at = byId[id].lapAt || byId[id].anchor; const s = fr[L.nearest(fr, at)].s; return { id, rel: ((s - startS) % lapLen + lapLen) % lapLen }; }).sort((a, b) => a.rel - b.rel) };
-    const CHASE_AHEAD = 7, BATTLE_GAP = 8, BATTLE_DROP = 12, HOLD_S = 3.5, BATTLE_ZOOM = 1.22;
-    const chase = { subject: null, since: 0, cut: 0 };
-    const sameSubject = (a, b) => !!a && !!b && a.kind === b.kind && ((a.a === b.a && a.b === b.b) || (a.a === b.b && a.b === b.a));
-    function pickSubject(now) {
-        const g = world.gridState(); if (!g.length) return null;
-        let battle = null;
-        for (let k = 1; k < g.length; k++) { const d = g[k - 1].s - g[k].s; if (d < BATTLE_GAP && (!battle || d < battle.d)) battle = { kind: 'battle', a: g[k - 1].id, b: g[k].id, d }; }
-        const cur = chase.subject;
-        if (cur && now - chase.since < HOLD_S * 1000) return cur;
-        if (battle) return sameSubject(cur, battle) ? cur : battle;
-        if (cur && cur.kind === 'battle') { const a = g.find(x => x.id === cur.a), b = g.find(x => x.id === cur.b); if (a && b && Math.abs(a.s - b.s) < BATTLE_DROP) return cur; }
-        const leader = { kind: 'leader', a: g[0].id };
-        return sameSubject(cur, leader) ? cur : leader;
-    }
-    function aimOf(sub) {
-        if (!sub) return null;
-        if (sub.kind === 'battle') {
-            const a = world.carAt(sub.a), b = world.carAt(sub.b); if (!a || !b) return null;
-            return { x: (a.x + b.x) / 2 + (a.tx + b.tx) / 2 * 4, z: (a.z + b.z) / 2 + (a.tz + b.tz) / 2 * 4, zoom: LAP_ZOOM * BATTLE_ZOOM, s: Math.max(a.s, b.s) };
-        }
-        const car = world.carAt(sub.a); if (!car) return null;
+    const CHASE_AHEAD = 7;
+    function aimOf() {
+        const car = world.carAt(world.leaderId ? world.leaderId() : null); if (!car) return null;
         return { x: car.x + car.tx * CHASE_AHEAD, z: car.z + car.tz * CHASE_AHEAD, zoom: LAP_ZOOM, s: car.s };
     }
     function setLapButton(on) {
@@ -225,11 +205,9 @@ export function attach(world, L, dom) {
         lap.running = true; lap.rel = -12; lap.next = 0; lap.pauseUntil = 0; lapMark = null;
         setLapButton(true);
         if (reduced.matches) { lapCut(); return; }
-        const now = performance.now();
-        chase.subject = pickSubject(now); chase.since = now; chase.cut = 0;
-        const aim = aimOf(chase.subject);
+        const aim = aimOf();
         if (!aim) return endLap(true);
-        lap.s0 = world.gridState()[0].s; lap.flying = true;
+        const g = world.gridState(); lap.s0 = g.length ? g[0].s : 0; lap.flying = true;
         flyTo(aim.x, aim.z, aim.zoom, () => { lap.flying = false; });
     }
     function lapCut() {   // reduced motion: cuts between the stops, no travelling
@@ -241,22 +219,21 @@ export function attach(world, L, dom) {
     }
     function stepLap(dt, now) {
         if (!lap.running || lap.flying || fly || reduced.matches) return;
-        const next = pickSubject(now);
-        if (!sameSubject(next, chase.subject)) { chase.subject = next; chase.since = now; chase.cut = now; }
-        const aim = aimOf(chase.subject);
+        const aim = aimOf();
         if (!aim) return endLap(true);
-        const rate = now - chase.cut < 900 ? 9 : 5.5, k = Math.min(1, dt * rate);   // a quick move on a cut, a glide otherwise
+        const k = Math.min(1, dt * 5.5);
         view.target.x += (aim.x - view.target.x) * k; view.target.z += (aim.z - view.target.z) * k;
-        view.zoom += (aim.zoom - view.zoom) * Math.min(1, dt * 2.5);
         settle();
         const rel = ((aim.s - startS) % lapLen + lapLen) % lapLen;
         const near = lap.stops.find(st => { const d = Math.abs(st.rel - rel); return Math.min(d, lapLen - d) < 11; });
         lapMark = near ? near.id : null;
-        if (world.gridState()[0].s - lap.s0 >= lapLen + 6) endLap(true);
+        const g = world.gridState();
+        if (g.length && g[0].s - lap.s0 >= lapLen + 6) endLap(true);
     }
+
     function endLap(home) {
         if (!lap.running) return;
-        lap.running = false; lap.flying = false; lapMark = null; chase.subject = null; clearTimeout(lap.timer);
+        lap.running = false; lap.flying = false; lapMark = null; clearTimeout(lap.timer);
         setLapButton(false);
         if (home) { const hv = homeView(); flyTo(hv.x, hv.z, hv.zoom); }
     }
@@ -340,72 +317,54 @@ export function attach(world, L, dom) {
         if (used) e.preventDefault();
     });
 
-    /* ------------------------------------------------ the grid (V1.2, live in V1.3) */
-    /* Four rows on the broadcast face above the mini-map: live timing of
-       the simulated race. Positions reorder as cars pass on track, the
-       last column is the gap to the leader, ticking; the head carries the
-       leader's lap. Order and gaps are the world's, read every frame and
-       written at ten a second; nothing on the page is fetched. Each row is
-       a button that opens the stop its project lives in. */
-    const grid = { rows: {}, order: '', lapEl: null, footEl: null, at: 0 };
-    function setGrid(list) {
+    /* ------------------------------------------------ the grid */
+    /* Nine rows on the broadcast face above the mini-map: yesterday's
+       most-viewed Wikipedia articles plus one fixed topic, ranked by view
+       count, fixed for the day (circuit/wikirace.js, data/race-standings
+       .json). The number column is the real view count. Each row opens
+       its Wikipedia article in a new tab; this is the one place on the
+       page that leaves it, because these are not portfolio sections, they
+       are what the world actually read yesterday. */
+    const grid = { rows: {}, lapEl: null, footEl: null, at: 0 };
+    function compactViews(n) {
+        if (n == null) return '-';
+        if (n >= 10000) return Math.round(n / 1000) + 'K';
+        if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
+        return String(n);
+    }
+    function formatRaceDate(iso) {
+        if (!iso) return null;
+        try { return new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' }).format(new Date(iso + 'T00:00:00Z')); }
+        catch (e) { return iso; }
+    }
+    function raceCaption(status, date) {
+        const d = formatRaceDate(date);
+        if (status === 'fresh') return d ? ("Yesterday's race: what the world searched for, " + d + '.') : "Yesterday's race: what the world searched for.";
+        if (status === 'cached') return d ? ("This browser's last known race, " + d + ". Today's update has not landed yet.") : "Last known race. Today's update has not landed yet.";
+        return 'Loading yesterday\'s race.';
+    }
+    function setGrid(list, meta) {
         const el = dom.tower; if (!el) return;
         if (!list || !list.length) { el.hidden = true; return; }
+        meta = meta || {};
         el.innerHTML = '<div class="ring-tower-head"><span>The grid</span><span class="ring-tower-lap" id="ringTowerLap">Lap 1</span></div>' +
-            list.map((c, i) => '<button type="button" class="ring-tower-row" data-id="' + c.id + '" data-stop="' + c.stop + '" style="--sig:' + (c.accent || '#c6a15b') + '">' +
+            list.map((c, i) => '<a class="ring-tower-row" data-id="' + c.id + '" href="https://en.wikipedia.org/wiki/' + encodeURIComponent(c.title) + '" target="_blank" rel="noopener noreferrer" style="--sig:' + (c.accent || '#c6a15b') + '">' +
                 '<span class="ring-tower-pos">P' + (i + 1) + '</span><span class="ring-tower-code">' + c.code + '</span>' +
-                '<span class="ring-tower-name">' + c.name + '</span><span class="ring-tower-num">' + c.number + '</span>' +
-                '<span class="ring-tower-bar" aria-hidden="true"><i></i></span></button>').join('') +
-            '<p class="ring-tower-foot" id="ringTowerFoot">Open a section and its car picks up pace. Your visit only, kept on this device.</p>';
+                '<span class="ring-tower-name">' + c.name + '</span><span class="ring-tower-num">' + compactViews(c.views) + '</span></a>').join('') +
+            '<p class="ring-tower-foot" id="ringTowerFoot">' + raceCaption(meta.status, meta.date) + '</p>';
         el.hidden = false;
-        el.setAttribute('aria-label', 'The grid: live timing of the simulated race, four cars, one per project');
-        el.addEventListener('click', e => { const r = e.target.closest('.ring-tower-row'); if (r) go(r.dataset.stop); });
+        el.setAttribute('aria-label', "The grid: yesterday's most-viewed Wikipedia articles, ranked, each opening that article");
         grid.rows = {}; el.querySelectorAll('.ring-tower-row').forEach(r => { grid.rows[r.dataset.id] = r; });
-        grid.lapEl = el.querySelector('#ringTowerLap'); grid.footEl = el.querySelector('#ringTowerFoot'); grid.order = '';
+        grid.lapEl = el.querySelector('#ringTowerLap'); grid.footEl = el.querySelector('#ringTowerFoot');
         updateGrid(true);
     }
     function updateGrid(force) {
         if (!dom.tower || !world.gridState) return;
         const now = performance.now();
-        if (!force && now - grid.at < 100) return;
+        if (!force && now - grid.at < 250) return;
         grid.at = now;
-        const g = world.gridState(); if (!g.length) return;
-        const order = g.map(x => x.id).join('>');
-        if (order !== grid.order) {   // a pass on track: the rows swap, and slide into place
-            const before = {}; for (const id in grid.rows) before[id] = grid.rows[id].getBoundingClientRect().top;
-            for (const row of g) dom.tower.insertBefore(grid.rows[row.id], grid.footEl || null);   // the caption stays last
-            if (grid.order && !reduced.matches) for (const id in grid.rows) {
-                const el = grid.rows[id], dy = before[id] - el.getBoundingClientRect().top;
-                if (!dy) continue;
-                el.style.transition = 'none'; el.style.transform = 'translateY(' + dy + 'px)';
-                requestAnimationFrame(() => { el.style.transition = ''; el.style.transform = ''; });
-            }
-            grid.order = order;
-        }
-        const now2 = Date.now() / 1000;
-        g.forEach((row, k) => {
-            const el = grid.rows[row.id]; if (!el) return;
-            el.querySelector('.ring-tower-pos').textContent = 'P' + (k + 1);
-            el.querySelector('.ring-tower-num').textContent = k === 0 ? 'Lead' : '+' + row.gap.toFixed(2);
-            el.classList.toggle('is-fight', row.passing || row.passed);
-            /* the bar is this car's share of the attention in the room, so
-               the visitor can see their own reading moving the race */
-            const bar = el.querySelector('.ring-tower-bar > i');
-            if (bar) bar.style.transform = 'scaleX(' + Math.max(0, Math.min(1, row.share || 0)).toFixed(3) + ')';
-            el.classList.toggle('is-attended', (row.share || 0) > 0.02);
-            el.classList.toggle('is-just-read', row.flashedAt && (now2 - row.flashedAt) < 1.1);
-        });
         const rs = world.raceState ? world.raceState() : null;
         if (grid.lapEl && rs) { const txt = 'Lap ' + rs.lap; if (grid.lapEl.textContent !== txt) grid.lapEl.textContent = txt; }
-    }
-
-    /* the shelf tells us which project case is open, so the visitor
-       reading a case feeds that project's car and no other */
-    let caseOpen = null;
-    function attendCase(projectId, kind) {
-        if (kind === 'close' || !projectId) { caseOpen = null; return; }
-        if (world.attendCase && world.attendCase(projectId, 'case')) caseOpen = projectId;
-        else caseOpen = null;   // a case with no car on the grid moves nothing, and claims nothing
     }
 
     /* ------------------------------------------------ wiring */
@@ -421,13 +380,10 @@ export function attach(world, L, dom) {
     hooks.push((dt) => {
         const now = performance.now();
         stepFly(now); stepLap(dt, now);
-        /* a case sits on top of a stop, so it wins; they never double-count */
-        if (caseOpen && world.attendCaseDwell) world.attendCaseDwell(caseOpen, dt);
-        else if (open && world.attendDwell) world.attendDwell(open, dt);
         updatePins(dt); updateMap(); updateGrid();
     });
     layoutShift(); { const hv = homeView(); view.target.x = hv.x; view.target.z = hv.z; view.zoom = hv.zoom; } settle();
 
-    return { go, close, startLap, endLap, panBy, zoomAt, flyTo, FLY_MS, setGrid, attendCase,
+    return { go, close, startLap, endLap, panBy, zoomAt, flyTo, FLY_MS, setGrid,
              state: () => ({ open, lap: lap.running, zoom: view.zoom, target: [view.target.x, view.target.z], hover, focus, flying: !!fly }) };
 }

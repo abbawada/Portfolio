@@ -110,7 +110,7 @@ export function createStops(L, dom) {
         if (g && window.CaseShelf) {
             const ids = g.dataset.cases.split(',');
             const cases = ids.map(id => window.CaseShelf.CASES.find(c => c.id === id)).filter(Boolean);
-            engine = window.CaseShelf.mount({ shelf: g, stage: dom.stage, cases, layout: 'grid', onCase: dom.onCase });
+            engine = window.CaseShelf.mount({ shelf: g, stage: dom.stage, cases, layout: 'grid' });
         }
         const copy = body.querySelector('.ring-copy');
         if (copy) copy.addEventListener('click', () => {

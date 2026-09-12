@@ -1,0 +1,44 @@
+name: Update race standings
+
+# Wikipedia's pageviews for a UTC day are fully published within a few
+# hours of that day ending (verified against the live API on 2026-09-11:
+# yesterday's full 1000-article list was already available). 07:00 UTC
+# gives a comfortable margin. This only takes effect once merged to the
+# repository's default branch: GitHub only reads a workflow's `schedule`
+# from the version of the file on that branch.
+on:
+  schedule:
+    - cron: '0 7 * * *'
+  workflow_dispatch: {}   # manual "Run workflow" button, for testing without waiting for the cron
+
+permissions:
+  contents: write   # to commit data/race-standings.json back to the repo
+
+concurrency:
+  group: race-standings
+  cancel-in-progress: false   # never cancel a run that might be mid-write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'   # ships a global fetch(); no npm install needed
+
+      - name: Fetch yesterday's standings
+        run: node tools/circuit/fetch-race-standings.mjs
+
+      - name: Commit if changed
+        run: |
+          if git diff --quiet -- data/race-standings.json; then
+            echo "No change to data/race-standings.json; nothing to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/race-standings.json
+          git commit -m "Race standings: $(node -pe "JSON.parse(require('fs').readFileSync('data/race-standings.json')).date")"
+          git push

@@ -152,26 +152,6 @@
     var BLIMP = { at: [150, 22, 70], banner: 'BETTA', height: 62, lead: 16, ease: 0.55 };   // it flies over the race leader: height above the plate, how far ahead of the leader's nose it sits, how fast it closes
     var FLAG = { at: [100, 196] };
 
-    /* The grid. One car per shelf project, lapping from the moment the
-       world is built. The race is simulated live: this list is the field,
-       not the order. The order and the gaps come from the cars' distance
-       along the track, and the visitor's own tour of the page feeds the
-       car of whatever they open (see circuit/pulse.js). Nothing on the
-       page reads a feed.
-       number is the plate; stop is where the project lives, and opening
-       that stop feeds this car; accent is the car's own colour, a candy
-       flavour set so seven cars stay apart from each other on the road.
-       project matches an id in cases.js, so opening a case feeds its car. */
-    var GRID = [
-        { id: 'betta', project: 'betta', name: 'Betta', code: 'BET', number: '10', accent: '#f2b632', stop: 'betta' },
-        { id: 'posture', project: 'posture-cue', name: 'Posture Cue', code: 'POS', number: '23', accent: '#ff8a00', stop: 'projects' },
-        { id: 'vaults', project: 'yield-vaults', name: 'Yield Vaults', code: 'YLD', number: '4', accent: '#a8e02a', stop: 'economics' },
-        { id: 'bluetooth', project: 'bluetooth-car', name: 'Bluetooth Car', code: 'BLU', number: '12', accent: '#ff3d6e', stop: 'projects' },
-        { id: 'mapping', project: 'visual-mapping', name: 'Visual Mapping', code: 'MAP', number: '7', accent: '#00b8d4', stop: 'projects' },
-        { id: 'validators', project: 'ethereum-validators', name: 'Validators', code: 'ETH', number: '32', accent: '#8a63ff', stop: 'economics' },
-        { id: 'temp', project: 'home-temp-monitor', name: 'Temp Monitor', code: 'TMP', number: '21', accent: '#00d6a1', stop: 'projects' }
-    ];
-
     var PALETTE = {
         plate: '#e6e0d3', grass: '#b7bfa3', asphalt: '#3b3b3d', paper: '#f7f5f0',
         wall: '#efece5', wallShade: '#c9c3b7', roof: '#6b675f', wood: '#d8bc93',
@@ -252,7 +232,7 @@
         PIT: PIT, PIT_WIDTH: PIT_WIDTH, SECTORS: SECTORS,
         LOCATIONS: LOCATIONS, LAP: LAP, AMBIENT: AMBIENT, HOARDINGS: HOARDINGS,
         GRANDSTAND: GRANDSTAND, PADDOCK: PADDOCK, CARPARK: CARPARK, BILLBOARDS: BILLBOARDS,
-        GRAVEL: GRAVEL, TREES: TREES, BLIMP: BLIMP, FLAG: FLAG, GRID: GRID, BARRIERS: BARRIERS, CAMPUS_CURBS: CAMPUS_CURBS, RUNOFF: RUNOFF,
+        GRAVEL: GRAVEL, TREES: TREES, BLIMP: BLIMP, FLAG: FLAG, BARRIERS: BARRIERS, CAMPUS_CURBS: CAMPUS_CURBS, RUNOFF: RUNOFF,
         PALETTE: PALETTE,
         sample: sample, frames: frames, ribbon: ribbon, nearest: nearest
     };

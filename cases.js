@@ -116,7 +116,6 @@
         var cases = opts.cases || CASES;
         var filterList = filters ? (opts.filterList || FILTERS) : [];
         var grid = opts.layout === 'grid';
-        var onCase = opts.onCase || null;   /* which project case is on stage, for the circuit's live order */
         var bound = [];   /* listeners on document and window, removed by destroy() */
         function on(target, type, fn, o) { target.addEventListener(type, fn, o); bound.push([target, type, fn, o]); }
         if (!shelf || !stage) return null;
@@ -329,7 +328,6 @@
             if (flipped) return;
             clearTimeout(stageTimer);
             flipped = c;
-            if (onCase) onCase(c.id, 'open');
             stageSource = sourceEl;
             stageIndex = visibleCases().indexOf(c);
             var r = sourceEl.getBoundingClientRect();
@@ -388,7 +386,6 @@
             stageIndex = (stageIndex + d + list.length) % list.length;
             var c = list[stageIndex];
             flipped = c;
-            if (onCase) onCase(c.id, 'open');
             stageSource = shelf.children[stageIndex] || stageSource;
             var flipper = stage.querySelector('.flipper');
             flipper.classList.add('swapping');
@@ -427,7 +424,6 @@
             clearTimeout(stageTimer);
             dropCapture();
             flipped = null;
-            if (onCase) onCase(null, 'close');
             stageIndex = -1;
             var back = stageSource;
             stageSource = null;

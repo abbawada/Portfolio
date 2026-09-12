@@ -1,0 +1,8 @@
+# Wada Ring race standings: article slugs to exclude, one per line.
+# Use the exact underscore form Wikipedia's API returns (e.g. "Elizabeth_Holmes"),
+# not the display form. Lines starting with # and blank lines are ignored.
+# Main_Page and the standard MediaWiki namespaces (Special:, Wikipedia:, Portal:,
+# File:, Help:, Talk:, User:, Category:, Template:, Draft:, Module:, MediaWiki:,
+# Book:, TimedText:) are already excluded automatically; this list is for real
+# articles you don't want racing, e.g. annual almanac pages:
+Deaths_in_2026

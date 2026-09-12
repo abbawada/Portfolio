@@ -21,6 +21,13 @@ Round 4 (2026-09-10) is in docs/circuit/v14/round-4.md: the live order
 from the visitor's own tour (circuit/pulse.js), seven cars, the candy
 tech bench, the blimp over the leader, and the AWUS boards replaced.
 
+Round 5 (2026-09-12) is in docs/circuit/v14/round-5.md: round 4's race
+replaced entirely by yesterday's real Wikipedia pageviews. Nine cars,
+one per data/race-standings.json entry (written daily by
+.github/workflows/race-standings.yml), strict order by view count,
+never simulated. circuit/pulse.js and the round-4 attention system are
+removed. The Grid's rows now link out to the actual Wikipedia article.
+
 ## Tools added
 - circuit/vendor/chakra-petch-bold.typeface.json: the OFL face as glyph
   outlines for the extruded marks, made by a scratch converter over
