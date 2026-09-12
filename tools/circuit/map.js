@@ -176,15 +176,14 @@ L.CARPARK.cars.forEach((c, i) => addBox([c[0], c[1], c[2], c[3], 0.8, 0, i % 3 ?
     props.push({ key: boxKey(c) + 0.0005, svg: s });
 }
 
-/* the leader, on the pit straight: the flat map is static plan data with
-   no live race, so this always shows plate 1, the leader's own number */
+/* the car, number 10, on the pit straight */
 {
     const i = L.nearest(fr, [70, 178]), f = fr[i];
     const u = f.p[0], v = f.p[1];
     const body = [u - 1.3, v - 0.7, 2.6, 1.4, 0.7, 0, 'accent'];
     let s = boxSVG(body) + boxSVG([u - 0.4, v - 0.4, 0.9, 0.8, 0.6, 0.7, 'roof']);
     const t = P(u, v, 3.2);
-    s += `<text x="${f2(t[0])}" y="${f2(t[1])}" class="car" text-anchor="middle">1</text>`;
+    s += `<text x="${f2(t[0])}" y="${f2(t[1])}" class="car" text-anchor="middle">${L.GRID[0].number}</text>`;
     props.push({ key: u + v + 1.5, svg: s });
 }
 

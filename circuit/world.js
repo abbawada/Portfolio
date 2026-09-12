@@ -896,7 +896,7 @@ export function mount(canvas, L) {
         }
         if (!running) render();
     }
-    const fontJson = fetch('circuit/vendor/chakra-petch-bold.typeface.json?v=15.0').then(r => r.json());
+    const fontJson = fetch('circuit/vendor/chakra-petch-bold.typeface.json?v=14.0').then(r => r.json());
 
     /* ------------------------------------------------ the type hoardings (V1.2, V1.3) */
     /* Three lines of type on trackside boards. Frames and posts go up with
@@ -962,15 +962,19 @@ export function mount(canvas, L) {
         return { x: a.p[0] + (b.p[0] - a.p[0]) * t, z: a.p[1] + (b.p[1] - a.p[1]) * t, tx: a.t[0] + (b.t[0] - a.t[0]) * t, tz: a.t[1] + (b.t[1] - a.t[1]) * t, k: a.k };
     }
     const startS = fr[L.nearest(fr, [L.START.u, L.START.v])].s;
-    /* The cars, in the Valkyrie language. Low and wide, a glossy near-black
-       body with sculpted haunches and a canopy, four dark wheels, and one
-       thin neon accent. 5.8 long, 2.6 wide, so a car reads at the default
-       zoom. The model, the track and this geometry are unchanged from
-       Session 3; only where the field and its order come from changed. */
+    /* V1.3 Session 3: the cars, in the Valkyrie language. Low and wide, a
+       glossy near-black body with sculpted haunches and a canopy, four dark
+       wheels, and one thin neon accent in the project's signature colour
+       from Session 2: Betta gold, Yield Vaults the Exchange's green,
+       Posture Cue and Bluetooth Car the garage's orange (both live in
+       Projects). 5.8 long, 2.6 wide, so a car reads at the default zoom.
+       Nothing here reads anything outside the page. */
     const cars = [];
     const CAR = { length: 5.8, width: 2.6 };
     const gloss = new THREE.MeshPhysicalMaterial({ color: '#15171b', roughness: 0.1, metalness: 0.45, clearcoat: 1, clearcoatRoughness: 0.04, envMapIntensity: 2.4, flatShading: true });
-    /* one unlit material per accent colour, cached */
+    /* one unlit material per accent colour: seven cars, seven flavours, so
+       the field stays apart on the road without touching the stops' own
+       colours on the buildings */
     const accentMats = new Map();
     const accentMat = hex => {
         let m = accentMats.get(hex);
@@ -1004,84 +1008,136 @@ export function mount(canvas, L) {
         g.position.set(p.x + nx * lane, 0, p.z + nz * lane); g.rotation.y = Math.atan2(-p.tz, p.tx);
         return p;
     }
-    /* V2: yesterday's Wikipedia race. The field and its order come from
-       data/race-standings.json, written daily by a GitHub Action from the
-       Wikimedia pageviews API, and loaded once at the page's own load by
-       circuit/wikirace.js; setField(entries, ...) below is called once
-       that resolves. The order is real and already decided by the time it
-       reaches this page, so it is fixed for the whole visit: rank 1 always
-       leads, gaps between cars never change, and nothing here simulates a
-       fight for a position the data already settled. The animation stays
-       alive with a small shared pace wobble, identical for every car, and
-       the existing racing-line sway; neither ever changes who is ahead of
-       whom. This replaces the V1.3 personality-and-passing simulation and
-       the V1.4 visitor-attention layer, both removed: the ranking is real
-       now, so nothing needs to make one up. */
-    const RACE = { speed: 9.2, gap: 7.2, line: 1.0 };
-    const race = { t: 0, s: 0, lap: 1, date: null, generatedAt: null, source: null, status: 'bootstrap' };
+    /* V1.3 Session 3: a live race, simulated. Seeded fresh each visit
+       (?seed=N repeats a run), four pace personalities (base pace, corner
+       grip, a slow form curve), a tow behind the car ahead and a mild
+       rubber band that keep the field close enough to fight. A pass is a
+       real move round the outside: it starts on a straight with a real
+       pace edge, the car goes by with a commit, the passed car tucks in.
+       Order and gaps come from each car's distance along the track and
+       nowhere else; the Grid reads them. A race, presented as one, and
+       nothing more.
+       Geometry: line is the racing line's swing either side of the
+       centre, pass how far outside the passing car goes, inside how far
+       the passed car tucks in; 1.1 + 2.1 + half a car's width stays inside
+       the white line on a track 9 wide, and 2.1 + 0.7 keeps two cars 2.6
+       wide clear of each other side by side. follow is the closest a car
+       sits behind another in line. */
+    const seedParam = new URLSearchParams(location.search).get('seed');
+    const SEED = seedParam ? (parseInt(seedParam, 10) >>> 0) : (Math.random() * 4294967296) >>> 0;
+    const rng = (a => () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; })(SEED);
+    /* V1.4: the one live input. The visitor's own tour of the page feeds
+       the car of whatever they open, so the order answers the person
+       watching it instead of a fixed list. Attention decays, so the order
+       is about the last couple of minutes and never freezes; it is read as
+       a share of the field, so no car runs away; and it buys a small,
+       capped pace edge, so what runs underneath is still a race. Nothing
+       is fetched and nothing leaves this browser. */
+    const carsByStop = {}, carByProject = {};
+    L.GRID.forEach(c => { (carsByStop[c.stop] = carsByStop[c.stop] || []).push(c.id); carByProject[c.project] = c.id; });
+    const pulse = (typeof CircuitPulse !== 'undefined') ? CircuitPulse.create(L.GRID.map(c => c.id)) : null;
+    const ATTEND_SMOOTH = 1.6;   // seconds for a car to take up its new pace, so a click nudges rather than teleports
+    const attend = (carId, kind) => { if (pulse && carId) pulse.bump(carId, kind); };
+    /* one open is worth the same wherever it lands, so a stop with four
+       projects does not outweigh a stop with one */
+    const attendStop = (stopId, kind) => {
+        const ids = carsByStop[stopId]; if (!pulse || !ids || !ids.length) return;
+        const each = (pulse.WORTH[kind || 'open'] || 0) / ids.length;
+        ids.forEach(id => pulse.bump(id, kind || 'open', each));
+    };
+    const attendDwell = (stopId, dt) => { if (pulse && carsByStop[stopId]) pulse.dwell(carsByStop[stopId], dt); };
+    const attendCase = (projectId, kind) => { const id = carByProject[projectId]; if (pulse && id) pulse.bump(id, kind || 'case'); return !!id; };
+    const attendCaseDwell = (projectId, dt) => { const id = carByProject[projectId]; if (pulse && id) pulse.dwell([id], dt); };
+
+    const RACE = { speed: 9.2, line: 1.0, pass: 2.1, inside: 0.9, follow: CAR.length + 0.9, ahead: CAR.length + 1.2, clear: CAR.width + 0.25, towReach: 16, tow: 0.06, band: 0.12, drag: 0.03, edge: 0.1, commit: 0.16, lift: 0.05, rest: 4, patience: 18 };
+    const race = { t: 0, lap: 0, seed: SEED, order: [], pass: null, passes: 0, aborts: 0, lastPass: -10, changes: 0 };
+    const easeIO = x => x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
     const racingLine = s => RACE.line * Math.sin(s / lap * Math.PI * 6 + 0.4);
-    /* Eight flavours for the eight daily entries, assigned by rank so the
-       field always reads as a set; the fixed topic keeps Betta's own gold,
-       since it is the one entry that is always, in some sense, this site's
-       own, whatever it finishes. */
-    const FIELD_PALETTE = ['#ff4d4d', '#ff7a33', '#a8e02a', '#00d6a1', '#00b8d4', '#5c6bff', '#8a4dff', '#ff3d9e'];
-    const FIXED_ACCENT = '#f2b632';
-    /* A short code from an arbitrary article title, since these are not
-       curated project codes: the first three letters, like a driver's
-       code taken from a surname. "Barry_Melrose" to BAR, "Charlie_Kirk"
-       to CHA, "Haptic_technology" to HAP. */
-    function codeOf(title) {
-        const letters = title.replace(/[^A-Za-z]/g, '').toUpperCase();
-        return (letters.slice(0, 3) || 'WWW').padEnd(3, 'X');
-    }
-    let fielded = false, resolveFielded = null;
-    const fieldedPromise = new Promise(r => { resolveFielded = r; });
-    /* Builds the cars once, whenever the field finishes loading (index.html
-       awaits WikiRace.load() and calls this). Safe to call only once: the
-       page reads the standings file a single time, at load, matching
-       "this is only a data-source swap" against a page that never polls.
-       fielded resolves once this has run, the same way dressed/marked
-       resolve once their own async build steps finish, so tooling can
-       await it before reading gridState() or calling stepRace(). */
-    function setField(entries, meta) {
-        if (fielded || !entries || !entries.length) return;
-        fielded = true;
-        meta = meta || {};
-        race.status = meta.status || 'fresh'; race.date = meta.date || null;
-        race.generatedAt = meta.generatedAt || null; race.source = meta.source || null;
-        const startPos = startS - 4;
-        entries.forEach((e, i) => {
-            const accent = e.fixed ? FIXED_ACCENT : FIELD_PALETTE[i % FIELD_PALETTE.length];
-            const g = makeCar(accent, String(i + 1)); scene.add(g);
-            cars.push({ id: 'car' + i, group: g, title: e.title, name: e.displayTitle, code: codeOf(e.displayTitle),
-                views: e.views, fixed: !!e.fixed, accent, number: String(i + 1),
-                pose: null, lane: 0, s: startPos - i * RACE.gap });
+    function buildGrid() {
+        const gridStart = startS - 4, slots = L.GRID.map((c, i) => i);
+        for (let i = slots.length - 1; i > 0; i--) { const j = Math.floor(rng() * (i + 1)); [slots[i], slots[j]] = [slots[j], slots[i]]; }   // a fresh order each visit
+        L.GRID.forEach((c, i) => {
+            const g = makeCar(c.accent, c.number); scene.add(g);
+            cars.push({ id: c.id, group: g, name: c.name, code: c.code, stop: c.stop, number: c.number, accent: c.accent, pose: null, lane: 0, lateral: 0,
+                s: gridStart - slots.indexOf(i) * (RACE.follow + 1.5), v: RACE.speed * 0.8,
+                attendNow: 1, pace: 0.99 + rng() * 0.02, grip: 0.36 + rng() * 0.12, top: 1 + rng() * 0.015,
+                f1: 18 + rng() * 22, f2: 31 + rng() * 25, p1: rng() * 6.28, p2: rng() * 6.28 });
         });
+        race.order = cars.map((c, i) => i).sort((a, b) => cars[b].s - cars[a].s);
         placeCars(0);
-        if (typeof fontsLoaded !== 'undefined' && fontsLoaded) numberCars();
-        resolveFielded();
     }
-    /* every frame: the whole field advances together at one shared pace,
-       so gaps never change; the racing line still sways for visual life */
+    /* every frame: pace, the tow and the band set what each car wants;
+       a car in line behind another holds station; a pass carries one
+       round the outside; positions and gaps fall out of the distances */
     function placeCars(dt) {
-        if (!cars.length) return;
         race.t += dt;
-        const form = 1 + 0.02 * Math.sin(race.t / 26);   // one shared wobble; every car feels it equally, so order and spacing are untouched
-        race.s += dt * RACE.speed * form;
-        for (let k = 0; k < cars.length; k++) {
-            const c = cars[k], s = race.s - k * RACE.gap;
-            c.lane = racingLine(s);
-            c.pose = placeAt(c.group, s, c.lane);
-            c.s = s;
+        if (pulse) pulse.tick();
+        const t = race.t, order = cars.map((c, i) => i).sort((a, b) => cars[b].s - cars[a].s);
+        if (race.order.length && order.some((ci, k) => ci !== race.order[k])) race.changes++;
+        race.order = order;
+        for (let k = 0; k < order.length; k++) {
+            const c = cars[order[k]], ahead = k > 0 ? cars[order[k - 1]] : null;
+            let blocker = null, bi = -1;   // the nearest car ahead on a line this one would run into; a car alongside on a clear line is not one
+            for (let j = k - 1; j >= 0; j--) { const o = cars[order[j]]; if (Math.abs(o.lateral - c.lateral) < RACE.clear) { blocker = o; bi = order[j]; break; } }
+            const pose = poseAt(c.s), corner = Math.min(1, Math.abs(pose.k) / 0.12);
+            const form = 1 + 0.022 * Math.sin(t / c.f1 + c.p1) + 0.012 * Math.sin(t / c.f2 + c.p2);
+            const aimAttend = pulse ? pulse.pace(c.id) : 1;   // what the visitor's tour is worth to this car right now
+            c.attendNow += (aimAttend - c.attendNow) * Math.min(1, dt / ATTEND_SMOOTH);
+            let want = RACE.speed * c.pace * c.top * form * c.attendNow * (1 - c.grip * corner);
+            const passing = race.pass && race.pass.car === order[k], passed = race.pass && race.pass.over === order[k];
+            if (ahead) {
+                const gap = ahead.s - c.s;
+                if (gap < RACE.towReach) want *= 1 + RACE.tow * (1 - gap / RACE.towReach);          // the tow
+                want *= 1 + RACE.band * Math.min(1, Math.max(0, (gap - 7) / 20));                   // the band: nobody drifts away
+            }
+            let held = false;
+            if (blocker) {   // everyone holds station behind the car it would run into, passing or not
+                const gap = blocker.s - c.s;
+                if (gap < RACE.follow) {
+                    const edge = want - blocker.v;
+                    if (!passing && !race.pass && corner < 0.25 && edge > RACE.edge && gap >= CAR.length + 0.4 && t - race.lastPass > RACE.rest)
+                        race.pass = { car: order[k], over: bi, t0: t, side: race.passes % 2 ? -1 : 1 };
+                    else { want = Math.min(want, blocker.v * (gap < RACE.follow - 0.8 ? 0.96 : 1)); held = true; }
+                }
+            }
+            if (!ahead) {
+                const behind = order.length > 1 ? c.s - cars[order[1]].s : 0;
+                want *= 1 - RACE.drag * Math.min(1, Math.max(0, (behind - 8) / 20));                // the leader in clean air, reeled in
+            }
+            if (passing) {   // pull out at the other car's pace, commit once clear of it across the track and nothing blocks; an abort drops back first, still offset
+                const over = cars[race.pass.over], clear = Math.abs(c.lateral - over.lateral) >= RACE.clear, gap = over.s - c.s;
+                if (race.pass.abort) want = Math.min(want, over.v * 0.93);
+                else if (clear) { if (!held) want *= 1 + RACE.commit; }
+                else if (gap < CAR.length + 0.8) want = Math.min(want, over.v * 0.94);
+            }
+            if (passed && !race.pass.abort && Math.abs(c.lateral - cars[race.pass.car].lateral) >= RACE.clear) want *= 1 - RACE.lift;
+            c.v += (want - c.v) * Math.min(1, dt * (want < c.v ? 7 : 2.4));   // the brakes bite, the throttle builds
+            c.s += c.v * dt;
+            const side = race.pass ? race.pass.side : 0, aimLat = passing ? RACE.pass * side : passed ? -RACE.inside * side : 0;
+            c.lateral += (aimLat - c.lateral) * Math.min(1, dt * 2.6);
+            c.lane = racingLine(c.s) + c.lateral;
+            c.pose = placeAt(c.group, c.s, c.lane);
         }
-        race.lap = Math.max(1, Math.floor((race.s - startS) / lap) + 1);
+        if (race.pass) {
+            const a = cars[race.pass.car], b = cars[race.pass.over], d = a.s - b.s;
+            if (!race.pass.abort && d >= RACE.ahead) { race.pass = null; race.passes++; race.lastPass = t; }   // a length clear: back on the line
+            else if (!race.pass.abort && t - race.pass.t0 > RACE.patience) { race.pass.abort = true; race.aborts++; }   // no way through: drop back, then tuck in
+            else if (race.pass.abort && d <= -RACE.follow) { race.pass = null; race.lastPass = t; }
+        }
+        const leader = cars[order[0]];
+        race.lap = Math.max(1, Math.floor((leader.s - startS) / lap) + 1);
     }
-    const gridState = () => cars.map((c, k) => ({ id: c.id, rank: k + 1, code: c.code, name: c.name, title: c.title,
-        number: c.number, accent: c.accent, views: c.views, fixed: c.fixed,
-        s: +c.s.toFixed(2), lane: +c.lane.toFixed(2),
-        at: [c.group.position.x, c.group.position.z], tx: c.pose ? c.pose.tx : 1, tz: c.pose ? c.pose.tz : 0 }));
-    const raceState = () => ({ date: race.date, generatedAt: race.generatedAt, source: race.source, status: race.status,
-        lap: race.lap, leader: cars.length ? cars[0].id : null });
+    const gridState = () => {
+        if (!cars.length || !race.order.length) return [];
+        const leader = cars[race.order[0]], lv = Math.max(1, leader.v);
+        return race.order.map((ci, k) => { const c = cars[ci]; return { id: c.id, rank: k + 1, code: c.code, name: c.name, stop: c.stop, number: c.number, accent: c.accent,
+            share: pulse ? +pulse.share(c.id).toFixed(3) : 0, attend: +(c.attendNow - 1).toFixed(4), flashedAt: pulse ? pulse.flashedAt(c.id) : 0,
+            gap: +((leader.s - c.s) / lv).toFixed(2), s: +c.s.toFixed(2), v: +c.v.toFixed(2), lane: +c.lane.toFixed(2),
+            at: [c.group.position.x, c.group.position.z], tx: c.pose ? c.pose.tx : 1, tz: c.pose ? c.pose.tz : 0,
+            passing: !!(race.pass && race.pass.car === ci), passed: !!(race.pass && race.pass.over === ci) }; });
+    };
+    const raceState = () => !cars.length ? { seed: race.seed, t: 0, lap: 1, passes: 0, aborts: 0, changes: 0, pass: null, leader: null } : ({ seed: race.seed, t: +race.t.toFixed(2), lap: race.lap, passes: race.passes, aborts: race.aborts, changes: race.changes,
+        pass: race.pass ? { car: cars[race.pass.car].id, over: cars[race.pass.over].id, since: +(race.t - race.pass.t0).toFixed(1) } : null, leader: cars[race.order[0]].id });
     let fontsLoaded = false;
     function numberCars() {
         for (const c of cars) {
@@ -1099,7 +1155,7 @@ export function mount(canvas, L) {
        purpose: it lags the leader, so a pass shows as the airship drifting
        across to the other car. No label, no hit box, not a stop. */
     function placeBlimp(t, dt) {
-        const lead = cars.length ? cars[0] : null;
+        const lead = (cars.length && race.order.length) ? cars[race.order[0]] : null;
         let tx, tz;
         if (lead && lead.pose) { tx = lead.group.position.x + lead.pose.tx * L.BLIMP.lead; tz = lead.group.position.z + lead.pose.tz * L.BLIMP.lead; }
         else { const a = t * Math.PI * 2 / 240; tx = L.BLIMP.at[0] + Math.cos(a) * 18; tz = L.BLIMP.at[1] + Math.sin(a) * 9; }
@@ -1136,7 +1192,7 @@ export function mount(canvas, L) {
         glow.material.opacity = 0.09 + 0.05 * (0.5 + 0.5 * Math.sin(t * 3));
     }
     function buildAmbient() {
-        // 1. the cars: built by setField() once index.html's fetch of data/race-standings.json resolves
+        buildGrid();   // 1. the four cars, lapping from the first frame
         {   // 2. the start flag
             flagGeom = new THREE.PlaneGeometry(4.6, 2.9, 10, 5); flagBase = flagGeom.attributes.position.array.slice();
             const flag = new THREE.Mesh(flagGeom, new THREE.MeshBasicMaterial({ color: C.accent, side: THREE.DoubleSide, toneMapped: false }));
@@ -1240,9 +1296,9 @@ export function mount(canvas, L) {
         renderer.render(scene, camera);
         stats.calls = renderer.info.render.calls; stats.triangles = renderer.info.render.triangles;
     }
-    /* The ambient list: the cars, the flag, the sleeve shimmer, one
-       flickering board and the drifting blimp. The ticker and the scope
-       hold still. */
+    /* V1.2 ambient list: the four cars, the flag, the sleeve shimmer, one
+       flickering board and the drifting blimp. Eight, the ceiling. The
+       ticker and the scope hold still. */
     function tick(dt, t) {
         if (!built) return;
         placeCars(dt);
@@ -1305,7 +1361,9 @@ export function mount(canvas, L) {
     return { scene, camera, renderer, canvas, view, fit, render, start, stop, stats, frames: fr, poseAt, ambient: L.AMBIENT,
              groups, hooks, project, groundAt, pick, DIR, isRunning: () => running, reduced, ready: readyPromise,
              cars, carAt: id => { const c = cars.find(k => k.id === id); return c && c.pose ? { x: c.group.position.x, z: c.group.position.z, tx: c.pose.tx, tz: c.pose.tz, s: c.s, v: c.v } : null; },
-             gridState, raceState, setField, fielded: fieldedPromise, leaderId: () => cars.length ? cars[0].id : null,
-             stepRace: dt => placeCars(dt), dressed, marked, marks: () => markBoxes,
+             gridState, raceState, passing: () => !!race.pass, stepRace: dt => placeCars(dt), dressed, marked, marks: () => markBoxes,
+             attend, attendStop, attendDwell, attendCase, attendCaseDwell, carsByStop, carByProject,
+             attention: () => pulse ? L.GRID.map(c => ({ id: c.id, score: +pulse.scoreOf(c.id).toFixed(2), share: +pulse.share(c.id).toFixed(3) })) : [],
+             anyAttention: () => !!pulse && pulse.anyAttention(),
              meanFps: () => stats.window.length ? stats.window.reduce((a, b) => a + b, 0) / stats.window.length : stats.fps };
 }

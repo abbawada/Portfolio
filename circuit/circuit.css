@@ -321,18 +321,41 @@ body.ring-open .ring-broadcast { right: calc(var(--ring-panel-w) + 1.5rem); }
     letter-spacing: inherit;
     text-transform: inherit;
     text-align: left;
-    text-decoration: none;
     cursor: pointer;
 }
 .ring-tower-row:hover { background: var(--paper); border-left-width: 5px; }
 .ring-tower-row + .ring-tower-row { margin-top: 2px; }
-/* the day's race: the stripe is the car's own accent, fixed for the day */
-.ring-tower-row { border-left-color: var(--sig, var(--hairline)); }
+/* live timing (V1.3 Session 3): the stripe is the car's accent, the rows
+   slide when the order changes, a pair in a fight is marked */
+.ring-tower-row { border-left-color: var(--sig, var(--hairline)); transition: transform 360ms cubic-bezier(0.2, 0.7, 0.2, 1), background 160ms ease; }
+.ring-tower-row.is-fight .ring-tower-pos { color: var(--sig); }
 .ring-tower-pos { font-style: italic; font-weight: 700; }
 .ring-tower-code { font-weight: 700; }
 .ring-tower-name { font-family: var(--font-display); font-weight: 600; font-size: 0.5625rem; letter-spacing: 0.12em; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .ring-tower-num { font-style: italic; font-weight: 700; color: var(--accent-ink); font-variant-numeric: tabular-nums; min-width: 3.6em; text-align: right; }
 .ring-tower-lap { font-variant-numeric: tabular-nums; }
+
+/* V1.4 live order: the bar is this car's share of the attention the
+   visitor has spent, so they can watch their own reading move the race */
+.ring-tower-row { position: relative; overflow: hidden; }
+.ring-tower-bar {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 2px;
+    pointer-events: none;
+}
+.ring-tower-bar > i {
+    display: block;
+    height: 100%;
+    background: var(--sig);
+    opacity: 0.85;
+    transform: scaleX(0);
+    transform-origin: 0 50%;
+    transition: transform 420ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.ring-tower-row.is-attended .ring-tower-code { color: var(--sig); }
+.ring-tower-row.is-just-read { background: var(--paper); }
+.ring-tower-row.is-just-read .ring-tower-pos { color: var(--sig); }
 .ring-tower-foot {
     margin: 0.375rem 0 0;
     padding: 0 0.375rem;
@@ -471,6 +494,8 @@ body.ring-open .ring-broadcast { right: calc(var(--ring-panel-w) + 1.5rem); }
 
 @media (prefers-reduced-motion: reduce) {
     .ring-panel { transition: none; }
+    .ring-tower-row { transition: none; }
+    .ring-tower-bar > i { transition: none; }
 }
 
 /* ------------------------------------------------------------
