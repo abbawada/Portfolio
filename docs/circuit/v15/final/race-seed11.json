@@ -1,0 +1,43 @@
+{
+ "seconds": 240,
+ "seed": 11,
+ "cars": 8,
+ "touches": 0,
+ "touchAt": null,
+ "maxLateral": 3.1,
+ "minSpeed": 4.96,
+ "orderChanges": 14,
+ "meanChangeInterval": 16.7,
+ "longestWait": 21.3,
+ "changeTimes": [
+  12.3,
+  33.6,
+  47.5,
+  67.2,
+  83.8,
+  103.1,
+  121.5,
+  135.9,
+  153.8,
+  168.6,
+  186.5,
+  200.6,
+  216.4,
+  229.3
+ ],
+ "passesCompleted": 8,
+ "passesAborted": 3,
+ "passingShare": 0.76,
+ "maxGapToLeaderS": 13.67,
+ "closestCentres": 2.95,
+ "closestPair": [
+  "validators",
+  "posture",
+  66.7
+ ],
+ "lap": 4,
+ "calls": 202,
+ "triangles": 52676,
+ "errors": [],
+ "pass": true
+}

@@ -6,6 +6,18 @@
 export function createStops(L, dom) {
     'use strict';
     let engine = null;
+    /* round 6: two live pieces mount inside panels and are loaded only when
+       their stop opens. The lab (circuit/lab.js) is the Betta stop's drawn
+       timeline; the skydiving tile (circuit/skydive.js) sits first in the
+       Projects grid. Each returns a controller with destroy(); a failed
+       import leaves the panel as it was, so nothing here can take a stop
+       down with it. */
+    const V = '15.0';
+    const live = [];   // mounted controllers, torn down on clear()
+    const REEL = 'https://www.instagram.com/reel/Ddv8Qr_gruP/';
+    function mountLive(path, fn) {
+        return import('./' + path + '?v=' + V).then(fn).catch(err => { if (window.console) console.warn('live piece skipped', path, err); });
+    }
 
     const SKILLS = ['Python', 'C++', 'C#', 'SQL', 'R', 'Matlab', 'Tableau', 'Excel', 'Fusion 360', 'VectorBT', 'NumPy',
         'Data Analysis', 'Financial Modeling', 'Tokenomics Research', 'Quantitative Analysis', 'Risk Management',
@@ -29,7 +41,8 @@ export function createStops(L, dom) {
 
         betta: () =>
             line('a haptic shooting sleeve') +
-            grid(['betta']) +
+            '<div class="ring-lab" data-live="lab"></div>' +
+            '<p class="ring-lab-links"><a href="betta.html" class="ring-pill">The full case</a><a href="https://betta.live" target="_blank" rel="noopener noreferrer" class="ring-pill">betta.live</a></p>' +
             '<section class="plain-projects ring-rows" aria-label="Side Quests">' +
                 '<div class="plain-group"><h2 class="section-h">Side Quests</h2><ul class="plain-list">' +
                     '<li>Wheelchair Basketball Volunteering. Volunteering with adaptive sports programs.' +
@@ -87,8 +100,10 @@ export function createStops(L, dom) {
             '<p class="ring-viewall"><a href="https://medium.com/@abbawada_63188" target="_blank" rel="noopener noreferrer" class="publications-view-all">VIEW ALL →</a></p>',
 
         projects: () =>
-            line('Posture Cue, robots, IoT') +
-            grid(['posture-cue', 'visual-mapping', 'bluetooth-car', 'home-temp-monitor']),
+            line('Skydiving, Posture Cue, robots, IoT') +
+            grid(['posture-cue', 'visual-mapping', 'bluetooth-car', 'home-temp-monitor']) +
+            '<p class="ring-panel-line ring-sky-line">Skydiving, in the making: a jump instrument with a barometer, LiDAR, GPS and haptics. ' +
+                '<a href="' + REEL + '" target="_blank" rel="noopener noreferrer" class="ring-inline-link">The reel &rarr;</a></p>',
 
         contact: () =>
             '<section class="about-section contact">' +
@@ -112,6 +127,27 @@ export function createStops(L, dom) {
             const cases = ids.map(id => window.CaseShelf.CASES.find(c => c.id === id)).filter(Boolean);
             engine = window.CaseShelf.mount({ shelf: g, stage: dom.stage, cases, layout: 'grid', onCase: dom.onCase });
         }
+        if (loc.id === 'projects' && g) {   // the skydiving tile, first on the grid: newest work first
+            const tile = document.createElement('div'); tile.className = 'ring-sky';
+            g.insertBefore(tile, g.firstChild);
+            const token = ++renderToken;
+            mountLive('skydive.js', m => {
+                if (token !== renderToken || !tile.isConnected) return;
+                const ctl = m.mountSkydive(tile, { href: REEL, compact: true,
+                    onJump: () => { if (dom.onCase) dom.onCase('skydiving', 'case'); },
+                    onLink: () => { if (dom.onCase) dom.onCase('skydiving', 'row'); } });
+                if (ctl) live.push(ctl);
+            });
+        }
+        const labEl = body.querySelector('[data-live="lab"]');
+        if (labEl) {
+            const token = ++renderToken;
+            mountLive('lab.js', m => {
+                if (token !== renderToken || !labEl.isConnected) return;
+                const ctl = m.mountLab(labEl, { onInteract: () => { if (dom.onCase) dom.onCase('betta', 'row'); } });
+                if (ctl) live.push(ctl);
+            });
+        }
         const copy = body.querySelector('.ring-copy');
         if (copy) copy.addEventListener('click', () => {
             const text = copy.dataset.copy;
@@ -120,8 +156,12 @@ export function createStops(L, dom) {
             else done();
         });
     }
+    let renderToken = 0;   // a mount that resolves after its panel closed must not land in the next one
     function clear() {
+        renderToken++;
+        while (live.length) { const ctl = live.pop(); try { ctl.destroy(); } catch (e) { /* already gone */ } }
         if (engine) { engine.destroy(); engine = null; }
+        if (dom.onCase) dom.onCase(null, 'close');   // a live piece that was feeding a car stops feeding it
         dom.panelBody.innerHTML = '';
     }
     return { render, clear, engine: () => engine };

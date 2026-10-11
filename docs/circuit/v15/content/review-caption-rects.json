@@ -1,0 +1,146 @@
+{
+  "360": {
+    "rects": {
+      "video": {
+        "x": 29.40625,
+        "y": 81.59375,
+        "w": 301.1875,
+        "h": 229.515625
+      },
+      "cap": {
+        "x": 29.40625,
+        "y": 264.328125,
+        "w": 301.1875,
+        "h": 46.78125
+      },
+      "hero": {
+        "x": 28.40625,
+        "y": 80.59375,
+        "w": 303.1875,
+        "h": 231.515625
+      }
+    },
+    "shots": [
+      {
+        "t": 1,
+        "file": "/Users/abbawada/Documents/Portfolio-clean-recreate/docs/circuit/v15/content/review-caption-360-t1.png"
+      },
+      {
+        "t": 5,
+        "file": "/Users/abbawada/Documents/Portfolio-clean-recreate/docs/circuit/v15/content/review-caption-360-t5.png"
+      },
+      {
+        "t": 8,
+        "file": "/Users/abbawada/Documents/Portfolio-clean-recreate/docs/circuit/v15/content/review-caption-360-t8.png"
+      },
+      {
+        "t": 16,
+        "file": "/Users/abbawada/Documents/Portfolio-clean-recreate/docs/circuit/v15/content/review-caption-360-t16.png"
+      },
+      {
+        "t": 24,
+        "file": "/Users/abbawada/Documents/Portfolio-clean-recreate/docs/circuit/v15/content/review-caption-360-t24.png"
+      },
+      {
+        "t": 31,
+        "file": "/Users/abbawada/Documents/Portfolio-clean-recreate/docs/circuit/v15/content/review-caption-360-t31.png"
+      }
+    ]
+  },
+  "390": {
+    "rects": {
+      "video": {
+        "x": 30.59375,
+        "y": 90.953125,
+        "w": 328.796875,
+        "h": 263.625
+      },
+      "cap": {
+        "x": 30.59375,
+        "y": 307.796875,
+        "w": 328.796875,
+        "h": 46.78125
+      },
+      "hero": {
+        "x": 29.59375,
+        "y": 89.953125,
+        "w": 330.796875,
+        "h": 265.625
+      }
+    },
+    "shots": [
+      {
+        "t": 1,
+        "file": "/Users/abbawada/Documents/Portfolio-clean-recreate/docs/circuit/v15/content/review-caption-390-t1.png"
+      },
+      {
+        "t": 5,
+        "file": "/Users/abbawada/Documents/Portfolio-clean-recreate/docs/circuit/v15/content/review-caption-390-t5.png"
+      },
+      {
+        "t": 8,
+        "file": "/Users/abbawada/Documents/Portfolio-clean-recreate/docs/circuit/v15/content/review-caption-390-t8.png"
+      },
+      {
+        "t": 16,
+        "file": "/Users/abbawada/Documents/Portfolio-clean-recreate/docs/circuit/v15/content/review-caption-390-t16.png"
+      },
+      {
+        "t": 24,
+        "file": "/Users/abbawada/Documents/Portfolio-clean-recreate/docs/circuit/v15/content/review-caption-390-t24.png"
+      },
+      {
+        "t": 31,
+        "file": "/Users/abbawada/Documents/Portfolio-clean-recreate/docs/circuit/v15/content/review-caption-390-t31.png"
+      }
+    ]
+  },
+  "1440": {
+    "rects": {
+      "video": {
+        "x": 219,
+        "y": 169,
+        "w": 459.828125,
+        "h": 562
+      },
+      "cap": {
+        "x": 219,
+        "y": 698.609375,
+        "w": 459.828125,
+        "h": 32.390625
+      },
+      "hero": {
+        "x": 218,
+        "y": 168,
+        "w": 461.828125,
+        "h": 564
+      }
+    },
+    "shots": [
+      {
+        "t": 1,
+        "file": "/Users/abbawada/Documents/Portfolio-clean-recreate/docs/circuit/v15/content/review-caption-1440-t1.png"
+      },
+      {
+        "t": 5,
+        "file": "/Users/abbawada/Documents/Portfolio-clean-recreate/docs/circuit/v15/content/review-caption-1440-t5.png"
+      },
+      {
+        "t": 8,
+        "file": "/Users/abbawada/Documents/Portfolio-clean-recreate/docs/circuit/v15/content/review-caption-1440-t8.png"
+      },
+      {
+        "t": 16,
+        "file": "/Users/abbawada/Documents/Portfolio-clean-recreate/docs/circuit/v15/content/review-caption-1440-t16.png"
+      },
+      {
+        "t": 24,
+        "file": "/Users/abbawada/Documents/Portfolio-clean-recreate/docs/circuit/v15/content/review-caption-1440-t24.png"
+      },
+      {
+        "t": 31,
+        "file": "/Users/abbawada/Documents/Portfolio-clean-recreate/docs/circuit/v15/content/review-caption-1440-t31.png"
+      }
+    ]
+  }
+}

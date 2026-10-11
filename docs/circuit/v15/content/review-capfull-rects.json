@@ -1,0 +1,120 @@
+{
+  "360": {
+    "rects": {
+      "video": {
+        "x": 29.40625,
+        "y": 81.59375,
+        "w": 301.1875,
+        "h": 229.515625
+      },
+      "cap": {
+        "x": 29.40625,
+        "y": 264.328125,
+        "w": 301.1875,
+        "h": 46.78125
+      },
+      "hero": {
+        "x": 28.40625,
+        "y": 80.59375,
+        "w": 303.1875,
+        "h": 231.515625
+      },
+      "objPos": "50% 30%",
+      "objFit": "cover",
+      "playing": true
+    },
+    "shots": [
+      {
+        "t": 1,
+        "got": {
+          "t": 0.000096,
+          "paused": false
+        },
+        "file": "/Users/abbawada/Documents/Portfolio-clean-recreate/docs/circuit/v15/content/review-capfull-360-t1.png"
+      },
+      {
+        "t": 8,
+        "got": {
+          "t": 0.000021,
+          "paused": false
+        },
+        "file": "/Users/abbawada/Documents/Portfolio-clean-recreate/docs/circuit/v15/content/review-capfull-360-t8.png"
+      },
+      {
+        "t": 20,
+        "got": {
+          "t": 0.00004,
+          "paused": false
+        },
+        "file": "/Users/abbawada/Documents/Portfolio-clean-recreate/docs/circuit/v15/content/review-capfull-360-t20.png"
+      },
+      {
+        "t": 31,
+        "got": {
+          "t": 0.000064,
+          "paused": false
+        },
+        "file": "/Users/abbawada/Documents/Portfolio-clean-recreate/docs/circuit/v15/content/review-capfull-360-t31.png"
+      }
+    ]
+  },
+  "1440": {
+    "rects": {
+      "video": {
+        "x": 219,
+        "y": 169,
+        "w": 459.828125,
+        "h": 562
+      },
+      "cap": {
+        "x": 219,
+        "y": 698.609375,
+        "w": 459.828125,
+        "h": 32.390625
+      },
+      "hero": {
+        "x": 218,
+        "y": 168,
+        "w": 461.828125,
+        "h": 564
+      },
+      "objPos": "50% 50%",
+      "objFit": "cover",
+      "playing": true
+    },
+    "shots": [
+      {
+        "t": 1,
+        "got": {
+          "t": 0.000062,
+          "paused": false
+        },
+        "file": "/Users/abbawada/Documents/Portfolio-clean-recreate/docs/circuit/v15/content/review-capfull-1440-t1.png"
+      },
+      {
+        "t": 8,
+        "got": {
+          "t": 0.000081,
+          "paused": false
+        },
+        "file": "/Users/abbawada/Documents/Portfolio-clean-recreate/docs/circuit/v15/content/review-capfull-1440-t8.png"
+      },
+      {
+        "t": 20,
+        "got": {
+          "t": 0.000063,
+          "paused": false
+        },
+        "file": "/Users/abbawada/Documents/Portfolio-clean-recreate/docs/circuit/v15/content/review-capfull-1440-t20.png"
+      },
+      {
+        "t": 31,
+        "got": {
+          "t": 0,
+          "paused": false
+        },
+        "file": "/Users/abbawada/Documents/Portfolio-clean-recreate/docs/circuit/v15/content/review-capfull-1440-t31.png"
+      }
+    ]
+  }
+}

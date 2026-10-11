@@ -1,0 +1,1153 @@
+[
+  {
+    "name": "contrast figcaption muted on paper",
+    "ok": true,
+    "detail": {
+      "ratio": 5.17
+    }
+  },
+  {
+    "name": "contrast .back-vcap on gradient bottom over a white frame",
+    "ok": true,
+    "detail": {
+      "ratio": 8.86,
+      "bg": [
+        54,
+        53,
+        52
+      ]
+    }
+  },
+  {
+    "name": "contrast .back-vcap on gradient bottom over a black frame",
+    "ok": true,
+    "detail": {
+      "ratio": 14.56
+    }
+  },
+  {
+    "name": "contrast .back-vcap at mid gradient over a white frame (worst case for a two-line caption)",
+    "ok": false,
+    "detail": {
+      "ratio": 2.03,
+      "bg": [
+        155,
+        154,
+        154
+      ]
+    }
+  },
+  {
+    "name": "1440 tab reaches the Betta case",
+    "ok": true,
+    "detail": {
+      "tabs": 11
+    }
+  },
+  {
+    "name": "1440 Enter opens the stage, focus lands on the close button",
+    "ok": true,
+    "detail": {
+      "hidden": false,
+      "isOpen": true,
+      "focusOnClose": true,
+      "dialogRole": "dialog",
+      "modal": "true",
+      "dialogLabel": "Betta case, back cover",
+      "video": {
+        "src": "videos/betta_court_rep.mp4",
+        "poster": "images/betta_poster_court.jpg",
+        "muted": true,
+        "autoplayAttr": true,
+        "loop": true,
+        "controls": false,
+        "label": "A player shoots a free throw in the Betta sleeve",
+        "w": "720",
+        "h": "1280"
+      },
+      "cap": "RECORDED · OCT 8, 2026 · FIRST COURT SESSION. 21 OF 28 REPS BUZZED.",
+      "capFont": "9px",
+      "capColor": "rgb(240, 217, 168)",
+      "live": true
+    }
+  },
+  {
+    "name": "1440 case video is the court clip, muted, no controls",
+    "ok": true,
+    "detail": {
+      "src": "videos/betta_court_rep.mp4",
+      "poster": "images/betta_poster_court.jpg",
+      "muted": true,
+      "autoplayAttr": true,
+      "loop": true,
+      "controls": false,
+      "label": "A player shoots a free throw in the Betta sleeve",
+      "w": "720",
+      "h": "1280"
+    }
+  },
+  {
+    "name": "1440 autoplay attr present only without reduced motion",
+    "ok": true,
+    "detail": {
+      "reduced": false,
+      "autoplayAttr": true
+    }
+  },
+  {
+    "name": "1440 clip is playing",
+    "ok": true,
+    "detail": {
+      "paused": false,
+      "t": 1.812161,
+      "ready": 4
+    }
+  },
+  {
+    "name": "1440 no horizontal overflow with the stage open",
+    "ok": true,
+    "detail": {
+      "docW": 1440,
+      "bodyW": 1440,
+      "vw": 1440
+    }
+  },
+  {
+    "name": "1440 flipper fits the viewport",
+    "ok": true,
+    "detail": {
+      "x": 190,
+      "y": 140,
+      "w": 1060,
+      "h": 620
+    }
+  },
+  {
+    "name": "1440 close button at least 24px",
+    "ok": true,
+    "detail": {
+      "x": 1200,
+      "y": 156,
+      "w": 34,
+      "h": 34
+    }
+  },
+  {
+    "name": "1440 caption geometry",
+    "ok": true,
+    "detail": {
+      "cap": {
+        "x": 219,
+        "y": 699,
+        "w": 460,
+        "h": 32
+      },
+      "video": {
+        "x": 219,
+        "y": 169,
+        "w": 460,
+        "h": 562
+      },
+      "lines": 2,
+      "font": "9px"
+    }
+  },
+  {
+    "name": "1440 links are at least 24px tall",
+    "ok": true,
+    "detail": [
+      {
+        "text": "VIEW FULL CASE STUDY",
+        "x": 872,
+        "y": 685,
+        "w": 213,
+        "h": 47
+      },
+      {
+        "text": "BETTA.LIVE",
+        "x": 1095,
+        "y": 685,
+        "w": 127,
+        "h": 47
+      }
+    ]
+  },
+  {
+    "name": "1440 tab order from the close button (8 tabs)",
+    "ok": true,
+    "detail": [
+      "BUTTON.live-play:Pause",
+      "INPUT",
+      "A:VIEW FULL CASE STUDY",
+      "A:BETTA.LIVE",
+      "BODY.stage-open:Abba Wada\n        \n            Betta\n   ",
+      "A.site-name:Abba Wada",
+      "A:Betta",
+      "A:Projects"
+    ]
+  },
+  {
+    "name": "1440 focus still inside the dialog after 8 tabs",
+    "ok": false,
+    "detail": {
+      "inside": false
+    }
+  },
+  {
+    "name": "1440 Esc closes and focus returns to the Betta case",
+    "ok": true,
+    "detail": {
+      "hidden": true,
+      "empty": true,
+      "focusBack": true,
+      "bodyClass": ""
+    }
+  },
+  {
+    "name": "1440 EXTRA skydiving row",
+    "ok": true,
+    "detail": {
+      "cat": "Wearables",
+      "serial": "AWUS-30510",
+      "title": "Skydiving Project #2",
+      "line": "A jump instrument in the making: barometer, LiDAR, GPS, haptics.",
+      "links": [
+        [
+          "WATCH THE REEL",
+          "https://www.instagram.com/reel/Ddv8Qr_gruP/"
+        ]
+      ],
+      "hasShots": false,
+      "hasVideo": false
+    }
+  },
+  {
+    "name": "1440 serials unique",
+    "ok": true,
+    "detail": {
+      "n": 10,
+      "unique": 10
+    }
+  },
+  {
+    "name": "1440 zero page errors, console errors, failed requests",
+    "ok": true,
+    "detail": {
+      "page": [],
+      "console": [],
+      "http": []
+    }
+  },
+  {
+    "name": "360 tab reaches the Betta case",
+    "ok": true,
+    "detail": {
+      "tabs": 11
+    }
+  },
+  {
+    "name": "360 Enter opens the stage, focus lands on the close button",
+    "ok": true,
+    "detail": {
+      "hidden": false,
+      "isOpen": true,
+      "focusOnClose": true,
+      "dialogRole": "dialog",
+      "modal": "true",
+      "dialogLabel": "Betta case, back cover",
+      "video": {
+        "src": "videos/betta_court_rep.mp4",
+        "poster": "images/betta_poster_court.jpg",
+        "muted": true,
+        "autoplayAttr": true,
+        "loop": true,
+        "controls": false,
+        "label": "A player shoots a free throw in the Betta sleeve",
+        "w": "720",
+        "h": "1280"
+      },
+      "cap": "RECORDED · OCT 8, 2026 · FIRST COURT SESSION. 21 OF 28 REPS BUZZED.",
+      "capFont": "9px",
+      "capColor": "rgb(240, 217, 168)",
+      "live": true
+    }
+  },
+  {
+    "name": "360 case video is the court clip, muted, no controls",
+    "ok": true,
+    "detail": {
+      "src": "videos/betta_court_rep.mp4",
+      "poster": "images/betta_poster_court.jpg",
+      "muted": true,
+      "autoplayAttr": true,
+      "loop": true,
+      "controls": false,
+      "label": "A player shoots a free throw in the Betta sleeve",
+      "w": "720",
+      "h": "1280"
+    }
+  },
+  {
+    "name": "360 autoplay attr present only without reduced motion",
+    "ok": true,
+    "detail": {
+      "reduced": false,
+      "autoplayAttr": true
+    }
+  },
+  {
+    "name": "360 clip is playing",
+    "ok": true,
+    "detail": {
+      "paused": false,
+      "t": 2.151827,
+      "ready": 4
+    }
+  },
+  {
+    "name": "360 no horizontal overflow with the stage open",
+    "ok": true,
+    "detail": {
+      "docW": 360,
+      "bodyW": 360,
+      "vw": 360
+    }
+  },
+  {
+    "name": "360 flipper fits the viewport",
+    "ok": true,
+    "detail": {
+      "x": 14,
+      "y": 67,
+      "w": 331,
+      "h": 607
+    }
+  },
+  {
+    "name": "360 close button at least 24px",
+    "ok": true,
+    "detail": {
+      "x": 302,
+      "y": 77,
+      "w": 34,
+      "h": 34
+    }
+  },
+  {
+    "name": "360 caption geometry",
+    "ok": true,
+    "detail": {
+      "cap": {
+        "x": 29,
+        "y": 264,
+        "w": 301,
+        "h": 47
+      },
+      "video": {
+        "x": 29,
+        "y": 82,
+        "w": 301,
+        "h": 230
+      },
+      "lines": 3,
+      "font": "9px"
+    }
+  },
+  {
+    "name": "360 links are at least 24px tall",
+    "ok": true,
+    "detail": [
+      {
+        "text": "VIEW FULL CASE STUDY",
+        "x": 28,
+        "y": 621,
+        "w": 182,
+        "h": 39
+      },
+      {
+        "text": "BETTA.LIVE",
+        "x": 221,
+        "y": 621,
+        "w": 111,
+        "h": 39
+      }
+    ]
+  },
+  {
+    "name": "360 tab order from the close button (8 tabs)",
+    "ok": true,
+    "detail": [
+      "BUTTON.live-play:Pause",
+      "INPUT",
+      "A:VIEW FULL CASE STUDY",
+      "A:BETTA.LIVE",
+      "BODY.stage-open:Abba Wada\n        \n            Betta\n   ",
+      "A.site-name:Abba Wada",
+      "A:Betta",
+      "A:Projects"
+    ]
+  },
+  {
+    "name": "360 focus still inside the dialog after 8 tabs",
+    "ok": false,
+    "detail": {
+      "inside": false
+    }
+  },
+  {
+    "name": "360 Esc closes and focus returns to the Betta case",
+    "ok": true,
+    "detail": {
+      "hidden": true,
+      "empty": true,
+      "focusBack": true,
+      "bodyClass": ""
+    }
+  },
+  {
+    "name": "360 EXTRA skydiving row",
+    "ok": true,
+    "detail": {
+      "cat": "Wearables",
+      "serial": "AWUS-30510",
+      "title": "Skydiving Project #2",
+      "line": "A jump instrument in the making: barometer, LiDAR, GPS, haptics.",
+      "links": [
+        [
+          "WATCH THE REEL",
+          "https://www.instagram.com/reel/Ddv8Qr_gruP/"
+        ]
+      ],
+      "hasShots": false,
+      "hasVideo": false
+    }
+  },
+  {
+    "name": "360 serials unique",
+    "ok": true,
+    "detail": {
+      "n": 10,
+      "unique": 10
+    }
+  },
+  {
+    "name": "360 zero page errors, console errors, failed requests",
+    "ok": true,
+    "detail": {
+      "page": [],
+      "console": [],
+      "http": []
+    }
+  },
+  {
+    "name": "1440-reduced tab reaches the Betta case",
+    "ok": true,
+    "detail": {
+      "tabs": 11
+    }
+  },
+  {
+    "name": "1440-reduced Enter opens the stage, focus lands on the close button",
+    "ok": true,
+    "detail": {
+      "hidden": false,
+      "isOpen": true,
+      "focusOnClose": true,
+      "dialogRole": "dialog",
+      "modal": "true",
+      "dialogLabel": "Betta case, back cover",
+      "video": {
+        "src": "videos/betta_court_rep.mp4",
+        "poster": "images/betta_poster_court.jpg",
+        "muted": true,
+        "autoplayAttr": false,
+        "loop": true,
+        "controls": false,
+        "label": "A player shoots a free throw in the Betta sleeve",
+        "w": "720",
+        "h": "1280"
+      },
+      "cap": "RECORDED · OCT 8, 2026 · FIRST COURT SESSION. 21 OF 28 REPS BUZZED.",
+      "capFont": "9px",
+      "capColor": "rgb(240, 217, 168)",
+      "live": true
+    }
+  },
+  {
+    "name": "1440-reduced case video is the court clip, muted, no controls",
+    "ok": true,
+    "detail": {
+      "src": "videos/betta_court_rep.mp4",
+      "poster": "images/betta_poster_court.jpg",
+      "muted": true,
+      "autoplayAttr": false,
+      "loop": true,
+      "controls": false,
+      "label": "A player shoots a free throw in the Betta sleeve",
+      "w": "720",
+      "h": "1280"
+    }
+  },
+  {
+    "name": "1440-reduced autoplay attr present only without reduced motion",
+    "ok": true,
+    "detail": {
+      "reduced": true,
+      "autoplayAttr": false
+    }
+  },
+  {
+    "name": "1440-reduced clip stays paused",
+    "ok": true,
+    "detail": {
+      "paused": true,
+      "t": 0,
+      "ready": 4
+    }
+  },
+  {
+    "name": "1440-reduced no horizontal overflow with the stage open",
+    "ok": true,
+    "detail": {
+      "docW": 1440,
+      "bodyW": 1440,
+      "vw": 1440
+    }
+  },
+  {
+    "name": "1440-reduced flipper fits the viewport",
+    "ok": true,
+    "detail": {
+      "x": 190,
+      "y": 140,
+      "w": 1060,
+      "h": 620
+    }
+  },
+  {
+    "name": "1440-reduced close button at least 24px",
+    "ok": true,
+    "detail": {
+      "x": 1200,
+      "y": 156,
+      "w": 34,
+      "h": 34
+    }
+  },
+  {
+    "name": "1440-reduced caption geometry",
+    "ok": true,
+    "detail": {
+      "cap": {
+        "x": 219,
+        "y": 699,
+        "w": 460,
+        "h": 32
+      },
+      "video": {
+        "x": 219,
+        "y": 169,
+        "w": 460,
+        "h": 562
+      },
+      "lines": 2,
+      "font": "9px"
+    }
+  },
+  {
+    "name": "1440-reduced links are at least 24px tall",
+    "ok": true,
+    "detail": [
+      {
+        "text": "VIEW FULL CASE STUDY",
+        "x": 872,
+        "y": 685,
+        "w": 213,
+        "h": 47
+      },
+      {
+        "text": "BETTA.LIVE",
+        "x": 1095,
+        "y": 685,
+        "w": 127,
+        "h": 47
+      }
+    ]
+  },
+  {
+    "name": "1440-reduced tab order from the close button (8 tabs)",
+    "ok": true,
+    "detail": [
+      "BUTTON.live-play:Play",
+      "INPUT",
+      "A:VIEW FULL CASE STUDY",
+      "A:BETTA.LIVE",
+      "BODY.stage-open:Abba Wada\n        \n            Betta\n   ",
+      "A.site-name:Abba Wada",
+      "A:Betta",
+      "A:Projects"
+    ]
+  },
+  {
+    "name": "1440-reduced focus still inside the dialog after 8 tabs",
+    "ok": false,
+    "detail": {
+      "inside": false
+    }
+  },
+  {
+    "name": "1440-reduced Esc closes and focus returns to the Betta case",
+    "ok": true,
+    "detail": {
+      "hidden": true,
+      "empty": true,
+      "focusBack": true,
+      "bodyClass": ""
+    }
+  },
+  {
+    "name": "1440-reduced EXTRA skydiving row",
+    "ok": true,
+    "detail": {
+      "cat": "Wearables",
+      "serial": "AWUS-30510",
+      "title": "Skydiving Project #2",
+      "line": "A jump instrument in the making: barometer, LiDAR, GPS, haptics.",
+      "links": [
+        [
+          "WATCH THE REEL",
+          "https://www.instagram.com/reel/Ddv8Qr_gruP/"
+        ]
+      ],
+      "hasShots": false,
+      "hasVideo": false
+    }
+  },
+  {
+    "name": "1440-reduced serials unique",
+    "ok": true,
+    "detail": {
+      "n": 10,
+      "unique": 10
+    }
+  },
+  {
+    "name": "1440-reduced zero page errors, console errors, failed requests",
+    "ok": true,
+    "detail": {
+      "page": [],
+      "console": [],
+      "http": []
+    }
+  },
+  {
+    "name": "360-reduced tab reaches the Betta case",
+    "ok": true,
+    "detail": {
+      "tabs": 11
+    }
+  },
+  {
+    "name": "360-reduced Enter opens the stage, focus lands on the close button",
+    "ok": true,
+    "detail": {
+      "hidden": false,
+      "isOpen": true,
+      "focusOnClose": true,
+      "dialogRole": "dialog",
+      "modal": "true",
+      "dialogLabel": "Betta case, back cover",
+      "video": {
+        "src": "videos/betta_court_rep.mp4",
+        "poster": "images/betta_poster_court.jpg",
+        "muted": true,
+        "autoplayAttr": false,
+        "loop": true,
+        "controls": false,
+        "label": "A player shoots a free throw in the Betta sleeve",
+        "w": "720",
+        "h": "1280"
+      },
+      "cap": "RECORDED · OCT 8, 2026 · FIRST COURT SESSION. 21 OF 28 REPS BUZZED.",
+      "capFont": "9px",
+      "capColor": "rgb(240, 217, 168)",
+      "live": true
+    }
+  },
+  {
+    "name": "360-reduced case video is the court clip, muted, no controls",
+    "ok": true,
+    "detail": {
+      "src": "videos/betta_court_rep.mp4",
+      "poster": "images/betta_poster_court.jpg",
+      "muted": true,
+      "autoplayAttr": false,
+      "loop": true,
+      "controls": false,
+      "label": "A player shoots a free throw in the Betta sleeve",
+      "w": "720",
+      "h": "1280"
+    }
+  },
+  {
+    "name": "360-reduced autoplay attr present only without reduced motion",
+    "ok": true,
+    "detail": {
+      "reduced": true,
+      "autoplayAttr": false
+    }
+  },
+  {
+    "name": "360-reduced clip stays paused",
+    "ok": true,
+    "detail": {
+      "paused": true,
+      "t": 0,
+      "ready": 4
+    }
+  },
+  {
+    "name": "360-reduced no horizontal overflow with the stage open",
+    "ok": true,
+    "detail": {
+      "docW": 360,
+      "bodyW": 360,
+      "vw": 360
+    }
+  },
+  {
+    "name": "360-reduced flipper fits the viewport",
+    "ok": true,
+    "detail": {
+      "x": 14,
+      "y": 67,
+      "w": 331,
+      "h": 607
+    }
+  },
+  {
+    "name": "360-reduced close button at least 24px",
+    "ok": true,
+    "detail": {
+      "x": 302,
+      "y": 77,
+      "w": 34,
+      "h": 34
+    }
+  },
+  {
+    "name": "360-reduced caption geometry",
+    "ok": true,
+    "detail": {
+      "cap": {
+        "x": 29,
+        "y": 264,
+        "w": 301,
+        "h": 47
+      },
+      "video": {
+        "x": 29,
+        "y": 82,
+        "w": 301,
+        "h": 230
+      },
+      "lines": 3,
+      "font": "9px"
+    }
+  },
+  {
+    "name": "360-reduced links are at least 24px tall",
+    "ok": true,
+    "detail": [
+      {
+        "text": "VIEW FULL CASE STUDY",
+        "x": 28,
+        "y": 621,
+        "w": 182,
+        "h": 39
+      },
+      {
+        "text": "BETTA.LIVE",
+        "x": 221,
+        "y": 621,
+        "w": 111,
+        "h": 39
+      }
+    ]
+  },
+  {
+    "name": "360-reduced tab order from the close button (8 tabs)",
+    "ok": true,
+    "detail": [
+      "BUTTON.live-play:Play",
+      "INPUT",
+      "A:VIEW FULL CASE STUDY",
+      "A:BETTA.LIVE",
+      "BODY.stage-open:Abba Wada\n        \n            Betta\n   ",
+      "A.site-name:Abba Wada",
+      "A:Betta",
+      "A:Projects"
+    ]
+  },
+  {
+    "name": "360-reduced focus still inside the dialog after 8 tabs",
+    "ok": false,
+    "detail": {
+      "inside": false
+    }
+  },
+  {
+    "name": "360-reduced Esc closes and focus returns to the Betta case",
+    "ok": true,
+    "detail": {
+      "hidden": true,
+      "empty": true,
+      "focusBack": true,
+      "bodyClass": ""
+    }
+  },
+  {
+    "name": "360-reduced EXTRA skydiving row",
+    "ok": true,
+    "detail": {
+      "cat": "Wearables",
+      "serial": "AWUS-30510",
+      "title": "Skydiving Project #2",
+      "line": "A jump instrument in the making: barometer, LiDAR, GPS, haptics.",
+      "links": [
+        [
+          "WATCH THE REEL",
+          "https://www.instagram.com/reel/Ddv8Qr_gruP/"
+        ]
+      ],
+      "hasShots": false,
+      "hasVideo": false
+    }
+  },
+  {
+    "name": "360-reduced serials unique",
+    "ok": true,
+    "detail": {
+      "n": 10,
+      "unique": 10
+    }
+  },
+  {
+    "name": "360-reduced zero page errors, console errors, failed requests",
+    "ok": true,
+    "detail": {
+      "page": [],
+      "console": [],
+      "http": []
+    }
+  },
+  {
+    "name": "1440 three video figures",
+    "ok": true,
+    "detail": {
+      "figs": 3
+    }
+  },
+  {
+    "name": "1440 tab reaches the third video",
+    "ok": true,
+    "detail": {
+      "tabs": 8
+    }
+  },
+  {
+    "name": "1440 third video wired by the loader (src + poster), controls, no autoplay",
+    "ok": true,
+    "detail": {
+      "src": "videos/betta_court_rep_wide.mp4",
+      "poster": "images/betta_poster_court_wide.jpg",
+      "controls": true,
+      "muted": false,
+      "autoplay": false,
+      "label": "A player shoots a free throw in the Betta sleeve, first court session",
+      "rect": {
+        "w": 760,
+        "h": 428,
+        "ratio": 1.778
+      },
+      "docW": 1440,
+      "vw": 1440,
+      "cap": "Oct 8, 2026. The first court session: a player shoots, the sleeve reads the rep, and one long buzz at the wrist says it held. 21 of 28 reps buzzed.",
+      "capColor": "rgb(107, 103, 95)",
+      "capFont": "14px",
+      "bg": "rgb(247, 245, 240)",
+      "paused": true
+    }
+  },
+  {
+    "name": "1440 third video renders 16:9",
+    "ok": true,
+    "detail": {
+      "w": 760,
+      "h": 428,
+      "ratio": 1.778
+    }
+  },
+  {
+    "name": "1440 no horizontal overflow",
+    "ok": true,
+    "detail": {
+      "docW": 1440,
+      "vw": 1440
+    }
+  },
+  {
+    "name": "1440 Space on the focused video starts playback",
+    "ok": true,
+    "detail": {
+      "paused": false,
+      "t": 1.437346,
+      "muted": false
+    }
+  },
+  {
+    "name": "1440 Space again pauses",
+    "ok": true,
+    "detail": {
+      "paused": true,
+      "t": 1.438818
+    }
+  },
+  {
+    "name": "1440 rig toggle flips by keyboard",
+    "ok": true,
+    "detail": {
+      "before": "true",
+      "after": {
+        "pressed": "false",
+        "paused": true,
+        "text": "Play video"
+      }
+    }
+  },
+  {
+    "name": "1440 zero page errors, console errors, failed requests",
+    "ok": true,
+    "detail": {
+      "page": [],
+      "console": [],
+      "http": []
+    }
+  },
+  {
+    "name": "360 three video figures",
+    "ok": true,
+    "detail": {
+      "figs": 3
+    }
+  },
+  {
+    "name": "360 tab reaches the third video",
+    "ok": true,
+    "detail": {
+      "tabs": 8
+    }
+  },
+  {
+    "name": "360 third video wired by the loader (src + poster), controls, no autoplay",
+    "ok": true,
+    "detail": {
+      "src": "videos/betta_court_rep_wide.mp4",
+      "poster": "images/betta_poster_court_wide.jpg",
+      "controls": true,
+      "muted": false,
+      "autoplay": false,
+      "label": "A player shoots a free throw in the Betta sleeve, first court session",
+      "rect": {
+        "w": 320,
+        "h": 180,
+        "ratio": 1.778
+      },
+      "docW": 360,
+      "vw": 360,
+      "cap": "Oct 8, 2026. The first court session: a player shoots, the sleeve reads the rep, and one long buzz at the wrist says it held. 21 of 28 reps buzzed.",
+      "capColor": "rgb(107, 103, 95)",
+      "capFont": "14px",
+      "bg": "rgb(247, 245, 240)",
+      "paused": true
+    }
+  },
+  {
+    "name": "360 third video renders 16:9",
+    "ok": true,
+    "detail": {
+      "w": 320,
+      "h": 180,
+      "ratio": 1.778
+    }
+  },
+  {
+    "name": "360 no horizontal overflow",
+    "ok": true,
+    "detail": {
+      "docW": 360,
+      "vw": 360
+    }
+  },
+  {
+    "name": "360 Space on the focused video starts playback",
+    "ok": true,
+    "detail": {
+      "paused": false,
+      "t": 1.424006,
+      "muted": false
+    }
+  },
+  {
+    "name": "360 Space again pauses",
+    "ok": true,
+    "detail": {
+      "paused": true,
+      "t": 1.426161
+    }
+  },
+  {
+    "name": "360 rig toggle flips by keyboard",
+    "ok": true,
+    "detail": {
+      "before": "true",
+      "after": {
+        "pressed": "false",
+        "paused": true,
+        "text": "Play video"
+      }
+    }
+  },
+  {
+    "name": "360 zero page errors, console errors, failed requests",
+    "ok": true,
+    "detail": {
+      "page": [],
+      "console": [],
+      "http": []
+    }
+  },
+  {
+    "name": "1440-reduced three video figures",
+    "ok": true,
+    "detail": {
+      "figs": 3
+    }
+  },
+  {
+    "name": "1440-reduced tab reaches the third video",
+    "ok": true,
+    "detail": {
+      "tabs": 8
+    }
+  },
+  {
+    "name": "1440-reduced third video wired by the loader (src + poster), controls, no autoplay",
+    "ok": true,
+    "detail": {
+      "src": "videos/betta_court_rep_wide.mp4",
+      "poster": "images/betta_poster_court_wide.jpg",
+      "controls": true,
+      "muted": false,
+      "autoplay": false,
+      "label": "A player shoots a free throw in the Betta sleeve, first court session",
+      "rect": {
+        "w": 760,
+        "h": 428,
+        "ratio": 1.778
+      },
+      "docW": 1440,
+      "vw": 1440,
+      "cap": "Oct 8, 2026. The first court session: a player shoots, the sleeve reads the rep, and one long buzz at the wrist says it held. 21 of 28 reps buzzed.",
+      "capColor": "rgb(107, 103, 95)",
+      "capFont": "14px",
+      "bg": "rgb(247, 245, 240)",
+      "paused": true
+    }
+  },
+  {
+    "name": "1440-reduced third video renders 16:9",
+    "ok": true,
+    "detail": {
+      "w": 760,
+      "h": 428,
+      "ratio": 1.778
+    }
+  },
+  {
+    "name": "1440-reduced no horizontal overflow",
+    "ok": true,
+    "detail": {
+      "docW": 1440,
+      "vw": 1440
+    }
+  },
+  {
+    "name": "1440-reduced Space on the focused video starts playback",
+    "ok": true,
+    "detail": {
+      "paused": false,
+      "t": 1.435185,
+      "muted": false
+    }
+  },
+  {
+    "name": "1440-reduced Space again pauses",
+    "ok": true,
+    "detail": {
+      "paused": true,
+      "t": 1.4367
+    }
+  },
+  {
+    "name": "1440-reduced rig toggle flips by keyboard",
+    "ok": true,
+    "detail": {
+      "before": "false",
+      "after": {
+        "pressed": "true",
+        "paused": false,
+        "text": "Pause video"
+      }
+    }
+  },
+  {
+    "name": "1440-reduced zero page errors, console errors, failed requests",
+    "ok": true,
+    "detail": {
+      "page": [],
+      "console": [],
+      "http": []
+    }
+  },
+  {
+    "name": "1440 JS off: Skydiving row under Wearables with a safe external link",
+    "ok": true,
+    "detail": {
+      "href": "https://www.instagram.com/reel/Ddv8Qr_gruP/",
+      "target": "_blank",
+      "rel": "noopener noreferrer",
+      "group": "Wearables",
+      "text": "Skydiving Project #2 → A jump instrument in the making: barometer, LiDAR, GPS, haptics.",
+      "linkH": 21,
+      "hiddenShelf": true,
+      "plainHidden": false,
+      "docW": 1440
+    }
+  },
+  {
+    "name": "360 JS off: Skydiving row under Wearables with a safe external link",
+    "ok": true,
+    "detail": {
+      "href": "https://www.instagram.com/reel/Ddv8Qr_gruP/",
+      "target": "_blank",
+      "rel": "noopener noreferrer",
+      "group": "Wearables",
+      "text": "Skydiving Project #2 → A jump instrument in the making: barometer, LiDAR, GPS, haptics.",
+      "linkH": 21,
+      "hiddenShelf": true,
+      "plainHidden": false,
+      "docW": 360
+    }
+  }
+]

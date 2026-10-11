@@ -896,7 +896,7 @@ export function mount(canvas, L) {
         }
         if (!running) render();
     }
-    const fontJson = fetch('circuit/vendor/chakra-petch-bold.typeface.json?v=14.0').then(r => r.json());
+    const fontJson = fetch('circuit/vendor/chakra-petch-bold.typeface.json?v=15.0').then(r => r.json());
 
     /* ------------------------------------------------ the type hoardings (V1.2, V1.3) */
     /* Three lines of type on trackside boards. Frames and posts go up with
@@ -981,8 +981,14 @@ export function mount(canvas, L) {
         if (!m) { m = new THREE.MeshBasicMaterial({ color: hex, toneMapped: false }); accentMats.set(hex, m); }
         return m;
     };
-    function makeCar(accent, number) {
+    /* opts (V1.5 fix round): the visitor's car is the one light car on the
+       graphite. opts.body is its own body material (paper), so the wheels
+       stay gloss black in their own mesh, and opts.wing lights the wing edge
+       in a second colour (gold) while the flank lines and nose take accent. */
+    function makeCar(accent, number, opts) {
         const g = new THREE.Group(), body = new Builder(true), neon = new Builder(true);
+        const own = opts && opts.body ? opts.body : null;
+        const wheels = own ? new Builder(true) : body, wing = opts && opts.wing ? new Builder(true) : neon;
         body.box(-2.4, -1.05, 4.8, 2.1, 0.5, 0.35, 'x');                                            // the tub, low and wide
         for (const z of [-1.3, 0.85]) { body.box(-2.2, z, 1.8, 0.45, 0.72, 0.3, 'x'); body.box(1.0, z, 1.3, 0.45, 0.58, 0.3, 'x'); }   // rear haunches, front fenders
         body.box(-2.3, -0.38, 1.6, 0.76, 0.34, 0.85, 'x');                                           // the spine behind the canopy
@@ -990,13 +996,15 @@ export function mount(canvas, L) {
         body.box(-2.95, -1.25, 0.42, 2.5, 0.12, 0.98, 'x');                                          // the rear wing
         body.geometry(new THREE.SphereGeometry(1, 10, 7, 0, Math.PI * 2, 0, Math.PI / 2), 'x',
             new THREE.Matrix4().compose(new THREE.Vector3(-0.35, 0.84, 0), new THREE.Quaternion(), new THREE.Vector3(1.05, 0.55, 0.62)));   // the canopy
-        for (const x of [1.55, -1.65]) for (const z of [-1.28, 0.83]) body.box(x - 0.42, z, 0.84, 0.45, 0.82, 0, 'x');   // wheels, gloss black like the body
+        for (const x of [1.55, -1.65]) for (const z of [-1.28, 0.83]) wheels.box(x - 0.42, z, 0.84, 0.45, 0.82, 0, 'x');   // wheels, gloss black whatever the body
         for (const z of [-0.7, 0.55]) body.box(-2.75, z, 0.2, 0.15, 0.4, 0.58, 'x');             // wing pylons
         for (const z of [-1.16, 1.04]) neon.box(-2.3, z, 4.5, 0.12, 0.08, 0.86, 'x');             // the flank lines, one accent per car
-        neon.box(-3.0, -1.05, 0.1, 2.1, 0.12, 1.0, 'x');                                           // the wing's lit edge
+        wing.box(-3.0, -1.05, 0.1, 2.1, 0.12, 1.0, 'x');                                           // the wing's lit edge
         neon.box(2.9, -0.65, 0.1, 1.3, 0.1, 0.5, 'x');                                             // the nose tip
-        g.add(new THREE.Mesh(body.build(), gloss));
+        g.add(new THREE.Mesh(body.build(), own || gloss));
+        if (own) g.add(new THREE.Mesh(wheels.build(), gloss));
         g.add(new THREE.Mesh(neon.build(), accentMat(accent)));
+        if (wing !== neon) g.add(new THREE.Mesh(wing.build(), accentMat(opts.wing)));
         const shadow = new THREE.Mesh(new THREE.CircleGeometry(1, 10), shadowMat);
         shadow.rotation.x = -Math.PI / 2; shadow.scale.set(3.1, 1.7, 1); shadow.position.set(0.3, 0.11, 0); g.add(shadow);
         g.userData.number = number;
@@ -1049,8 +1057,24 @@ export function mount(canvas, L) {
     const attendCase = (projectId, kind) => { const id = carByProject[projectId]; if (pulse && id) pulse.bump(id, kind || 'case'); return !!id; };
     const attendCaseDwell = (projectId, dt) => { const id = carByProject[projectId]; if (pulse && id) pulse.dwell([id], dt); };
 
-    const RACE = { speed: 9.2, line: 1.0, pass: 2.1, inside: 0.9, follow: CAR.length + 0.9, ahead: CAR.length + 1.2, clear: CAR.width + 0.25, towReach: 16, tow: 0.06, band: 0.12, drag: 0.03, edge: 0.1, commit: 0.16, lift: 0.05, rest: 4, patience: 18 };
+    const RACE = { speed: 9.2, line: 1.0, pass: 2.1, inside: 0.9, follow: CAR.length + 0.9, ahead: CAR.length + 1.2, clear: CAR.width + 0.25, towReach: 16, tow: 0.06, band: 0.12, drag: 0.03, edge: 0.1, commit: 0.16, lift: 0.05, rest: 4, patience: 18, firm: CAR.length + 0.3 };
     const race = { t: 0, lap: 0, seed: SEED, order: [], pass: null, passes: 0, aborts: 0, lastPass: -10, changes: 0 };
+    /* V1.5: the visitor drives. One extra car, paper white, that exists only
+       while someone is driving it. Its speed comes from the throttle and
+       the corner instead of a personality: idle is half pace, flat out is
+       a touch faster than the field, so a pass needs a clean lane and a
+       lift in the corners keeps it honest. The tow applies; the band, the
+       leader drag and the attention do not. It holds station behind a
+       blocker exactly as the others do, so it has to change lane to get
+       by, and the field treats it as a blocker like any other car. It
+       never starts a choreographed pass; the AI may pass it. Its lateral
+       follows the steer and is clamped so the car stays inside the white
+       line, and the racing line's swing means a full lock clears a car
+       only on the inside of the swing. Nothing it does is written to the
+       attention store. */
+    const DRIVE = { idle: 0.5, gain: 0.60, grip: 0.34, reach: 3.0, edge: 3.1, brake: 0.35, back: RACE.follow + 1.5, turn: 3.0, hyst: 2.0 };   // gain 0.60: a bot lap passes three to five, a person two to four, in about 68 s (docs/circuit/v15/drive.md)
+    const drive = { car: null, t: 0, s0: 0, lapDone: false, lapTime: 0, passed: [], passedBy: [], ahead: new Set(), input: { throttle: 0, steer: 0, brake: false }, halo: null };
+    const HALO_S = 1.5;   // the paper ring under the visitor's car, gone after a second and a half
     const easeIO = x => x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
     const racingLine = s => RACE.line * Math.sin(s / lap * Math.PI * 6 + 0.4);
     function buildGrid() {
@@ -1069,6 +1093,28 @@ export function mount(canvas, L) {
     /* every frame: pace, the tow and the band set what each car wants;
        a car in line behind another holds station; a pass carries one
        round the outside; positions and gaps fall out of the distances */
+    /* a car alongside is a wall: the player cannot steer into it, and a car
+       the racing line would carry into the pinned player gives room inside
+       the line first, the player second. Runs inside the player's own step,
+       so every car stepped after it in the same frame sees the settled lane. */
+    function wall(p) {
+        for (const o of cars) {
+            if (o === p || Math.abs(o.s - p.s) >= CAR.length + 0.2) continue;
+            let d = o.lane - p.lane; if (Math.abs(d) >= RACE.clear) continue;
+            const sign = d >= 0 ? 1 : -1;
+            if ((p.lateral - p.lat0) * sign > 0) p.lateral = p.lat0;   // undo the steer toward it
+            { const rl = racingLine(p.s); p.lateral = Math.max(-DRIVE.edge - rl, Math.min(DRIVE.edge - rl, p.lateral)); p.lane = rl + p.lateral; d = o.lane - p.lane; }   // and keep the line
+            let need = RACE.clear - Math.abs(d);
+            if (need > 0) {   // the other car gives what room it has: to the line, and to the next car alongside it on that side
+                let room = Math.max(0, DRIVE.edge - sign * o.lane);
+                for (const q of cars) if (q !== o && q !== p && Math.abs(q.s - o.s) < CAR.length + 0.2 && (q.lane - o.lane) * sign > 0) room = Math.min(room, Math.max(0, (q.lane - o.lane) * sign - RACE.clear));
+                const give = Math.min(need, room);
+                o.lateral += sign * give; o.lane += sign * give; need -= give;
+                o.pose = placeAt(o.group, o.s, o.lane);
+            }
+            if (need > 0) { const lane = Math.max(-DRIVE.edge, Math.min(DRIVE.edge, p.lane - sign * need)); p.lateral += lane - p.lane; p.lane = lane; }
+        }
+    }
     function placeCars(dt) {
         race.t += dt;
         if (pulse) pulse.tick();
@@ -1076,31 +1122,45 @@ export function mount(canvas, L) {
         if (race.order.length && order.some((ci, k) => ci !== race.order[k])) race.changes++;
         race.order = order;
         for (let k = 0; k < order.length; k++) {
-            const c = cars[order[k]], ahead = k > 0 ? cars[order[k - 1]] : null;
+            const c = cars[order[k]], ahead = k > 0 ? cars[order[k - 1]] : null, player = !!c.player;
             let blocker = null, bi = -1;   // the nearest car ahead on a line this one would run into; a car alongside on a clear line is not one
-            for (let j = k - 1; j >= 0; j--) { const o = cars[order[j]]; if (Math.abs(o.lateral - c.lateral) < RACE.clear) { blocker = o; bi = order[j]; break; } }
+            for (let j = k - 1; j >= 0; j--) {   // for the player, both cars of a pass in progress block the whole road: nobody threads a pass
+                const o = cars[order[j]], inBand = Math.abs(o.lateral - c.lateral) < RACE.clear;
+                if (inBand && o.s - c.s < CAR.length + 0.2 && Math.abs(o.lane - c.lane) >= RACE.clear) continue;   // beside us on a clear lane (the visitor's car, held off by the wall below), not ahead of us
+                if (inBand || (player && race.pass && race.pass.over !== order[k] && (order[j] === race.pass.car || order[j] === race.pass.over))) { blocker = o; bi = order[j]; break; }   // a car passing the visitor is an ordinary car to them
+            }
             const pose = poseAt(c.s), corner = Math.min(1, Math.abs(pose.k) / 0.12);
-            const form = 1 + 0.022 * Math.sin(t / c.f1 + c.p1) + 0.012 * Math.sin(t / c.f2 + c.p2);
-            const aimAttend = pulse ? pulse.pace(c.id) : 1;   // what the visitor's tour is worth to this car right now
-            c.attendNow += (aimAttend - c.attendNow) * Math.min(1, dt / ATTEND_SMOOTH);
-            let want = RACE.speed * c.pace * c.top * form * c.attendNow * (1 - c.grip * corner);
+            c.lat0 = c.lateral;
+            let want;
+            if (player) {   // the throttle and the corner, nothing else
+                const inp = drive.input;
+                want = RACE.speed * (DRIVE.idle + DRIVE.gain * inp.throttle) * (1 - DRIVE.grip * corner);
+                if (inp.brake) want = Math.min(want, RACE.speed * DRIVE.brake);
+            } else {
+                const form = 1 + 0.022 * Math.sin(t / c.f1 + c.p1) + 0.012 * Math.sin(t / c.f2 + c.p2);
+                const aimAttend = pulse ? pulse.pace(c.id) : 1;   // what the visitor's tour is worth to this car right now
+                c.attendNow += (aimAttend - c.attendNow) * Math.min(1, dt / ATTEND_SMOOTH);
+                want = RACE.speed * c.pace * c.top * form * c.attendNow * (1 - c.grip * corner);
+            }
             const passing = race.pass && race.pass.car === order[k], passed = race.pass && race.pass.over === order[k];
             if (ahead) {
                 const gap = ahead.s - c.s;
                 if (gap < RACE.towReach) want *= 1 + RACE.tow * (1 - gap / RACE.towReach);          // the tow
-                want *= 1 + RACE.band * Math.min(1, Math.max(0, (gap - 7) / 20));                   // the band: nobody drifts away
+                if (!player) want *= 1 + RACE.band * Math.min(1, Math.max(0, (gap - 7) / 20));     // the band: nobody drifts away
             }
             let held = false;
             if (blocker) {   // everyone holds station behind the car it would run into, passing or not
                 const gap = blocker.s - c.s;
                 if (gap < RACE.follow) {
                     const edge = want - blocker.v;
-                    if (!passing && !race.pass && corner < 0.25 && edge > RACE.edge && gap >= CAR.length + 0.4 && t - race.lastPass > RACE.rest)
+                    /* no pass starts across a visitor who is alongside either car of it; a pass on the visitor is fine */
+                    const third = drive.car && drive.car !== c && drive.car !== blocker && (Math.abs(drive.car.s - c.s) < CAR.length + 1.5 || Math.abs(drive.car.s - blocker.s) < CAR.length + 1.5);
+                    if (!player && !passing && !race.pass && !third && corner < 0.25 && edge > RACE.edge && gap >= CAR.length + 0.4 && t - race.lastPass > RACE.rest)
                         race.pass = { car: order[k], over: bi, t0: t, side: race.passes % 2 ? -1 : 1 };
                     else { want = Math.min(want, blocker.v * (gap < RACE.follow - 0.8 ? 0.96 : 1)); held = true; }
                 }
             }
-            if (!ahead) {
+            if (!ahead && !player) {
                 const behind = order.length > 1 ? c.s - cars[order[1]].s : 0;
                 want *= 1 - RACE.drag * Math.min(1, Math.max(0, (behind - 8) / 20));                // the leader in clean air, reeled in
             }
@@ -1108,21 +1168,51 @@ export function mount(canvas, L) {
                 const over = cars[race.pass.over], clear = Math.abs(c.lateral - over.lateral) >= RACE.clear, gap = over.s - c.s;
                 if (race.pass.abort) want = Math.min(want, over.v * 0.93);
                 else if (clear) { if (!held) want *= 1 + RACE.commit; }
-                else if (gap < CAR.length + 0.8) want = Math.min(want, over.v * 0.94);
+                else if (gap > 0 && gap < CAR.length + 0.8) want = Math.min(want, over.v * 0.94);   // only while still behind: ahead of a visitor who is holding station, slowing to their pace would stall both
             }
-            if (passed && !race.pass.abort && Math.abs(c.lateral - cars[race.pass.car].lateral) >= RACE.clear) want *= 1 - RACE.lift;
+            if (passed && !player && !race.pass.abort && Math.abs(c.lateral - cars[race.pass.car].lateral) >= RACE.clear) want *= 1 - RACE.lift;
             c.v += (want - c.v) * Math.min(1, dt * (want < c.v ? 7 : 2.4));   // the brakes bite, the throttle builds
+            /* the firm end of the hold: inside a third of a length of the
+               follow distance the car's speed is clamped to its blocker's,
+               so a long frame (a throttled tab, a slow phone) cannot shrink
+               the gap under a car length. Eight cars make more trains, and
+               the player closes faster than any of them. */
+            if (held && blocker.s - c.s < RACE.firm) c.v = Math.min(c.v, blocker.v);
             c.s += c.v * dt;
-            const side = race.pass ? race.pass.side : 0, aimLat = passing ? RACE.pass * side : passed ? -RACE.inside * side : 0;
-            c.lateral += (aimLat - c.lateral) * Math.min(1, dt * 2.6);
+            if (player) {   // the steer sets the lateral; the lane stays inside the white line; a car alongside is a wall
+                c.lateral += (drive.input.steer * DRIVE.reach - c.lateral) * Math.min(1, dt * DRIVE.turn);
+                const rl = racingLine(c.s);
+                c.lateral = Math.max(-DRIVE.edge - rl, Math.min(DRIVE.edge - rl, c.lateral));
+                c.lane = rl + c.lateral;
+                wall(c);
+            } else {
+                const side = race.pass ? race.pass.side : 0, aimLat = passing ? RACE.pass * side : passed ? -RACE.inside * side : 0;
+                c.lateral += (aimLat - c.lateral) * Math.min(1, dt * 2.6);
+            }
             c.lane = racingLine(c.s) + c.lateral;
             c.pose = placeAt(c.group, c.s, c.lane);
+        }
+        if (drive.car) {   // the lap and the passes, from distance alone, with a third of a car of hysteresis so a dead heat is not ten passes
+            const c = drive.car;
+            if (drive.halo) {   // the ring under the car fades through the last half second of its time
+                const h = drive.halo; h.t += dt;
+                h.mesh.material.opacity = 0.6 * Math.max(0, Math.min(1, (HALO_S - h.t) / 0.5));
+                if (h.t >= HALO_S) { c.group.remove(h.mesh); h.mesh.geometry.dispose(); h.mesh.material.dispose(); drive.halo = null; }
+            }
+            if (!drive.lapDone) { drive.t += dt; if (c.s - drive.s0 >= lap) { drive.lapDone = true; drive.lapTime = drive.t; } }
+            for (const o of cars) {
+                if (o === c) continue;
+                const d = o.s - c.s;
+                if (drive.ahead.has(o.id)) { if (d <= -DRIVE.hyst) { drive.ahead.delete(o.id); drive.passed.push(o.id); } }
+                else if (d >= DRIVE.hyst) { drive.ahead.add(o.id); drive.passedBy.push(o.id); }
+            }
         }
         if (race.pass) {
             const a = cars[race.pass.car], b = cars[race.pass.over], d = a.s - b.s;
             if (!race.pass.abort && d >= RACE.ahead) { race.pass = null; race.passes++; race.lastPass = t; }   // a length clear: back on the line
             else if (!race.pass.abort && t - race.pass.t0 > RACE.patience) { race.pass.abort = true; race.aborts++; }   // no way through: drop back, then tuck in
             else if (race.pass.abort && d <= -RACE.follow) { race.pass = null; race.lastPass = t; }
+            else if (race.pass.abort && b.player && d > 0) { race.pass = null; race.lastPass = t; }   // a pass on the visitor that runs out of time while already ahead of them simply ends: the car is past and rejoins the line
         }
         const leader = cars[order[0]];
         race.lap = Math.max(1, Math.floor((leader.s - startS) / lap) + 1);
@@ -1130,11 +1220,69 @@ export function mount(canvas, L) {
     const gridState = () => {
         if (!cars.length || !race.order.length) return [];
         const leader = cars[race.order[0]], lv = Math.max(1, leader.v);
-        return race.order.map((ci, k) => { const c = cars[ci]; return { id: c.id, rank: k + 1, code: c.code, name: c.name, stop: c.stop, number: c.number, accent: c.accent,
-            share: pulse ? +pulse.share(c.id).toFixed(3) : 0, attend: +(c.attendNow - 1).toFixed(4), flashedAt: pulse ? pulse.flashedAt(c.id) : 0,
+        return race.order.map((ci, k) => { const c = cars[ci], you = !!c.player; return { id: c.id, rank: k + 1, code: c.code, name: c.name, stop: c.stop, number: c.number, accent: c.accent, player: you,
+            share: (pulse && !you) ? +pulse.share(c.id).toFixed(3) : 0, attend: you ? 0 : +(c.attendNow - 1).toFixed(4), flashedAt: (pulse && !you) ? pulse.flashedAt(c.id) : 0,   // the player is kept out of the attention store
             gap: +((leader.s - c.s) / lv).toFixed(2), s: +c.s.toFixed(2), v: +c.v.toFixed(2), lane: +c.lane.toFixed(2),
             at: [c.group.position.x, c.group.position.z], tx: c.pose ? c.pose.tx : 1, tz: c.pose ? c.pose.tz : 0,
             passing: !!(race.pass && race.pass.car === ci), passed: !!(race.pass && race.pass.over === ci) }; });
+    };
+    /* V1.5: the drive. startDrive puts the visitor's car at the back of the
+       field, a follow distance and a half behind the last car; it is the
+       last entry in cars, so the others keep their indices when it leaves. */
+    function startDrive() {
+        if (drive.car || !cars.length || !race.order.length) return drive.car;
+        const last = cars[race.order[race.order.length - 1]];
+        /* the one light car on the graphite: a paper body, ink flank lines, the wing edge in gold (fix round, 2026-10-10) */
+        const paper = new THREE.MeshPhysicalMaterial({ color: C.paper, roughness: 0.35, metalness: 0.1, clearcoat: 1, clearcoatRoughness: 0.25, flatShading: true });
+        const g = makeCar(C.ink, 'YOU', { body: paper, wing: C.accent }); scene.add(g);
+        g.userData.own = [paper];   // disposed with the car; the gloss, the accents and the shadow are shared and stay
+        const c = { id: 'you', group: g, name: '', code: 'YOU', stop: null, project: null, number: 'YOU', accent: C.ink, player: true, pose: null, lane: 0, lateral: 0,
+            s: last.s - DRIVE.back, v: last.v, attendNow: 1, pace: 1, grip: DRIVE.grip, top: 1, f1: 1, f2: 1, p1: 0, p2: 0 };
+        cars.push(c);
+        if (!reduced.matches) {   // a flat paper ring under the car for the first moment of the drive, so the eye lands on it during the fly
+            const halo = new THREE.Mesh(new THREE.RingGeometry(3.4, 4.0, 48), new THREE.MeshBasicMaterial({ color: C.paper, transparent: true, opacity: 0.6, depthWrite: false, toneMapped: false }));
+            halo.rotation.x = -Math.PI / 2; halo.position.y = 0.12; g.add(halo);
+            drive.halo = { mesh: halo, t: 0 };
+        }
+        drive.car = c; drive.t = 0; drive.s0 = c.s; drive.lapDone = false; drive.lapTime = 0; drive.passed = []; drive.passedBy = [];
+        drive.input = { throttle: 0, steer: 0, brake: false };
+        drive.ahead = new Set(cars.filter(o => o !== c && o.s > c.s).map(o => o.id));
+        race.order = cars.map((x, i) => i).sort((a, b) => cars[b].s - cars[a].s);
+        c.lane = racingLine(c.s); c.pose = placeAt(g, c.s, c.lane);
+        if (fontsLoaded) numberCars();
+        if (!running) { start(); if (!running) render(); }
+        return c;
+    }
+    const setDriveInput = inp => {
+        if (!inp) return;
+        const th = +inp.throttle, st = +inp.steer;
+        drive.input.throttle = Number.isFinite(th) ? Math.max(0, Math.min(1, th)) : 0;
+        drive.input.steer = Number.isFinite(st) ? Math.max(-1, Math.min(1, st)) : 0;
+        drive.input.brake = !!inp.brake;
+    };
+    function endDrive() {
+        const c = drive.car; if (!c) return;
+        const i = cars.indexOf(c);
+        if (i >= 0) cars.splice(i, 1);
+        scene.remove(c.group);
+        if (drive.halo) { drive.halo.mesh.material.dispose(); drive.halo = null; }
+        c.group.traverse(o => {   // its own geometry, its plate and its paper body; the gloss, the accents and the shadow material are shared and stay
+            if (!o.isMesh) return;
+            o.geometry.dispose();
+            if (o.material.map) { o.material.map.dispose(); o.material.dispose(); }
+        });
+        for (const m of c.group.userData.own || []) m.dispose();
+        if (race.pass && (race.pass.car === i || race.pass.over === i)) { race.pass = null; race.lastPass = race.t; }
+        race.order = cars.map((x, k) => k).sort((a, b) => cars[b].s - cars[a].s);
+        drive.car = null; drive.input = { throttle: 0, steer: 0, brake: false };
+        if (reduced.matches) { stop(); render(); } else if (!running) render();
+    }
+    const driveState = () => {
+        const c = drive.car;
+        if (!c) return { on: false, t: 0, lapDone: false, lapTime: 0, rank: 0, passed: [], passedBy: [], v: 0, lane: 0, s: 0, lap: +lap.toFixed(1) };
+        return { on: true, t: +drive.t.toFixed(2), lapDone: drive.lapDone, lapTime: +drive.lapTime.toFixed(2), rank: race.order.indexOf(cars.indexOf(c)) + 1,
+                 passed: drive.passed.slice(), passedBy: drive.passedBy.slice(), v: +c.v.toFixed(2), lane: +c.lane.toFixed(2), lateral: +c.lateral.toFixed(2), s: +(c.s - drive.s0).toFixed(1), lap: +lap.toFixed(1),
+                 throttle: drive.input.throttle, steer: drive.input.steer, brake: drive.input.brake };
     };
     const raceState = () => !cars.length ? { seed: race.seed, t: 0, lap: 1, passes: 0, aborts: 0, changes: 0, pass: null, leader: null } : ({ seed: race.seed, t: +race.t.toFixed(2), lap: race.lap, passes: race.passes, aborts: race.aborts, changes: race.changes,
         pass: race.pass ? { car: cars[race.pass.car].id, over: cars[race.pass.over].id, since: +(race.t - race.pass.t0).toFixed(1) } : null, leader: cars[race.order[0]].id });
@@ -1316,10 +1464,12 @@ export function mount(canvas, L) {
         if (now - secStart >= 1000) { stats.fps = secFrames * 1000 / (now - secStart); stats.window.push(stats.fps); if (stats.window.length > 10) stats.window.shift(); secFrames = 0; secStart = now; }
         if (running) raf = requestAnimationFrame(frame);
     }
-    function start() { if (running || reduced.matches || !ready) return; running = true; last = performance.now(); secStart = last; secFrames = 0; raf = requestAnimationFrame(frame); }
+    /* under reduced motion nothing runs on its own; a drive is the visitor
+       asking for motion, so the loop runs for exactly as long as they hold the car */
+    function start() { if (running || (reduced.matches && !drive.car) || !ready) return; running = true; last = performance.now(); secStart = last; secFrames = 0; raf = requestAnimationFrame(frame); }
     function stop() { running = false; cancelAnimationFrame(raf); }
     document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); else start(); });
-    const onReduced = () => { if (reduced.matches) { stop(); if (built) placeCars(0); render(); } else start(); };
+    const onReduced = () => { if (reduced.matches && !drive.car) { stop(); if (built) placeCars(0); render(); } else start(); };
     if (reduced.addEventListener) reduced.addEventListener('change', onReduced); else reduced.addListener(onReduced);
     window.addEventListener('resize', () => { fit(); if (!running) render(); });
 
@@ -1362,6 +1512,7 @@ export function mount(canvas, L) {
              groups, hooks, project, groundAt, pick, DIR, isRunning: () => running, reduced, ready: readyPromise,
              cars, carAt: id => { const c = cars.find(k => k.id === id); return c && c.pose ? { x: c.group.position.x, z: c.group.position.z, tx: c.pose.tx, tz: c.pose.tz, s: c.s, v: c.v } : null; },
              gridState, raceState, passing: () => !!race.pass, stepRace: dt => placeCars(dt), dressed, marked, marks: () => markBoxes,
+             startDrive, endDrive, setDriveInput, driveState, driving: () => !!drive.car, DRIVE, speed: RACE.speed,
              attend, attendStop, attendDwell, attendCase, attendCaseDwell, carsByStop, carByProject,
              attention: () => pulse ? L.GRID.map(c => ({ id: c.id, score: +pulse.scoreOf(c.id).toFixed(2), share: +pulse.share(c.id).toFixed(3) })) : [],
              anyAttention: () => !!pulse && pulse.anyAttention(),

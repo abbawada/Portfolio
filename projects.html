@@ -39,6 +39,10 @@
                 <button class="shelf-nav next" id="shelfNext" type="button" aria-label="Scroll the shelf right" hidden>&#8250;</button>
             </div>
             <p class="xmb-hint">DRAG THE SHELF · CLICK A CASE TO FLIP IT · ARROW KEYS WORK TOO</p>
+            <div class="plain-group" id="shelfExtra" hidden>
+                <h2 class="section-h">No case yet</h2>
+                <ul class="plain-list"></ul>
+            </div>
         </section>
 
         <div class="stage" id="stage" hidden></div>
@@ -48,6 +52,7 @@
                 <h2 class="section-h">Wearables</h2>
                 <ul class="plain-list">
                     <li><a href="https://www.youtube.com/watch?v=Hr_AOARKWCw" target="_blank" rel="noopener noreferrer">Posture Cue →</a> Wearable that tracks spinal alignment and cues you upright when you slouch.</li>
+                    <li><a href="https://www.instagram.com/reel/Ddv8Qr_gruP/" target="_blank" rel="noopener noreferrer">Skydiving →</a> A jump instrument in the making: barometer, LiDAR, GPS, haptics.</li>
                 </ul>
             </div>
             <div class="plain-group">
@@ -96,7 +101,8 @@
         stage: document.getElementById('stage'),
         filters: document.getElementById('filters'),
         prev: document.getElementById('shelfPrev'),
-        next: document.getElementById('shelfNext')
+        next: document.getElementById('shelfNext'),
+        extra: document.getElementById('shelfExtra')
     });
     </script>
 </body>

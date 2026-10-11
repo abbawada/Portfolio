@@ -1,0 +1,2098 @@
+[
+  {
+    "name": "shelf renders 1440",
+    "pass": true,
+    "detail": 7
+  },
+  {
+    "name": "extra rows under the shelf 1440",
+    "pass": true,
+    "detail": [
+      {
+        "text": "Wheelchair Basketball Volunteering. Volu",
+        "link": null,
+        "video": true
+      },
+      {
+        "text": "The Medici Network. I built research pac",
+        "link": null,
+        "video": false
+      },
+      {
+        "text": "Skydiving → A jump instrument in the mak",
+        "link": "https://www.instagram.com/reel/Ddv8Qr_gruP/",
+        "video": false
+      }
+    ]
+  },
+  {
+    "name": "skydiving title 1440",
+    "pass": true,
+    "detail": {
+      "id": "skydiving",
+      "cat": "Wearables",
+      "title": "Skydiving",
+      "serial": "AWUS-30510",
+      "line": "A jump instrument in the making: barometer, LiDAR, GPS, haptics.",
+      "links": [
+        [
+          "WATCH THE REEL",
+          "https://www.instagram.com/reel/Ddv8Qr_gruP/"
+        ]
+      ]
+    }
+  },
+  {
+    "name": "betta case video data 1440",
+    "pass": true,
+    "detail": {
+      "src": "videos/betta_court_rep.mp4",
+      "poster": "images/betta_poster_court.jpg",
+      "w": 720,
+      "h": 1280,
+      "alt": "A player shoots a free throw in the Betta sleeve",
+      "cap": "FIRST COURT SESSION · 21 OF 28 REPS BUZZED."
+    }
+  },
+  {
+    "name": "extra rows follow the filter 1440",
+    "pass": true,
+    "detail": {
+      "hidden": true,
+      "rows": 0,
+      "label": "Robotics"
+    }
+  },
+  {
+    "name": "destroy removes stage listeners 1440",
+    "pass": true,
+    "detail": {
+      "before": 2,
+      "after": 2
+    }
+  },
+  {
+    "name": "no orphan close timer 1440",
+    "pass": true,
+    "detail": {
+      "hidden": false,
+      "hasFlipper": true,
+      "bodyOpen": true,
+      "title": "Betta"
+    }
+  },
+  {
+    "name": "flip shows the court clip 1440",
+    "pass": true,
+    "detail": {
+      "src": "videos/betta_court_rep.mp4",
+      "poster": "images/betta_poster_court.jpg",
+      "muted": true,
+      "paused": false,
+      "t": 2.507746,
+      "w": 720,
+      "h": 1280,
+      "dur": 13.666667,
+      "cap": "FIRST COURT SESSION · 21 OF 28 REPS BUZZED.",
+      "capLines": 1,
+      "hero": [
+        460,
+        562
+      ],
+      "btn": "Pause video",
+      "pressed": "true",
+      "live": false,
+      "liveSlot": false,
+      "autoplay": true,
+      "active": "back-close"
+    }
+  },
+  {
+    "name": "clip plays muted or sits on its poster 1440",
+    "pass": true,
+    "detail": {
+      "paused": false,
+      "t": 2.507746,
+      "autoplay": true
+    }
+  },
+  {
+    "name": "caption is the one-number line 1440",
+    "pass": true,
+    "detail": "FIRST COURT SESSION · 21 OF 28 REPS BUZZED."
+  },
+  {
+    "name": "pause control reflects the state 1440",
+    "pass": true,
+    "detail": [
+      "Pause video",
+      "true"
+    ]
+  },
+  {
+    "name": "court clip stands alone, no rep graphic 1440",
+    "pass": true,
+    "detail": [
+      false,
+      false
+    ]
+  },
+  {
+    "name": "focus lands on close 1440",
+    "pass": true,
+    "detail": "back-close"
+  },
+  {
+    "name": "pause pill clear of the close X 1440",
+    "pass": true,
+    "detail": {
+      "toggle": {
+        "x": 549,
+        "y": 181,
+        "w": 117,
+        "h": 40
+      },
+      "close": {
+        "x": 1200,
+        "y": 156,
+        "w": 34,
+        "h": 34
+      },
+      "overlap": [
+        0,
+        9
+      ],
+      "underX": "0/290",
+      "cornerIsPill": true
+    }
+  },
+  {
+    "name": "pause pill top-right, off the ball 1440",
+    "pass": true,
+    "detail": {
+      "leftInHero": 331,
+      "heroW": 462,
+      "rightGap": 13,
+      "topInHero": 13,
+      "belowX": -9,
+      "stacked": false
+    }
+  },
+  {
+    "name": "pause control toggles the clip 1440",
+    "pass": true,
+    "detail": {
+      "paused": true,
+      "btn": "Play video",
+      "pressed": "false"
+    }
+  },
+  {
+    "name": "a visitor pause holds through motion and visibility changes 1440",
+    "pass": true,
+    "detail": [
+      {
+        "paused": true,
+        "btn": "Play video",
+        "pressed": "false"
+      },
+      {
+        "paused": true,
+        "btn": "Play video",
+        "pressed": "false"
+      },
+      {
+        "paused": true,
+        "btn": "Play video",
+        "pressed": "false"
+      },
+      {
+        "paused": true,
+        "btn": "Play video",
+        "pressed": "false"
+      }
+    ]
+  },
+  {
+    "name": "live reduced-motion change stops and resumes the clip 1440",
+    "pass": true,
+    "detail": {
+      "playing": {
+        "paused": false,
+        "btn": "Pause video",
+        "pressed": "true"
+      },
+      "onReduce": {
+        "paused": true,
+        "btn": "Play video",
+        "pressed": "false"
+      },
+      "offReduce": {
+        "paused": false,
+        "btn": "Pause video",
+        "pressed": "true"
+      }
+    }
+  },
+  {
+    "name": "hidden tab stops the clip, visible resumes it 1440",
+    "pass": true,
+    "detail": {
+      "onHidden": {
+        "paused": true,
+        "btn": "Play video",
+        "pressed": "false"
+      },
+      "onVisible": {
+        "paused": false,
+        "btn": "Pause video",
+        "pressed": "true"
+      }
+    }
+  },
+  {
+    "name": "tab stays inside the stage 1440",
+    "pass": true,
+    "detail": [
+      "in:video-motion-toggle",
+      "in:A",
+      "in:A",
+      "in:stage-nav prev",
+      "in:stage-nav next",
+      "in:back-close",
+      "in:video-motion-toggle",
+      "in:A",
+      "in:A",
+      "in:stage-nav prev",
+      "in:stage-nav next",
+      "in:back-close"
+    ]
+  },
+  {
+    "name": "shift tab stays inside 1440",
+    "pass": true
+  },
+  {
+    "name": "esc closes and returns focus 1440",
+    "pass": true,
+    "detail": {
+      "hidden": true,
+      "focus": "Betta, Wearables project. Press Enter to flip the case."
+    }
+  },
+  {
+    "name": "projects page errors 1440",
+    "pass": true,
+    "detail": {
+      "perrors": [],
+      "errors": [],
+      "failed": []
+    }
+  },
+  {
+    "name": "betta has three portrait video figures 1440",
+    "pass": true,
+    "detail": [
+      [
+        "720",
+        "1280",
+        0.56,
+        false
+      ],
+      [
+        "720",
+        "1280",
+        0.56,
+        false
+      ],
+      [
+        "720",
+        "1280",
+        0.56,
+        false
+      ]
+    ]
+  },
+  {
+    "name": "third figure is the court clip 1440",
+    "pass": true,
+    "detail": {
+      "src": "videos/betta_court_rep.mp4",
+      "poster": "images/betta_poster_court.jpg",
+      "posterOk": "720x1280",
+      "controls": true,
+      "inline": false,
+      "w": "720",
+      "h": "1280",
+      "cap": "Oct 8, 2026. First court session, sound on: one long buzz means a good rep.",
+      "ratio": 0.56,
+      "box": [
+        360,
+        640
+      ],
+      "figClass": "betta-video"
+    }
+  },
+  {
+    "name": "captions dated as a timeline 1440",
+    "pass": true,
+    "detail": [
+      "Aug 4, 2026. The capture rig on a real arm, every rep recorded.",
+      "Oct 8, 2026. First court session, sound on: one long buzz means a good rep."
+    ]
+  },
+  {
+    "name": "counted-shot figure after the court clip 1440",
+    "pass": true,
+    "detail": {
+      "src": "images/betta_counted_shot_1x.jpg",
+      "srcset": "images/betta_counted_shot_1x.jpg 1x, images/betta_counted_shot.jpg 2x",
+      "current": "betta_counted_shot_1x.jpg",
+      "natural": "360x640",
+      "alt": "A player releases a free throw in the Betta sleeve. The sleeve counted 21 of 21 free throws.",
+      "w": "720",
+      "h": "1280",
+      "loading": "lazy",
+      "decoding": "async",
+      "inline": false,
+      "cap": "21 of 21 free throws counted.",
+      "figClass": "betta-video",
+      "ratio": 0.56,
+      "box": [
+        360,
+        640
+      ],
+      "last": true,
+      "afterCourt": true
+    }
+  },
+  {
+    "name": "one number in the fourth caption, the alt carries the same one 1440",
+    "pass": true,
+    "detail": [
+      "21 of 21 free throws counted.",
+      "A player releases a free throw in the Betta sleeve. The sleeve counted 21 of 21 free throws."
+    ]
+  },
+  {
+    "name": "dashboard picture off the page and out of images 1440",
+    "pass": true,
+    "detail": {
+      "page": false,
+      "jpg": 404,
+      "jpg1x": 404
+    }
+  },
+  {
+    "name": "betta page errors 1440",
+    "pass": true,
+    "detail": {
+      "perrors": [],
+      "errors": [],
+      "failed": []
+    }
+  },
+  {
+    "name": "shelf renders 540",
+    "pass": true,
+    "detail": 7
+  },
+  {
+    "name": "extra rows under the shelf 540",
+    "pass": true,
+    "detail": [
+      {
+        "text": "Wheelchair Basketball Volunteering. Volu",
+        "link": null,
+        "video": true
+      },
+      {
+        "text": "The Medici Network. I built research pac",
+        "link": null,
+        "video": false
+      },
+      {
+        "text": "Skydiving → A jump instrument in the mak",
+        "link": "https://www.instagram.com/reel/Ddv8Qr_gruP/",
+        "video": false
+      }
+    ]
+  },
+  {
+    "name": "skydiving title 540",
+    "pass": true,
+    "detail": {
+      "id": "skydiving",
+      "cat": "Wearables",
+      "title": "Skydiving",
+      "serial": "AWUS-30510",
+      "line": "A jump instrument in the making: barometer, LiDAR, GPS, haptics.",
+      "links": [
+        [
+          "WATCH THE REEL",
+          "https://www.instagram.com/reel/Ddv8Qr_gruP/"
+        ]
+      ]
+    }
+  },
+  {
+    "name": "betta case video data 540",
+    "pass": true,
+    "detail": {
+      "src": "videos/betta_court_rep.mp4",
+      "poster": "images/betta_poster_court.jpg",
+      "w": 720,
+      "h": 1280,
+      "alt": "A player shoots a free throw in the Betta sleeve",
+      "cap": "FIRST COURT SESSION · 21 OF 28 REPS BUZZED."
+    }
+  },
+  {
+    "name": "extra rows follow the filter 540",
+    "pass": true,
+    "detail": {
+      "hidden": true,
+      "rows": 0,
+      "label": "Robotics"
+    }
+  },
+  {
+    "name": "destroy removes stage listeners 540",
+    "pass": true,
+    "detail": {
+      "before": 2,
+      "after": 2
+    }
+  },
+  {
+    "name": "no orphan close timer 540",
+    "pass": true,
+    "detail": {
+      "hidden": false,
+      "hasFlipper": true,
+      "bodyOpen": true,
+      "title": "Betta"
+    }
+  },
+  {
+    "name": "flip shows the court clip 540",
+    "pass": true,
+    "detail": {
+      "src": "videos/betta_court_rep.mp4",
+      "poster": "images/betta_poster_court.jpg",
+      "muted": true,
+      "paused": false,
+      "t": 2.512238,
+      "w": 720,
+      "h": 1280,
+      "dur": 13.666667,
+      "cap": "FIRST COURT SESSION · 21 OF 28 REPS BUZZED.",
+      "capLines": 1,
+      "hero": [
+        467,
+        267
+      ],
+      "btn": "Pause video",
+      "pressed": "true",
+      "live": false,
+      "liveSlot": false,
+      "autoplay": true,
+      "active": "back-close"
+    }
+  },
+  {
+    "name": "clip plays muted or sits on its poster 540",
+    "pass": true,
+    "detail": {
+      "paused": false,
+      "t": 2.512238,
+      "autoplay": true
+    }
+  },
+  {
+    "name": "caption is the one-number line 540",
+    "pass": true,
+    "detail": "FIRST COURT SESSION · 21 OF 28 REPS BUZZED."
+  },
+  {
+    "name": "pause control reflects the state 540",
+    "pass": true,
+    "detail": [
+      "Pause video",
+      "true"
+    ]
+  },
+  {
+    "name": "court clip stands alone, no rep graphic 540",
+    "pass": true,
+    "detail": [
+      false,
+      false
+    ]
+  },
+  {
+    "name": "focus lands on close 540",
+    "pass": true,
+    "detail": "back-close"
+  },
+  {
+    "name": "pause pill clear of the close X 540",
+    "pass": true,
+    "detail": {
+      "toggle": {
+        "x": 374,
+        "y": 159,
+        "w": 117,
+        "h": 40
+      },
+      "close": {
+        "x": 474,
+        "y": 110,
+        "w": 34,
+        "h": 34
+      },
+      "overlap": [
+        17,
+        0
+      ],
+      "underX": "0/290",
+      "cornerIsPill": true
+    }
+  },
+  {
+    "name": "pause pill top-right, off the ball 540",
+    "pass": true,
+    "detail": {
+      "leftInHero": 338,
+      "heroW": 469,
+      "rightGap": 13,
+      "topInHero": 45,
+      "belowX": 15,
+      "stacked": true
+    }
+  },
+  {
+    "name": "pause control toggles the clip 540",
+    "pass": true,
+    "detail": {
+      "paused": true,
+      "btn": "Play video",
+      "pressed": "false"
+    }
+  },
+  {
+    "name": "a visitor pause holds through motion and visibility changes 540",
+    "pass": true,
+    "detail": [
+      {
+        "paused": true,
+        "btn": "Play video",
+        "pressed": "false"
+      },
+      {
+        "paused": true,
+        "btn": "Play video",
+        "pressed": "false"
+      },
+      {
+        "paused": true,
+        "btn": "Play video",
+        "pressed": "false"
+      },
+      {
+        "paused": true,
+        "btn": "Play video",
+        "pressed": "false"
+      }
+    ]
+  },
+  {
+    "name": "live reduced-motion change stops and resumes the clip 540",
+    "pass": true,
+    "detail": {
+      "playing": {
+        "paused": false,
+        "btn": "Pause video",
+        "pressed": "true"
+      },
+      "onReduce": {
+        "paused": true,
+        "btn": "Play video",
+        "pressed": "false"
+      },
+      "offReduce": {
+        "paused": false,
+        "btn": "Pause video",
+        "pressed": "true"
+      }
+    }
+  },
+  {
+    "name": "hidden tab stops the clip, visible resumes it 540",
+    "pass": true,
+    "detail": {
+      "onHidden": {
+        "paused": true,
+        "btn": "Play video",
+        "pressed": "false"
+      },
+      "onVisible": {
+        "paused": false,
+        "btn": "Pause video",
+        "pressed": "true"
+      }
+    }
+  },
+  {
+    "name": "tab stays inside the stage 540",
+    "pass": true,
+    "detail": [
+      "in:video-motion-toggle",
+      "in:A",
+      "in:A",
+      "in:stage-nav prev",
+      "in:stage-nav next",
+      "in:back-close",
+      "in:video-motion-toggle",
+      "in:A",
+      "in:A",
+      "in:stage-nav prev",
+      "in:stage-nav next",
+      "in:back-close"
+    ]
+  },
+  {
+    "name": "shift tab stays inside 540",
+    "pass": true
+  },
+  {
+    "name": "esc closes and returns focus 540",
+    "pass": true,
+    "detail": {
+      "hidden": true,
+      "focus": "Betta, Wearables project. Press Enter to flip the case."
+    }
+  },
+  {
+    "name": "projects page errors 540",
+    "pass": true,
+    "detail": {
+      "perrors": [],
+      "errors": [],
+      "failed": []
+    }
+  },
+  {
+    "name": "betta has three portrait video figures 540",
+    "pass": true,
+    "detail": [
+      [
+        "720",
+        "1280",
+        0.56,
+        false
+      ],
+      [
+        "720",
+        "1280",
+        0.56,
+        false
+      ],
+      [
+        "720",
+        "1280",
+        0.56,
+        false
+      ]
+    ]
+  },
+  {
+    "name": "third figure is the court clip 540",
+    "pass": true,
+    "detail": {
+      "src": "videos/betta_court_rep.mp4",
+      "poster": "images/betta_poster_court.jpg",
+      "posterOk": "720x1280",
+      "controls": true,
+      "inline": false,
+      "w": "720",
+      "h": "1280",
+      "cap": "Oct 8, 2026. First court session, sound on: one long buzz means a good rep.",
+      "ratio": 0.56,
+      "box": [
+        420,
+        747
+      ],
+      "figClass": "betta-video"
+    }
+  },
+  {
+    "name": "captions dated as a timeline 540",
+    "pass": true,
+    "detail": [
+      "Aug 4, 2026. The capture rig on a real arm, every rep recorded.",
+      "Oct 8, 2026. First court session, sound on: one long buzz means a good rep."
+    ]
+  },
+  {
+    "name": "counted-shot figure after the court clip 540",
+    "pass": true,
+    "detail": {
+      "src": "images/betta_counted_shot_1x.jpg",
+      "srcset": "images/betta_counted_shot_1x.jpg 1x, images/betta_counted_shot.jpg 2x",
+      "current": "betta_counted_shot_1x.jpg",
+      "natural": "360x640",
+      "alt": "A player releases a free throw in the Betta sleeve. The sleeve counted 21 of 21 free throws.",
+      "w": "720",
+      "h": "1280",
+      "loading": "lazy",
+      "decoding": "async",
+      "inline": false,
+      "cap": "21 of 21 free throws counted.",
+      "figClass": "betta-video",
+      "ratio": 0.56,
+      "box": [
+        420,
+        747
+      ],
+      "last": true,
+      "afterCourt": true
+    }
+  },
+  {
+    "name": "one number in the fourth caption, the alt carries the same one 540",
+    "pass": true,
+    "detail": [
+      "21 of 21 free throws counted.",
+      "A player releases a free throw in the Betta sleeve. The sleeve counted 21 of 21 free throws."
+    ]
+  },
+  {
+    "name": "dashboard picture off the page and out of images 540",
+    "pass": true,
+    "detail": {
+      "page": false,
+      "jpg": 404,
+      "jpg1x": 404
+    }
+  },
+  {
+    "name": "betta page errors 540",
+    "pass": true,
+    "detail": {
+      "perrors": [],
+      "errors": [],
+      "failed": []
+    }
+  },
+  {
+    "name": "shelf renders 360",
+    "pass": true,
+    "detail": 7
+  },
+  {
+    "name": "extra rows under the shelf 360",
+    "pass": true,
+    "detail": [
+      {
+        "text": "Wheelchair Basketball Volunteering. Volu",
+        "link": null,
+        "video": true
+      },
+      {
+        "text": "The Medici Network. I built research pac",
+        "link": null,
+        "video": false
+      },
+      {
+        "text": "Skydiving → A jump instrument in the mak",
+        "link": "https://www.instagram.com/reel/Ddv8Qr_gruP/",
+        "video": false
+      }
+    ]
+  },
+  {
+    "name": "skydiving title 360",
+    "pass": true,
+    "detail": {
+      "id": "skydiving",
+      "cat": "Wearables",
+      "title": "Skydiving",
+      "serial": "AWUS-30510",
+      "line": "A jump instrument in the making: barometer, LiDAR, GPS, haptics.",
+      "links": [
+        [
+          "WATCH THE REEL",
+          "https://www.instagram.com/reel/Ddv8Qr_gruP/"
+        ]
+      ]
+    }
+  },
+  {
+    "name": "betta case video data 360",
+    "pass": true,
+    "detail": {
+      "src": "videos/betta_court_rep.mp4",
+      "poster": "images/betta_poster_court.jpg",
+      "w": 720,
+      "h": 1280,
+      "alt": "A player shoots a free throw in the Betta sleeve",
+      "cap": "FIRST COURT SESSION · 21 OF 28 REPS BUZZED."
+    }
+  },
+  {
+    "name": "extra rows follow the filter 360",
+    "pass": true,
+    "detail": {
+      "hidden": true,
+      "rows": 0,
+      "label": "Robotics"
+    }
+  },
+  {
+    "name": "destroy removes stage listeners 360",
+    "pass": true,
+    "detail": {
+      "before": 2,
+      "after": 2
+    }
+  },
+  {
+    "name": "no orphan close timer 360",
+    "pass": true,
+    "detail": {
+      "hidden": false,
+      "hasFlipper": true,
+      "bodyOpen": true,
+      "title": "Betta"
+    }
+  },
+  {
+    "name": "flip shows the court clip 360",
+    "pass": true,
+    "detail": {
+      "src": "videos/betta_court_rep.mp4",
+      "poster": "images/betta_poster_court.jpg",
+      "muted": true,
+      "paused": false,
+      "t": 2.500066,
+      "w": 720,
+      "h": 1280,
+      "dur": 13.666667,
+      "cap": "FIRST COURT SESSION · 21 OF 28 REPS BUZZED.",
+      "capLines": 1,
+      "hero": [
+        301,
+        230
+      ],
+      "btn": "Pause video",
+      "pressed": "true",
+      "live": false,
+      "liveSlot": false,
+      "autoplay": true,
+      "active": "back-close"
+    }
+  },
+  {
+    "name": "clip plays muted or sits on its poster 360",
+    "pass": true,
+    "detail": {
+      "paused": false,
+      "t": 2.500066,
+      "autoplay": true
+    }
+  },
+  {
+    "name": "caption is the one-number line 360",
+    "pass": true,
+    "detail": "FIRST COURT SESSION · 21 OF 28 REPS BUZZED."
+  },
+  {
+    "name": "pause control reflects the state 360",
+    "pass": true,
+    "detail": [
+      "Pause video",
+      "true"
+    ]
+  },
+  {
+    "name": "court clip stands alone, no rep graphic 360",
+    "pass": true,
+    "detail": [
+      false,
+      false
+    ]
+  },
+  {
+    "name": "focus lands on close 360",
+    "pass": true,
+    "detail": "back-close"
+  },
+  {
+    "name": "pause pill clear of the close X 360",
+    "pass": true,
+    "detail": {
+      "toggle": {
+        "x": 201,
+        "y": 126,
+        "w": 117,
+        "h": 40
+      },
+      "close": {
+        "x": 302,
+        "y": 77,
+        "w": 34,
+        "h": 34
+      },
+      "overlap": [
+        16,
+        0
+      ],
+      "underX": "0/290",
+      "cornerIsPill": true
+    }
+  },
+  {
+    "name": "pause pill top-right, off the ball 360",
+    "pass": true,
+    "detail": {
+      "leftInHero": 173,
+      "heroW": 303,
+      "rightGap": 13,
+      "topInHero": 45,
+      "belowX": 15,
+      "stacked": true
+    }
+  },
+  {
+    "name": "pause control toggles the clip 360",
+    "pass": true,
+    "detail": {
+      "paused": true,
+      "btn": "Play video",
+      "pressed": "false"
+    }
+  },
+  {
+    "name": "a visitor pause holds through motion and visibility changes 360",
+    "pass": true,
+    "detail": [
+      {
+        "paused": true,
+        "btn": "Play video",
+        "pressed": "false"
+      },
+      {
+        "paused": true,
+        "btn": "Play video",
+        "pressed": "false"
+      },
+      {
+        "paused": true,
+        "btn": "Play video",
+        "pressed": "false"
+      },
+      {
+        "paused": true,
+        "btn": "Play video",
+        "pressed": "false"
+      }
+    ]
+  },
+  {
+    "name": "live reduced-motion change stops and resumes the clip 360",
+    "pass": true,
+    "detail": {
+      "playing": {
+        "paused": false,
+        "btn": "Pause video",
+        "pressed": "true"
+      },
+      "onReduce": {
+        "paused": true,
+        "btn": "Play video",
+        "pressed": "false"
+      },
+      "offReduce": {
+        "paused": false,
+        "btn": "Pause video",
+        "pressed": "true"
+      }
+    }
+  },
+  {
+    "name": "hidden tab stops the clip, visible resumes it 360",
+    "pass": true,
+    "detail": {
+      "onHidden": {
+        "paused": true,
+        "btn": "Play video",
+        "pressed": "false"
+      },
+      "onVisible": {
+        "paused": false,
+        "btn": "Pause video",
+        "pressed": "true"
+      }
+    }
+  },
+  {
+    "name": "tab stays inside the stage 360",
+    "pass": true,
+    "detail": [
+      "in:video-motion-toggle",
+      "in:A",
+      "in:A",
+      "in:stage-nav prev",
+      "in:stage-nav next",
+      "in:back-close",
+      "in:video-motion-toggle",
+      "in:A",
+      "in:A",
+      "in:stage-nav prev",
+      "in:stage-nav next",
+      "in:back-close"
+    ]
+  },
+  {
+    "name": "shift tab stays inside 360",
+    "pass": true
+  },
+  {
+    "name": "esc closes and returns focus 360",
+    "pass": true,
+    "detail": {
+      "hidden": true,
+      "focus": "Betta, Wearables project. Press Enter to flip the case."
+    }
+  },
+  {
+    "name": "projects page errors 360",
+    "pass": true,
+    "detail": {
+      "perrors": [],
+      "errors": [],
+      "failed": []
+    }
+  },
+  {
+    "name": "betta has three portrait video figures 360",
+    "pass": true,
+    "detail": [
+      [
+        "720",
+        "1280",
+        0.56,
+        false
+      ],
+      [
+        "720",
+        "1280",
+        0.56,
+        false
+      ],
+      [
+        "720",
+        "1280",
+        0.56,
+        false
+      ]
+    ]
+  },
+  {
+    "name": "third figure is the court clip 360",
+    "pass": true,
+    "detail": {
+      "src": "videos/betta_court_rep.mp4",
+      "poster": "images/betta_poster_court.jpg",
+      "posterOk": "720x1280",
+      "controls": true,
+      "inline": false,
+      "w": "720",
+      "h": "1280",
+      "cap": "Oct 8, 2026. First court session, sound on: one long buzz means a good rep.",
+      "ratio": 0.56,
+      "box": [
+        320,
+        569
+      ],
+      "figClass": "betta-video"
+    }
+  },
+  {
+    "name": "captions dated as a timeline 360",
+    "pass": true,
+    "detail": [
+      "Aug 4, 2026. The capture rig on a real arm, every rep recorded.",
+      "Oct 8, 2026. First court session, sound on: one long buzz means a good rep."
+    ]
+  },
+  {
+    "name": "counted-shot figure after the court clip 360",
+    "pass": true,
+    "detail": {
+      "src": "images/betta_counted_shot_1x.jpg",
+      "srcset": "images/betta_counted_shot_1x.jpg 1x, images/betta_counted_shot.jpg 2x",
+      "current": "betta_counted_shot_1x.jpg",
+      "natural": "360x640",
+      "alt": "A player releases a free throw in the Betta sleeve. The sleeve counted 21 of 21 free throws.",
+      "w": "720",
+      "h": "1280",
+      "loading": "lazy",
+      "decoding": "async",
+      "inline": false,
+      "cap": "21 of 21 free throws counted.",
+      "figClass": "betta-video",
+      "ratio": 0.56,
+      "box": [
+        320,
+        569
+      ],
+      "last": true,
+      "afterCourt": true
+    }
+  },
+  {
+    "name": "one number in the fourth caption, the alt carries the same one 360",
+    "pass": true,
+    "detail": [
+      "21 of 21 free throws counted.",
+      "A player releases a free throw in the Betta sleeve. The sleeve counted 21 of 21 free throws."
+    ]
+  },
+  {
+    "name": "dashboard picture off the page and out of images 360",
+    "pass": true,
+    "detail": {
+      "page": false,
+      "jpg": 404,
+      "jpg1x": 404
+    }
+  },
+  {
+    "name": "betta page errors 360",
+    "pass": true,
+    "detail": {
+      "perrors": [],
+      "errors": [],
+      "failed": []
+    }
+  },
+  {
+    "name": "destroy inside the case swap is clean engine-1440",
+    "pass": true,
+    "detail": {
+      "swap": {
+        "hidden": true,
+        "empty": true,
+        "bodyOpen": false
+      },
+      "perrors": []
+    }
+  },
+  {
+    "name": "destroy leaves no chip, row, case or listener behind engine-1440",
+    "pass": true,
+    "detail": {
+      "before": {
+        "chips": 5,
+        "shelf": 3,
+        "prev": 1,
+        "doc": 0
+      },
+      "after": {
+        "chips": 5,
+        "shelf": 3,
+        "prev": 1,
+        "doc": 0,
+        "cases": 0,
+        "rows": 0,
+        "extraHidden": true,
+        "stageHidden": true
+      }
+    }
+  },
+  {
+    "name": "engine contract page errors engine-1440",
+    "pass": true,
+    "detail": {
+      "perrors": [],
+      "errors": [],
+      "failed": []
+    }
+  },
+  {
+    "name": "destroy inside the case swap is clean engine-540",
+    "pass": true,
+    "detail": {
+      "swap": {
+        "hidden": true,
+        "empty": true,
+        "bodyOpen": false
+      },
+      "perrors": []
+    }
+  },
+  {
+    "name": "destroy leaves no chip, row, case or listener behind engine-540",
+    "pass": true,
+    "detail": {
+      "before": {
+        "chips": 5,
+        "shelf": 3,
+        "prev": 1,
+        "doc": 0
+      },
+      "after": {
+        "chips": 5,
+        "shelf": 3,
+        "prev": 1,
+        "doc": 0,
+        "cases": 0,
+        "rows": 0,
+        "extraHidden": true,
+        "stageHidden": true
+      }
+    }
+  },
+  {
+    "name": "engine contract page errors engine-540",
+    "pass": true,
+    "detail": {
+      "perrors": [],
+      "errors": [],
+      "failed": []
+    }
+  },
+  {
+    "name": "destroy inside the case swap is clean engine-360",
+    "pass": true,
+    "detail": {
+      "swap": {
+        "hidden": true,
+        "empty": true,
+        "bodyOpen": false
+      },
+      "perrors": []
+    }
+  },
+  {
+    "name": "destroy leaves no chip, row, case or listener behind engine-360",
+    "pass": true,
+    "detail": {
+      "before": {
+        "chips": 5,
+        "shelf": 3,
+        "prev": 1,
+        "doc": 0
+      },
+      "after": {
+        "chips": 5,
+        "shelf": 3,
+        "prev": 1,
+        "doc": 0,
+        "cases": 0,
+        "rows": 0,
+        "extraHidden": true,
+        "stageHidden": true
+      }
+    }
+  },
+  {
+    "name": "engine contract page errors engine-360",
+    "pass": true,
+    "detail": {
+      "perrors": [],
+      "errors": [],
+      "failed": []
+    }
+  },
+  {
+    "name": "nojs skydiving row 1440",
+    "pass": true,
+    "detail": {
+      "href": "https://www.instagram.com/reel/Ddv8Qr_gruP/",
+      "text": "Skydiving →",
+      "group": "Wearables",
+      "plainHidden": false,
+      "shelfHidden": true
+    }
+  },
+  {
+    "name": "nojs page errors 1440",
+    "pass": true,
+    "detail": {
+      "perrors": [],
+      "errors": [],
+      "failed": []
+    }
+  },
+  {
+    "name": "nojs skydiving row 360",
+    "pass": true,
+    "detail": {
+      "href": "https://www.instagram.com/reel/Ddv8Qr_gruP/",
+      "text": "Skydiving →",
+      "group": "Wearables",
+      "plainHidden": false,
+      "shelfHidden": true
+    }
+  },
+  {
+    "name": "nojs page errors 360",
+    "pass": true,
+    "detail": {
+      "perrors": [],
+      "errors": [],
+      "failed": []
+    }
+  },
+  {
+    "name": "shelf renders 1440r",
+    "pass": true,
+    "detail": 7
+  },
+  {
+    "name": "extra rows under the shelf 1440r",
+    "pass": true,
+    "detail": [
+      {
+        "text": "Wheelchair Basketball Volunteering. Volu",
+        "link": null,
+        "video": true
+      },
+      {
+        "text": "The Medici Network. I built research pac",
+        "link": null,
+        "video": false
+      },
+      {
+        "text": "Skydiving → A jump instrument in the mak",
+        "link": "https://www.instagram.com/reel/Ddv8Qr_gruP/",
+        "video": false
+      }
+    ]
+  },
+  {
+    "name": "skydiving title 1440r",
+    "pass": true,
+    "detail": {
+      "id": "skydiving",
+      "cat": "Wearables",
+      "title": "Skydiving",
+      "serial": "AWUS-30510",
+      "line": "A jump instrument in the making: barometer, LiDAR, GPS, haptics.",
+      "links": [
+        [
+          "WATCH THE REEL",
+          "https://www.instagram.com/reel/Ddv8Qr_gruP/"
+        ]
+      ]
+    }
+  },
+  {
+    "name": "betta case video data 1440r",
+    "pass": true,
+    "detail": {
+      "src": "videos/betta_court_rep.mp4",
+      "poster": "images/betta_poster_court.jpg",
+      "w": 720,
+      "h": 1280,
+      "alt": "A player shoots a free throw in the Betta sleeve",
+      "cap": "FIRST COURT SESSION · 21 OF 28 REPS BUZZED."
+    }
+  },
+  {
+    "name": "extra rows follow the filter 1440r",
+    "pass": true,
+    "detail": {
+      "hidden": true,
+      "rows": 0,
+      "label": "Robotics"
+    }
+  },
+  {
+    "name": "destroy removes stage listeners 1440r",
+    "pass": true,
+    "detail": {
+      "before": 2,
+      "after": 2
+    }
+  },
+  {
+    "name": "no orphan close timer 1440r",
+    "pass": true,
+    "detail": {
+      "hidden": false,
+      "hasFlipper": true,
+      "bodyOpen": true,
+      "title": "Betta"
+    }
+  },
+  {
+    "name": "flip shows the court clip 1440r",
+    "pass": true,
+    "detail": {
+      "src": "videos/betta_court_rep.mp4",
+      "poster": "images/betta_poster_court.jpg",
+      "muted": true,
+      "paused": true,
+      "t": 0,
+      "w": 720,
+      "h": 1280,
+      "dur": 13.666667,
+      "cap": "FIRST COURT SESSION · 21 OF 28 REPS BUZZED.",
+      "capLines": 1,
+      "hero": [
+        460,
+        562
+      ],
+      "btn": "Play video",
+      "pressed": "false",
+      "live": false,
+      "liveSlot": false,
+      "autoplay": false,
+      "active": "back-close"
+    }
+  },
+  {
+    "name": "clip plays muted or sits on its poster 1440r",
+    "pass": true,
+    "detail": {
+      "paused": true,
+      "t": 0,
+      "autoplay": false
+    }
+  },
+  {
+    "name": "caption is the one-number line 1440r",
+    "pass": true,
+    "detail": "FIRST COURT SESSION · 21 OF 28 REPS BUZZED."
+  },
+  {
+    "name": "pause control reflects the state 1440r",
+    "pass": true,
+    "detail": [
+      "Play video",
+      "false"
+    ]
+  },
+  {
+    "name": "court clip stands alone, no rep graphic 1440r",
+    "pass": true,
+    "detail": [
+      false,
+      false
+    ]
+  },
+  {
+    "name": "focus lands on close 1440r",
+    "pass": true,
+    "detail": "back-close"
+  },
+  {
+    "name": "pause pill clear of the close X 1440r",
+    "pass": true,
+    "detail": {
+      "toggle": {
+        "x": 559,
+        "y": 181,
+        "w": 108,
+        "h": 40
+      },
+      "close": {
+        "x": 1200,
+        "y": 156,
+        "w": 34,
+        "h": 34
+      },
+      "overlap": [
+        0,
+        9
+      ],
+      "underX": "0/270",
+      "cornerIsPill": true
+    }
+  },
+  {
+    "name": "pause pill top-right, off the ball 1440r",
+    "pass": true,
+    "detail": {
+      "leftInHero": 341,
+      "heroW": 462,
+      "rightGap": 13,
+      "topInHero": 13,
+      "belowX": -9,
+      "stacked": false
+    }
+  },
+  {
+    "name": "pause control toggles the clip 1440r",
+    "pass": true,
+    "detail": {
+      "paused": false,
+      "btn": "Pause video",
+      "pressed": "true"
+    }
+  },
+  {
+    "name": "hidden tab stops the clip, reduced motion keeps it stopped 1440r",
+    "pass": true,
+    "detail": {
+      "onHidden": {
+        "paused": true,
+        "btn": "Play video",
+        "pressed": "false"
+      },
+      "onVisible": {
+        "paused": true,
+        "btn": "Play video",
+        "pressed": "false"
+      }
+    }
+  },
+  {
+    "name": "tab stays inside the stage 1440r",
+    "pass": true,
+    "detail": [
+      "in:video-motion-toggle",
+      "in:A",
+      "in:A",
+      "in:stage-nav prev",
+      "in:stage-nav next",
+      "in:back-close",
+      "in:video-motion-toggle",
+      "in:A",
+      "in:A",
+      "in:stage-nav prev",
+      "in:stage-nav next",
+      "in:back-close"
+    ]
+  },
+  {
+    "name": "shift tab stays inside 1440r",
+    "pass": true
+  },
+  {
+    "name": "esc closes and returns focus 1440r",
+    "pass": true,
+    "detail": {
+      "hidden": true,
+      "focus": "Betta, Wearables project. Press Enter to flip the case."
+    }
+  },
+  {
+    "name": "projects page errors 1440r",
+    "pass": true,
+    "detail": {
+      "perrors": [],
+      "errors": [],
+      "failed": []
+    }
+  },
+  {
+    "name": "betta has three portrait video figures 1440r",
+    "pass": true,
+    "detail": [
+      [
+        "720",
+        "1280",
+        0.56,
+        false
+      ],
+      [
+        "720",
+        "1280",
+        0.56,
+        false
+      ],
+      [
+        "720",
+        "1280",
+        0.56,
+        false
+      ]
+    ]
+  },
+  {
+    "name": "third figure is the court clip 1440r",
+    "pass": true,
+    "detail": {
+      "src": "videos/betta_court_rep.mp4",
+      "poster": "images/betta_poster_court.jpg",
+      "posterOk": "720x1280",
+      "controls": true,
+      "inline": false,
+      "w": "720",
+      "h": "1280",
+      "cap": "Oct 8, 2026. First court session, sound on: one long buzz means a good rep.",
+      "ratio": 0.56,
+      "box": [
+        360,
+        640
+      ],
+      "figClass": "betta-video"
+    }
+  },
+  {
+    "name": "captions dated as a timeline 1440r",
+    "pass": true,
+    "detail": [
+      "Aug 4, 2026. The capture rig on a real arm, every rep recorded.",
+      "Oct 8, 2026. First court session, sound on: one long buzz means a good rep."
+    ]
+  },
+  {
+    "name": "counted-shot figure after the court clip 1440r",
+    "pass": true,
+    "detail": {
+      "src": "images/betta_counted_shot_1x.jpg",
+      "srcset": "images/betta_counted_shot_1x.jpg 1x, images/betta_counted_shot.jpg 2x",
+      "current": "betta_counted_shot_1x.jpg",
+      "natural": "360x640",
+      "alt": "A player releases a free throw in the Betta sleeve. The sleeve counted 21 of 21 free throws.",
+      "w": "720",
+      "h": "1280",
+      "loading": "lazy",
+      "decoding": "async",
+      "inline": false,
+      "cap": "21 of 21 free throws counted.",
+      "figClass": "betta-video",
+      "ratio": 0.56,
+      "box": [
+        360,
+        640
+      ],
+      "last": true,
+      "afterCourt": true
+    }
+  },
+  {
+    "name": "one number in the fourth caption, the alt carries the same one 1440r",
+    "pass": true,
+    "detail": [
+      "21 of 21 free throws counted.",
+      "A player releases a free throw in the Betta sleeve. The sleeve counted 21 of 21 free throws."
+    ]
+  },
+  {
+    "name": "dashboard picture off the page and out of images 1440r",
+    "pass": true,
+    "detail": {
+      "page": false,
+      "jpg": 404,
+      "jpg1x": 404
+    }
+  },
+  {
+    "name": "betta page errors 1440r",
+    "pass": true,
+    "detail": {
+      "perrors": [],
+      "errors": [],
+      "failed": []
+    }
+  },
+  {
+    "name": "shelf renders 360r",
+    "pass": true,
+    "detail": 7
+  },
+  {
+    "name": "extra rows under the shelf 360r",
+    "pass": true,
+    "detail": [
+      {
+        "text": "Wheelchair Basketball Volunteering. Volu",
+        "link": null,
+        "video": true
+      },
+      {
+        "text": "The Medici Network. I built research pac",
+        "link": null,
+        "video": false
+      },
+      {
+        "text": "Skydiving → A jump instrument in the mak",
+        "link": "https://www.instagram.com/reel/Ddv8Qr_gruP/",
+        "video": false
+      }
+    ]
+  },
+  {
+    "name": "skydiving title 360r",
+    "pass": true,
+    "detail": {
+      "id": "skydiving",
+      "cat": "Wearables",
+      "title": "Skydiving",
+      "serial": "AWUS-30510",
+      "line": "A jump instrument in the making: barometer, LiDAR, GPS, haptics.",
+      "links": [
+        [
+          "WATCH THE REEL",
+          "https://www.instagram.com/reel/Ddv8Qr_gruP/"
+        ]
+      ]
+    }
+  },
+  {
+    "name": "betta case video data 360r",
+    "pass": true,
+    "detail": {
+      "src": "videos/betta_court_rep.mp4",
+      "poster": "images/betta_poster_court.jpg",
+      "w": 720,
+      "h": 1280,
+      "alt": "A player shoots a free throw in the Betta sleeve",
+      "cap": "FIRST COURT SESSION · 21 OF 28 REPS BUZZED."
+    }
+  },
+  {
+    "name": "extra rows follow the filter 360r",
+    "pass": true,
+    "detail": {
+      "hidden": true,
+      "rows": 0,
+      "label": "Robotics"
+    }
+  },
+  {
+    "name": "destroy removes stage listeners 360r",
+    "pass": true,
+    "detail": {
+      "before": 2,
+      "after": 2
+    }
+  },
+  {
+    "name": "no orphan close timer 360r",
+    "pass": true,
+    "detail": {
+      "hidden": false,
+      "hasFlipper": true,
+      "bodyOpen": true,
+      "title": "Betta"
+    }
+  },
+  {
+    "name": "flip shows the court clip 360r",
+    "pass": true,
+    "detail": {
+      "src": "videos/betta_court_rep.mp4",
+      "poster": "images/betta_poster_court.jpg",
+      "muted": true,
+      "paused": true,
+      "t": 0,
+      "w": 720,
+      "h": 1280,
+      "dur": 13.666667,
+      "cap": "FIRST COURT SESSION · 21 OF 28 REPS BUZZED.",
+      "capLines": 1,
+      "hero": [
+        301,
+        230
+      ],
+      "btn": "Play video",
+      "pressed": "false",
+      "live": false,
+      "liveSlot": false,
+      "autoplay": false,
+      "active": "back-close"
+    }
+  },
+  {
+    "name": "clip plays muted or sits on its poster 360r",
+    "pass": true,
+    "detail": {
+      "paused": true,
+      "t": 0,
+      "autoplay": false
+    }
+  },
+  {
+    "name": "caption is the one-number line 360r",
+    "pass": true,
+    "detail": "FIRST COURT SESSION · 21 OF 28 REPS BUZZED."
+  },
+  {
+    "name": "pause control reflects the state 360r",
+    "pass": true,
+    "detail": [
+      "Play video",
+      "false"
+    ]
+  },
+  {
+    "name": "court clip stands alone, no rep graphic 360r",
+    "pass": true,
+    "detail": [
+      false,
+      false
+    ]
+  },
+  {
+    "name": "focus lands on close 360r",
+    "pass": true,
+    "detail": "back-close"
+  },
+  {
+    "name": "pause pill clear of the close X 360r",
+    "pass": true,
+    "detail": {
+      "toggle": {
+        "x": 210,
+        "y": 126,
+        "w": 108,
+        "h": 40
+      },
+      "close": {
+        "x": 302,
+        "y": 77,
+        "w": 34,
+        "h": 34
+      },
+      "overlap": [
+        16,
+        0
+      ],
+      "underX": "0/270",
+      "cornerIsPill": true
+    }
+  },
+  {
+    "name": "pause pill top-right, off the ball 360r",
+    "pass": true,
+    "detail": {
+      "leftInHero": 182,
+      "heroW": 303,
+      "rightGap": 13,
+      "topInHero": 45,
+      "belowX": 15,
+      "stacked": true
+    }
+  },
+  {
+    "name": "pause control toggles the clip 360r",
+    "pass": true,
+    "detail": {
+      "paused": false,
+      "btn": "Pause video",
+      "pressed": "true"
+    }
+  },
+  {
+    "name": "hidden tab stops the clip, reduced motion keeps it stopped 360r",
+    "pass": true,
+    "detail": {
+      "onHidden": {
+        "paused": true,
+        "btn": "Play video",
+        "pressed": "false"
+      },
+      "onVisible": {
+        "paused": true,
+        "btn": "Play video",
+        "pressed": "false"
+      }
+    }
+  },
+  {
+    "name": "tab stays inside the stage 360r",
+    "pass": true,
+    "detail": [
+      "in:video-motion-toggle",
+      "in:A",
+      "in:A",
+      "in:stage-nav prev",
+      "in:stage-nav next",
+      "in:back-close",
+      "in:video-motion-toggle",
+      "in:A",
+      "in:A",
+      "in:stage-nav prev",
+      "in:stage-nav next",
+      "in:back-close"
+    ]
+  },
+  {
+    "name": "shift tab stays inside 360r",
+    "pass": true
+  },
+  {
+    "name": "esc closes and returns focus 360r",
+    "pass": true,
+    "detail": {
+      "hidden": true,
+      "focus": "Betta, Wearables project. Press Enter to flip the case."
+    }
+  },
+  {
+    "name": "projects page errors 360r",
+    "pass": true,
+    "detail": {
+      "perrors": [],
+      "errors": [],
+      "failed": []
+    }
+  },
+  {
+    "name": "betta has three portrait video figures 360r",
+    "pass": true,
+    "detail": [
+      [
+        "720",
+        "1280",
+        0.56,
+        false
+      ],
+      [
+        "720",
+        "1280",
+        0.56,
+        false
+      ],
+      [
+        "720",
+        "1280",
+        0.56,
+        false
+      ]
+    ]
+  },
+  {
+    "name": "third figure is the court clip 360r",
+    "pass": true,
+    "detail": {
+      "src": "videos/betta_court_rep.mp4",
+      "poster": "images/betta_poster_court.jpg",
+      "posterOk": "720x1280",
+      "controls": true,
+      "inline": false,
+      "w": "720",
+      "h": "1280",
+      "cap": "Oct 8, 2026. First court session, sound on: one long buzz means a good rep.",
+      "ratio": 0.56,
+      "box": [
+        320,
+        569
+      ],
+      "figClass": "betta-video"
+    }
+  },
+  {
+    "name": "captions dated as a timeline 360r",
+    "pass": true,
+    "detail": [
+      "Aug 4, 2026. The capture rig on a real arm, every rep recorded.",
+      "Oct 8, 2026. First court session, sound on: one long buzz means a good rep."
+    ]
+  },
+  {
+    "name": "counted-shot figure after the court clip 360r",
+    "pass": true,
+    "detail": {
+      "src": "images/betta_counted_shot_1x.jpg",
+      "srcset": "images/betta_counted_shot_1x.jpg 1x, images/betta_counted_shot.jpg 2x",
+      "current": "betta_counted_shot_1x.jpg",
+      "natural": "360x640",
+      "alt": "A player releases a free throw in the Betta sleeve. The sleeve counted 21 of 21 free throws.",
+      "w": "720",
+      "h": "1280",
+      "loading": "lazy",
+      "decoding": "async",
+      "inline": false,
+      "cap": "21 of 21 free throws counted.",
+      "figClass": "betta-video",
+      "ratio": 0.56,
+      "box": [
+        320,
+        569
+      ],
+      "last": true,
+      "afterCourt": true
+    }
+  },
+  {
+    "name": "one number in the fourth caption, the alt carries the same one 360r",
+    "pass": true,
+    "detail": [
+      "21 of 21 free throws counted.",
+      "A player releases a free throw in the Betta sleeve. The sleeve counted 21 of 21 free throws."
+    ]
+  },
+  {
+    "name": "dashboard picture off the page and out of images 360r",
+    "pass": true,
+    "detail": {
+      "page": false,
+      "jpg": 404,
+      "jpg1x": 404
+    }
+  },
+  {
+    "name": "betta page errors 360r",
+    "pass": true,
+    "detail": {
+      "perrors": [],
+      "errors": [],
+      "failed": []
+    }
+  },
+  {
+    "name": "one esc in the ring panel closes the case only reduced",
+    "pass": true,
+    "detail": {
+      "panelHidden": false,
+      "panelOpen": true,
+      "stageHidden": true,
+      "ringOpen": true,
+      "stageOpen": false
+    }
+  },
+  {
+    "name": "second esc closes the ring panel reduced",
+    "pass": true,
+    "detail": {
+      "panelHidden": true,
+      "ringOpen": false
+    }
+  },
+  {
+    "name": "circuit page errors reduced",
+    "pass": true,
+    "detail": {
+      "perrors": [],
+      "errors": [],
+      "failed": []
+    }
+  },
+  {
+    "name": "one esc in the ring panel closes the case only animated",
+    "pass": true,
+    "detail": {
+      "panelHidden": false,
+      "panelOpen": true,
+      "stageHidden": true,
+      "ringOpen": true,
+      "stageOpen": false
+    }
+  },
+  {
+    "name": "second esc closes the ring panel animated",
+    "pass": true,
+    "detail": {
+      "panelHidden": true,
+      "ringOpen": false
+    }
+  },
+  {
+    "name": "circuit page errors animated",
+    "pass": true,
+    "detail": {
+      "perrors": [],
+      "errors": [],
+      "failed": []
+    }
+  }
+]

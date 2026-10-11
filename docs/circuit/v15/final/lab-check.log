@@ -1,0 +1,165 @@
+{
+  "structure": {
+    "pass": true,
+    "detail": {
+      "tabs": 6,
+      "canvasHidden": true,
+      "panel": true,
+      "controls": true,
+      "labelled": true,
+      "canvasW": 1040,
+      "cssW": 520,
+      "cssH": 347,
+      "dpr": 2
+    }
+  },
+  "frames run while visible": {
+    "pass": true,
+    "detail": "raf calls in 600 ms: 36"
+  },
+  "arrow right scrubs every stage": {
+    "pass": true,
+    "detail": [
+      "Dec 2025/15 sof slouching",
+      "Jan 2026/100reads a second",
+      "Apr 2026/Top 4of 221",
+      "Aug 2026/6firmware versions",
+      "Oct 2026/21 of 28reps buzzed"
+    ]
+  },
+  "onInteract fired per scrub": {
+    "pass": true,
+    "detail": "log length 5"
+  },
+  "wraps to first": {
+    "pass": true,
+    "detail": "Nov 2025"
+  },
+  "End then ArrowLeft": {
+    "pass": true,
+    "detail": "Aug 2026"
+  },
+  "Enter selects the focused tab": {
+    "pass": true,
+    "detail": "Dec 2025"
+  },
+  "click selects": {
+    "pass": true,
+    "detail": "Apr 2026"
+  },
+  "zero page errors (scrub run)": {
+    "pass": true,
+    "detail": []
+  },
+  "autoplay advances after ~7 s": {
+    "pass": true,
+    "detail": {
+      "i0": 0,
+      "i1": 1
+    }
+  },
+  "hover pauses autoplay": {
+    "pass": true,
+    "detail": {
+      "i2": 1
+    }
+  },
+  "a scrub holds autoplay (25 s)": {
+    "pass": true,
+    "detail": {
+      "i3": 2
+    }
+  },
+  "zero page errors (autoplay run)": {
+    "pass": true,
+    "detail": []
+  },
+  "perfAtDpr2": {
+    "frames": 1590,
+    "avgMs": 0.37408804878498775,
+    "maxMs": 2.3999998569488525,
+    "rebuildMs": 0.40000009536743164,
+    "stillMs": 0,
+    "reduced": false,
+    "running": true,
+    "pass": 1
+  },
+  "reduced motion: no frames": {
+    "pass": true,
+    "detail": "raf calls in 700 ms: 0"
+  },
+  "reduced motion: scrub swaps": {
+    "pass": true,
+    "detail": "Dec 2025"
+  },
+  "reduced motion: still no frames after scrub": {
+    "pass": true,
+    "detail": 0
+  },
+  "motion returns when the media query flips back": {
+    "pass": true,
+    "detail": "raf resumed"
+  },
+  "zero page errors (reduced run)": {
+    "pass": true,
+    "detail": []
+  },
+  "360px: fits, no horizontal scroll": {
+    "pass": true,
+    "detail": {
+      "stageW": 328,
+      "scrollW": 360,
+      "canvasW": 984,
+      "tabsW": 328,
+      "overflow": false
+    }
+  },
+  "360px: frames run": {
+    "pass": true,
+    "detail": "raf"
+  },
+  "off screen: frames stop": {
+    "pass": true,
+    "detail": "raf calls in 600 ms: 0"
+  },
+  "back on screen: frames resume": {
+    "pass": true,
+    "detail": "raf"
+  },
+  "destroy empties the container": {
+    "pass": true,
+    "detail": {
+      "children": 0,
+      "html": ""
+    }
+  },
+  "destroy stops the frames": {
+    "pass": true,
+    "detail": "raf calls in 700 ms after destroy: 0"
+  },
+  "zero page errors (phone run)": {
+    "pass": true,
+    "detail": []
+  },
+  "perf stage5 dpr1": {
+    "frames": 211,
+    "avgMs": 0.48578198600154354,
+    "maxMs": 1.2999999523162842,
+    "rebuildMs": 4,
+    "stillMs": 0,
+    "reduced": false,
+    "running": true,
+    "pass": 0
+  },
+  "perf stage5 dpr2": {
+    "frames": 215,
+    "avgMs": 0.4720930243647376,
+    "maxMs": 1.1000001430511475,
+    "rebuildMs": 2.700000047683716,
+    "stillMs": 0,
+    "reduced": false,
+    "running": true,
+    "pass": 0
+  }
+}
+ALL PASS

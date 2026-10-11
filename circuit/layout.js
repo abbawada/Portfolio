@@ -169,7 +169,8 @@
         { id: 'bluetooth', project: 'bluetooth-car', name: 'Bluetooth Car', code: 'BLU', number: '12', accent: '#ff3d6e', stop: 'projects' },
         { id: 'mapping', project: 'visual-mapping', name: 'Visual Mapping', code: 'MAP', number: '7', accent: '#00b8d4', stop: 'projects' },
         { id: 'validators', project: 'ethereum-validators', name: 'Validators', code: 'ETH', number: '32', accent: '#8a63ff', stop: 'economics' },
-        { id: 'temp', project: 'home-temp-monitor', name: 'Temp Monitor', code: 'TMP', number: '21', accent: '#00d6a1', stop: 'projects' }
+        { id: 'temp', project: 'home-temp-monitor', name: 'Temp Monitor', code: 'TMP', number: '21', accent: '#00d6a1', stop: 'projects' },
+        { id: 'skydive', project: 'skydiving', name: 'Skydiving', code: 'SKY', number: '13', accent: '#8fd3ff', stop: 'projects' }   // round 6: the jump instrument, pale sky so it stays apart from Visual Mapping's bondi
     ];
 
     var PALETTE = {

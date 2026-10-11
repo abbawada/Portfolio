@@ -1,0 +1,1204 @@
+{
+  "results": [
+    {
+      "name": "pill clear of the X 360",
+      "pass": false,
+      "detail": {
+        "toggle": {
+          "x": 41,
+          "y": 94,
+          "w": 117,
+          "h": 40
+        },
+        "close": {
+          "x": 302,
+          "y": 77,
+          "w": 34,
+          "h": 34
+        },
+        "hero": {
+          "x": 28,
+          "y": 81,
+          "w": 303,
+          "h": 232
+        },
+        "overlap": [
+          0,
+          17
+        ],
+        "gapToX": 144,
+        "pillPointsUnderX": "0/290",
+        "pillPointsOnPill": "288/290",
+        "corners": [
+          "video-motion-toggle",
+          "video-motion-toggle",
+          "video-motion-toggle",
+          "video-motion-toggle"
+        ],
+        "inHero": true,
+        "label": "Pause video",
+        "pressed": "true"
+      }
+    },
+    {
+      "name": "tap on the pill corner pauses, case stays 360",
+      "pass": true,
+      "detail": {
+        "stageHidden": false,
+        "paused": true,
+        "btn": "Play video",
+        "pressed": "false",
+        "title": "Betta"
+      }
+    },
+    {
+      "name": "X closes the case 360",
+      "pass": true
+    },
+    {
+      "name": "page errors 360",
+      "pass": true,
+      "detail": {
+        "perrors": [],
+        "errors": [],
+        "failed": []
+      }
+    },
+    {
+      "name": "pill clear of the X 390",
+      "pass": false,
+      "detail": {
+        "toggle": {
+          "x": 43,
+          "y": 103,
+          "w": 117,
+          "h": 40
+        },
+        "close": {
+          "x": 330,
+          "y": 86,
+          "w": 34,
+          "h": 34
+        },
+        "hero": {
+          "x": 30,
+          "y": 90,
+          "w": 331,
+          "h": 266
+        },
+        "overlap": [
+          0,
+          17
+        ],
+        "gapToX": 170,
+        "pillPointsUnderX": "0/290",
+        "pillPointsOnPill": "290/290",
+        "corners": [
+          "video-motion-toggle",
+          "video-motion-toggle",
+          "video-motion-toggle",
+          "video-motion-toggle"
+        ],
+        "inHero": true,
+        "label": "Pause video",
+        "pressed": "true"
+      }
+    },
+    {
+      "name": "tap on the pill corner pauses, case stays 390",
+      "pass": true,
+      "detail": {
+        "stageHidden": false,
+        "paused": true,
+        "btn": "Play video",
+        "pressed": "false",
+        "title": "Betta"
+      }
+    },
+    {
+      "name": "X closes the case 390",
+      "pass": true
+    },
+    {
+      "name": "page errors 390",
+      "pass": true,
+      "detail": {
+        "perrors": [],
+        "errors": [],
+        "failed": []
+      }
+    },
+    {
+      "name": "pill clear of the X 430",
+      "pass": false,
+      "detail": {
+        "toggle": {
+          "x": 44,
+          "y": 143,
+          "w": 117,
+          "h": 40
+        },
+        "close": {
+          "x": 369,
+          "y": 126,
+          "w": 34,
+          "h": 34
+        },
+        "hero": {
+          "x": 31,
+          "y": 130,
+          "w": 368,
+          "h": 269
+        },
+        "overlap": [
+          0,
+          17
+        ],
+        "gapToX": 208,
+        "pillPointsUnderX": "0/290",
+        "pillPointsOnPill": "290/290",
+        "corners": [
+          "video-motion-toggle",
+          "video-motion-toggle",
+          "video-motion-toggle",
+          "video-motion-toggle"
+        ],
+        "inHero": true,
+        "label": "Pause video",
+        "pressed": "true"
+      }
+    },
+    {
+      "name": "tap on the pill corner pauses, case stays 430",
+      "pass": true,
+      "detail": {
+        "stageHidden": false,
+        "paused": true,
+        "btn": "Play video",
+        "pressed": "false",
+        "title": "Betta"
+      }
+    },
+    {
+      "name": "X closes the case 430",
+      "pass": true
+    },
+    {
+      "name": "page errors 430",
+      "pass": true,
+      "detail": {
+        "perrors": [],
+        "errors": [],
+        "failed": []
+      }
+    },
+    {
+      "name": "pill clear of the X 540",
+      "pass": false,
+      "detail": {
+        "toggle": {
+          "x": 49,
+          "y": 127,
+          "w": 117,
+          "h": 40
+        },
+        "close": {
+          "x": 474,
+          "y": 110,
+          "w": 34,
+          "h": 34
+        },
+        "hero": {
+          "x": 36,
+          "y": 114,
+          "w": 469,
+          "h": 269
+        },
+        "overlap": [
+          0,
+          17
+        ],
+        "gapToX": 308,
+        "pillPointsUnderX": "0/290",
+        "pillPointsOnPill": "290/290",
+        "corners": [
+          "video-motion-toggle",
+          "video-motion-toggle",
+          "video-motion-toggle",
+          "video-motion-toggle"
+        ],
+        "inHero": true,
+        "label": "Pause video",
+        "pressed": "true"
+      }
+    },
+    {
+      "name": "tap on the pill corner pauses, case stays 540",
+      "pass": true,
+      "detail": {
+        "stageHidden": false,
+        "paused": true,
+        "btn": "Play video",
+        "pressed": "false",
+        "title": "Betta"
+      }
+    },
+    {
+      "name": "X closes the case 540",
+      "pass": true
+    },
+    {
+      "name": "page errors 540",
+      "pass": true,
+      "detail": {
+        "perrors": [],
+        "errors": [],
+        "failed": []
+      }
+    },
+    {
+      "name": "pill clear of the X 768",
+      "pass": false,
+      "detail": {
+        "toggle": {
+          "x": 133,
+          "y": 191,
+          "w": 117,
+          "h": 40
+        },
+        "close": {
+          "x": 618,
+          "y": 174,
+          "w": 34,
+          "h": 34
+        },
+        "hero": {
+          "x": 120,
+          "y": 178,
+          "w": 528,
+          "h": 267
+        },
+        "overlap": [
+          0,
+          17
+        ],
+        "gapToX": 368,
+        "pillPointsUnderX": "0/290",
+        "pillPointsOnPill": "290/290",
+        "corners": [
+          "video-motion-toggle",
+          "video-motion-toggle",
+          "video-motion-toggle",
+          "video-motion-toggle"
+        ],
+        "inHero": true,
+        "label": "Pause video",
+        "pressed": "true"
+      }
+    },
+    {
+      "name": "tap on the pill corner pauses, case stays 768",
+      "pass": true,
+      "detail": {
+        "stageHidden": false,
+        "paused": true,
+        "btn": "Play video",
+        "pressed": "false",
+        "title": "Betta"
+      }
+    },
+    {
+      "name": "X closes the case 768",
+      "pass": true
+    },
+    {
+      "name": "page errors 768",
+      "pass": true,
+      "detail": {
+        "perrors": [],
+        "errors": [],
+        "failed": []
+      }
+    },
+    {
+      "name": "pill clear of the X 919",
+      "pass": false,
+      "detail": {
+        "toggle": {
+          "x": 211,
+          "y": 131,
+          "w": 117,
+          "h": 40
+        },
+        "close": {
+          "x": 691,
+          "y": 115,
+          "w": 34,
+          "h": 34
+        },
+        "hero": {
+          "x": 198,
+          "y": 118,
+          "w": 523,
+          "h": 265
+        },
+        "overlap": [
+          0,
+          18
+        ],
+        "gapToX": 363,
+        "pillPointsUnderX": "0/290",
+        "pillPointsOnPill": "290/290",
+        "corners": [
+          "video-motion-toggle",
+          "video-motion-toggle",
+          "video-motion-toggle",
+          "video-motion-toggle"
+        ],
+        "inHero": true,
+        "label": "Pause video",
+        "pressed": "true"
+      }
+    },
+    {
+      "name": "tap on the pill corner pauses, case stays 919",
+      "pass": true,
+      "detail": {
+        "stageHidden": false,
+        "paused": true,
+        "btn": "Play video",
+        "pressed": "false",
+        "title": "Betta"
+      }
+    },
+    {
+      "name": "X closes the case 919",
+      "pass": true
+    },
+    {
+      "name": "page errors 919",
+      "pass": true,
+      "detail": {
+        "perrors": [],
+        "errors": [],
+        "failed": []
+      }
+    },
+    {
+      "name": "pill clear of the X 920",
+      "pass": false,
+      "detail": {
+        "toggle": {
+          "x": 77,
+          "y": 171,
+          "w": 117,
+          "h": 40
+        },
+        "close": {
+          "x": 825,
+          "y": 155,
+          "w": 34,
+          "h": 34
+        },
+        "hero": {
+          "x": 64,
+          "y": 158,
+          "w": 364,
+          "h": 583
+        },
+        "overlap": [
+          0,
+          18
+        ],
+        "gapToX": 631,
+        "pillPointsUnderX": "0/290",
+        "pillPointsOnPill": "290/290",
+        "corners": [
+          "video-motion-toggle",
+          "video-motion-toggle",
+          "video-motion-toggle",
+          "video-motion-toggle"
+        ],
+        "inHero": true,
+        "label": "Pause video",
+        "pressed": "true"
+      }
+    },
+    {
+      "name": "tap on the pill corner pauses, case stays 920",
+      "pass": true,
+      "detail": {
+        "stageHidden": false,
+        "paused": true,
+        "btn": "Play video",
+        "pressed": "false",
+        "title": "Betta"
+      }
+    },
+    {
+      "name": "X closes the case 920",
+      "pass": true
+    },
+    {
+      "name": "page errors 920",
+      "pass": true,
+      "detail": {
+        "perrors": [],
+        "errors": [],
+        "failed": []
+      }
+    },
+    {
+      "name": "pill clear of the X 1440",
+      "pass": false,
+      "detail": {
+        "toggle": {
+          "x": 231,
+          "y": 181,
+          "w": 117,
+          "h": 40
+        },
+        "close": {
+          "x": 1200,
+          "y": 156,
+          "w": 34,
+          "h": 34
+        },
+        "hero": {
+          "x": 218,
+          "y": 168,
+          "w": 462,
+          "h": 564
+        },
+        "overlap": [
+          0,
+          9
+        ],
+        "gapToX": 852,
+        "pillPointsUnderX": "0/290",
+        "pillPointsOnPill": "290/290",
+        "corners": [
+          "video-motion-toggle",
+          "video-motion-toggle",
+          "video-motion-toggle",
+          "video-motion-toggle"
+        ],
+        "inHero": true,
+        "label": "Pause video",
+        "pressed": "true"
+      }
+    },
+    {
+      "name": "tap on the pill corner pauses, case stays 1440",
+      "pass": true,
+      "detail": {
+        "stageHidden": false,
+        "paused": true,
+        "btn": "Play video",
+        "pressed": "false",
+        "title": "Betta"
+      }
+    },
+    {
+      "name": "X closes the case 1440",
+      "pass": true
+    },
+    {
+      "name": "page errors 1440",
+      "pass": true,
+      "detail": {
+        "perrors": [],
+        "errors": [],
+        "failed": []
+      }
+    },
+    {
+      "name": "one esc closes the case only (reduced, round 1)",
+      "pass": true,
+      "detail": {
+        "before": {
+          "panelHidden": false,
+          "stageOpen": true,
+          "title": "Posture Cue"
+        },
+        "afterOne": {
+          "panelHidden": false,
+          "panelOpen": true,
+          "stageHidden": true,
+          "ringOpen": true,
+          "stageOpen": false,
+          "focus": "Posture Cue, Wearables project. Press En"
+        }
+      }
+    },
+    {
+      "name": "second esc closes the panel (reduced, round 1)",
+      "pass": true,
+      "detail": {
+        "panelHidden": true,
+        "panelOpen": false,
+        "ringOpen": false
+      }
+    },
+    {
+      "name": "one esc closes the case only (reduced, round 2)",
+      "pass": true,
+      "detail": {
+        "before": {
+          "panelHidden": false,
+          "stageOpen": true,
+          "title": "Posture Cue"
+        },
+        "afterOne": {
+          "panelHidden": false,
+          "panelOpen": true,
+          "stageHidden": true,
+          "ringOpen": true,
+          "stageOpen": false,
+          "focus": "Posture Cue, Wearables project. Press En"
+        }
+      }
+    },
+    {
+      "name": "second esc closes the panel (reduced, round 2)",
+      "pass": true,
+      "detail": {
+        "panelHidden": true,
+        "panelOpen": false,
+        "ringOpen": false
+      }
+    },
+    {
+      "name": "one esc closes the case only (reduced, round 3)",
+      "pass": true,
+      "detail": {
+        "before": {
+          "panelHidden": false,
+          "stageOpen": true,
+          "title": "Posture Cue"
+        },
+        "afterOne": {
+          "panelHidden": false,
+          "panelOpen": true,
+          "stageHidden": true,
+          "ringOpen": true,
+          "stageOpen": false,
+          "focus": "Posture Cue, Wearables project. Press En"
+        }
+      }
+    },
+    {
+      "name": "second esc closes the panel (reduced, round 3)",
+      "pass": true,
+      "detail": {
+        "panelHidden": true,
+        "panelOpen": false,
+        "ringOpen": false
+      }
+    },
+    {
+      "name": "circuit page errors reduced",
+      "pass": true,
+      "detail": {
+        "perrors": [],
+        "errors": [],
+        "failed": []
+      }
+    },
+    {
+      "name": "one esc closes the case only (animated, round 1)",
+      "pass": true,
+      "detail": {
+        "before": {
+          "panelHidden": false,
+          "stageOpen": true,
+          "title": "Posture Cue"
+        },
+        "afterOne": {
+          "panelHidden": false,
+          "panelOpen": true,
+          "stageHidden": true,
+          "ringOpen": true,
+          "stageOpen": false,
+          "focus": "Posture Cue, Wearables project. Press En"
+        }
+      }
+    },
+    {
+      "name": "second esc closes the panel (animated, round 1)",
+      "pass": true,
+      "detail": {
+        "panelHidden": true,
+        "panelOpen": false,
+        "ringOpen": false
+      }
+    },
+    {
+      "name": "one esc closes the case only (animated, round 2)",
+      "pass": true,
+      "detail": {
+        "before": {
+          "panelHidden": false,
+          "stageOpen": true,
+          "title": "Posture Cue"
+        },
+        "afterOne": {
+          "panelHidden": false,
+          "panelOpen": true,
+          "stageHidden": true,
+          "ringOpen": true,
+          "stageOpen": false,
+          "focus": "Posture Cue, Wearables project. Press En"
+        }
+      }
+    },
+    {
+      "name": "second esc closes the panel (animated, round 2)",
+      "pass": true,
+      "detail": {
+        "panelHidden": true,
+        "panelOpen": false,
+        "ringOpen": false
+      }
+    },
+    {
+      "name": "one esc closes the case only (animated, round 3)",
+      "pass": true,
+      "detail": {
+        "before": {
+          "panelHidden": false,
+          "stageOpen": true,
+          "title": "Posture Cue"
+        },
+        "afterOne": {
+          "panelHidden": false,
+          "panelOpen": true,
+          "stageHidden": true,
+          "ringOpen": true,
+          "stageOpen": false,
+          "focus": "Posture Cue, Wearables project. Press En"
+        }
+      }
+    },
+    {
+      "name": "second esc closes the panel (animated, round 3)",
+      "pass": true,
+      "detail": {
+        "panelHidden": true,
+        "panelOpen": false,
+        "ringOpen": false
+      }
+    },
+    {
+      "name": "circuit page errors animated",
+      "pass": true,
+      "detail": {
+        "perrors": [],
+        "errors": [],
+        "failed": []
+      }
+    }
+  ],
+  "report": {
+    "pill-360": {
+      "toggle": {
+        "x": 41,
+        "y": 94,
+        "w": 117,
+        "h": 40
+      },
+      "close": {
+        "x": 302,
+        "y": 77,
+        "w": 34,
+        "h": 34
+      },
+      "hero": {
+        "x": 28,
+        "y": 81,
+        "w": 303,
+        "h": 232
+      },
+      "overlap": [
+        0,
+        17
+      ],
+      "gapToX": 144,
+      "pillPointsUnderX": "0/290",
+      "pillPointsOnPill": "288/290",
+      "corners": [
+        "video-motion-toggle",
+        "video-motion-toggle",
+        "video-motion-toggle",
+        "video-motion-toggle"
+      ],
+      "inHero": true,
+      "label": "Pause video",
+      "pressed": "true",
+      "tapAt": [
+        152,
+        100
+      ],
+      "afterTap": {
+        "stageHidden": false,
+        "paused": true,
+        "btn": "Play video",
+        "pressed": "false",
+        "title": "Betta"
+      }
+    },
+    "pill-390": {
+      "toggle": {
+        "x": 43,
+        "y": 103,
+        "w": 117,
+        "h": 40
+      },
+      "close": {
+        "x": 330,
+        "y": 86,
+        "w": 34,
+        "h": 34
+      },
+      "hero": {
+        "x": 30,
+        "y": 90,
+        "w": 331,
+        "h": 266
+      },
+      "overlap": [
+        0,
+        17
+      ],
+      "gapToX": 170,
+      "pillPointsUnderX": "0/290",
+      "pillPointsOnPill": "290/290",
+      "corners": [
+        "video-motion-toggle",
+        "video-motion-toggle",
+        "video-motion-toggle",
+        "video-motion-toggle"
+      ],
+      "inHero": true,
+      "label": "Pause video",
+      "pressed": "true",
+      "tapAt": [
+        154,
+        109
+      ],
+      "afterTap": {
+        "stageHidden": false,
+        "paused": true,
+        "btn": "Play video",
+        "pressed": "false",
+        "title": "Betta"
+      }
+    },
+    "pill-430": {
+      "toggle": {
+        "x": 44,
+        "y": 143,
+        "w": 117,
+        "h": 40
+      },
+      "close": {
+        "x": 369,
+        "y": 126,
+        "w": 34,
+        "h": 34
+      },
+      "hero": {
+        "x": 31,
+        "y": 130,
+        "w": 368,
+        "h": 269
+      },
+      "overlap": [
+        0,
+        17
+      ],
+      "gapToX": 208,
+      "pillPointsUnderX": "0/290",
+      "pillPointsOnPill": "290/290",
+      "corners": [
+        "video-motion-toggle",
+        "video-motion-toggle",
+        "video-motion-toggle",
+        "video-motion-toggle"
+      ],
+      "inHero": true,
+      "label": "Pause video",
+      "pressed": "true",
+      "tapAt": [
+        155,
+        149
+      ],
+      "afterTap": {
+        "stageHidden": false,
+        "paused": true,
+        "btn": "Play video",
+        "pressed": "false",
+        "title": "Betta"
+      }
+    },
+    "pill-540": {
+      "toggle": {
+        "x": 49,
+        "y": 127,
+        "w": 117,
+        "h": 40
+      },
+      "close": {
+        "x": 474,
+        "y": 110,
+        "w": 34,
+        "h": 34
+      },
+      "hero": {
+        "x": 36,
+        "y": 114,
+        "w": 469,
+        "h": 269
+      },
+      "overlap": [
+        0,
+        17
+      ],
+      "gapToX": 308,
+      "pillPointsUnderX": "0/290",
+      "pillPointsOnPill": "290/290",
+      "corners": [
+        "video-motion-toggle",
+        "video-motion-toggle",
+        "video-motion-toggle",
+        "video-motion-toggle"
+      ],
+      "inHero": true,
+      "label": "Pause video",
+      "pressed": "true",
+      "tapAt": [
+        160,
+        133
+      ],
+      "afterTap": {
+        "stageHidden": false,
+        "paused": true,
+        "btn": "Play video",
+        "pressed": "false",
+        "title": "Betta"
+      }
+    },
+    "pill-768": {
+      "toggle": {
+        "x": 133,
+        "y": 191,
+        "w": 117,
+        "h": 40
+      },
+      "close": {
+        "x": 618,
+        "y": 174,
+        "w": 34,
+        "h": 34
+      },
+      "hero": {
+        "x": 120,
+        "y": 178,
+        "w": 528,
+        "h": 267
+      },
+      "overlap": [
+        0,
+        17
+      ],
+      "gapToX": 368,
+      "pillPointsUnderX": "0/290",
+      "pillPointsOnPill": "290/290",
+      "corners": [
+        "video-motion-toggle",
+        "video-motion-toggle",
+        "video-motion-toggle",
+        "video-motion-toggle"
+      ],
+      "inHero": true,
+      "label": "Pause video",
+      "pressed": "true",
+      "tapAt": [
+        244,
+        197
+      ],
+      "afterTap": {
+        "stageHidden": false,
+        "paused": true,
+        "btn": "Play video",
+        "pressed": "false",
+        "title": "Betta"
+      }
+    },
+    "pill-919": {
+      "toggle": {
+        "x": 211,
+        "y": 131,
+        "w": 117,
+        "h": 40
+      },
+      "close": {
+        "x": 691,
+        "y": 115,
+        "w": 34,
+        "h": 34
+      },
+      "hero": {
+        "x": 198,
+        "y": 118,
+        "w": 523,
+        "h": 265
+      },
+      "overlap": [
+        0,
+        18
+      ],
+      "gapToX": 363,
+      "pillPointsUnderX": "0/290",
+      "pillPointsOnPill": "290/290",
+      "corners": [
+        "video-motion-toggle",
+        "video-motion-toggle",
+        "video-motion-toggle",
+        "video-motion-toggle"
+      ],
+      "inHero": true,
+      "label": "Pause video",
+      "pressed": "true",
+      "tapAt": [
+        322,
+        137
+      ],
+      "afterTap": {
+        "stageHidden": false,
+        "paused": true,
+        "btn": "Play video",
+        "pressed": "false",
+        "title": "Betta"
+      }
+    },
+    "pill-920": {
+      "toggle": {
+        "x": 77,
+        "y": 171,
+        "w": 117,
+        "h": 40
+      },
+      "close": {
+        "x": 825,
+        "y": 155,
+        "w": 34,
+        "h": 34
+      },
+      "hero": {
+        "x": 64,
+        "y": 158,
+        "w": 364,
+        "h": 583
+      },
+      "overlap": [
+        0,
+        18
+      ],
+      "gapToX": 631,
+      "pillPointsUnderX": "0/290",
+      "pillPointsOnPill": "290/290",
+      "corners": [
+        "video-motion-toggle",
+        "video-motion-toggle",
+        "video-motion-toggle",
+        "video-motion-toggle"
+      ],
+      "inHero": true,
+      "label": "Pause video",
+      "pressed": "true",
+      "tapAt": [
+        188,
+        177
+      ],
+      "afterTap": {
+        "stageHidden": false,
+        "paused": true,
+        "btn": "Play video",
+        "pressed": "false",
+        "title": "Betta"
+      }
+    },
+    "pill-1440": {
+      "toggle": {
+        "x": 231,
+        "y": 181,
+        "w": 117,
+        "h": 40
+      },
+      "close": {
+        "x": 1200,
+        "y": 156,
+        "w": 34,
+        "h": 34
+      },
+      "hero": {
+        "x": 218,
+        "y": 168,
+        "w": 462,
+        "h": 564
+      },
+      "overlap": [
+        0,
+        9
+      ],
+      "gapToX": 852,
+      "pillPointsUnderX": "0/290",
+      "pillPointsOnPill": "290/290",
+      "corners": [
+        "video-motion-toggle",
+        "video-motion-toggle",
+        "video-motion-toggle",
+        "video-motion-toggle"
+      ],
+      "inHero": true,
+      "label": "Pause video",
+      "pressed": "true",
+      "tapAt": [
+        342,
+        187
+      ],
+      "afterTap": {
+        "stageHidden": false,
+        "paused": true,
+        "btn": "Play video",
+        "pressed": "false",
+        "title": "Betta"
+      }
+    },
+    "esc-reduced": [
+      {
+        "before": {
+          "panelHidden": false,
+          "stageOpen": true,
+          "title": "Posture Cue"
+        },
+        "afterOne": {
+          "panelHidden": false,
+          "panelOpen": true,
+          "stageHidden": true,
+          "ringOpen": true,
+          "stageOpen": false,
+          "focus": "Posture Cue, Wearables project. Press En"
+        },
+        "afterTwo": {
+          "panelHidden": true,
+          "panelOpen": false,
+          "ringOpen": false
+        }
+      },
+      {
+        "before": {
+          "panelHidden": false,
+          "stageOpen": true,
+          "title": "Posture Cue"
+        },
+        "afterOne": {
+          "panelHidden": false,
+          "panelOpen": true,
+          "stageHidden": true,
+          "ringOpen": true,
+          "stageOpen": false,
+          "focus": "Posture Cue, Wearables project. Press En"
+        },
+        "afterTwo": {
+          "panelHidden": true,
+          "panelOpen": false,
+          "ringOpen": false
+        }
+      },
+      {
+        "before": {
+          "panelHidden": false,
+          "stageOpen": true,
+          "title": "Posture Cue"
+        },
+        "afterOne": {
+          "panelHidden": false,
+          "panelOpen": true,
+          "stageHidden": true,
+          "ringOpen": true,
+          "stageOpen": false,
+          "focus": "Posture Cue, Wearables project. Press En"
+        },
+        "afterTwo": {
+          "panelHidden": true,
+          "panelOpen": false,
+          "ringOpen": false
+        }
+      }
+    ],
+    "esc-animated": [
+      {
+        "before": {
+          "panelHidden": false,
+          "stageOpen": true,
+          "title": "Posture Cue"
+        },
+        "afterOne": {
+          "panelHidden": false,
+          "panelOpen": true,
+          "stageHidden": true,
+          "ringOpen": true,
+          "stageOpen": false,
+          "focus": "Posture Cue, Wearables project. Press En"
+        },
+        "afterTwo": {
+          "panelHidden": true,
+          "panelOpen": false,
+          "ringOpen": false
+        }
+      },
+      {
+        "before": {
+          "panelHidden": false,
+          "stageOpen": true,
+          "title": "Posture Cue"
+        },
+        "afterOne": {
+          "panelHidden": false,
+          "panelOpen": true,
+          "stageHidden": true,
+          "ringOpen": true,
+          "stageOpen": false,
+          "focus": "Posture Cue, Wearables project. Press En"
+        },
+        "afterTwo": {
+          "panelHidden": true,
+          "panelOpen": false,
+          "ringOpen": false
+        }
+      },
+      {
+        "before": {
+          "panelHidden": false,
+          "stageOpen": true,
+          "title": "Posture Cue"
+        },
+        "afterOne": {
+          "panelHidden": false,
+          "panelOpen": true,
+          "stageHidden": true,
+          "ringOpen": true,
+          "stageOpen": false,
+          "focus": "Posture Cue, Wearables project. Press En"
+        },
+        "afterTwo": {
+          "panelHidden": true,
+          "panelOpen": false,
+          "ringOpen": false
+        }
+      }
+    ]
+  }
+}

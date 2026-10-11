@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>The lab, harness</title>
+    <link rel="stylesheet" href="../../../circuit/circuit.css">
+    <link rel="stylesheet" href="../../../styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,600;0,700;1,600;1,700&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;family=Schibsted+Grotesk:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../../circuit/lab.css">
+    <style>
+        /* the panel body: 520px on paper, like the Betta stop's side panel */
+        html, body { height: auto; overflow: auto; }
+        body { background: var(--paper); color: var(--ink); font-family: var(--font-serif); -webkit-font-smoothing: antialiased; }
+        .harness-wrap { width: 520px; max-width: calc(100vw - 32px); margin: 2rem auto; }
+        .harness-note { margin-top: 1.5rem; font-family: var(--font-chrome); font-style: italic; font-weight: 600; font-size: 0.625rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+    </style>
+</head>
+<body>
+    <div class="harness-wrap">
+        <div id="lab"></div>
+        <p class="harness-note" id="note"></p>
+    </div>
+    <script type="module">
+        import { mountLab, STAGES } from '../../../circuit/lab.js';
+        const q = new URLSearchParams(location.search);
+        const stage = Math.max(1, Math.min(STAGES.length, parseInt(q.get('stage') || '1', 10) || 1)) - 1;
+        const stillRaw = q.get('still');
+        const still = stillRaw == null ? false : (stillRaw === '1' || stillRaw === '' ? true : parseFloat(stillRaw));
+        const el = document.getElementById('lab');
+        const log = [];
+        const api = mountLab(el, {
+            autoplay: !still && q.get('autoplay') !== '0',
+            start: q.get('start') === 'last' ? 'last' : 'first',
+            still,
+            onInteract: kind => log.push(kind),
+        });
+        if (stage > 0) api.goTo(stage);   // start=last is handled by mountLab itself
+        window.__lab = { api, el, log, STAGES };
+        document.getElementById('note').textContent = 'lab harness, ' + STAGES.length + ' stages' + (still ? ', still' : '') + ' (?stage=N, ?still=1 or ?still=seconds, ?autoplay=0, ?start=last)';
+    </script>
+</body>
+</html>

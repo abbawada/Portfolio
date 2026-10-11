@@ -353,6 +353,12 @@ main {
     border-radius: var(--radius);
     background-color: #000;
 }
+.betta-video img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius);
+}
 
 .video-motion-toggle {
     position: absolute;

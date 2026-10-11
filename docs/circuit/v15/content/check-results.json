@@ -1,0 +1,674 @@
+[
+  {
+    "name": "shelf renders with Betta 1440",
+    "pass": true,
+    "detail": {
+      "n": 7,
+      "betta": true,
+      "plainHidden": true,
+      "extra": [
+        "wheelchair",
+        "medici",
+        "skydiving"
+      ],
+      "sky": {
+        "id": "skydiving",
+        "cat": "Wearables",
+        "title": "Skydiving Project #2",
+        "serial": "AWUS-30510",
+        "line": "A jump instrument in the making: barometer, LiDAR, GPS, haptics.",
+        "links": [
+          [
+            "WATCH THE REEL",
+            "https://www.instagram.com/reel/Ddv8Qr_gruP/"
+          ]
+        ]
+      },
+      "bettaCase": {
+        "src": "videos/betta_court_rep.mp4",
+        "poster": "images/betta_poster_court.jpg",
+        "w": 720,
+        "h": 1280,
+        "alt": "A player shoots a free throw in the Betta sleeve",
+        "cap": "RECORDED · OCT 8, 2026 · FIRST COURT SESSION. 21 OF 28 REPS BUZZED."
+      }
+    }
+  },
+  {
+    "name": "EXTRA has skydiving 1440",
+    "pass": true,
+    "detail": {
+      "id": "skydiving",
+      "cat": "Wearables",
+      "title": "Skydiving Project #2",
+      "serial": "AWUS-30510",
+      "line": "A jump instrument in the making: barometer, LiDAR, GPS, haptics.",
+      "links": [
+        [
+          "WATCH THE REEL",
+          "https://www.instagram.com/reel/Ddv8Qr_gruP/"
+        ]
+      ]
+    }
+  },
+  {
+    "name": "betta case video data 1440",
+    "pass": true,
+    "detail": {
+      "src": "videos/betta_court_rep.mp4",
+      "poster": "images/betta_poster_court.jpg",
+      "w": 720,
+      "h": 1280,
+      "alt": "A player shoots a free throw in the Betta sleeve",
+      "cap": "RECORDED · OCT 8, 2026 · FIRST COURT SESSION. 21 OF 28 REPS BUZZED."
+    }
+  },
+  {
+    "name": "flip shows court clip 1440",
+    "pass": true,
+    "detail": {
+      "src": "videos/betta_court_rep.mp4",
+      "poster": "images/betta_poster_court.jpg",
+      "muted": true,
+      "paused": false,
+      "t": 2.293971,
+      "ready": 4,
+      "w": 720,
+      "h": 1280,
+      "cap": "RECORDED · OCT 8, 2026 · FIRST COURT SESSION. 21 OF 28 REPS BUZZED.",
+      "alt": "A player shoots a free throw in the Betta sleeve",
+      "live": true,
+      "liveHead": "Recorded · one session · every rep captured",
+      "autoplay": true,
+      "err": null
+    }
+  },
+  {
+    "name": "flip clip playing muted 1440",
+    "pass": true,
+    "detail": {
+      "src": "videos/betta_court_rep.mp4",
+      "poster": "images/betta_poster_court.jpg",
+      "muted": true,
+      "paused": false,
+      "t": 2.293971,
+      "ready": 4,
+      "w": 720,
+      "h": 1280,
+      "cap": "RECORDED · OCT 8, 2026 · FIRST COURT SESSION. 21 OF 28 REPS BUZZED.",
+      "alt": "A player shoots a free throw in the Betta sleeve",
+      "live": true,
+      "liveHead": "Recorded · one session · every rep captured",
+      "autoplay": true,
+      "err": null
+    }
+  },
+  {
+    "name": "flip caption 1440",
+    "pass": true,
+    "detail": "RECORDED · OCT 8, 2026 · FIRST COURT SESSION. 21 OF 28 REPS BUZZED."
+  },
+  {
+    "name": "flip capture graphic mounted 1440",
+    "pass": true,
+    "detail": "Recorded · one session · every rep captured"
+  },
+  {
+    "name": "stage closes 1440",
+    "pass": true
+  },
+  {
+    "name": "projects page errors 1440",
+    "pass": true,
+    "detail": {
+      "perrors": [],
+      "errors": [],
+      "failed": []
+    }
+  },
+  {
+    "name": "betta has three videos 1440",
+    "pass": true,
+    "detail": 3
+  },
+  {
+    "name": "third video loads poster 1440",
+    "pass": true,
+    "detail": {
+      "src": "videos/betta_court_rep_wide.mp4",
+      "poster": "images/betta_poster_court_wide.jpg",
+      "posterOk": "1280x720",
+      "controls": true,
+      "preload": "none",
+      "playsinline": true,
+      "w": "1280",
+      "h": "720",
+      "alt": "A player shoots a free throw in the Betta sleeve, first court session",
+      "cap": "Oct 8, 2026. The first court session: a player shoots, the sleeve reads the rep, and one long buzz at the wrist says it held. 21 of 28 reps buzzed.",
+      "box": [
+        760,
+        428
+      ],
+      "ratio": 1.78,
+      "stat": [
+        "Top 4 of 221 The project placed 4th of 221 teams at USC's 2026 New Venture Seed Competition and received a $10,000 award.",
+        "Hand-built I built the prototype by hand, moving from a breadboard to soldered protoboard.",
+        "Working prototype Everything runs end to end inside the sleeve. On Oct 8, 2026 a player shot free throws in it on a real court."
+      ]
+    }
+  },
+  {
+    "name": "third video markup 1440",
+    "pass": true,
+    "detail": {
+      "src": "videos/betta_court_rep_wide.mp4",
+      "poster": "images/betta_poster_court_wide.jpg",
+      "posterOk": "1280x720",
+      "controls": true,
+      "preload": "none",
+      "playsinline": true,
+      "w": "1280",
+      "h": "720",
+      "alt": "A player shoots a free throw in the Betta sleeve, first court session",
+      "cap": "Oct 8, 2026. The first court session: a player shoots, the sleeve reads the rep, and one long buzz at the wrist says it held. 21 of 28 reps buzzed.",
+      "box": [
+        760,
+        428
+      ],
+      "ratio": 1.78,
+      "stat": [
+        "Top 4 of 221 The project placed 4th of 221 teams at USC's 2026 New Venture Seed Competition and received a $10,000 award.",
+        "Hand-built I built the prototype by hand, moving from a breadboard to soldered protoboard.",
+        "Working prototype Everything runs end to end inside the sleeve. On Oct 8, 2026 a player shot free throws in it on a real court."
+      ]
+    }
+  },
+  {
+    "name": "third video is 16:9 on screen 1440",
+    "pass": true,
+    "detail": [
+      760,
+      428
+    ]
+  },
+  {
+    "name": "third caption 1440",
+    "pass": true,
+    "detail": "Oct 8, 2026. The first court session: a player shoots, the sleeve reads the rep, and one long buzz at the wrist says it held. 21 of 28 reps buzzed."
+  },
+  {
+    "name": "betta page errors 1440",
+    "pass": true,
+    "detail": {
+      "perrors": [],
+      "errors": [],
+      "failed": []
+    }
+  },
+  {
+    "name": "shelf renders with Betta 390",
+    "pass": true,
+    "detail": {
+      "n": 7,
+      "betta": true,
+      "plainHidden": true,
+      "extra": [
+        "wheelchair",
+        "medici",
+        "skydiving"
+      ],
+      "sky": {
+        "id": "skydiving",
+        "cat": "Wearables",
+        "title": "Skydiving Project #2",
+        "serial": "AWUS-30510",
+        "line": "A jump instrument in the making: barometer, LiDAR, GPS, haptics.",
+        "links": [
+          [
+            "WATCH THE REEL",
+            "https://www.instagram.com/reel/Ddv8Qr_gruP/"
+          ]
+        ]
+      },
+      "bettaCase": {
+        "src": "videos/betta_court_rep.mp4",
+        "poster": "images/betta_poster_court.jpg",
+        "w": 720,
+        "h": 1280,
+        "alt": "A player shoots a free throw in the Betta sleeve",
+        "cap": "RECORDED · OCT 8, 2026 · FIRST COURT SESSION. 21 OF 28 REPS BUZZED."
+      }
+    }
+  },
+  {
+    "name": "EXTRA has skydiving 390",
+    "pass": true,
+    "detail": {
+      "id": "skydiving",
+      "cat": "Wearables",
+      "title": "Skydiving Project #2",
+      "serial": "AWUS-30510",
+      "line": "A jump instrument in the making: barometer, LiDAR, GPS, haptics.",
+      "links": [
+        [
+          "WATCH THE REEL",
+          "https://www.instagram.com/reel/Ddv8Qr_gruP/"
+        ]
+      ]
+    }
+  },
+  {
+    "name": "betta case video data 390",
+    "pass": true,
+    "detail": {
+      "src": "videos/betta_court_rep.mp4",
+      "poster": "images/betta_poster_court.jpg",
+      "w": 720,
+      "h": 1280,
+      "alt": "A player shoots a free throw in the Betta sleeve",
+      "cap": "RECORDED · OCT 8, 2026 · FIRST COURT SESSION. 21 OF 28 REPS BUZZED."
+    }
+  },
+  {
+    "name": "flip shows court clip 390",
+    "pass": true,
+    "detail": {
+      "src": "videos/betta_court_rep.mp4",
+      "poster": "images/betta_poster_court.jpg",
+      "muted": true,
+      "paused": false,
+      "t": 2.480463,
+      "ready": 4,
+      "w": 720,
+      "h": 1280,
+      "cap": "RECORDED · OCT 8, 2026 · FIRST COURT SESSION. 21 OF 28 REPS BUZZED.",
+      "alt": "A player shoots a free throw in the Betta sleeve",
+      "live": true,
+      "liveHead": "Recorded · one session · every rep captured",
+      "autoplay": true,
+      "err": null
+    }
+  },
+  {
+    "name": "flip clip playing muted 390",
+    "pass": true,
+    "detail": {
+      "src": "videos/betta_court_rep.mp4",
+      "poster": "images/betta_poster_court.jpg",
+      "muted": true,
+      "paused": false,
+      "t": 2.480463,
+      "ready": 4,
+      "w": 720,
+      "h": 1280,
+      "cap": "RECORDED · OCT 8, 2026 · FIRST COURT SESSION. 21 OF 28 REPS BUZZED.",
+      "alt": "A player shoots a free throw in the Betta sleeve",
+      "live": true,
+      "liveHead": "Recorded · one session · every rep captured",
+      "autoplay": true,
+      "err": null
+    }
+  },
+  {
+    "name": "flip caption 390",
+    "pass": true,
+    "detail": "RECORDED · OCT 8, 2026 · FIRST COURT SESSION. 21 OF 28 REPS BUZZED."
+  },
+  {
+    "name": "flip capture graphic mounted 390",
+    "pass": true,
+    "detail": "Recorded · one session · every rep captured"
+  },
+  {
+    "name": "stage closes 390",
+    "pass": true
+  },
+  {
+    "name": "projects page errors 390",
+    "pass": true,
+    "detail": {
+      "perrors": [],
+      "errors": [],
+      "failed": []
+    }
+  },
+  {
+    "name": "betta has three videos 390",
+    "pass": true,
+    "detail": 3
+  },
+  {
+    "name": "third video loads poster 390",
+    "pass": true,
+    "detail": {
+      "src": "videos/betta_court_rep_wide.mp4",
+      "poster": "images/betta_poster_court_wide.jpg",
+      "posterOk": "1280x720",
+      "controls": true,
+      "preload": "none",
+      "playsinline": true,
+      "w": "1280",
+      "h": "720",
+      "alt": "A player shoots a free throw in the Betta sleeve, first court session",
+      "cap": "Oct 8, 2026. The first court session: a player shoots, the sleeve reads the rep, and one long buzz at the wrist says it held. 21 of 28 reps buzzed.",
+      "box": [
+        350,
+        197
+      ],
+      "ratio": 1.78,
+      "stat": [
+        "Top 4 of 221 The project placed 4th of 221 teams at USC's 2026 New Venture Seed Competition and received a $10,000 award.",
+        "Hand-built I built the prototype by hand, moving from a breadboard to soldered protoboard.",
+        "Working prototype Everything runs end to end inside the sleeve. On Oct 8, 2026 a player shot free throws in it on a real court."
+      ]
+    }
+  },
+  {
+    "name": "third video markup 390",
+    "pass": true,
+    "detail": {
+      "src": "videos/betta_court_rep_wide.mp4",
+      "poster": "images/betta_poster_court_wide.jpg",
+      "posterOk": "1280x720",
+      "controls": true,
+      "preload": "none",
+      "playsinline": true,
+      "w": "1280",
+      "h": "720",
+      "alt": "A player shoots a free throw in the Betta sleeve, first court session",
+      "cap": "Oct 8, 2026. The first court session: a player shoots, the sleeve reads the rep, and one long buzz at the wrist says it held. 21 of 28 reps buzzed.",
+      "box": [
+        350,
+        197
+      ],
+      "ratio": 1.78,
+      "stat": [
+        "Top 4 of 221 The project placed 4th of 221 teams at USC's 2026 New Venture Seed Competition and received a $10,000 award.",
+        "Hand-built I built the prototype by hand, moving from a breadboard to soldered protoboard.",
+        "Working prototype Everything runs end to end inside the sleeve. On Oct 8, 2026 a player shot free throws in it on a real court."
+      ]
+    }
+  },
+  {
+    "name": "third video is 16:9 on screen 390",
+    "pass": true,
+    "detail": [
+      350,
+      197
+    ]
+  },
+  {
+    "name": "third caption 390",
+    "pass": true,
+    "detail": "Oct 8, 2026. The first court session: a player shoots, the sleeve reads the rep, and one long buzz at the wrist says it held. 21 of 28 reps buzzed."
+  },
+  {
+    "name": "betta page errors 390",
+    "pass": true,
+    "detail": {
+      "perrors": [],
+      "errors": [],
+      "failed": []
+    }
+  },
+  {
+    "name": "nojs skydiving row 1440",
+    "pass": true,
+    "detail": {
+      "href": "https://www.instagram.com/reel/Ddv8Qr_gruP/",
+      "target": "_blank",
+      "rel": "noopener noreferrer",
+      "group": "Wearables",
+      "text": "Skydiving Project #2 → A jump instrument in the making: barometer, LiDAR, GPS, haptics.",
+      "plainHidden": false,
+      "shelfHidden": true
+    }
+  },
+  {
+    "name": "nojs skydiving line 1440",
+    "pass": true,
+    "detail": "Skydiving Project #2 → A jump instrument in the making: barometer, LiDAR, GPS, haptics."
+  },
+  {
+    "name": "nojs page errors 1440",
+    "pass": true,
+    "detail": {
+      "perrors": [],
+      "errors": [],
+      "failed": []
+    }
+  },
+  {
+    "name": "nojs skydiving row 390",
+    "pass": true,
+    "detail": {
+      "href": "https://www.instagram.com/reel/Ddv8Qr_gruP/",
+      "target": "_blank",
+      "rel": "noopener noreferrer",
+      "group": "Wearables",
+      "text": "Skydiving Project #2 → A jump instrument in the making: barometer, LiDAR, GPS, haptics.",
+      "plainHidden": false,
+      "shelfHidden": true
+    }
+  },
+  {
+    "name": "nojs skydiving line 390",
+    "pass": true,
+    "detail": "Skydiving Project #2 → A jump instrument in the making: barometer, LiDAR, GPS, haptics."
+  },
+  {
+    "name": "nojs page errors 390",
+    "pass": true,
+    "detail": {
+      "perrors": [],
+      "errors": [],
+      "failed": []
+    }
+  },
+  {
+    "name": "shelf renders with Betta 1440r",
+    "pass": true,
+    "detail": {
+      "n": 7,
+      "betta": true,
+      "plainHidden": true,
+      "extra": [
+        "wheelchair",
+        "medici",
+        "skydiving"
+      ],
+      "sky": {
+        "id": "skydiving",
+        "cat": "Wearables",
+        "title": "Skydiving Project #2",
+        "serial": "AWUS-30510",
+        "line": "A jump instrument in the making: barometer, LiDAR, GPS, haptics.",
+        "links": [
+          [
+            "WATCH THE REEL",
+            "https://www.instagram.com/reel/Ddv8Qr_gruP/"
+          ]
+        ]
+      },
+      "bettaCase": {
+        "src": "videos/betta_court_rep.mp4",
+        "poster": "images/betta_poster_court.jpg",
+        "w": 720,
+        "h": 1280,
+        "alt": "A player shoots a free throw in the Betta sleeve",
+        "cap": "RECORDED · OCT 8, 2026 · FIRST COURT SESSION. 21 OF 28 REPS BUZZED."
+      }
+    }
+  },
+  {
+    "name": "EXTRA has skydiving 1440r",
+    "pass": true,
+    "detail": {
+      "id": "skydiving",
+      "cat": "Wearables",
+      "title": "Skydiving Project #2",
+      "serial": "AWUS-30510",
+      "line": "A jump instrument in the making: barometer, LiDAR, GPS, haptics.",
+      "links": [
+        [
+          "WATCH THE REEL",
+          "https://www.instagram.com/reel/Ddv8Qr_gruP/"
+        ]
+      ]
+    }
+  },
+  {
+    "name": "betta case video data 1440r",
+    "pass": true,
+    "detail": {
+      "src": "videos/betta_court_rep.mp4",
+      "poster": "images/betta_poster_court.jpg",
+      "w": 720,
+      "h": 1280,
+      "alt": "A player shoots a free throw in the Betta sleeve",
+      "cap": "RECORDED · OCT 8, 2026 · FIRST COURT SESSION. 21 OF 28 REPS BUZZED."
+    }
+  },
+  {
+    "name": "flip shows court clip 1440r",
+    "pass": true,
+    "detail": {
+      "src": "videos/betta_court_rep.mp4",
+      "poster": "images/betta_poster_court.jpg",
+      "muted": true,
+      "paused": true,
+      "t": 0,
+      "ready": 4,
+      "w": 720,
+      "h": 1280,
+      "cap": "RECORDED · OCT 8, 2026 · FIRST COURT SESSION. 21 OF 28 REPS BUZZED.",
+      "alt": "A player shoots a free throw in the Betta sleeve",
+      "live": true,
+      "liveHead": "Recorded · one session · every rep captured",
+      "autoplay": false,
+      "err": null
+    }
+  },
+  {
+    "name": "flip clip playing muted 1440r",
+    "pass": true,
+    "detail": {
+      "src": "videos/betta_court_rep.mp4",
+      "poster": "images/betta_poster_court.jpg",
+      "muted": true,
+      "paused": true,
+      "t": 0,
+      "ready": 4,
+      "w": 720,
+      "h": 1280,
+      "cap": "RECORDED · OCT 8, 2026 · FIRST COURT SESSION. 21 OF 28 REPS BUZZED.",
+      "alt": "A player shoots a free throw in the Betta sleeve",
+      "live": true,
+      "liveHead": "Recorded · one session · every rep captured",
+      "autoplay": false,
+      "err": null
+    }
+  },
+  {
+    "name": "flip caption 1440r",
+    "pass": true,
+    "detail": "RECORDED · OCT 8, 2026 · FIRST COURT SESSION. 21 OF 28 REPS BUZZED."
+  },
+  {
+    "name": "flip capture graphic mounted 1440r",
+    "pass": true,
+    "detail": "Recorded · one session · every rep captured"
+  },
+  {
+    "name": "stage closes 1440r",
+    "pass": true
+  },
+  {
+    "name": "projects page errors 1440r",
+    "pass": true,
+    "detail": {
+      "perrors": [],
+      "errors": [],
+      "failed": []
+    }
+  },
+  {
+    "name": "betta has three videos 1440r",
+    "pass": true,
+    "detail": 3
+  },
+  {
+    "name": "third video loads poster 1440r",
+    "pass": true,
+    "detail": {
+      "src": "videos/betta_court_rep_wide.mp4",
+      "poster": "images/betta_poster_court_wide.jpg",
+      "posterOk": "1280x720",
+      "controls": true,
+      "preload": "none",
+      "playsinline": true,
+      "w": "1280",
+      "h": "720",
+      "alt": "A player shoots a free throw in the Betta sleeve, first court session",
+      "cap": "Oct 8, 2026. The first court session: a player shoots, the sleeve reads the rep, and one long buzz at the wrist says it held. 21 of 28 reps buzzed.",
+      "box": [
+        760,
+        428
+      ],
+      "ratio": 1.78,
+      "stat": [
+        "Top 4 of 221 The project placed 4th of 221 teams at USC's 2026 New Venture Seed Competition and received a $10,000 award.",
+        "Hand-built I built the prototype by hand, moving from a breadboard to soldered protoboard.",
+        "Working prototype Everything runs end to end inside the sleeve. On Oct 8, 2026 a player shot free throws in it on a real court."
+      ]
+    }
+  },
+  {
+    "name": "third video markup 1440r",
+    "pass": true,
+    "detail": {
+      "src": "videos/betta_court_rep_wide.mp4",
+      "poster": "images/betta_poster_court_wide.jpg",
+      "posterOk": "1280x720",
+      "controls": true,
+      "preload": "none",
+      "playsinline": true,
+      "w": "1280",
+      "h": "720",
+      "alt": "A player shoots a free throw in the Betta sleeve, first court session",
+      "cap": "Oct 8, 2026. The first court session: a player shoots, the sleeve reads the rep, and one long buzz at the wrist says it held. 21 of 28 reps buzzed.",
+      "box": [
+        760,
+        428
+      ],
+      "ratio": 1.78,
+      "stat": [
+        "Top 4 of 221 The project placed 4th of 221 teams at USC's 2026 New Venture Seed Competition and received a $10,000 award.",
+        "Hand-built I built the prototype by hand, moving from a breadboard to soldered protoboard.",
+        "Working prototype Everything runs end to end inside the sleeve. On Oct 8, 2026 a player shot free throws in it on a real court."
+      ]
+    }
+  },
+  {
+    "name": "third video is 16:9 on screen 1440r",
+    "pass": true,
+    "detail": [
+      760,
+      428
+    ]
+  },
+  {
+    "name": "third caption 1440r",
+    "pass": true,
+    "detail": "Oct 8, 2026. The first court session: a player shoots, the sleeve reads the rep, and one long buzz at the wrist says it held. 21 of 28 reps buzzed."
+  },
+  {
+    "name": "betta page errors 1440r",
+    "pass": true,
+    "detail": {
+      "perrors": [],
+      "errors": [],
+      "failed": []
+    }
+  }
+]

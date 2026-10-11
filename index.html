@@ -14,11 +14,13 @@
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
-    <link rel="stylesheet" href="circuit/circuit.css?v=14.0">
+    <link rel="stylesheet" href="circuit/circuit.css?v=15.0">
+    <link rel="stylesheet" href="circuit/lab.css?v=15.0">
+    <link rel="stylesheet" href="circuit/skydive.css?v=15.0">
     <!-- the site stylesheet dresses the panels; it need not block the first paint.
          Every script and stylesheet carries a build query so a deploy never pairs a new page with a cached module. -->
-    <link rel="stylesheet" href="styles.css?v=14.0" media="print" onload="this.media='all'">
-    <noscript><link rel="stylesheet" href="styles.css?v=14.0"></noscript>
+    <link rel="stylesheet" href="styles.css?v=15.0" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="styles.css?v=15.0"></noscript>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,600;0,700;1,600;1,700&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;family=Schibsted+Grotesk:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" media="print" onload="this.media='all'">
@@ -32,13 +34,35 @@
         <h1 class="ring-hud-name">Abba Wada</h1>
         <p class="ring-hud-line">I'm 23, on a mission to put elite performance in the hands of every young dreamer.</p>
         <p class="ring-hud-place">Los Angeles, CA</p>
-        <button class="ring-lap" id="ringLap" type="button" aria-pressed="false">Start lap</button>
-        <p class="ring-visually-hidden">Drag to explore, scroll to zoom. Tab moves between the seven stops, Enter opens one, Escape closes it.</p>
+        <div class="ring-hud-actions">
+            <button class="ring-lap ring-drive" id="ringDrive" type="button" aria-pressed="false">Drive</button>
+            <button class="ring-lap" id="ringLap" type="button" aria-pressed="false">Watch the race</button>
+        </div>
+        <p class="ring-hint" id="ringHint" hidden>Click a stop to open it. Drag to look around.</p>
+        <p class="ring-visually-hidden">Drag to explore, scroll to zoom. Tab moves between the seven stops, Enter opens one, Escape closes it. Drive takes a car, or D while the map has the focus: the arrow keys drive and steer, Space is the throttle, Escape leaves it.</p>
     </header>
 
     <nav class="ring-pins" id="ringPins" aria-label="Stops on the lap"></nav>
 
     <button class="ring-lap-exit" id="ringLapExit" type="button" hidden>Back to the map <kbd>Esc</kbd></button>
+
+    <!-- the drive (V1.5): position, lap timer, the cars passed, the end card. Shown only while the visitor holds a car. -->
+    <div class="ring-drive-hud" id="ringDriveHud" role="group" tabindex="-1" aria-label="Your car" hidden>
+        <div class="ring-drive-row">
+            <span class="ring-drive-pos" id="ringDrivePos">P8</span>
+            <span class="ring-drive-time" id="ringDriveTime">0:00.0</span>
+        </div>
+        <p class="ring-drive-tip" id="ringDriveTip" hidden>Hold to drive. Slide to steer.</p>
+        <div class="ring-drive-toasts" id="ringDriveToasts" aria-live="polite"></div>
+        <div class="ring-drive-card" id="ringDriveCard" role="group" aria-label="Your lap" tabindex="-1" aria-live="polite" hidden>
+            <p class="ring-drive-your" id="ringDriveYour">Your lap 0:00.0</p>
+            <p class="ring-drive-best" id="ringDriveBest">Best on this device 0:00.0</p>
+            <div class="ring-drive-card-actions">
+                <button class="ring-lap ring-drive" id="ringDriveAgain" type="button">Drive again</button>
+                <button class="ring-lap" id="ringDriveHome" type="button">Back to the map</button>
+            </div>
+        </div>
+    </div>
 
     <div class="ring-broadcast">
         <div class="ring-tower" id="ringTower" role="group" hidden></div>
@@ -75,14 +99,14 @@
         </div>
     </noscript>
 
-    <script defer src="circuit/layout.js?v=14.0"></script>
-    <script defer src="circuit/pulse.js?v=14.0"></script>
-    <script defer src="betta-capture.js?v=14.0"></script>
-    <script defer src="cases.js?v=14.0"></script>
+    <script defer src="circuit/layout.js?v=15.0"></script>
+    <script defer src="circuit/pulse.js?v=15.0"></script>
+    <script defer src="betta-capture.js?v=15.0"></script>
+    <script defer src="cases.js?v=15.0"></script>
     <script type="module">
-        import { mount } from './circuit/world.js?v=14.0';
-        import { attach } from './circuit/nav.js?v=14.0';
-        import { createStops } from './circuit/stops.js?v=14.0';
+        import { mount } from './circuit/world.js?v=15.0';
+        import { attach } from './circuit/nav.js?v=15.0';
+        import { createStops } from './circuit/stops.js?v=15.0';
         const L = window.CircuitLayout;
         const q = new URLSearchParams(location.search);
         if (q.get('poster')) document.body.classList.add('is-poster');   // tools/circuit/poster.py: the world alone
@@ -96,6 +120,18 @@
             panelBody: document.getElementById('ringPanelBody'),
             lapBtn: document.getElementById('ringLap'),
             lapExit: document.getElementById('ringLapExit'),
+            driveBtn: document.getElementById('ringDrive'),
+            driveHud: document.getElementById('ringDriveHud'),
+            drivePos: document.getElementById('ringDrivePos'),
+            driveTime: document.getElementById('ringDriveTime'),
+            driveTip: document.getElementById('ringDriveTip'),
+            driveToasts: document.getElementById('ringDriveToasts'),
+            driveCard: document.getElementById('ringDriveCard'),
+            driveYour: document.getElementById('ringDriveYour'),
+            driveBest: document.getElementById('ringDriveBest'),
+            driveAgain: document.getElementById('ringDriveAgain'),
+            driveHome: document.getElementById('ringDriveHome'),
+            hint: document.getElementById('ringHint'),
             hopPrev: document.getElementById('ringHopPrev'),
             hopNext: document.getElementById('ringHopNext'),
             tower: document.getElementById('ringTower'),
@@ -122,8 +158,8 @@
             // no WebGL: the poster with clickable regions replaces the canvas
             document.body.classList.add('ring-no-webgl');
             const s = document.createElement('script');
-            s.src = 'circuit/poster-areas.js?v=14.0';
-            s.onload = () => import('./circuit/poster.js?v=14.0').then(m => { window.__circuit = { poster: m.mountPoster(L, dom, stops), stops }; });
+            s.src = 'circuit/poster-areas.js?v=15.0';
+            s.onload = () => import('./circuit/poster.js?v=15.0').then(m => { window.__circuit = { poster: m.mountPoster(L, dom, stops), stops }; });
             document.head.appendChild(s);
         }
     </script>

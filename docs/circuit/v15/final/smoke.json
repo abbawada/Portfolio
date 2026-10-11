@@ -1,0 +1,110 @@
+{
+ "desktop-1440": {
+  "hint": {
+   "hidden": false,
+   "text": "Click a stop to open it. Drag to look around."
+  },
+  "clock": "The gridLos Angeles 18:06Lap 1",
+  "gridRows": 8,
+  "lab": {
+   "present": true,
+   "canvas": [
+    519,
+    346
+   ],
+   "tabs": 6,
+   "caption": "Nov 2025 Bluetooth CarA robot car on a breadboard, driven from my phone.",
+   "pillRadius": "999px",
+   "pills": 2,
+   "sideQuests": true
+  },
+  "sky": {
+   "present": true,
+   "tile": [
+    232,
+    348
+   ],
+   "first": "ring-sky sky-host",
+   "cases": 4,
+   "line": "Skydiving, in the making: a jump instrument with a barometer, LiDAR, GPS and haptics. The reel →"
+  },
+  "skyOpen": {
+   "open": true,
+   "size": [
+    492,
+    389
+   ]
+  },
+  "afterEsc": {
+   "skyOpen": false,
+   "panelOpen": null
+  },
+  "drive": {
+   "on": true,
+   "you": true,
+   "hud": true,
+   "time": "0:05",
+   "cars": 9
+  },
+  "driveOff": {
+   "on": false,
+   "you": false,
+   "cars": 8
+  },
+  "errors": []
+ },
+ "phone-390": {
+  "hint": {
+   "hidden": false,
+   "text": "Click a stop to open it. Drag to look around."
+  },
+  "clock": "The gridLos Angeles 18:06Lap 1",
+  "gridRows": 8,
+  "lab": {
+   "present": true,
+   "canvas": [
+    350,
+    233
+   ],
+   "tabs": 6,
+   "caption": "Nov 2025 Bluetooth CarA robot car on a breadboard, driven from my phone.",
+   "pillRadius": "999px",
+   "pills": 2,
+   "sideQuests": true
+  },
+  "sky": {
+   "present": true,
+   "tile": [
+    176,
+    264
+   ],
+   "first": "ring-sky sky-host",
+   "cases": 4,
+   "line": "Skydiving, in the making: a jump instrument with a barometer, LiDAR, GPS and haptics. The reel →"
+  },
+  "skyOpen": {
+   "open": true,
+   "size": [
+    350,
+    300
+   ]
+  },
+  "afterEsc": {
+   "skyOpen": false,
+   "panelOpen": null
+  },
+  "drive": {
+   "on": true,
+   "you": true,
+   "hud": true,
+   "time": "0:05",
+   "cars": 9
+  },
+  "driveOff": {
+   "on": false,
+   "you": false,
+   "cars": 8
+  },
+  "errors": []
+ }
+}

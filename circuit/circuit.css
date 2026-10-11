@@ -117,6 +117,26 @@ body.circuit a:focus-visible, body.circuit button:focus-visible { outline: 2px s
 .ring-lap:hover { background: var(--ink); color: var(--paper); }
 .ring-lap[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
 
+/* V1.5: two pills under the name. Drive is the primary, filled ink; while
+   the visitor holds a car it inverts and reads Leave the car. */
+.ring-hud-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.ring-drive { background: var(--ink); color: var(--paper); }
+.ring-drive:hover { background: var(--paper); color: var(--ink); }
+.ring-drive[aria-pressed="true"] { background: var(--paper); color: var(--ink); }
+.ring-drive[aria-pressed="true"]:hover { background: var(--ink); color: var(--paper); }
+
+/* the first-visit hint, one line under the pills; it fades on the first press */
+.ring-hint {
+    margin-top: 0.75rem;
+    font-family: var(--font-serif);
+    font-size: 0.9375rem;
+    line-height: 1.4;
+    color: var(--muted);
+    text-shadow: 0 0 2px var(--paper), 0 0 6px var(--paper), 0 0 12px var(--paper);
+    transition: opacity 300ms ease;
+}
+.ring-hint.is-out { opacity: 0; }
+
 /* V1.3 Session 3: the obvious exit from the lap, bottom centre while the
    camera is riding; the lap button and Escape leave too */
 .ring-lap-exit {
@@ -153,6 +173,132 @@ body.circuit a:focus-visible, body.circuit button:focus-visible { outline: 2px s
 .ring-lap-exit:hover kbd { border-color: rgba(20, 20, 20, 0.4); }
 
 /* ------------------------------------------------------------
+   The drive HUD (V1.5), top right while the visitor holds a car:
+   the position chip and the lap timer in the broadcast face, the
+   toasts for every car passed, the end card after the lap. The
+   pit straight runs along the bottom of the plate, so nothing here
+   sits low.
+   ------------------------------------------------------------ */
+.ring-drive-hud {
+    position: fixed;
+    top: clamp(1.25rem, 3.5vh, 2.25rem);
+    right: clamp(1rem, 3vw, 2.25rem);
+    z-index: 4;   /* above the Grid block (3): where the two columns meet, the card and its buttons win the tap */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+    max-width: min(22rem, calc(100vw - 2rem));
+    pointer-events: none;
+    outline: 0;
+    font-family: var(--font-chrome);
+    font-style: italic;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink);
+}
+.ring-drive-hud > * { pointer-events: auto; }
+.ring-drive-row, .ring-drive-tip { pointer-events: none; }   /* display only: a press through them is a press on the world */
+.ring-drive-row { display: flex; align-items: center; gap: 0.75rem; }
+.ring-drive-pos {
+    display: inline-flex;
+    align-items: center;
+    min-height: 32px;
+    padding: 0.25rem 0.75rem;
+    border: 1px solid var(--ink);
+    border-radius: 999px;
+    background: var(--paper);
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1;
+}
+/* whole seconds, and never larger than the name: the position chip is the number, the timer sits beside it */
+.ring-drive-time {
+    font-size: clamp(1.25rem, 2vw, 1.75rem);
+    font-weight: 700;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    text-shadow: 0 0 2px var(--paper), 0 0 6px var(--paper), 0 0 12px var(--paper), 0 0 18px var(--paper);
+}
+.ring-drive-hud.is-done .ring-drive-time { display: none; }   /* the card has the number once the lap is in */
+.ring-drive-tip {
+    font-family: var(--font-serif);
+    font-style: normal;
+    font-weight: 400;
+    font-size: 0.9375rem;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--muted);
+    text-shadow: 0 0 2px var(--paper), 0 0 6px var(--paper), 0 0 12px var(--paper);
+}
+.ring-drive-toasts { display: flex; flex-direction: column; align-items: flex-end; gap: 0.375rem; }
+.ring-drive-toast {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.375rem 0.375rem 0.375rem 0.75rem;
+    border: 1px solid var(--ink);
+    border-radius: 999px;
+    background: var(--paper);
+    box-shadow: 0 1px 0 rgba(20, 20, 20, 0.16), 0 3px 8px rgba(20, 20, 20, 0.14);
+    font-size: 0.6875rem;
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: opacity 240ms ease, transform 240ms ease;
+}
+.ring-drive-toast.is-in { opacity: 1; transform: none; }
+.ring-drive-toast.is-out { opacity: 0; transition-duration: 400ms; }
+.ring-drive-toast.is-quiet { border-color: var(--hairline); color: var(--muted); box-shadow: none; }
+.ring-drive-open {
+    flex: none;
+    min-height: 36px;
+    padding: 0.4rem 0.875rem;
+    border: 1px solid var(--ink);
+    border-radius: 999px;
+    background: var(--ink);
+    color: var(--paper);
+    font: inherit;
+    font-size: 0.6875rem;
+    letter-spacing: 0.18em;
+    text-transform: inherit;
+    white-space: nowrap;
+    cursor: pointer;
+}
+.ring-drive-open:hover { background: var(--paper); color: var(--ink); }
+.ring-drive-toast.is-quiet .ring-drive-open { background: var(--paper); color: var(--ink); border-color: var(--hairline); }
+.ring-drive-toast.is-quiet .ring-drive-open:hover { border-color: var(--ink); }
+.ring-drive-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+    padding: 1rem 1.125rem;
+    border: 1px solid var(--ink);
+    border-radius: var(--radius);
+    background: var(--paper);
+    box-shadow: 0 8px 22px rgba(20, 20, 20, 0.18);
+    outline: 0;
+}
+.ring-drive-your { font-size: 1.125rem; font-weight: 600; }
+.ring-drive-best { font-size: 0.6875rem; color: var(--muted); }
+.ring-drive-card-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 0.5rem; margin-top: 0.375rem; }
+.ring-drive-card-actions .ring-lap { white-space: nowrap; }
+body.ring-driving #world { cursor: default; }
+/* while the visitor holds a car, at every width: the name, one exit (the
+   bottom pill; the Drive button keeps its word and its pressed state), the
+   position chip and the strip. The line, the place, the hint, the Watch
+   pill, the Grid's caption and clock step aside, and the Grid keeps three
+   rows: the car ahead, YOU, the car behind (nav.js marks them is-near). */
+body.ring-driving .ring-hud-line, body.ring-driving .ring-hud-place, body.ring-driving .ring-hint,
+body.ring-driving #ringLap, body.ring-driving .ring-tower-foot, body.ring-driving .ring-tower-clock,
+body.ring-driving .ring-tower-row:not(.is-near) { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+    .ring-hint, .ring-drive-toast { transition: none; }
+}
+
+/* ------------------------------------------------------------
    Pins: persistent labels (V1.2). One affordance grammar for
    every stop and nothing else: the chip with the title, the
    beacon on the dot as idle motion, the pointer cursor, and the
@@ -184,6 +330,9 @@ body.circuit a:focus-visible, body.circuit button:focus-visible { outline: 2px s
 }
 .ring-pin.is-left { flex-direction: row-reverse; }
 .ring-pin.is-below { flex-direction: column; align-items: center; gap: 0.375rem; }
+/* a chip under the page chrome (the name block, the car's HUD, the Grid) fades rather than bleeding through; nav.js sets it */
+.ring-pin { transition: opacity 120ms ease; }
+.ring-pin.is-under { opacity: 0; pointer-events: none; }
 .ring-pin:focus-visible { outline: 0; }
 .ring-pin:focus-visible .ring-pin-text { outline: 2px solid var(--accent-ink); outline-offset: 2px; }
 
@@ -296,16 +445,29 @@ body.ring-open .ring-broadcast { right: calc(var(--ring-panel-w) + 1.5rem); }
     text-transform: uppercase;
     color: var(--ink);
 }
+/* the head and the rows are opaque paper: the clock and the title read at
+   full contrast, and nothing in the world shows through a row */
 .ring-tower-head {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
-    padding: 0 0.375rem 0.25rem;
+    column-gap: 0.75rem;
+    padding: 0.25rem 0.375rem;
     font-size: 0.5625rem;
     letter-spacing: 0.16em;
     color: var(--muted);
+    background: var(--paper);
     border-bottom: 1px solid var(--hairline);
     margin-bottom: 0.25rem;
 }
+/* the Los Angeles clock beside the lap, in the same chrome; a narrow
+   tower wraps them under the title, still on the right */
+.ring-tower-meta { display: flex; gap: 0.75rem; margin-left: auto; white-space: nowrap; }
+.ring-tower-clock { font-variant-numeric: tabular-nums; }
+/* the visitor's own row while they drive: an ink stripe, no attention bar, nothing to open */
+.ring-tower-row.is-you { box-shadow: inset 0 0 0 1px var(--hairline); background: var(--paper); cursor: default; }
+.ring-tower-row.is-you .ring-tower-code { color: var(--ink); }
+.ring-tower-row.is-you:hover { border-left-width: 3px; }
 .ring-tower-row {
     display: grid;
     width: 100%;
@@ -315,7 +477,7 @@ body.ring-open .ring-broadcast { right: calc(var(--ring-panel-w) + 1.5rem); }
     padding: 0.2rem 0.375rem;
     border: 0;
     border-left: 3px solid var(--hairline);
-    background: rgba(247, 245, 240, 0.7);
+    background: var(--paper);
     color: var(--ink);
     font: inherit;
     letter-spacing: inherit;
@@ -489,7 +651,35 @@ body.ring-open .ring-broadcast { right: calc(var(--ring-panel-w) + 1.5rem); }
     .ring-map { width: 130px; height: 82px; }
     .ring-tower { width: 150px; font-size: 0.625rem; }
     .ring-tower-foot { font-size: 0.4375rem; max-width: 150px; }
+    .ring-tower-meta { gap: 0.5rem; }
     body.ring-open .ring-broadcast { display: none; }
+    /* the two pills on one row, so they never push the hint into the Grid */
+    .ring-hud-actions { flex-wrap: nowrap; }
+    .ring-hud-actions .ring-lap { padding-left: 0.875rem; padding-right: 0.875rem; white-space: nowrap; }
+    /* driving on a phone: the name alone stays top left and the bottom pill
+       is the exit; the car's column takes the full width under the name, so
+       the chip and the timer sit on one row, a toast is one line, and the
+       card is wide and short, well clear of the Grid */
+    body.ring-driving .ring-hud-actions { display: none; }
+    .ring-drive-hud { left: 1rem; right: 1rem; max-width: none; align-items: stretch; }
+    .ring-drive-row { justify-content: flex-end; }
+    .ring-drive-time { font-size: 1.375rem; }
+    .ring-drive-tip { text-align: right; }
+    .ring-drive-toasts:not(:empty), .ring-drive-card { margin-top: 1.25rem; }   /* under the name, which shares the top */
+    .ring-drive-toasts { align-items: stretch; }
+    .ring-drive-toast { display: flex; justify-content: space-between; font-size: 0.625rem; }
+    .ring-drive-toast-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .ring-drive-card { padding: 0.75rem 0.875rem; }
+    .ring-drive-card-actions { flex-wrap: nowrap; }
+    .ring-drive-card-actions .ring-lap { padding-left: 0.75rem; padding-right: 0.75rem; }
+    /* the exit pill clears the mini-map (bottom right) by sitting bottom left, and
+       a phone has no Escape key to name */
+    .ring-lap-exit { left: 1rem; transform: none; white-space: nowrap; font-size: 0.6875rem; padding: 0.5rem 1rem; }
+    .ring-lap-exit kbd { display: none; }
+}
+/* a short phone has no room for the first-visit hint between the pills and the Grid */
+@media (max-width: 760px) and (max-height: 700px) {
+    .ring-hint { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -597,3 +787,27 @@ body.is-poster .ring-hud, body.is-poster .ring-pins, body.is-poster .ring-map, b
     letter-spacing: 0.16em;
     text-transform: uppercase;
 }
+
+/* ------------------------------------------------------------
+   Round 6: the live pieces inside panels. The lab (circuit/lab.js)
+   replaces the Betta case card; the skydiving tile (circuit/skydive.js)
+   sits first on the Projects grid. The tile's wrapper has no box of
+   its own, so the module's figure is the grid item and can span the
+   grid when it opens.
+   ------------------------------------------------------------ */
+.ring-lab { margin: 0.25rem 0 1rem; }
+.ring-lab-links { display: flex; flex-wrap: wrap; gap: 0.625rem; margin: 0 0 2rem; }
+.ring-pill {
+    display: inline-flex; align-items: center; min-height: 36px;
+    padding: 0.4rem 0.9rem;
+    border: 1px solid var(--hairline); border-radius: 999px;
+    background: var(--paper); color: var(--ink);
+    font-family: var(--font-chrome); font-style: italic; font-weight: 600;
+    font-size: 0.6875rem; letter-spacing: 0.14em; text-transform: uppercase;
+}
+.ring-pill:hover { border-color: var(--ink); }
+.ring-sky { display: contents; }
+.ring-grid > .ring-sky > .sky.is-open { grid-column: 1 / -1; }
+.ring-sky-line { margin-top: 0; }
+.ring-inline-link { text-decoration: underline; text-underline-offset: 0.15em; }
+.ring-inline-link:hover { color: var(--accent-ink, var(--ink)); }

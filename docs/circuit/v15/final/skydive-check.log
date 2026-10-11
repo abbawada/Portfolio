@@ -1,0 +1,409 @@
+{
+  "url": "http://127.0.0.1:8647/tools/circuit/harness/skydive.html",
+  "pageErrors": [],
+  "consoleErrors": [],
+  "frames": {
+    "idle": {
+      "n": 105,
+      "mean": 0.14,
+      "p95": 0.3,
+      "max": 0.4
+    },
+    "freefall": {
+      "n": 1551,
+      "mean": 0.08,
+      "p95": 0.2,
+      "max": 0.8
+    },
+    "canopy": {
+      "n": 1968,
+      "mean": 0.09,
+      "p95": 0.2,
+      "max": 5
+    }
+  },
+  "checks": [
+    {
+      "name": "compact tile is 232 wide at 2:3",
+      "pass": true,
+      "detail": "232x348"
+    },
+    {
+      "name": "dummy box sits beside the tile on one row",
+      "pass": true,
+      "detail": "300,77.59375"
+    },
+    {
+      "name": "tile aria-label",
+      "pass": true
+    },
+    {
+      "name": "data-alt is posted in the compact idle",
+      "pass": true,
+      "detail": "13220"
+    },
+    {
+      "name": "idle loop runs frames",
+      "pass": true,
+      "detail": 74
+    },
+    {
+      "name": "the stylesheet is the one the page linked (no second copy)",
+      "pass": true
+    },
+    {
+      "name": "tab lands on the tile",
+      "pass": true,
+      "detail": "button.sky-tile"
+    },
+    {
+      "name": "Enter opens the tile",
+      "pass": true
+    },
+    {
+      "name": "onJump fired once",
+      "pass": true,
+      "detail": 1
+    },
+    {
+      "name": "phase is freefall",
+      "pass": true,
+      "detail": "freefall"
+    },
+    {
+      "name": "open tile spans the grid at 16:10",
+      "pass": true,
+      "detail": "492x307.5"
+    },
+    {
+      "name": "hint in freefall",
+      "pass": true,
+      "detail": "Move to steer. Click to pull."
+    },
+    {
+      "name": "Pull button visible",
+      "pass": true
+    },
+    {
+      "name": "Back button visible",
+      "pass": true
+    },
+    {
+      "name": "reel link hidden before landing",
+      "pass": true
+    },
+    {
+      "name": "reel link says it opens a new tab",
+      "pass": true
+    },
+    {
+      "name": "held arrows on the tile never reach the window",
+      "pass": true,
+      "detail": "[] shelf=0"
+    },
+    {
+      "name": "focus is still on the tile after the held arrows",
+      "pass": true,
+      "detail": "button.sky-tile"
+    },
+    {
+      "name": "Tab from the tile lands on Pull",
+      "pass": true,
+      "detail": "button.sky-pull"
+    },
+    {
+      "name": "the four arrows on Pull never reach the window",
+      "pass": true,
+      "detail": "[] shelf=0"
+    },
+    {
+      "name": "focus stays on Pull after the arrows",
+      "pass": true,
+      "detail": "button.sky-pull"
+    },
+    {
+      "name": "cue lights at 4,000 ft",
+      "pass": true,
+      "detail": 4000
+    },
+    {
+      "name": "live text announces the cue with the altitude",
+      "pass": true,
+      "detail": "Pull height, 4,000 feet"
+    },
+    {
+      "name": "Enter on Pull opens",
+      "pass": true,
+      "detail": "opening"
+    },
+    {
+      "name": "focus after Pull is on the tile, not body",
+      "pass": true,
+      "detail": "button.sky-tile"
+    },
+    {
+      "name": "hint under the canopy",
+      "pass": true,
+      "detail": "Move to steer."
+    },
+    {
+      "name": "Pull hidden after the pull",
+      "pass": true
+    },
+    {
+      "name": "live text announces the canopy with the altitude",
+      "pass": true,
+      "detail": "Canopy open, 3,120 feet"
+    },
+    {
+      "name": "the glide from the cue lasts about 15 s",
+      "pass": true,
+      "detail": "18.1 s"
+    },
+    {
+      "name": "end state shows the reel and Jump again",
+      "pass": true
+    },
+    {
+      "name": "Back is hidden at the end",
+      "pass": true
+    },
+    {
+      "name": "live text says Landed",
+      "pass": true,
+      "detail": "Landed"
+    },
+    {
+      "name": "reel link attributes",
+      "pass": true,
+      "detail": "{\"href\":\"https://www.instagram.com/reel/Ddv8Qr_gruP/\",\"target\":\"_blank\",\"rel\":\"noopener noreferrer\",\"text\":\"Watch the reel\"}"
+    },
+    {
+      "name": "frames stop once the end state settles",
+      "pass": true,
+      "detail": "3744 -> 3744"
+    },
+    {
+      "name": "onLink fired",
+      "pass": true
+    },
+    {
+      "name": "Tab reaches Jump again",
+      "pass": true,
+      "detail": "button.sky-again"
+    },
+    {
+      "name": "Jump again restarts",
+      "pass": true,
+      "detail": "freefall jumps=2"
+    },
+    {
+      "name": "focus after Jump again is on the tile",
+      "pass": true,
+      "detail": "button.sky-tile"
+    },
+    {
+      "name": "Jump again resets the altimeter",
+      "pass": true,
+      "detail": 13480
+    },
+    {
+      "name": "Escape closes",
+      "pass": true,
+      "detail": "idle"
+    },
+    {
+      "name": "focus after Escape stays on the tile",
+      "pass": true,
+      "detail": "button.sky-tile"
+    },
+    {
+      "name": "closed tile is 2:3 again",
+      "pass": true,
+      "detail": 232
+    },
+    {
+      "name": "double click opens without pulling",
+      "pass": true,
+      "detail": "freefall 13390 jumps=3"
+    },
+    {
+      "name": "a click after the arming window pulls",
+      "pass": true,
+      "detail": "opening"
+    },
+    {
+      "name": "phone tile is 176 wide",
+      "pass": true,
+      "detail": "176x264"
+    },
+    {
+      "name": "phone open scene fills the column",
+      "pass": true,
+      "detail": "320x200"
+    },
+    {
+      "name": "no horizontal overflow at 360",
+      "pass": true
+    },
+    {
+      "name": "reduced class follows the media query",
+      "pass": true
+    },
+    {
+      "name": "no frames under reduced motion",
+      "pass": true,
+      "detail": "3937 -> 3937"
+    },
+    {
+      "name": "reduced open shows still 1 at 13,500",
+      "pass": true,
+      "detail": "freefall 13500"
+    },
+    {
+      "name": "still 1 is announced",
+      "pass": true,
+      "detail": "Exit, 13,500 feet"
+    },
+    {
+      "name": "Next visible under reduced motion",
+      "pass": true
+    },
+    {
+      "name": "hint hidden under reduced motion",
+      "pass": true
+    },
+    {
+      "name": "still 2 is the pull cue",
+      "pass": true,
+      "detail": 4000
+    },
+    {
+      "name": "still 2 is announced",
+      "pass": true,
+      "detail": "Pull height, 4,000 feet"
+    },
+    {
+      "name": "Pull advances to the canopy still",
+      "pass": true,
+      "detail": "canopy"
+    },
+    {
+      "name": "focus after Pull on the stills is on the tile",
+      "pass": true,
+      "detail": "button.sky-tile"
+    },
+    {
+      "name": "canopy still label says press to land",
+      "pass": true,
+      "detail": "Skydiving, press to land"
+    },
+    {
+      "name": "still 4 is landed with the reel",
+      "pass": true
+    },
+    {
+      "name": "focus after the last Next is on the tile",
+      "pass": true,
+      "detail": "button.sky-tile"
+    },
+    {
+      "name": "still 4 is announced",
+      "pass": true,
+      "detail": "Landed"
+    },
+    {
+      "name": "stills draw without frames",
+      "pass": true,
+      "detail": "3938 -> 3938"
+    },
+    {
+      "name": "motion back on the landed still keeps the landed state and fires no onJump",
+      "pass": true,
+      "detail": "landed jumps=5"
+    },
+    {
+      "name": "Jump again under reduced motion returns to still 1",
+      "pass": true,
+      "detail": "13500 jumps=6"
+    },
+    {
+      "name": "Escape closes the stills",
+      "pass": true
+    },
+    {
+      "name": "motion returns: idle frames again",
+      "pass": true,
+      "detail": "3938 -> 3982"
+    },
+    {
+      "name": "destroy empties the container",
+      "pass": true
+    },
+    {
+      "name": "destroy stops frames",
+      "pass": true,
+      "detail": "3991 -> 3991"
+    },
+    {
+      "name": "jump() after destroy does not fire onJump",
+      "pass": true,
+      "detail": "7 -> 7"
+    },
+    {
+      "name": "?two=1 mounts two tiles",
+      "pass": true
+    },
+    {
+      "name": "destroying one of two keeps the host class",
+      "pass": true
+    },
+    {
+      "name": "the survivor still spans the grid when open",
+      "pass": true,
+      "detail": 492
+    },
+    {
+      "name": "without a linked stylesheet the module links its own",
+      "pass": true
+    },
+    {
+      "name": "the tile is 232x348 on that page too",
+      "pass": true,
+      "detail": "232x348"
+    },
+    {
+      "name": "while the stylesheet is in flight the figure is hidden, in flow, not the raw controls",
+      "pass": true,
+      "detail": "{\"visibility\":\"hidden\",\"inFlow\":true,\"sheet\":false}"
+    },
+    {
+      "name": "once the sheet lands the figure shows, styled, at 232x348",
+      "pass": true,
+      "detail": "232x348 sheets=1"
+    },
+    {
+      "name": "?open=1 mounts open and jumping",
+      "pass": true
+    },
+    {
+      "name": "AAD fires at 1,500 ft with no pull",
+      "pass": true,
+      "detail": 1490
+    },
+    {
+      "name": "at least 6 s between the lit Pull and the AAD",
+      "pass": true,
+      "detail": "6.71 s"
+    },
+    {
+      "name": "Pull hidden after the AAD",
+      "pass": true
+    },
+    {
+      "name": "AAD jump still lands",
+      "pass": true
+    }
+  ],
+  "failed": 0
+}

@@ -1,0 +1,814 @@
+{
+ "url": "http://127.0.0.1:8657/index.html",
+ "errors": [],
+ "maths": {
+  "field": 8,
+  "callsRest": 202,
+  "callsDrive": 215,
+  "callsAfter": 202,
+  "carsDrive": 9,
+  "carsAfter": 8,
+  "rowDrive": true,
+  "rowAfter": false,
+  "lapLength": 635.7,
+  "tune": {
+   "idle": 0.5,
+   "gain": 0.6,
+   "grip": 0.34,
+   "reach": 3,
+   "edge": 3.1,
+   "brake": 0.35,
+   "back": 8.2,
+   "turn": 3,
+   "hyst": 2
+  },
+  "speed": 9.2,
+  "sweep": {
+   "seconds": 240,
+   "touches": 0,
+   "touchAt": null,
+   "maxLane": 3.1,
+   "maxLaneAI": 3.1,
+   "minV": 5.24,
+   "maxV": 10.69,
+   "minInLineGap": 0.07,
+   "lapDone": true,
+   "lapTime": 73.62,
+   "passed": 2,
+   "passedBy": 0,
+   "rank": 7,
+   "afterLine": {
+    "t": 73.62,
+    "lapDone": true,
+    "lapTime": 73.62,
+    "passed": 0,
+    "passedBy": 0,
+    "rank": 9
+   }
+  },
+  "botLap": {
+   "lapTime": 68.45,
+   "passesAtLap": 5,
+   "rankAtLap": 4,
+   "passedBy": 0,
+   "touches": 0,
+   "touchAt": null,
+   "maxLane": 3.1,
+   "minV": 5.7,
+   "maxV": 10.67
+  },
+  "clamped": {
+   "throttle": 1,
+   "steer": -1,
+   "brake": true
+  },
+  "brakedV": 3.22,
+  "carsEnd": 8
+ },
+ "live": {
+  "hintOnLoad": true,
+  "driveLabel": "Drive",
+  "watchLabel": "Watch the race",
+  "clock": "Los Angeles 16:34",
+  "clockOk": true,
+  "caption": "Each car is a project. Open one and its car picks up pace. Drive to join them.",
+  "gridLabel": "The grid: live timing of the simulated race, 8 cars, one per project",
+  "hudShown": true,
+  "exitLabel": "Leave the car Esc",
+  "driveLabelOn": "Drive",
+  "drivePressed": "true",
+  "watchHiddenOn": true,
+  "youRow": true,
+  "hintGone": true,
+  "cameraOnCar": 6.3,
+  "timeAt5": "0:06",
+  "posAt5": "P9",
+  "throttleHeld": 1,
+  "timeAt20": "0:21",
+  "posAt20": "P9",
+  "timerAdvances": true,
+  "posChip": true,
+  "fpsWhileDriving": [
+   60,
+   60,
+   60,
+   60,
+   60,
+   60,
+   60,
+   60,
+   60,
+   60,
+   60,
+   60,
+   60,
+   60,
+   60,
+   60,
+   60,
+   60,
+   60,
+   60,
+   60,
+   60,
+   60,
+   60,
+   60,
+   60,
+   60,
+   60,
+   60,
+   60,
+   60,
+   60,
+   60,
+   60,
+   60,
+   60,
+   60,
+   60,
+   60,
+   60
+  ],
+  "toastAt": {
+   "passed": 1,
+   "passedBy": 0,
+   "rank": 8
+  },
+  "toastText": "You passed BettaOpen it",
+  "cardYour": "Your lap 1:11.3",
+  "cardBest": null,
+  "toastShot": true,
+  "cardShot": true,
+  "driveStateBeforeEscape": {
+   "t": 71.38,
+   "lapDone": true,
+   "lapTime": 71.38,
+   "passed": [
+    "betta",
+    "validators",
+    "bluetooth"
+   ],
+   "passedBy": [],
+   "rank": 6
+  },
+  "callsDriving": 172,
+  "best": "71.38",
+  "hudHidden": true,
+  "youRowGone": true,
+  "carsAfter": 8,
+  "drivingAfter": false,
+  "exitHidden": true,
+  "driveLabelOff": "Drive",
+  "callsAfter": 202,
+  "watchOn": true,
+  "watchExit": "Back to the map Esc",
+  "dKeyDrives": true,
+  "rowOpensStop": true
+ },
+ "phone": {
+  "hudShown": true,
+  "camera": {
+   "zoom": 3.15,
+   "onCar": 6.3,
+   "flying": false,
+   "running": true
+  },
+  "cameraOnCar": true,
+  "tipShown": true,
+  "tipText": "Hold to drive. Slide to steer.",
+  "hudBox": [
+   16,
+   30,
+   358,
+   72
+  ],
+  "hudInViewport": true,
+  "broadcastShown": true,
+  "throttleOnPress": 1,
+  "steerOnSlide": 1,
+  "throttleOnRelease": 0,
+  "tipGoneAfter4s": true,
+  "leftByPill": true
+ },
+ "fix": {
+  "sizes": {
+   "360x640": {
+    "hint": {
+     "shown": false,
+     "text": "Tap a stop to open it. Drag to look around."
+    },
+    "hintVsTower": false,
+    "hintCopy": true,
+    "exit": [
+     16,
+     570,
+     140,
+     44
+    ],
+    "map": [
+     214,
+     539,
+     130,
+     82
+    ],
+    "exitOverMap": false,
+    "kbdHidden": true,
+    "actionsHidden": true,
+    "row": [
+     16,
+     22,
+     328,
+     32
+    ],
+    "hud": [
+     16,
+     22,
+     328,
+     72
+    ],
+    "rowInsideHud": true,
+    "passes": 1,
+    "toast": [
+     16,
+     114,
+     328,
+     50
+    ],
+    "toastText": [
+     29,
+     131,
+     198,
+     16
+    ],
+    "toastOneLine": true,
+    "openHit": {
+     "ok": true,
+     "h": 36,
+     "font": "11px"
+    },
+    "card": [
+     16,
+     122,
+     328,
+     109
+    ],
+    "tower": [
+     194,
+     432,
+     150,
+     99
+    ],
+    "cardOverTower": false,
+    "toastsWithCard": 0,
+    "timerHidden": true,
+    "again": {
+     "ok": true,
+     "hit": "ringDriveAgain",
+     "box": [
+      58,
+      178,
+      114,
+      40
+     ]
+    },
+    "home": {
+     "ok": true,
+     "hit": "ringDriveHome",
+     "box": [
+      179,
+      178,
+      150,
+      40
+     ]
+    },
+    "yourOneLine": true,
+    "afterHome": {
+     "driving": false,
+     "open": null,
+     "cars": 8
+    },
+    "ok": true
+   },
+   "360x780": {
+    "hint": {
+     "shown": true,
+     "text": "Tap a stop to open it. Drag to look around."
+    },
+    "hintVsTower": false,
+    "hintCopy": true,
+    "exit": [
+     16,
+     705,
+     140,
+     44
+    ],
+    "map": [
+     214,
+     675,
+     130,
+     82
+    ],
+    "exitOverMap": false,
+    "kbdHidden": true,
+    "actionsHidden": true,
+    "row": [
+     16,
+     27,
+     328,
+     32
+    ],
+    "hud": [
+     16,
+     27,
+     328,
+     72
+    ],
+    "rowInsideHud": true,
+    "passes": 1,
+    "toast": [
+     16,
+     119,
+     328,
+     50
+    ],
+    "toastText": [
+     29,
+     136,
+     202,
+     16
+    ],
+    "toastOneLine": true,
+    "openHit": {
+     "ok": true,
+     "h": 36,
+     "font": "11px"
+    },
+    "card": [
+     16,
+     127,
+     328,
+     109
+    ],
+    "tower": [
+     194,
+     568,
+     150,
+     99
+    ],
+    "cardOverTower": false,
+    "toastsWithCard": 0,
+    "timerHidden": true,
+    "again": {
+     "ok": true,
+     "hit": "ringDriveAgain",
+     "box": [
+      58,
+      183,
+      114,
+      40
+     ]
+    },
+    "home": {
+     "ok": true,
+     "hit": "ringDriveHome",
+     "box": [
+      179,
+      183,
+      150,
+      40
+     ]
+    },
+    "yourOneLine": true,
+    "afterHome": {
+     "driving": false,
+     "open": null,
+     "cars": 8
+    },
+    "ok": true
+   },
+   "390x844": {
+    "hint": {
+     "shown": true,
+     "text": "Tap a stop to open it. Drag to look around."
+    },
+    "hintVsTower": false,
+    "hintCopy": true,
+    "exit": [
+     16,
+     768,
+     140,
+     44
+    ],
+    "map": [
+     244,
+     737,
+     130,
+     82
+    ],
+    "exitOverMap": false,
+    "kbdHidden": true,
+    "actionsHidden": true,
+    "row": [
+     16,
+     30,
+     358,
+     32
+    ],
+    "hud": [
+     16,
+     30,
+     358,
+     72
+    ],
+    "rowInsideHud": true,
+    "passes": 2,
+    "toast": [
+     16,
+     122,
+     358,
+     50
+    ],
+    "toastText": [
+     29,
+     139,
+     130,
+     16
+    ],
+    "toastOneLine": true,
+    "openHit": {
+     "ok": true,
+     "h": 36,
+     "font": "11px"
+    },
+    "card": [
+     16,
+     130,
+     358,
+     109
+    ],
+    "tower": [
+     224,
+     630,
+     150,
+     99
+    ],
+    "cardOverTower": false,
+    "toastsWithCard": 0,
+    "timerHidden": true,
+    "again": {
+     "ok": true,
+     "hit": "ringDriveAgain",
+     "box": [
+      88,
+      185,
+      114,
+      40
+     ]
+    },
+    "home": {
+     "ok": true,
+     "hit": "ringDriveHome",
+     "box": [
+      209,
+      185,
+      150,
+      40
+     ]
+    },
+    "yourOneLine": true,
+    "afterHome": {
+     "driving": false,
+     "open": null,
+     "cars": 8
+    },
+    "ok": true
+   },
+   "1366x620": {
+    "hint": {
+     "shown": true,
+     "text": "Click a stop to open it. Drag to look around."
+    },
+    "hintVsTower": false,
+    "hintCopy": true,
+    "exit": [
+     579,
+     551,
+     207,
+     44
+    ],
+    "map": [
+     1140,
+     481,
+     190,
+     120
+    ],
+    "exitOverMap": false,
+    "kbdHidden": false,
+    "actionsHidden": false,
+    "row": [
+     1208,
+     22,
+     122,
+     32
+    ],
+    "hud": [
+     1208,
+     22,
+     122,
+     40
+    ],
+    "rowInsideHud": true,
+    "passes": 1,
+    "toast": [
+     1031,
+     62,
+     299,
+     50
+    ],
+    "toastText": [
+     1044,
+     78,
+     182,
+     18
+    ],
+    "toastOneLine": true,
+    "openHit": {
+     "ok": true,
+     "h": 36,
+     "font": "11px"
+    },
+    "card": [
+     997,
+     70,
+     333,
+     117
+    ],
+    "tower": [
+     1094,
+     370,
+     236,
+     103
+    ],
+    "cardOverTower": false,
+    "toastsWithCard": 0,
+    "timerHidden": true,
+    "again": {
+     "ok": true,
+     "hit": "ringDriveAgain",
+     "box": [
+      1016,
+      129,
+      126,
+      40
+     ]
+    },
+    "home": {
+     "ok": true,
+     "hit": "ringDriveHome",
+     "box": [
+      1149,
+      129,
+      162,
+      40
+     ]
+    },
+    "yourOneLine": true,
+    "afterHome": {
+     "driving": false,
+     "open": null,
+     "cars": 8
+    },
+    "ok": true
+   },
+   "1024x640": {
+    "hint": {
+     "shown": true,
+     "text": "Click a stop to open it. Drag to look around."
+    },
+    "hintVsTower": false,
+    "hintCopy": true,
+    "exit": [
+     408,
+     570,
+     207,
+     44
+    ],
+    "map": [
+     803,
+     501,
+     190,
+     120
+    ],
+    "exitOverMap": false,
+    "kbdHidden": false,
+    "actionsHidden": false,
+    "row": [
+     884,
+     22,
+     109,
+     32
+    ],
+    "hud": [
+     884,
+     22,
+     109,
+     40
+    ],
+    "rowInsideHud": true,
+    "passes": 1,
+    "toast": [
+     664,
+     62,
+     329,
+     50
+    ],
+    "toastText": [
+     677,
+     79,
+     212,
+     18
+    ],
+    "toastOneLine": true,
+    "openHit": {
+     "ok": true,
+     "h": 36,
+     "font": "11px"
+    },
+    "card": [
+     660,
+     70,
+     333,
+     117
+    ],
+    "tower": [
+     757,
+     390,
+     236,
+     103
+    ],
+    "cardOverTower": false,
+    "toastsWithCard": 0,
+    "timerHidden": true,
+    "again": {
+     "ok": true,
+     "hit": "ringDriveAgain",
+     "box": [
+      679,
+      130,
+      126,
+      40
+     ]
+    },
+    "home": {
+     "ok": true,
+     "hit": "ringDriveHome",
+     "box": [
+      813,
+      130,
+      162,
+      40
+     ]
+    },
+    "yourOneLine": true,
+    "afterHome": {
+     "driving": false,
+     "open": null,
+     "cars": 8
+    },
+    "ok": true
+   }
+  },
+  "chips": {
+   "1600x900": {
+    "samples": 59,
+    "bleed": 0,
+    "under": 28,
+    "worst": null,
+    "ok": true
+   },
+   "540x900": {
+    "samples": 59,
+    "bleed": 0,
+    "under": 48,
+    "worst": null,
+    "ok": true
+   },
+   "390x844": {
+    "samples": 59,
+    "bleed": 0,
+    "under": 7,
+    "worst": null,
+    "ok": true
+   }
+  },
+  "keyboard": {
+   "focusOnStart": "ringDriveHud",
+   "hudRole": "group",
+   "hero": {
+    "body": "f7f5f0",
+    "name": "",
+    "accent": "#141414",
+    "meshes": 7
+   },
+   "haloGone": true,
+   "shiftTab": "ringLapExit",
+   "spaceThrottle": 0,
+   "spaceOnExitLeaves": true,
+   "focusAfterExit": "ringDrive",
+   "holdD": {
+    "on": true,
+    "steer": 0,
+    "lateral": 0
+   },
+   "dSteersAfterRelease": 1,
+   "gridWhileDriving": {
+    "rows": 3,
+    "you": true,
+    "foot": "none",
+    "clock": "none",
+    "watch": "none",
+    "line": "none",
+    "drive": "Drive",
+    "pressed": "true"
+   },
+   "youRow": {
+    "tag": "DIV",
+    "label": null,
+    "text": "P9YOU+7.39",
+    "tabbable": false
+   },
+   "timer": "0:01",
+   "fonts": {
+    "time": 28,
+    "name": 30,
+    "pos": "600"
+   },
+   "passes": 1,
+   "tabToOpen": "ring-drive-open",
+   "toastHeldByFocus": true,
+   "spaceOpensStop": {
+    "open": "projects",
+    "driving": false,
+    "panel": true
+   },
+   "cardRole": "group",
+   "focusOnCard": "ringDriveCard",
+   "firstLapBestHidden": true,
+   "tabToHome": "ringDriveHome",
+   "spaceHome": {
+    "driving": false,
+    "active": "ringDrive"
+   },
+   "dFromWatchPill": false,
+   "dFromPin": false,
+   "dFromPage": true,
+   "bestFaster": {
+    "hidden": false,
+    "text": "New best"
+   },
+   "bestSlower": {
+    "hidden": false,
+    "text": "Best on this device 0:40.0"
+   },
+   "gridAfter": {
+    "rows": 8,
+    "foot": "block",
+    "headBg": "rgb(247, 245, 240)",
+    "rowBg": "rgb(247, 245, 240)",
+    "active": "ringDrive"
+   },
+   "ok": true
+  },
+  "reduced": {
+   "runningAtRest": false,
+   "noHalo": true,
+   "youRowOn": true,
+   "after": {
+    "running": false,
+    "cars": 8,
+    "youRow": false,
+    "label": "The grid: live timing of the simulated race, 8 cars, one per project",
+    "active": "ringDrive"
+   },
+   "ok": true
+  },
+  "ok": true
+ },
+ "checks": {
+  "laneInsideLines": true,
+  "noTouches": true,
+  "lapCompleted": true,
+  "passedSomebody": true,
+  "carLeaves": true,
+  "inputClamped": true,
+  "liveHud": true,
+  "liveLeaves": true,
+  "liveChrome": true,
+  "liveRoutes": true,
+  "phone": true,
+  "fixRound": true,
+  "noErrors": true
+ },
+ "pass": true
+}

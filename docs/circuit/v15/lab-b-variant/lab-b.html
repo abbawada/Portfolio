@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>The lab, variant B (harness)</title>
+    <!-- the page's own styles and fonts, as index.html loads them -->
+    <link rel="stylesheet" href="../../../circuit/circuit.css">
+    <link rel="stylesheet" href="../../../styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,600;0,700;1,600;1,700&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;family=Schibsted+Grotesk:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../../circuit/lab-b.css">
+    <style>
+        /* a 520px column on paper, the width of the side panel's body */
+        html, body { height: auto; overflow: auto; }
+        body { background: var(--paper); color: var(--ink); margin: 0; font-family: var(--font-serif); }
+        .harness { width: min(520px, calc(100vw - 2rem)); margin: 1.5rem auto 3rem; }
+        .harness-head { padding-bottom: 1rem; border-bottom: 1px solid var(--hairline); }
+        .harness-note { margin-top: 1.5rem; font-family: var(--font-chrome); font-style: italic; font-weight: 600; font-size: 0.6875rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
+    </style>
+</head>
+<body>
+    <main class="harness">
+        <div class="harness-head">
+            <p class="ring-panel-kicker">Stop 1 of 6</p>
+            <h1 class="ring-panel-title">Betta</h1>
+        </div>
+        <div id="lab"></div>
+        <p class="harness-note" id="note">?stage=N opens on a stage (1 to 6), ?still=1 freezes motion</p>
+    </main>
+    <script type="module">
+        import { mountLab, STAGES } from '../../../circuit/lab-b.js';
+        const q = new URLSearchParams(location.search);
+        const still = q.get('still') === '1';
+        const stage = parseInt(q.get('stage') || '1', 10);
+        const el = document.getElementById('lab');
+        const api = mountLab(el, {
+            onInteract: kind => { window.__labInteractions = (window.__labInteractions || 0) + 1; window.__labLastInteract = kind; },
+            autoplay: !still && q.get('autoplay') !== '0',
+            start: q.get('start') === 'last' ? 'last' : 'first',
+            still
+        });
+        if (stage > 1 && stage <= STAGES.length) api.goTo(stage - 1);
+        window.__lab = api;
+        window.__labEl = el;
+        window.__labStages = STAGES;
+    </script>
+</body>
+</html>

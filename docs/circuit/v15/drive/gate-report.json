@@ -1,0 +1,295 @@
+{
+ "url": "http://127.0.0.1:8657/index.html",
+ "wide": {
+  "1440": {
+   "viewport": [
+    1440,
+    900
+   ],
+   "zoom": 1.1,
+   "target": [
+    108,
+    102
+   ],
+   "labels": [
+    {
+     "id": "about",
+     "chip": {
+      "x": 466,
+      "y": 78,
+      "w": 79,
+      "h": 21
+     }
+    },
+    {
+     "id": "betta",
+     "chip": {
+      "x": 827,
+      "y": 349,
+      "w": 78,
+      "h": 21
+     }
+    },
+    {
+     "id": "education",
+     "chip": {
+      "x": 742,
+      "y": 678,
+      "w": 111,
+      "h": 21
+     }
+    },
+    {
+     "id": "economics",
+     "chip": {
+      "x": 638,
+      "y": 118,
+      "w": 114,
+      "h": 21
+     }
+    },
+    {
+     "id": "writing",
+     "chip": {
+      "x": 544,
+      "y": 424,
+      "w": 93,
+      "h": 21
+     }
+    },
+    {
+     "id": "projects",
+     "chip": {
+      "x": 506,
+      "y": 581,
+      "w": 105,
+      "h": 21
+     }
+    },
+    {
+     "id": "contact",
+     "chip": {
+      "x": 596,
+      "y": 657,
+      "w": 96,
+      "h": 21
+     }
+    }
+   ],
+   "stops": {
+    "about": {
+     "x": 347,
+     "y": 73,
+     "w": 173,
+     "h": 366
+    },
+    "betta": {
+     "x": 667,
+     "y": 160,
+     "w": 336,
+     "h": 379
+    },
+    "education": {
+     "x": 712,
+     "y": 532,
+     "w": 197,
+     "h": 123
+    },
+    "economics": {
+     "x": 534,
+     "y": 140,
+     "w": 179,
+     "h": 161
+    },
+    "writing": {
+     "x": 555,
+     "y": 311,
+     "w": 110,
+     "h": 128
+    },
+    "projects": {
+     "x": 300,
+     "y": 402,
+     "w": 336,
+     "h": 246
+    },
+    "contact": {
+     "x": 183,
+     "y": 447,
+     "w": 400,
+     "h": 229
+    }
+   },
+   "labelOverlaps": [],
+   "labelOverStop": [],
+   "labelOverHoarding": [],
+   "labelOverMark": [],
+   "markClear": {
+    "about": 34,
+    "betta": 97,
+    "education": 54,
+    "economics": 24,
+    "writing": 35,
+    "projects": 28,
+    "contact": 200
+   },
+   "stopOverlaps": [],
+   "planOverlaps": [],
+   "detail": [],
+   "labelFont": "11px 700",
+   "calls": 202,
+   "triangles": 52676,
+   "fps": 60
+  },
+  "1600": {
+   "viewport": [
+    1600,
+    900
+   ],
+   "zoom": 1.1,
+   "target": [
+    108,
+    102
+   ],
+   "labels": [
+    {
+     "id": "about",
+     "chip": {
+      "x": 546,
+      "y": 78,
+      "w": 79,
+      "h": 21
+     }
+    },
+    {
+     "id": "betta",
+     "chip": {
+      "x": 907,
+      "y": 349,
+      "w": 78,
+      "h": 21
+     }
+    },
+    {
+     "id": "education",
+     "chip": {
+      "x": 822,
+      "y": 678,
+      "w": 111,
+      "h": 21
+     }
+    },
+    {
+     "id": "economics",
+     "chip": {
+      "x": 718,
+      "y": 118,
+      "w": 114,
+      "h": 21
+     }
+    },
+    {
+     "id": "writing",
+     "chip": {
+      "x": 624,
+      "y": 424,
+      "w": 93,
+      "h": 21
+     }
+    },
+    {
+     "id": "projects",
+     "chip": {
+      "x": 586,
+      "y": 581,
+      "w": 105,
+      "h": 21
+     }
+    },
+    {
+     "id": "contact",
+     "chip": {
+      "x": 676,
+      "y": 657,
+      "w": 96,
+      "h": 21
+     }
+    }
+   ],
+   "stops": {
+    "about": {
+     "x": 427,
+     "y": 73,
+     "w": 173,
+     "h": 366
+    },
+    "betta": {
+     "x": 747,
+     "y": 160,
+     "w": 336,
+     "h": 379
+    },
+    "education": {
+     "x": 792,
+     "y": 532,
+     "w": 197,
+     "h": 123
+    },
+    "economics": {
+     "x": 614,
+     "y": 140,
+     "w": 179,
+     "h": 161
+    },
+    "writing": {
+     "x": 635,
+     "y": 311,
+     "w": 110,
+     "h": 128
+    },
+    "projects": {
+     "x": 380,
+     "y": 402,
+     "w": 336,
+     "h": 246
+    },
+    "contact": {
+     "x": 263,
+     "y": 447,
+     "w": 400,
+     "h": 229
+    }
+   },
+   "labelOverlaps": [],
+   "labelOverStop": [],
+   "labelOverHoarding": [],
+   "labelOverMark": [],
+   "markClear": {
+    "about": 34,
+    "betta": 97,
+    "education": 54,
+    "economics": 24,
+    "writing": 35,
+    "projects": 28,
+    "contact": 200
+   },
+   "stopOverlaps": [],
+   "planOverlaps": [],
+   "detail": [],
+   "labelFont": "11px 700",
+   "calls": 202,
+   "triangles": 52676,
+   "fps": 58.6
+  }
+ },
+ "close": [
+  "docs/circuit/v15/drive/gate-01-about.png",
+  "docs/circuit/v15/drive/gate-02-betta.png",
+  "docs/circuit/v15/drive/gate-03-education.png",
+  "docs/circuit/v15/drive/gate-04-economics.png",
+  "docs/circuit/v15/drive/gate-05-writing.png",
+  "docs/circuit/v15/drive/gate-06-projects.png",
+  "docs/circuit/v15/drive/gate-07-contact.png"
+ ],
+ "errors": []
+}

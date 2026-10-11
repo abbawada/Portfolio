@@ -1,0 +1,192 @@
+/* The lab, variant A. The chrome around the drawn scene: the one number
+   over the canvas (a numeral with a small label under it), the date and
+   stage title, the line, the timeline of stages. Paper and ink like the
+   panel it sits in; Chakra Petch for the number, kicker and tab labels,
+   Newsreader for the line. The scene itself is canvas (lab.js). */
+
+.lab {
+    container-type: inline-size;
+    display: block;
+    width: 100%;
+    margin: 0;
+    font-family: var(--font-serif);
+    color: var(--ink);
+}
+.lab-panel { display: block; }
+
+/* the scene: 3:2, the container's width, never under 320px */
+.lab-stage {
+    position: relative;
+    width: 100%;
+    min-width: 320px;
+    aspect-ratio: 3 / 2;
+    background: #0a0a0c;
+    border-radius: var(--radius);
+    overflow: hidden;
+    outline: 1px solid var(--hairline);
+    outline-offset: -1px;
+}
+.lab-stage canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+/* the one number, top left inside the scene, on dark rock clear of the lamp:
+   the numeral, then its label as chrome */
+.lab-number {
+    position: absolute;
+    top: 5%;
+    left: 4.5%;
+    max-width: 34%;
+    font-family: var(--font-chrome);
+    font-style: italic;
+    color: var(--paper);
+    line-height: 0.95;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+    pointer-events: none;
+    transition: opacity 220ms ease;
+}
+.lab-number b {
+    display: block;
+    font-weight: 700;
+    font-size: clamp(1.625rem, 8cqw, 2.625rem);
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+}
+.lab-number.is-long b { font-size: clamp(1.125rem, 5.6cqw, 1.875rem); }
+.lab-number small {
+    display: block;
+    margin-top: 0.35em;
+    font-weight: 600;
+    font-size: clamp(0.5625rem, 2.3cqw, 0.75rem);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    white-space: normal;   /* a long label wraps on a phone instead of running under the lamp */
+    line-height: 1.25;
+    opacity: 0.88;
+}
+
+/* the caption: the date and stage title on one line, then the line */
+.lab-cap {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    padding: 0.875rem 0.125rem 0;
+}
+.lab-date {
+    font-family: var(--font-chrome);
+    font-style: italic;
+    font-weight: 600;
+    font-size: 0.6875rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent-ink);
+}
+.lab-title {
+    margin-left: 0.6em;   /* plus the space text node before it */
+    color: var(--muted);
+}
+.lab-line {
+    font-family: var(--font-serif);
+    font-size: 1.0625rem;
+    line-height: 1.45;
+    color: var(--ink);
+}
+
+/* the timeline: one tab per stage, a dot each, one tick line through them;
+   the label is the month over the year so six fit at 360px */
+.lab-time { margin-top: 0.875rem; }
+.lab-tabs {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.lab-tabs::before {
+    content: '';
+    position: absolute;
+    left: calc(50% / var(--n, 6));
+    right: calc(50% / var(--n, 6));
+    top: 8px;
+    height: 1px;
+    background: var(--ink);
+    opacity: 0.28;
+}
+.lab-tab {
+    position: relative;
+    flex: 1 1 0;
+    min-width: 0;
+    min-height: 44px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0 0.125rem 0.25rem;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    font-family: var(--font-chrome);
+    font-style: italic;
+    font-weight: 600;
+    font-size: 0.625rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-align: center;
+    line-height: 1.25;
+    color: var(--muted);
+}
+.lab-tab span { display: block; }
+.lab-tab-y { font-size: 0.5625rem; opacity: 0.8; }
+.lab-tab::before {
+    content: '';
+    display: block;
+    width: 15px;
+    height: 15px;
+    border-radius: 999px;
+    border: 1px solid var(--ink);
+    background: var(--paper);
+    transition: background-color 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+.lab-tab.is-past { color: var(--ink); }
+.lab-tab.is-past::before { background: var(--ink); }
+.lab-tab[aria-selected="true"] { color: var(--ink); }
+.lab-tab[aria-selected="true"]::before {
+    background: var(--accent);
+    border-color: var(--accent-ink);
+    box-shadow: 0 0 0 3px var(--paper), 0 0 0 4px var(--accent-ink);
+}
+.lab-tab:hover { color: var(--ink); }
+.lab-tab:focus-visible {
+    outline: 2px solid var(--accent-ink);
+    outline-offset: 2px;
+    border-radius: 6px;
+}
+
+@media (max-width: 420px) {
+    .lab-number { max-width: 28%; }   /* the label wraps to two lines on a phone, clear of the lamp */
+    .lab-tab { gap: 0.4rem; letter-spacing: 0.08em; }
+    .lab-line { font-size: 1rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .lab-number { transition: none; }
+    .lab-tab::before { transition: none; }
+}
+
+/* The two pill links stops.js draws right under the lab in the Betta panel (The full case, betta.live).
+   The same rules as the integration's panel-live.css; they ride on this sheet because the module links it
+   on index.html itself. Drop this block once circuit.css carries them. */
+.ring-lab { margin: 0.25rem 0 1rem; }
+.ring-lab-links { display: flex; flex-wrap: wrap; gap: 0.625rem; margin: 0 0 2rem; }
+.ring-pill {
+    display: inline-flex; align-items: center; min-height: 36px;
+    padding: 0.4rem 0.9rem;
+    border: 1px solid var(--hairline); border-radius: 999px;
+    background: var(--paper); color: var(--ink);
+    font-family: var(--font-chrome); font-style: italic; font-weight: 600;
+    font-size: 0.6875rem; letter-spacing: 0.14em; text-transform: uppercase;
+}
+.ring-pill:hover { border-color: var(--ink); }

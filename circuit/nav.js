@@ -1,7 +1,7 @@
 /* Wada Ring, navigation. Phase 3, V1.2 label pass.
    Explore (drag pans, wheel and pinch zoom), persistent labels, fly-to,
-   the mini-map, the lap guide and the keyboard. Nothing here moves the
-   camera on its own: every camera move answers the visitor. */
+   the mini-map, the lap guide, the drive (V1.5) and the keyboard. Nothing
+   here moves the camera on its own: every camera move answers the visitor. */
 export function attach(world, L, dom) {
     'use strict';
     const { camera, canvas, view, fit, render, groups, hooks, project, groundAt, pick, frames: fr, poseAt, reduced } = world;
@@ -19,6 +19,8 @@ export function attach(world, L, dom) {
     const ease = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
     const lapLen = fr.length_;
     const byId = {}; L.LOCATIONS.forEach(l => { byId[l.id] = l; });
+    /* storage is a convenience only: a private window or blocked storage degrades to a page with no memory */
+    const store = { get(k) { try { return window.localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { window.localStorage.setItem(k, v); } catch (e) { /* nothing to do */ } } };
 
     /* ------------------------------------------------ the view */
     let hover = null, focus = null, open = null, lapMark = null, returnTo = null, prevView = null, fly = null;
@@ -80,7 +82,38 @@ export function attach(world, L, dom) {
         dom.pins.appendChild(el);
         pins[loc.id] = { el, cur: 0, loc };
     });
+    /* a chip that would sit under the page chrome (the name block, the car's
+       HUD, the Grid block) fades out rather than bleeding through it. The
+       chrome boxes and the chip sizes are read four times a second, the
+       test itself is arithmetic on the projected point, so the frame never
+       forces a layout. A hot or open chip is left alone. */
+    const under = { at: 0, boxes: [] };
+    function chromeBoxes() {
+        const out = [];
+        const push = r => { if (r && r.width > 0 && r.height > 0) out.push({ x: r.left, y: r.top, w: r.width, h: r.height }); };
+        /* the name block is words on paper with a blank right side, so a chip
+           is tested against the words themselves and the pills, never the
+           block's box: at 1024 by 640 the About chip sits beside the name, not
+           under it (round 6 verify) */
+        const hud = document.querySelector('.ring-hud');
+        if (hud && !hud.hidden) {
+            for (const el of hud.children) {
+                if (el.hidden || el.classList.contains('ring-visually-hidden')) continue;
+                const buttons = el.querySelectorAll('button');
+                if (buttons.length) { for (const b of buttons) if (!b.hidden) push(b.getBoundingClientRect()); }
+                else { const range = document.createRange(); range.selectNodeContents(el); push(range.getBoundingClientRect()); }
+            }
+        }
+        for (const el of [dom.driveHud, document.querySelector('.ring-broadcast')]) {
+            if (!el || el.hidden) continue;
+            push(el.getBoundingClientRect());
+        }
+        return out;
+    }
+    const overlaps = (a, b) => a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h;
     function updatePins(dt) {
+        const now = performance.now(), measure = now - under.at > 250;
+        if (measure) { under.at = now; under.boxes = chromeBoxes(); }
         for (const id in pins) {
             const p = pins[id], loc = p.loc;
             const f = (hover === id || focus === id || open === id || lapMark === id || document.activeElement === p.el) ? 1 : 0;
@@ -93,6 +126,11 @@ export function attach(world, L, dom) {
             p.el.style.transform = 'translate(' + s[0].toFixed(1) + 'px,' + s[1].toFixed(1) + 'px) ' + side;
             p.el.classList.toggle('is-hot', p.cur > 0.5);
             p.el.classList.toggle('is-open', open === id);
+            if (measure) { p.w = p.el.offsetWidth; p.h = p.el.offsetHeight; }
+            const box = loc.labelSide === 'left' ? { x: s[0] - p.w + 6, y: s[1] - p.h / 2, w: p.w, h: p.h }
+                : loc.labelSide === 'below' ? { x: s[0] - p.w / 2, y: s[1] - 6, w: p.w, h: p.h }
+                : { x: s[0] - 6, y: s[1] - p.h / 2, w: p.w, h: p.h };
+            p.el.classList.toggle('is-under', !f && p.w > 0 && under.boxes.some(b => overlaps(box, b)));
         }
     }
 
@@ -129,7 +167,7 @@ export function attach(world, L, dom) {
     const HOP = L.LAP.slice();   // the seven, round the lap
     function hopTargets(id) { const i = HOP.indexOf(id), n = HOP.length; return { prev: byId[HOP[(i - 1 + n) % n]], next: byId[HOP[(i + 1) % n]] }; }
     function openPanel(loc) {
-        dom.panelKicker.textContent = loc.num + ' ' + loc.section;
+        dom.panelKicker.textContent = loc.num + ' ' + loc.section;
         dom.panelTitle.textContent = loc.name;
         dom.panel.dataset.id = loc.id;
         if (dom.hopPrev && dom.hopNext) {   // the neighbours on the lap, so a visitor never has to leave to move on
@@ -154,8 +192,9 @@ export function attach(world, L, dom) {
     }
     function go(id) {
         const loc = byId[id]; if (!loc) return;
-        if (open === id && !lap.running) return;   // already here: no second deposit, no second fly
+        if (open === id && !lap.running && !drive.on) return;   // already here: no second deposit, no second fly
         if (lap.running) endLap(false);
+        if (drive.on) endDrive(false);   // a stop opened from the car ends the drive; the fly below goes to the stop
         open = id; returnTo = pins[id].el;
         const aspect = canvas.clientWidth / canvas.clientHeight, sheet = window.innerWidth <= 760;
         const zoom = sheet ? 3.2 : STOP_ZOOM;
@@ -180,7 +219,7 @@ export function attach(world, L, dom) {
 
     /* ------------------------------------------------ the lap guide */
     const startS = fr[L.nearest(fr, [L.START.u, L.START.v])].s;
-    /* V1.3 Session 3: Start lap is a chase camera on the live race. It
+    /* V1.3 Session 3: Watch the race is a chase camera on the live race. It
        picks up the leader wherever the leader is and rides a little ahead
        of its nose with smooth easing; when two cars close to within
        striking distance it moves to that battle and holds it until they
@@ -214,13 +253,20 @@ export function attach(world, L, dom) {
         const car = world.carAt(sub.a); if (!car) return null;
         return { x: car.x + car.tx * CHASE_AHEAD, z: car.z + car.tz * CHASE_AHEAD, zoom: LAP_ZOOM, s: car.s };
     }
+    /* the one exit pill serves the lap and the drive; whichever is on names it */
+    function setExit(text) {
+        if (!dom.lapExit) return;
+        if (text) { dom.lapExit.innerHTML = text + ' <kbd>Esc</kbd>'; dom.lapExit.hidden = false; }
+        else dom.lapExit.hidden = true;
+    }
     function setLapButton(on) {
-        dom.lapBtn.textContent = on ? 'Leave the lap' : 'Start lap'; dom.lapBtn.setAttribute('aria-pressed', String(on));
-        if (dom.lapExit) dom.lapExit.hidden = !on;
+        dom.lapBtn.textContent = on ? 'Leave the lap' : 'Watch the race'; dom.lapBtn.setAttribute('aria-pressed', String(on));
+        setExit(on ? 'Back to the map' : null);
         document.body.classList.toggle('ring-lapping', on);
     }
     function startLap() {
         if (lap.running) return endLap(true);
+        if (drive.on) endDrive(false);
         if (open) { open = null; closePanel(); prevView = null; }
         lap.running = true; lap.rel = -12; lap.next = 0; lap.pauseUntil = 0; lapMark = null;
         setLapButton(true);
@@ -261,13 +307,202 @@ export function attach(world, L, dom) {
         if (home) { const hv = homeView(); flyTo(hv.x, hv.z, hv.zoom); }
     }
 
+    /* ------------------------------------------------ the drive (V1.5) */
+    /* The visitor takes a car. The world owns the car and its maths
+       (world.startDrive, setDriveInput, driveState, endDrive); this side
+       owns the input, the chase camera, the HUD and the toasts. Keys:
+       ArrowUp, W or Space hold the throttle, ArrowDown or S brake,
+       ArrowLeft and A, ArrowRight and D steer, with a quarter-second ramp.
+       Pointer: press and hold the world for the throttle, slide sideways to
+       steer, ninety pixels is full lock; touch is the same. The camera is
+       the lap guide's chase with the subject fixed on the car, a little
+       further ahead at speed. Every car the visitor passes, and every car
+       that goes by, is a toast with Open it, which opens that project's
+       stop and ends the drive. The lap ends with a card: the time, the
+       best on this device, drive again or back to the map. Escape, the
+       exit pill, the Drive button, a label or a Grid row all leave the car.
+       Under reduced motion the camera snaps instead of gliding. */
+    const DRIVE_AHEAD = 7, DRIVE_AHEAD_SPEED = 4, STEER_RATE = 4, PTR_LOCK = 90, TOAST_MS = 5000, TOAST_MAX = 2, TIP_MS = 4000;
+    const BEST_KEY = 'wada-ring-drive-best', HINT_KEY = 'wada-ring-hint-1';
+    const drive = { on: false, keys: new Set(), ptr: null, steer: 0, zoomK: 1, passedN: 0, passedByN: 0, done: false, flying: false, tipTimer: 0, startKey: null };
+    const DRIVE_KEYS = { ArrowUp: 'up', w: 'up', W: 'up', ' ': 'up', ArrowDown: 'down', s: 'down', S: 'down', ArrowLeft: 'left', a: 'left', A: 'left', ArrowRight: 'right', d: 'right', D: 'right' };
+    const fmt = t => { t = Math.max(0, +t || 0); const m = Math.floor(t / 60), s = Math.floor(t - m * 60), d = Math.floor((t - m * 60 - s) * 10); return m + ':' + String(s).padStart(2, '0') + '.' + d; };
+    const fmtS = t => { t = Math.max(0, +t || 0); const m = Math.floor(t / 60), s = Math.floor(t - m * 60); return m + ':' + String(s).padStart(2, '0'); };   // whole seconds while driving; the tenth is for the card
+    /* D takes a car only while the map itself has the focus (the page, the
+       canvas, the Drive button or the car's own HUD), never from another
+       control: a single-letter shortcut must not fire from a focused pin or
+       pill (WCAG 2.1.4) */
+    const mapFocused = () => { const a = document.activeElement; return !a || a === document.body || a === canvas || a === dom.driveBtn || a === dom.driveHud; };
+    const phone = () => window.innerWidth <= 760 || (window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
+    /* one exit control while the car is held: the bottom pill. The Drive
+       button keeps its one word and carries the state in aria-pressed; the
+       Watch pill, the line and the place step aside (circuit.css) */
+    function setDriveChrome(on) {
+        if (dom.driveBtn) dom.driveBtn.setAttribute('aria-pressed', String(on));
+        setExit(on ? 'Leave the car' : (lap.running ? 'Back to the map' : null));
+        if (dom.driveHud) { dom.driveHud.hidden = !on; dom.driveHud.classList.remove('is-done'); }
+        document.body.classList.toggle('ring-driving', on);
+        canvas.classList.remove('is-dragging');
+        under.at = 0;   // the HUD and the Grid change shape: the chrome boxes re-measure
+    }
+    function driveAim() {
+        const car = world.carAt('you'); if (!car) return null;
+        const top = world.speed || 9.2, k = clamp((car.v - top * 0.5) / (top * 0.7), 0, 1);   // further ahead at speed
+        const ahead = DRIVE_AHEAD + DRIVE_AHEAD_SPEED * k;
+        return { x: car.x + car.tx * ahead, z: car.z + car.tz * ahead, zoom: LAP_ZOOM * (portrait() ? 1.5 : 1) * drive.zoomK };   // a phone held upright rides closer, or the car is fifteen pixels long
+    }
+    function startDrive() {
+        if (drive.on) return endDrive(true);
+        if (!world.startDrive) return;
+        if (lap.running) endLap(false);
+        if (open) { open = null; closePanel(); prevView = null; }
+        const car = world.startDrive(); if (!car) return;
+        drive.on = true; drive.done = false; drive.keys.clear(); drive.ptr = null; drive.steer = 0; drive.zoomK = 1; drive.passedN = 0; drive.passedByN = 0;
+        clearToasts();
+        if (dom.driveCard) dom.driveCard.hidden = true;
+        setDriveChrome(true); hideHint();
+        if (dom.driveTip) {   // on a phone, four seconds of how
+            clearTimeout(drive.tipTimer);
+            dom.driveTip.hidden = !phone();
+            if (phone()) drive.tipTimer = setTimeout(() => { dom.driveTip.hidden = true; }, TIP_MS);
+        }
+        world.setDriveInput({ throttle: 0, steer: 0, brake: false });
+        updateDriveHud(world.driveState());
+        updateGrid(true);   // the YOU row joins now, loop or no loop
+        if (dom.driveHud) dom.driveHud.focus({ preventScroll: true });   // Space and Enter drive the car, not the button that started it
+        const aim = driveAim(); if (!aim) return endDrive(true);
+        chase.cut = performance.now();
+        if (reduced.matches) { view.target.x = aim.x; view.target.z = aim.z; view.zoom = aim.zoom; settle(); return; }
+        drive.flying = true;
+        flyTo(aim.x, aim.z, aim.zoom, () => { drive.flying = false; });
+    }
+    function endDrive(home) {
+        if (!drive.on) return;
+        drive.on = false; drive.flying = false; drive.keys.clear(); drive.ptr = null; drive.startKey = null; clearTimeout(drive.tipTimer);
+        world.endDrive();
+        clearToasts();
+        if (dom.driveCard) dom.driveCard.hidden = true;
+        if (dom.driveTip) dom.driveTip.hidden = true;
+        setDriveChrome(false);
+        updateGrid(true);   // the YOU row leaves now: under reduced motion the loop has already stopped, so no frame would do it
+        /* the focus was in the car (the HUD, a toast, the card) or fell to
+           the page when the exit pill hid: it goes back to the Drive button,
+           the way a closed panel returns to its pin. A focus elsewhere, the
+           Drive button itself or a Grid row, is left where it is. */
+        const a = document.activeElement;
+        if (dom.driveBtn && (!a || a === document.body || (dom.driveHud && dom.driveHud.contains(a)))) dom.driveBtn.focus({ preventScroll: true });
+        if (home) { const hv = homeView(); flyTo(hv.x, hv.z, hv.zoom); }
+    }
+    function updateDriveHud(ds) {
+        if (!dom.drivePos || !dom.driveTime || !ds.on) return;
+        const pos = 'P' + ds.rank; if (dom.drivePos.textContent !== pos) dom.drivePos.textContent = pos;
+        const t = fmtS(ds.lapDone ? ds.lapTime : ds.t); if (dom.driveTime.textContent !== t) dom.driveTime.textContent = t;
+    }
+    function rowOf(id) { return world.gridState().find(r => r.id === id) || null; }
+    const holdsFocus = el => !!el && el.contains(document.activeElement);
+    function toast(id, quiet) {
+        const box = dom.driveToasts; if (!box || drive.done) return;   // the card has the top right once the lap is in
+        const row = rowOf(id); if (!row || !row.stop) return;
+        const el = document.createElement('div');
+        el.className = 'ring-drive-toast' + (quiet ? ' is-quiet' : '');
+        const text = document.createElement('span'); text.className = 'ring-drive-toast-text';
+        text.textContent = quiet ? row.name + ' went by' : 'You passed ' + row.name;
+        const b = document.createElement('button'); b.type = 'button'; b.className = 'ring-drive-open'; b.textContent = 'Open it';
+        b.setAttribute('aria-label', 'Open ' + row.name); b.dataset.stop = row.stop;
+        b.addEventListener('click', () => go(row.stop));
+        el.appendChild(text); el.appendChild(b);
+        box.appendChild(el); under.at = 0;   // the HUD grew: the chrome boxes re-measure on the next frame
+        while (box.children.length > TOAST_MAX) {   // the oldest goes, unless the keyboard is on it
+            const old = [...box.children].find(x => x !== el && !holdsFocus(x)) || box.firstChild;
+            clearTimeout(old._timer); box.removeChild(old);
+        }
+        const fade = () => {
+            if (holdsFocus(el)) { el._timer = setTimeout(fade, TOAST_MS); return; }   // never removed from under a focused Open it
+            el.classList.add('is-out'); setTimeout(() => { if (el.parentNode) el.parentNode.removeChild(el); under.at = 0; }, reduced.matches ? 0 : 400);
+        };
+        el._timer = setTimeout(fade, TOAST_MS);
+        if (reduced.matches) el.classList.add('is-in'); else requestAnimationFrame(() => el.classList.add('is-in'));
+    }
+    function clearToasts() {
+        const box = dom.driveToasts; if (!box) return;
+        for (const el of [...box.children]) clearTimeout(el._timer);
+        box.innerHTML = ''; under.at = 0;
+    }
+    /* the card carries one number: the lap. A first lap on this device
+       says nothing more; a faster one says New best; a slower one names the
+       best to beat. The toasts clear and the timer hides so nothing moves
+       the card or repeats its number. */
+    function finishLap(ds) {
+        drive.done = true;
+        const t = ds.lapTime, prev = parseFloat(store.get(BEST_KEY)), had = Number.isFinite(prev) && prev > 0;
+        if (!had || t < prev) store.set(BEST_KEY, String(t));
+        clearToasts();
+        if (dom.driveHud) dom.driveHud.classList.add('is-done');
+        if (dom.driveYour) dom.driveYour.textContent = 'Your lap ' + fmt(t);
+        if (dom.driveBest) {
+            dom.driveBest.hidden = !had;
+            if (had) dom.driveBest.textContent = t < prev ? 'New best' : 'Best on this device ' + fmt(prev);
+        }
+        if (dom.driveCard) { dom.driveCard.hidden = false; dom.driveCard.focus({ preventScroll: true }); }
+        under.at = 0;
+    }
+    function stepDrive(dt, now) {
+        if (!drive.on) return;
+        const paused = !!open || document.body.classList.contains('stage-open');   // a panel or the stage: no input, no chase
+        const ptr = drive.ptr;
+        const aimSteer = paused ? 0 : ptr ? ptr.steer : (drive.keys.has('right') ? 1 : 0) - (drive.keys.has('left') ? 1 : 0);
+        const throttle = (!paused && (ptr || drive.keys.has('up'))) ? 1 : 0;
+        const brake = !paused && !throttle && drive.keys.has('down');
+        drive.steer += clamp(aimSteer - drive.steer, -dt * STEER_RATE, dt * STEER_RATE);
+        world.setDriveInput({ throttle, steer: drive.steer, brake });
+        const ds = world.driveState(); if (!ds.on) return endDrive(true);
+        updateDriveHud(ds);
+        if (ds.passed.length > drive.passedN) { for (let i = drive.passedN; i < ds.passed.length; i++) toast(ds.passed[i], false); drive.passedN = ds.passed.length; }
+        if (ds.passedBy.length > drive.passedByN) { for (let i = drive.passedByN; i < ds.passedBy.length; i++) toast(ds.passedBy[i], true); drive.passedByN = ds.passedBy.length; }
+        if (ds.lapDone && !drive.done) finishLap(ds);
+        if (paused || drive.flying || fly) return;
+        const aim = driveAim(); if (!aim) return endDrive(true);
+        if (reduced.matches) { view.target.x = aim.x; view.target.z = aim.z; view.zoom = aim.zoom; settle(); return; }
+        const rate = now - chase.cut < 900 ? 9 : 5.5, k = Math.min(1, dt * rate);
+        view.target.x += (aim.x - view.target.x) * k; view.target.z += (aim.z - view.target.z) * k;
+        view.zoom += (aim.zoom - view.zoom) * Math.min(1, dt * 2.5);
+        settle();
+    }
+
+    /* ------------------------------------------------ the first-visit hint */
+    /* one line under the HUD on load, gone after the first press or key or
+       nine seconds, and not shown again on this device */
+    const hint = { shown: false, timer: 0 };
+    function showHint() {
+        if (!dom.hint) return;
+        if (store.get(HINT_KEY)) { dom.hint.hidden = true; return; }
+        let coarse = false; try { coarse = !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches); } catch (e) { /* no media queries: the mouse copy stands */ }
+        if (coarse) dom.hint.textContent = 'Tap a stop to open it. Drag to look around.';   // a finger taps; the markup carries the mouse copy
+        dom.hint.hidden = false; hint.shown = true;
+        hint.timer = setTimeout(hideHint, 9000);
+    }
+    function hideHint() {
+        if (!dom.hint || !hint.shown) return;
+        hint.shown = false; clearTimeout(hint.timer);
+        store.set(HINT_KEY, '1');
+        dom.hint.classList.add('is-out');
+        setTimeout(() => { dom.hint.hidden = true; }, reduced.matches ? 0 : 320);
+    }
+
     /* ------------------------------------------------ pointer */
     const ptrs = new Map(); let drag = null, pinch = null;
     const pinchState = () => { const [a, b] = [...ptrs.values()]; return { d: Math.hypot(a.x - b.x, a.y - b.y), mx: (a.x + b.x) / 2, my: (a.y + b.y) / 2 }; };
     const pinOf = t => (t && t.closest) ? t.closest('.ring-pin') : null;
     const worldTarget = t => t === canvas || !!pinOf(t);
+    document.addEventListener('pointerdown', hideHint, true);
     document.addEventListener('pointerdown', e => {
         if (!worldTarget(e.target)) return;
+        if (drive.on && e.target === canvas && !open) {   // the world is the pedal: press for the throttle, slide to steer
+            if (e.pointerType === 'mouse' && e.button !== 0) return;
+            try { canvas.setPointerCapture(e.pointerId); } catch (err) { /* a pointer that is already gone */ }
+            drive.ptr = { id: e.pointerId, x0: e.clientX, steer: 0 };
+            return;
+        }
         if (lap.running) endLap(true);
         try { canvas.setPointerCapture(e.pointerId); } catch (err) { /* a pointer that is already gone */ }
         ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY });
@@ -277,6 +512,7 @@ export function attach(world, L, dom) {
         canvas.classList.add('is-dragging');
     });
     window.addEventListener('pointermove', e => {
+        if (drive.ptr && e.pointerId === drive.ptr.id) { drive.ptr.steer = clamp((e.clientX - drive.ptr.x0) / PTR_LOCK, -1, 1); return; }
         if (ptrs.has(e.pointerId)) {
             ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY });
             if (ptrs.size >= 2 && pinch) {
@@ -292,12 +528,13 @@ export function attach(world, L, dom) {
             }
             return;
         }
-        if (e.pointerType === 'mouse' && e.target === canvas) {
+        if (e.pointerType === 'mouse' && e.target === canvas && !drive.on) {
             const id = pick(e.clientX, e.clientY);
             if (id !== hover) { hover = id; canvas.classList.toggle('is-over', !!id); refreshStill(); }
         }
     });
     const up = e => {
+        if (drive.ptr && e.pointerId === drive.ptr.id) { drive.ptr = null; return; }   // the pedal lifts
         const was = ptrs.has(e.pointerId); ptrs.delete(e.pointerId);
         if (was && drag && e.pointerId === drag.id) {
             if (!drag.moved && performance.now() - drag.t0 < 600) { const id = drag.pin || pick(e.clientX, e.clientY); if (id) go(id); else if (open) close(); }
@@ -312,6 +549,7 @@ export function attach(world, L, dom) {
     document.addEventListener('wheel', e => {
         if (!worldTarget(e.target)) return;
         e.preventDefault();
+        if (drive.on) { drive.zoomK = clamp(drive.zoomK * Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.0012)), 0.6, 1.5); return; }   // the chase keeps its subject; the wheel sets how close
         if (lap.running) endLap(true);
         zoomAt(e.clientX, e.clientY, Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.0012)));
     }, { passive: false });
@@ -322,8 +560,20 @@ export function attach(world, L, dom) {
         const tag = (e.target && e.target.tagName) || '';
         if (/INPUT|TEXTAREA|SELECT/.test(tag)) return;
         if (document.body.classList.contains('stage-open')) return;   // a case is on stage; its own keys apply
-        if (e.key === 'Escape') { if (lap.running) endLap(true); else if (open) close(); return; }
+        hideHint();
+        if (e.key === 'Escape') { if (drive.on) endDrive(true); else if (lap.running) endLap(true); else if (open) close(); return; }
+        if (drive.on && !open) {   // the car has the keys
+            const k = DRIVE_KEYS[e.key];
+            if (drive.startKey && e.key.toLowerCase() === drive.startKey) { e.preventDefault(); return; }   // the D that took the car is not a steer until it is let go
+            if (e.key === ' ' && e.target && e.target.tagName === 'BUTTON') return;   // Space on a focused button is the button's: Open it, Drive again, the pills
+            if (k) { drive.keys.add(k); e.preventDefault(); }
+            return;
+        }
         if (open && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) { const h = hopTargets(open); go(e.key === 'ArrowLeft' ? h.prev.id : h.next.id); e.preventDefault(); return; }
+        if (!open && (e.key === 'd' || e.key === 'D') && mapFocused()) {   // D takes a car, from the map or from the watch, while the map has the focus
+            if (!e.repeat) { startDrive(); if (drive.on) drive.startKey = 'd'; }
+            e.preventDefault(); return;
+        }
         if (open || lap.running) return;
         const step = 60, cx = canvas.clientWidth / 2, cy = canvas.clientHeight / 2;
         let used = true;
@@ -339,29 +589,63 @@ export function attach(world, L, dom) {
         }
         if (used) e.preventDefault();
     });
+    window.addEventListener('keyup', e => {
+        const k = DRIVE_KEYS[e.key]; if (k) drive.keys.delete(k);
+        if (drive.startKey && e.key.toLowerCase() === drive.startKey) drive.startKey = null;
+    });
+    window.addEventListener('blur', () => { drive.keys.clear(); drive.ptr = null; drive.startKey = null; });   // no key is held by a window that lost focus
 
     /* ------------------------------------------------ the grid (V1.2, live in V1.3) */
-    /* Four rows on the broadcast face above the mini-map: live timing of
-       the simulated race. Positions reorder as cars pass on track, the
-       last column is the gap to the leader, ticking; the head carries the
-       leader's lap. Order and gaps are the world's, read every frame and
-       written at ten a second; nothing on the page is fetched. Each row is
-       a button that opens the stop its project lives in. */
-    const grid = { rows: {}, order: '', lapEl: null, footEl: null, at: 0 };
+    /* Rows on the broadcast face above the mini-map: live timing of the
+       simulated race. Positions reorder as cars pass on track, the last
+       column is the gap to the leader, ticking; the head carries the
+       leader's lap and the Los Angeles clock. Order and gaps are the
+       world's, read every frame and written at ten a second; nothing on
+       the page is fetched. Each row is a button that opens the stop its
+       project lives in. The field is dynamic: when the visitor drives,
+       their row joins the list and leaves with the car. */
+    const grid = { rows: {}, order: '', key: '', lapEl: null, clockEl: null, footEl: null, at: 0, bound: false };
+    let clockFmt = null;
+    try { clockFmt = new Intl.DateTimeFormat('en-US', { timeZone: 'America/Los_Angeles', hour: '2-digit', minute: '2-digit', hour12: false }); } catch (e) { clockFmt = null; }
+    function laTime() {
+        try { if (clockFmt) return clockFmt.format(new Date()).replace(/^24/, '00'); } catch (e) { /* fall through to the plain clock */ }
+        const d = new Date();
+        return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+    }
+    function tickClock() {
+        if (!grid.clockEl) return;
+        const s = 'Los Angeles ' + laTime();
+        if (grid.clockEl.textContent !== s) grid.clockEl.textContent = s;
+    }
+    setInterval(tickClock, 15000);
+    /* the visitor's own row is a plain row, not a button: it opens nothing,
+       so it takes no Tab stop, and it reads from its content (P5 YOU +1.20),
+       which the live update keeps true; the eight others are buttons */
+    const rowHtml = (c, i) => {
+        const you = !!c.player, tag = you ? 'div' : 'button';
+        return '<' + tag + (you ? '' : ' type="button"') + ' class="ring-tower-row' + (you ? ' is-you' : '') + '" data-id="' + c.id + '"' + (c.stop ? ' data-stop="' + c.stop + '"' : '') +
+            ' style="--sig:' + (c.accent || '#c6a15b') + '">' +
+            '<span class="ring-tower-pos">P' + (i + 1) + '</span><span class="ring-tower-code">' + c.code + '</span>' +
+            '<span class="ring-tower-name">' + c.name + '</span><span class="ring-tower-num">' + (you ? '' : c.number) + '</span>' +
+            (you ? '' : '<span class="ring-tower-bar" aria-hidden="true"><i></i></span>') + '</' + tag + '>';
+    };
+    function buildRows(list) {
+        const el = dom.tower, you = list.some(c => c.player);
+        el.innerHTML = '<div class="ring-tower-head"><span>The grid</span><span class="ring-tower-meta"><span class="ring-tower-clock" id="ringTowerClock"></span><span class="ring-tower-lap" id="ringTowerLap">Lap 1</span></span></div>' +
+            list.map(rowHtml).join('') +
+            '<p class="ring-tower-foot" id="ringTowerFoot">Each car is a project. Open one and its car picks up pace. Drive to join them.</p>';
+        el.setAttribute('aria-label', 'The grid: live timing of the simulated race, ' + list.length + ' cars, one per project' + (you ? ' and you' : ''));
+        grid.rows = {}; el.querySelectorAll('.ring-tower-row').forEach(r => { grid.rows[r.dataset.id] = r; });
+        grid.lapEl = el.querySelector('#ringTowerLap'); grid.clockEl = el.querySelector('#ringTowerClock'); grid.footEl = el.querySelector('#ringTowerFoot');
+        grid.order = ''; grid.key = list.map(c => c.id).slice().sort().join(',');
+        tickClock();
+    }
     function setGrid(list) {
         const el = dom.tower; if (!el) return;
         if (!list || !list.length) { el.hidden = true; return; }
-        el.innerHTML = '<div class="ring-tower-head"><span>The grid</span><span class="ring-tower-lap" id="ringTowerLap">Lap 1</span></div>' +
-            list.map((c, i) => '<button type="button" class="ring-tower-row" data-id="' + c.id + '" data-stop="' + c.stop + '" style="--sig:' + (c.accent || '#c6a15b') + '">' +
-                '<span class="ring-tower-pos">P' + (i + 1) + '</span><span class="ring-tower-code">' + c.code + '</span>' +
-                '<span class="ring-tower-name">' + c.name + '</span><span class="ring-tower-num">' + c.number + '</span>' +
-                '<span class="ring-tower-bar" aria-hidden="true"><i></i></span></button>').join('') +
-            '<p class="ring-tower-foot" id="ringTowerFoot">Open a section and its car picks up pace. Your visit only, kept on this device.</p>';
+        buildRows(list);
         el.hidden = false;
-        el.setAttribute('aria-label', 'The grid: live timing of the simulated race, four cars, one per project');
-        el.addEventListener('click', e => { const r = e.target.closest('.ring-tower-row'); if (r) go(r.dataset.stop); });
-        grid.rows = {}; el.querySelectorAll('.ring-tower-row').forEach(r => { grid.rows[r.dataset.id] = r; });
-        grid.lapEl = el.querySelector('#ringTowerLap'); grid.footEl = el.querySelector('#ringTowerFoot'); grid.order = '';
+        if (!grid.bound) { grid.bound = true; el.addEventListener('click', e => { const r = e.target.closest('.ring-tower-row'); if (r && r.dataset.stop) go(r.dataset.stop); }); }
         updateGrid(true);
     }
     function updateGrid(force) {
@@ -370,12 +654,22 @@ export function attach(world, L, dom) {
         if (!force && now - grid.at < 100) return;
         grid.at = now;
         const g = world.gridState(); if (!g.length) return;
+        const key = g.map(x => x.id).slice().sort().join(',');
+        if (key !== grid.key) buildRows(g);   // the field changed: a car joined or left
         const order = g.map(x => x.id).join('>');
+        /* while the visitor drives the Grid collapses to the three rows that
+           matter, the car ahead, YOU and the car behind (circuit.css hides the
+           rest); at the back or the front the window slides to keep three */
+        const kYou = drive.on ? g.findIndex(x => x.player) : -1;
+        const lo = kYou >= 0 ? Math.max(0, Math.min(kYou - 1, g.length - 3)) : -1, hi = kYou >= 0 ? Math.min(g.length - 1, lo + 2) : -1;
+        if (kYou >= 0) g.forEach((row, k) => { const el = grid.rows[row.id]; if (el) el.classList.toggle('is-near', k >= lo && k <= hi); });
         if (order !== grid.order) {   // a pass on track: the rows swap, and slide into place
-            const before = {}; for (const id in grid.rows) before[id] = grid.rows[id].getBoundingClientRect().top;
+            const before = {}; for (const id in grid.rows) { const r = grid.rows[id].getBoundingClientRect(); before[id] = r.height ? r.top : null; }   // a hidden row has no place to slide from
             for (const row of g) dom.tower.insertBefore(grid.rows[row.id], grid.footEl || null);   // the caption stays last
             if (grid.order && !reduced.matches) for (const id in grid.rows) {
-                const el = grid.rows[id], dy = before[id] - el.getBoundingClientRect().top;
+                const el = grid.rows[id], r = el.getBoundingClientRect();
+                if (before[id] == null || !r.height) continue;
+                const dy = before[id] - r.top;
                 if (!dy) continue;
                 el.style.transition = 'none'; el.style.transform = 'translateY(' + dy + 'px)';
                 requestAnimationFrame(() => { el.style.transition = ''; el.style.transform = ''; });
@@ -410,7 +704,10 @@ export function attach(world, L, dom) {
 
     /* ------------------------------------------------ wiring */
     dom.lapBtn.addEventListener('click', startLap);
-    if (dom.lapExit) dom.lapExit.addEventListener('click', () => endLap(true));
+    if (dom.driveBtn) dom.driveBtn.addEventListener('click', startDrive);
+    if (dom.lapExit) dom.lapExit.addEventListener('click', () => { if (drive.on) endDrive(true); else endLap(true); });
+    if (dom.driveAgain) dom.driveAgain.addEventListener('click', () => { endDrive(false); startDrive(); });
+    if (dom.driveHome) dom.driveHome.addEventListener('click', () => endDrive(true));
     document.addEventListener('focusin', e => { if (pinOf(e.target)) { focus = pinOf(e.target).dataset.id; refreshStill(); } });
     document.addEventListener('focusout', e => { if (pinOf(e.target)) { focus = null; refreshStill(); } });
     dom.panelClose.addEventListener('click', close);
@@ -420,14 +717,15 @@ export function attach(world, L, dom) {
     buildMap();
     hooks.push((dt) => {
         const now = performance.now();
-        stepFly(now); stepLap(dt, now);
+        stepFly(now); stepLap(dt, now); stepDrive(dt, now);
         /* a case sits on top of a stop, so it wins; they never double-count */
         if (caseOpen && world.attendCaseDwell) world.attendCaseDwell(caseOpen, dt);
         else if (open && world.attendDwell) world.attendDwell(open, dt);
         updatePins(dt); updateMap(); updateGrid();
     });
     layoutShift(); { const hv = homeView(); view.target.x = hv.x; view.target.z = hv.z; view.zoom = hv.zoom; } settle();
+    showHint();
 
-    return { go, close, startLap, endLap, panBy, zoomAt, flyTo, FLY_MS, setGrid, attendCase,
-             state: () => ({ open, lap: lap.running, zoom: view.zoom, target: [view.target.x, view.target.z], hover, focus, flying: !!fly }) };
+    return { go, close, startLap, endLap, startDrive, endDrive, panBy, zoomAt, flyTo, FLY_MS, setGrid, attendCase,
+             state: () => ({ open, lap: lap.running, driving: drive.on, zoom: view.zoom, target: [view.target.x, view.target.z], hover, focus, flying: !!fly }) };
 }

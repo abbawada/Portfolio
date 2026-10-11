@@ -49,11 +49,17 @@
             { id: 'betta', cat: 'Wearables', title: 'Betta', serial: 'AWUS-30250', dom: '#27211b',
               line: 'The shooting sleeve that learns the shot only you take.',
               blurb: 'Your shot has a signature. Betta learns it. Dual IMUs at the elbow and wrist read every rep 100 times a second, and the moment one drifts, a tap on the wrist calls the correction.',
-              video: { src: 'videos/betta_rig.mp4', poster: 'images/betta_poster_rig.jpg', w: 720, h: 1280,
-                       alt: 'The Betta capture rig worn on the arm',
-                       cap: 'RECORDED · AUG 4, 2026 · THE RIG ON A REAL ARM.' },
+              video: { src: 'videos/betta_court_rep.mp4', poster: 'images/betta_poster_court.jpg', w: 720, h: 1280,
+                       alt: 'A player shoots a free throw in the Betta sleeve',
+                       cap: 'FIRST COURT SESSION · 21 OF 28 REPS BUZZED.' },
               shots: [],
-              capture: true,
+              /* capture: true mounts the recorded-rep graphic from betta-capture.js
+                 (the 4 Aug 2026 curl session on the rig) beside the hero. Its
+                 kicker says "one session", which next to the court clip read as
+                 the same session, and that label is not this file's to change,
+                 so the court clip stands alone here; the rig keeps its place on
+                 betta.html with its own dated caption. */
+              capture: false,
               links: [['VIEW FULL CASE STUDY', 'betta.html'], ['BETTA.LIVE', 'https://betta.live']] },
             { id: 'posture-cue', cat: 'Wearables', title: 'Posture Cue', serial: 'AWUS-30311', dom: '#78625a',
               line: 'Wearable that tracks spinal alignment and cues you upright when you slouch.',
@@ -95,14 +101,18 @@
         ];
 
 
-        /* The two projects without cover art yet. They appear as rows under a
-           panel grid until their cases exist; text verbatim from the plain list. */
+        /* The projects without cover art yet. They appear as rows under a
+           panel grid until their cases exist; text verbatim from the plain list.
+           Skydiving has no cover and no case: its only link is the reel. */
         var EXTRA = [
             { id: 'wheelchair', cat: 'Side Quests', title: 'Wheelchair Basketball Volunteering', serial: 'AWUS-30437',
               line: 'Volunteering with adaptive sports programs.',
               video: { src: 'videos/Wheelchair_Basketball.mp4', poster: 'images/wheelchair_poster.jpg', w: 1280, h: 720, alt: 'Wheelchair basketball video' } },
             { id: 'medici', cat: 'Side Quests', title: 'The Medici Network', serial: 'AWUS-30475',
-              line: 'I built research packets on the speakers and themes ahead of Medici LA 26. After the event, I wrote the 10 Key Takeaways report and produced it print-ready.' }
+              line: 'I built research packets on the speakers and themes ahead of Medici LA 26. After the event, I wrote the 10 Key Takeaways report and produced it print-ready.' },
+            { id: 'skydiving', cat: 'Wearables', title: 'Skydiving', serial: 'AWUS-30510',
+              line: 'A jump instrument in the making: barometer, LiDAR, GPS, haptics.',
+              links: [['WATCH THE REEL', 'https://www.instagram.com/reel/Ddv8Qr_gruP/']] }
         ];
 
     function mount(opts) {
@@ -117,7 +127,9 @@
         var filterList = filters ? (opts.filterList || FILTERS) : [];
         var grid = opts.layout === 'grid';
         var onCase = opts.onCase || null;   /* which project case is on stage, for the circuit's live order */
-        var bound = [];   /* listeners on document and window, removed by destroy() */
+        var extra = opts.extra || null;     /* a .plain-group under the shelf for the projects without a case */
+        var bound = [];   /* every listener this mount adds (document, window, the stage, the shelf, the chips), removed by destroy() */
+        var cleanup = []; /* teardown steps that are not a removeEventListener */
         function on(target, type, fn, o) { target.addEventListener(type, fn, o); bound.push([target, type, fn, o]); }
         if (!shelf || !stage) return null;
         if (plain) plain.hidden = true;
@@ -128,14 +140,16 @@
         var focused = 0;
         var flipped = null;   /* the CASES entry currently on stage */
 
+        var chips = [];   /* the filter chips this mount appended, removed by destroy() */
         filterList.forEach(function (f) {
             var b = document.createElement('button');
             b.className = 'chip'; b.type = 'button';
             b.setAttribute('aria-pressed', String(f.key === filter));
             b.innerHTML = (f.icon || '') + '<span>' + f.key + '</span>';
-            b.addEventListener('click', function () {
+            chips.push(b);
+            on(b, 'click', function () {
                 filter = f.key;
-                [].forEach.call(filters.children, function (c, i) {
+                chips.forEach(function (c, i) {
                     c.setAttribute('aria-pressed', String(filterList[i].key === filter));
                 });
                 closeStage(true);
@@ -194,6 +208,28 @@
                 shelf.appendChild(el);
             });
             syncShelfNav();
+            renderExtra();
+        }
+
+        /* The projects without a case yet, as rows under the shelf, in the same
+           filter as the cases. The circuit's Projects panel lists them the same way. */
+        function renderExtra() {
+            if (!extra) return;
+            var list = extra.querySelector('ul');
+            var rows = EXTRA.filter(function (x) { return filter === 'All' || x.cat === filter; });
+            extra.hidden = !rows.length;
+            if (!list) return;
+            list.innerHTML = rows.map(function (x) {
+                var link = x.links && x.links[0];
+                var h = '<li>' + (link
+                    ? '<a href="' + link[1] + '" target="_blank" rel="noopener noreferrer">' + x.title + ' &rarr;</a> '
+                    : x.title + '. ') + x.line;
+                if (x.video) {
+                    h += '<video controls preload="none" poster="' + x.video.poster + '" src="' + x.video.src +
+                         '" width="' + x.video.w + '" height="' + x.video.h + '" playsinline aria-label="' + x.video.alt + '"></video>';
+                }
+                return h + '</li>';
+            }).join('');
         }
 
         /* Shelf arrows: the visible cue that the shelf scrolls. Shown only
@@ -231,9 +267,9 @@
         }
 
         if (shelfPrev && shelfNext) {
-            shelfPrev.addEventListener('click', function () { stepShelf(-1); });
-            shelfNext.addEventListener('click', function () { stepShelf(1); });
-            shelf.addEventListener('scroll', syncShelfNav, { passive: true });
+            on(shelfPrev, 'click', function () { stepShelf(-1); });
+            on(shelfNext, 'click', function () { stepShelf(1); });
+            on(shelf, 'scroll', syncShelfNav, { passive: true });
             on(window, 'resize', syncShelfNav);
         }
 
@@ -250,13 +286,26 @@
            typographic plate so the panel is never dead space. */
         function mediaHTML(c) {
             /* a video hero autoplays muted while the case is open; the
-               caption is the only words on the media side */
+               caption is the only words on the media side, and one button
+               stops the picture itself (under reduced motion it starts it).
+               The button keeps the site's top-right corner: the shooter
+               stands a quarter in from the left, so his raised ball is never
+               there. In the stacked spread (under 920px) the picture fills
+               the top of the card and the case's close X sits in that corner,
+               so there the button drops 2.75rem, about 15px under the X
+               (34px tall, 10px from the card's top); the top-left corner was
+               tried first and sat on the ball at the set. Set here because
+               styles.css is not this module's file; one rule in the 919px
+               media block, .back-hero .video-motion-toggle { top: 2.75rem },
+               would replace the inline style. */
             if (c.video) {
                 var v = c.video;
+                var stacked = window.innerWidth < 920;   /* the same break as stageSize() and the stacked-spread media query */
                 return '<div class="back-hero is-video">' +
                        '<video src="' + v.src + '" poster="' + v.poster + '" muted loop playsinline ' +
                            'preload="metadata"' + (reduced.matches ? '' : ' autoplay') +
                            ' width="' + v.w + '" height="' + v.h + '" aria-label="' + v.alt + '"></video>' +
+                       '<button class="video-motion-toggle" type="button" aria-pressed="false"' + (stacked ? ' style="top:2.75rem"' : '') + '>Play video</button>' +
                        (v.cap ? '<p class="back-vcap">' + v.cap + '</p>' : '') +
                        '</div>';
             }
@@ -316,6 +365,9 @@
         var stageIndex = -1;
         var stageSource = null;
         var stageTimer = null;
+        var swapTimer = null;  /* the 170 ms case swap in stepStage */
+        var closing = false;   /* an animated close is in flight */
+        var openToken = 0;     /* bumped on every open and close: late frames of an old open do nothing */
 
         /* the transform that puts the centred case over a shelf slot */
         function slotTransform(r, sz) {
@@ -328,6 +380,9 @@
         function openStage(c, sourceEl) {
             if (flipped) return;
             clearTimeout(stageTimer);
+            stageTimer = null;
+            closing = false;
+            var token = ++openToken;
             flipped = c;
             if (onCase) onCase(c.id, 'open');
             stageSource = sourceEl;
@@ -364,6 +419,7 @@
                 flipper.style.transform = slotTransform(r, sz);
                 requestAnimationFrame(function () {
                     requestAnimationFrame(function () {
+                        if (token !== openToken) return;
                         stage.classList.add('is-in');
                         flipper.style.transform = 'translate(0,0) scale(1)';
                         stageTimer = setTimeout(function () {
@@ -377,7 +433,27 @@
             }
             var close = stage.querySelector('.back-close');
             if (close) close.focus({ preventScroll: true });
+            wireVideo();
             if (c.capture) mountCapture();
+        }
+
+        /* the clip's own play/pause; its listeners live on nodes the close discards */
+        function wireVideo() {
+            var hero = stage.querySelector('.back-hero.is-video');
+            if (!hero) return;
+            var vid = hero.querySelector('video'), btn = hero.querySelector('.video-motion-toggle');
+            if (!vid || !btn) return;
+            function sync() {
+                var playing = !vid.paused && !vid.ended;
+                btn.textContent = playing ? 'Pause video' : 'Play video';
+                btn.setAttribute('aria-pressed', String(playing));
+            }
+            btn.addEventListener('click', function () {
+                if (vid.paused) vid.play().catch(sync); else vid.pause();
+            });
+            vid.addEventListener('play', sync);
+            vid.addEventListener('pause', sync);
+            sync();
         }
 
         /* step through the shelf without leaving the spread */
@@ -393,8 +469,17 @@
             var flipper = stage.querySelector('.flipper');
             flipper.classList.add('swapping');
             dropCapture();
-            setTimeout(function () {
+            heldClip = false; heldLive = false;
+            /* the swap timer carries the open token: a close inside its 170 ms
+               (destroy, a filter chip, a reduced-motion Esc) empties the stage
+               and bumps the token, and the late callback then does nothing */
+            var token = openToken;
+            clearTimeout(swapTimer);
+            swapTimer = setTimeout(function () {
+                swapTimer = null;
+                if (token !== openToken || !flipped) return;
                 var front = stage.querySelector('.flip-front');
+                if (!front) return;
                 front.style.backgroundColor = c.dom;
                 front.innerHTML = frontHTML(c);
                 stage.querySelector('.flip-back').innerHTML = backHTML(c);
@@ -403,6 +488,7 @@
                 if (stageSource && !grid) {
                     shelf.scrollTo({ left: stageSource.offsetLeft - 48, behavior: 'auto' });
                 }
+                wireVideo();
                 if (c.capture) mountCapture();
             }, reduced.matches ? 0 : 170);
         }
@@ -422,25 +508,41 @@
 
         /* the reverse: chrome away, turn back to the cover and draw in,
            then settle into the shelf slot as the blur clears */
+        /* the stage emptied and hidden: the end of every close */
+        function settle(back) {
+            closing = false;
+            stageTimer = null;
+            clearTimeout(swapTimer);
+            swapTimer = null;
+            stage.hidden = true;
+            stage.innerHTML = '';
+            stage.classList.remove('is-in', 'is-open');
+            document.body.classList.remove('stage-open');
+            if (back) back.focus({ preventScroll: true });
+        }
+
         function closeStage(instant) {
-            if (!flipped) return;
+            if (!flipped) {
+                /* an animated close may still be in flight: an instant close (destroy,
+                   a filter change) finishes it now, so no timer of ours fires later on
+                   a stage another engine has taken over */
+                if (instant && closing) { clearTimeout(stageTimer); settle(null); }
+                return;
+            }
             clearTimeout(stageTimer);
+            stageTimer = null;
+            openToken++;
             dropCapture();
             flipped = null;
+            heldClip = false; heldLive = false;
             if (onCase) onCase(null, 'close');
             stageIndex = -1;
             var back = stageSource;
             stageSource = null;
             var flipper = stage.querySelector('.flipper');
-            function done() {
-                stage.hidden = true;
-                stage.innerHTML = '';
-                stage.classList.remove('is-in', 'is-open');
-                document.body.classList.remove('stage-open');
-                if (back && !instant) back.focus({ preventScroll: true });
-            }
-            if (instant || reduced.matches || !flipper) { done(); return; }
+            if (instant || reduced.matches || !flipper) { settle(instant ? null : back); return; }
             var sz = stageSize();
+            closing = true;
             stage.classList.remove('is-open');
             flipper.style.width = sz.caseW + 'px';
             flipper.style.height = sz.caseH + 'px';
@@ -454,7 +556,7 @@
                     flipper.style.opacity = '0';
                 }
                 stage.classList.remove('is-in');
-                stageTimer = setTimeout(done, 320);
+                stageTimer = setTimeout(function () { settle(back); }, 320);
             }, 360);
         }
 
@@ -463,11 +565,11 @@
            backdrop outside the case. */
         var downOnBackdrop = false;
 
-        stage.addEventListener('pointerdown', function (e) {
+        on(stage, 'pointerdown', function (e) {
             downOnBackdrop = e.target.classList.contains('stage-backdrop');
         });
 
-        stage.addEventListener('click', function (e) {
+        on(stage, 'click', function (e) {
             var t = e.target;
             if (t.closest('.back-close')) { closeStage(); return; }
             var nav = t.closest('.stage-nav');
@@ -475,14 +577,82 @@
             if (t.classList.contains('stage-backdrop') && downOnBackdrop) closeStage();
         });
 
+        /* an Escape that closes a case ends there: under reduced motion the
+           close settles synchronously and body.stage-open is already gone by
+           the time the event reaches window, where the Wada Ring's nav gates
+           on that class (and honours defaultPrevented) and the poster
+           fallback gates on the class alone; without this, one Esc closed
+           the case and the panel behind it together */
         on(document, 'keydown', function (e) {
-            if (e.key === 'Escape') closeStage();
+            if (e.key === 'Escape') {
+                if (flipped) { e.preventDefault(); e.stopPropagation(); closeStage(); }
+                return;
+            }
+            if (e.key === 'Tab' && flipped) trapTab(e);
         });
+
+        /* A live change to reduced motion, or the tab going to the background,
+           stops the open case's clip and its rep graphic (betta.html's rig
+           video does the same through script.js). Back in view, or with motion
+           allowed again, only what this code stopped resumes; a clip the
+           visitor paused stays paused. The graphic is driven through its own
+           Pause button, so betta-capture.js needs no change. */
+        var heldClip = false, heldLive = false;
+        function heroVideo() { return stage.querySelector('.back-hero.is-video video'); }
+        function liveButton(playing) {
+            return stage.querySelector('[data-live] .live-play[aria-pressed="' + playing + '"]');
+        }
+        function holdMotion() {
+            var vid = heroVideo();
+            if (vid && !vid.paused) { vid.pause(); heldClip = true; }
+            var b = liveButton(true);
+            if (b) { b.click(); heldLive = true; }
+        }
+        function releaseMotion() {
+            if (reduced.matches || document.hidden) return;
+            if (heldClip) {
+                heldClip = false;
+                var vid = heroVideo();
+                if (vid && vid.paused) vid.play().catch(function () {});
+            }
+            if (heldLive) {
+                heldLive = false;
+                var b = liveButton(false);
+                if (b) b.click();
+            }
+        }
+        function onMotionChange() { if (reduced.matches) holdMotion(); else releaseMotion(); }
+        if (typeof reduced.addEventListener === 'function') {
+            on(reduced, 'change', onMotionChange);
+        } else if (typeof reduced.addListener === 'function') {
+            reduced.addListener(onMotionChange);
+            cleanup.push(function () { reduced.removeListener(onMotionChange); });
+        }
+        on(document, 'visibilitychange', function () {
+            if (document.hidden) holdMotion(); else releaseMotion();
+        });
+
+        /* aria-modal says the spread is the whole page while it is open, so Tab
+           cycles through the stage's own controls instead of walking out under
+           the backdrop. Shift+Tab cycles the other way; Esc still closes. */
+        function trapTab(e) {
+            var list = [].filter.call(
+                stage.querySelectorAll('button, a[href], input, select, textarea, video[controls], [tabindex]:not([tabindex="-1"])'),
+                function (el) { return !el.disabled && el.getClientRects().length > 0; });
+            if (!list.length) return;
+            var first = list[0], last = list[list.length - 1], a = document.activeElement;
+            var inside = stage.contains(a);
+            if (e.shiftKey) {
+                if (!inside || a === first) { last.focus(); e.preventDefault(); }
+            } else if (!inside || a === last) {
+                first.focus(); e.preventDefault();
+            }
+        }
 
         /* drag to scroll; a grid has nothing to scroll */
         var dragging = false, startX = 0, startLeft = 0;
         if (!grid) {
-            shelf.addEventListener('pointerdown', function (e) {
+            on(shelf, 'pointerdown', function (e) {
                 dragging = true; dragMoved = false;
                 startX = e.clientX; startLeft = shelf.scrollLeft;
                 shelf.classList.add('dragging');
@@ -497,7 +667,7 @@
                 dragging = false;
                 shelf.classList.remove('dragging');
             });
-            shelf.addEventListener('wheel', function (e) {
+            on(shelf, 'wheel', function (e) {
                 if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
                     shelf.scrollLeft += e.deltaY;
                     e.preventDefault();
@@ -535,6 +705,22 @@
                 closeStage(true);
                 bound.forEach(function (b) { b[0].removeEventListener(b[1], b[2], b[3]); });
                 bound = [];
+                cleanup.forEach(function (f) { f(); });
+                cleanup = [];
+                /* the engine's own nodes go with it: the cases (and the
+                   listeners on them), the rows under the shelf, the chips it
+                   appended and the arrows it showed. A dead engine must not
+                   be able to open a stage nothing can close. */
+                shelf.innerHTML = '';
+                if (extra) {
+                    var list = extra.querySelector('ul');
+                    if (list) list.innerHTML = '';
+                    extra.hidden = true;
+                }
+                chips.forEach(function (b) { if (b.parentNode) b.parentNode.removeChild(b); });
+                chips = [];
+                if (shelfPrev) shelfPrev.hidden = true;
+                if (shelfNext) shelfNext.hidden = true;
             }
         };
     }

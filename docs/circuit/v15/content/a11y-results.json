@@ -1,0 +1,2598 @@
+{
+  "results": [
+    {
+      "name": "projects no horizontal overflow 1440",
+      "pass": true,
+      "detail": {
+        "sw": 1440,
+        "iw": 1440
+      }
+    },
+    {
+      "name": "keyboard reaches Wearables chip 1440",
+      "pass": true,
+      "detail": [
+        "Abba Wada",
+        "Betta",
+        "Projects",
+        "Writing",
+        "About",
+        "All",
+        "Wearables"
+      ]
+    },
+    {
+      "name": "Wearables filter shows Skydiving row only 1440",
+      "pass": true,
+      "detail": {
+        "hidden": false,
+        "rows": [
+          "Skydiving → A jump instrument "
+        ],
+        "cases": 2,
+        "heading": "No case yet",
+        "hlevel": "H2"
+      }
+    },
+    {
+      "name": "keyboard reaches Skydiving reel link 1440",
+      "pass": true,
+      "detail": {
+        "in": false,
+        "tag": "A",
+        "cls": "",
+        "label": "Skydiving →",
+        "href": "https://www.instagram.com/reel/Ddv8Qr_gruP/",
+        "fv": true,
+        "outline": "solid 2px rgb(138, 107, 47)",
+        "vis": true
+      }
+    },
+    {
+      "name": "Robotics filter hides the extra rows 1440",
+      "pass": true,
+      "detail": {
+        "hidden": true,
+        "rows": 0,
+        "label": "Robotics"
+      }
+    },
+    {
+      "name": "All shows the three extra rows 1440",
+      "pass": true,
+      "detail": {
+        "hidden": false,
+        "rows": [
+          {
+            "t": "Wheelchair Basketball Vo",
+            "a": null,
+            "v": {
+              "preload": "none",
+              "controls": true,
+              "label": "Wheelchair basketball video",
+              "w": 420
+            }
+          },
+          {
+            "t": "The Medici Network. I bu",
+            "a": null,
+            "v": null
+          },
+          {
+            "t": "Skydiving → A jump instr",
+            "a": "_blank|noopener noreferrer",
+            "v": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "keyboard reaches a case 1440",
+      "pass": true,
+      "detail": {
+        "in": false,
+        "tag": "DIV",
+        "cls": "pcase",
+        "label": "Betta, Wearables project. Press Enter to fli",
+        "href": null,
+        "fv": true,
+        "outline": "auto 1px rgb(0, 95, 204)",
+        "vis": true
+      }
+    },
+    {
+      "name": "focus lands on close after open 1440",
+      "pass": true,
+      "detail": {
+        "in": true,
+        "tag": "BUTTON",
+        "cls": "back-close",
+        "label": "Close Betta",
+        "href": null,
+        "fv": true,
+        "outline": "solid 2px rgb(138, 107, 47)",
+        "vis": true
+      }
+    },
+    {
+      "name": "dialog semantics 1440",
+      "pass": true,
+      "detail": {
+        "role": "dialog",
+        "modal": "true",
+        "label": "Betta case, back cover",
+        "vLabel": "A player shoots a free throw in the Betta sleeve",
+        "vMuted": true,
+        "vPaused": false,
+        "vAuto": true,
+        "vLoop": true,
+        "vControls": false,
+        "btn": "Pause video",
+        "pressed": "true",
+        "btnLabel": null,
+        "btnControls": null,
+        "closeLabel": "Close Betta"
+      }
+    },
+    {
+      "name": "clip autoplay follows motion preference 1440",
+      "pass": true,
+      "detail": {
+        "role": "dialog",
+        "modal": "true",
+        "label": "Betta case, back cover",
+        "vLabel": "A player shoots a free throw in the Betta sleeve",
+        "vMuted": true,
+        "vPaused": false,
+        "vAuto": true,
+        "vLoop": true,
+        "vControls": false,
+        "btn": "Pause video",
+        "pressed": "true",
+        "btnLabel": null,
+        "btnControls": null,
+        "closeLabel": "Close Betta"
+      }
+    },
+    {
+      "name": "tab stays inside the stage 1440",
+      "pass": true,
+      "detail": [
+        "BUTTON.video-motion-toggle[Pause video]",
+        "BUTTON.live-play[Pause]",
+        "INPUT.[Drag to step through the nineteen recorded r]",
+        "A.[VIEW FULL CASE STUDY]",
+        "A.[BETTA.LIVE]",
+        "BUTTON.stage-nav[Previous project]",
+        "BUTTON.stage-nav[Next project]",
+        "BUTTON.back-close[Close Betta]",
+        "BUTTON.video-motion-toggle[Pause video]",
+        "BUTTON.live-play[Pause]",
+        "INPUT.[Drag to step through the nineteen recorded r]",
+        "A.[VIEW FULL CASE STUDY]",
+        "A.[BETTA.LIVE]",
+        "BUTTON.stage-nav[Previous project]"
+      ]
+    },
+    {
+      "name": "every tab stop shows a focus ring 1440",
+      "pass": false,
+      "detail": [
+        "solid 2px rgb(138, 107, 47)",
+        "solid 2px rgb(138, 107, 47)",
+        "auto 1px rgb(0, 95, 204)",
+        "solid 2px rgb(138, 107, 47)",
+        "solid 2px rgb(138, 107, 47)",
+        "solid 2px rgb(138, 107, 47)",
+        "solid 2px rgb(138, 107, 47)",
+        "solid 2px rgb(138, 107, 47)",
+        "solid 2px rgb(138, 107, 47)",
+        "solid 2px rgb(138, 107, 47)",
+        "auto 1px rgb(0, 95, 204)",
+        "solid 2px rgb(138, 107, 47)",
+        "solid 2px rgb(138, 107, 47)",
+        "solid 2px rgb(138, 107, 47)"
+      ]
+    },
+    {
+      "name": "tab reaches toggle, links and close 1440",
+      "pass": true,
+      "detail": [
+        "BUTTON.video-motion-toggle[Pause video]",
+        "BUTTON.live-play[Pause]",
+        "INPUT.[Drag to step through the nineteen recorded r]",
+        "A.[VIEW FULL CASE STUDY]",
+        "A.[BETTA.LIVE]",
+        "BUTTON.stage-nav[Previous project]",
+        "BUTTON.stage-nav[Next project]",
+        "BUTTON.back-close[Close Betta]"
+      ]
+    },
+    {
+      "name": "shift tab stays inside 1440",
+      "pass": true,
+      "detail": [
+        "BETTA.LIVE",
+        "VIEW FULL CASE STUDY",
+        "Drag to step through the nineteen recorded r"
+      ]
+    },
+    {
+      "name": "keyboard reaches the clip toggle 1440",
+      "pass": true,
+      "detail": [
+        "VIEW FULL CASE STUDY",
+        "BETTA.LIVE",
+        "Previous project",
+        "Next project",
+        "Close Betta",
+        "Pause video"
+      ]
+    },
+    {
+      "name": "space toggles the clip 1440",
+      "pass": true,
+      "detail": {
+        "paused": true,
+        "btn": "Play video",
+        "pressed": "false"
+      }
+    },
+    {
+      "name": "space toggles it back 1440",
+      "pass": true,
+      "detail": {
+        "paused": false,
+        "btn": "Pause video",
+        "pressed": "true"
+      }
+    },
+    {
+      "name": "caption one line inside the picture 1440",
+      "pass": true,
+      "detail": {
+        "text": "FIRST COURT SESSION · 21 OF 28 REPS BUZZED.",
+        "rect": [
+          219,
+          699,
+          460,
+          32
+        ],
+        "vrect": [
+          219,
+          169,
+          460,
+          562
+        ],
+        "font": "9px",
+        "lh": "14.4px",
+        "color": "rgb(240, 217, 168)",
+        "lines": 1,
+        "insideVideo": true
+      }
+    },
+    {
+      "name": "toggle is a 40px target 1440",
+      "pass": true,
+      "detail": {
+        "color": "rgb(244, 242, 238)",
+        "bg": "rgba(11, 11, 12, 0.82)",
+        "font": "11px",
+        "rect": [
+          549,
+          181,
+          117,
+          40
+        ],
+        "minH": true
+      }
+    },
+    {
+      "name": "arrow right steps to the next case 1440",
+      "pass": true,
+      "detail": {
+        "title": "Posture Cue",
+        "active": "BODY.stage-open",
+        "inStage": false
+      }
+    },
+    {
+      "name": "tab after a step lands inside the stage 1440",
+      "pass": true,
+      "detail": {
+        "in": true,
+        "tag": "BUTTON",
+        "cls": "stage-nav prev",
+        "label": "Previous project",
+        "href": null,
+        "fv": true,
+        "outline": "solid 2px rgb(138, 107, 47)",
+        "vis": true
+      }
+    },
+    {
+      "name": "arrow left steps back 1440",
+      "pass": true,
+      "detail": "Betta"
+    },
+    {
+      "name": "open stage no horizontal overflow 1440",
+      "pass": true,
+      "detail": {
+        "sw": 1440,
+        "iw": 1440,
+        "bodyOverflow": "hidden"
+      }
+    },
+    {
+      "name": "esc closes and returns focus to the case 1440",
+      "pass": true,
+      "detail": {
+        "hidden": true,
+        "empty": true,
+        "bodyOpen": false,
+        "focus": "Betta, Wearables project. Press Enter to flip the case."
+      }
+    },
+    {
+      "name": "tab free after close 1440",
+      "pass": true,
+      "detail": {
+        "in": false,
+        "tag": "DIV",
+        "cls": "pcase",
+        "label": "Posture Cue, Wearables project. Press Enter ",
+        "href": null,
+        "fv": true,
+        "outline": "auto 1px rgb(0, 95, 204)",
+        "vis": true
+      }
+    },
+    {
+      "name": "projects zero errors 1440",
+      "pass": true,
+      "detail": {
+        "perrors": [],
+        "cerrors": [],
+        "failed": []
+      }
+    },
+    {
+      "name": "projects no horizontal overflow 360",
+      "pass": true,
+      "detail": {
+        "sw": 360,
+        "iw": 360
+      }
+    },
+    {
+      "name": "keyboard reaches Wearables chip 360",
+      "pass": true,
+      "detail": [
+        "Abba Wada",
+        "Betta",
+        "Projects",
+        "Writing",
+        "About",
+        "All",
+        "Wearables"
+      ]
+    },
+    {
+      "name": "Wearables filter shows Skydiving row only 360",
+      "pass": true,
+      "detail": {
+        "hidden": false,
+        "rows": [
+          "Skydiving → A jump instrument "
+        ],
+        "cases": 2,
+        "heading": "No case yet",
+        "hlevel": "H2"
+      }
+    },
+    {
+      "name": "keyboard reaches Skydiving reel link 360",
+      "pass": true,
+      "detail": {
+        "in": false,
+        "tag": "A",
+        "cls": "",
+        "label": "Skydiving →",
+        "href": "https://www.instagram.com/reel/Ddv8Qr_gruP/",
+        "fv": true,
+        "outline": "solid 2px rgb(138, 107, 47)",
+        "vis": true
+      }
+    },
+    {
+      "name": "Robotics filter hides the extra rows 360",
+      "pass": true,
+      "detail": {
+        "hidden": true,
+        "rows": 0,
+        "label": "Robotics"
+      }
+    },
+    {
+      "name": "All shows the three extra rows 360",
+      "pass": true,
+      "detail": {
+        "hidden": false,
+        "rows": [
+          {
+            "t": "Wheelchair Basketball Vo",
+            "a": null,
+            "v": {
+              "preload": "none",
+              "controls": true,
+              "label": "Wheelchair basketball video",
+              "w": 320
+            }
+          },
+          {
+            "t": "The Medici Network. I bu",
+            "a": null,
+            "v": null
+          },
+          {
+            "t": "Skydiving → A jump instr",
+            "a": "_blank|noopener noreferrer",
+            "v": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "keyboard reaches a case 360",
+      "pass": true,
+      "detail": {
+        "in": false,
+        "tag": "DIV",
+        "cls": "pcase",
+        "label": "Betta, Wearables project. Press Enter to fli",
+        "href": null,
+        "fv": true,
+        "outline": "auto 1px rgb(0, 95, 204)",
+        "vis": true
+      }
+    },
+    {
+      "name": "focus lands on close after open 360",
+      "pass": true,
+      "detail": {
+        "in": true,
+        "tag": "BUTTON",
+        "cls": "back-close",
+        "label": "Close Betta",
+        "href": null,
+        "fv": true,
+        "outline": "solid 2px rgb(138, 107, 47)",
+        "vis": true
+      }
+    },
+    {
+      "name": "dialog semantics 360",
+      "pass": true,
+      "detail": {
+        "role": "dialog",
+        "modal": "true",
+        "label": "Betta case, back cover",
+        "vLabel": "A player shoots a free throw in the Betta sleeve",
+        "vMuted": true,
+        "vPaused": false,
+        "vAuto": true,
+        "vLoop": true,
+        "vControls": false,
+        "btn": "Pause video",
+        "pressed": "true",
+        "btnLabel": null,
+        "btnControls": null,
+        "closeLabel": "Close Betta"
+      }
+    },
+    {
+      "name": "clip autoplay follows motion preference 360",
+      "pass": true,
+      "detail": {
+        "role": "dialog",
+        "modal": "true",
+        "label": "Betta case, back cover",
+        "vLabel": "A player shoots a free throw in the Betta sleeve",
+        "vMuted": true,
+        "vPaused": false,
+        "vAuto": true,
+        "vLoop": true,
+        "vControls": false,
+        "btn": "Pause video",
+        "pressed": "true",
+        "btnLabel": null,
+        "btnControls": null,
+        "closeLabel": "Close Betta"
+      }
+    },
+    {
+      "name": "tab stays inside the stage 360",
+      "pass": true,
+      "detail": [
+        "BUTTON.video-motion-toggle[Pause video]",
+        "BUTTON.live-play[Pause]",
+        "INPUT.[Drag to step through the nineteen recorded r]",
+        "A.[VIEW FULL CASE STUDY]",
+        "A.[BETTA.LIVE]",
+        "BUTTON.stage-nav[Previous project]",
+        "BUTTON.stage-nav[Next project]",
+        "BUTTON.back-close[Close Betta]",
+        "BUTTON.video-motion-toggle[Pause video]",
+        "BUTTON.live-play[Pause]",
+        "INPUT.[Drag to step through the nineteen recorded r]",
+        "A.[VIEW FULL CASE STUDY]",
+        "A.[BETTA.LIVE]",
+        "BUTTON.stage-nav[Previous project]"
+      ]
+    },
+    {
+      "name": "every tab stop shows a focus ring 360",
+      "pass": false,
+      "detail": [
+        "solid 2px rgb(138, 107, 47)",
+        "solid 2px rgb(138, 107, 47)",
+        "auto 1px rgb(0, 95, 204)",
+        "solid 2px rgb(138, 107, 47)",
+        "solid 2px rgb(138, 107, 47)",
+        "solid 2px rgb(138, 107, 47)",
+        "solid 2px rgb(138, 107, 47)",
+        "solid 2px rgb(138, 107, 47)",
+        "solid 2px rgb(138, 107, 47)",
+        "solid 2px rgb(138, 107, 47)",
+        "auto 1px rgb(0, 95, 204)",
+        "solid 2px rgb(138, 107, 47)",
+        "solid 2px rgb(138, 107, 47)",
+        "solid 2px rgb(138, 107, 47)"
+      ]
+    },
+    {
+      "name": "tab reaches toggle, links and close 360",
+      "pass": true,
+      "detail": [
+        "BUTTON.video-motion-toggle[Pause video]",
+        "BUTTON.live-play[Pause]",
+        "INPUT.[Drag to step through the nineteen recorded r]",
+        "A.[VIEW FULL CASE STUDY]",
+        "A.[BETTA.LIVE]",
+        "BUTTON.stage-nav[Previous project]",
+        "BUTTON.stage-nav[Next project]",
+        "BUTTON.back-close[Close Betta]"
+      ]
+    },
+    {
+      "name": "shift tab stays inside 360",
+      "pass": true,
+      "detail": [
+        "BETTA.LIVE",
+        "VIEW FULL CASE STUDY",
+        "Drag to step through the nineteen recorded r"
+      ]
+    },
+    {
+      "name": "keyboard reaches the clip toggle 360",
+      "pass": true,
+      "detail": [
+        "VIEW FULL CASE STUDY",
+        "BETTA.LIVE",
+        "Previous project",
+        "Next project",
+        "Close Betta",
+        "Pause video"
+      ]
+    },
+    {
+      "name": "space toggles the clip 360",
+      "pass": true,
+      "detail": {
+        "paused": true,
+        "btn": "Play video",
+        "pressed": "false"
+      }
+    },
+    {
+      "name": "space toggles it back 360",
+      "pass": true,
+      "detail": {
+        "paused": false,
+        "btn": "Pause video",
+        "pressed": "true"
+      }
+    },
+    {
+      "name": "caption one line inside the picture 360",
+      "pass": true,
+      "detail": {
+        "text": "FIRST COURT SESSION · 21 OF 28 REPS BUZZED.",
+        "rect": [
+          29,
+          279,
+          301,
+          32
+        ],
+        "vrect": [
+          29,
+          82,
+          301,
+          230
+        ],
+        "font": "9px",
+        "lh": "14.4px",
+        "color": "rgb(240, 217, 168)",
+        "lines": 1,
+        "insideVideo": true
+      }
+    },
+    {
+      "name": "toggle is a 40px target 360",
+      "pass": true,
+      "detail": {
+        "color": "rgb(244, 242, 238)",
+        "bg": "rgba(11, 11, 12, 0.82)",
+        "font": "11px",
+        "rect": [
+          201,
+          94,
+          117,
+          40
+        ],
+        "minH": true
+      }
+    },
+    {
+      "name": "arrow right steps to the next case 360",
+      "pass": true,
+      "detail": {
+        "title": "Posture Cue",
+        "active": "BODY.stage-open",
+        "inStage": false
+      }
+    },
+    {
+      "name": "tab after a step lands inside the stage 360",
+      "pass": true,
+      "detail": {
+        "in": true,
+        "tag": "BUTTON",
+        "cls": "stage-nav prev",
+        "label": "Previous project",
+        "href": null,
+        "fv": true,
+        "outline": "solid 2px rgb(138, 107, 47)",
+        "vis": true
+      }
+    },
+    {
+      "name": "arrow left steps back 360",
+      "pass": true,
+      "detail": "Betta"
+    },
+    {
+      "name": "open stage no horizontal overflow 360",
+      "pass": true,
+      "detail": {
+        "sw": 360,
+        "iw": 360,
+        "bodyOverflow": "hidden"
+      }
+    },
+    {
+      "name": "esc closes and returns focus to the case 360",
+      "pass": true,
+      "detail": {
+        "hidden": true,
+        "empty": true,
+        "bodyOpen": false,
+        "focus": "Betta, Wearables project. Press Enter to flip the case."
+      }
+    },
+    {
+      "name": "tab free after close 360",
+      "pass": true,
+      "detail": {
+        "in": false,
+        "tag": "DIV",
+        "cls": "pcase",
+        "label": "Posture Cue, Wearables project. Press Enter ",
+        "href": null,
+        "fv": true,
+        "outline": "auto 1px rgb(0, 95, 204)",
+        "vis": true
+      }
+    },
+    {
+      "name": "projects zero errors 360",
+      "pass": true,
+      "detail": {
+        "perrors": [],
+        "cerrors": [],
+        "failed": []
+      }
+    },
+    {
+      "name": "projects no horizontal overflow 1440r",
+      "pass": true,
+      "detail": {
+        "sw": 1440,
+        "iw": 1440
+      }
+    },
+    {
+      "name": "keyboard reaches Wearables chip 1440r",
+      "pass": true,
+      "detail": [
+        "Abba Wada",
+        "Betta",
+        "Projects",
+        "Writing",
+        "About",
+        "All",
+        "Wearables"
+      ]
+    },
+    {
+      "name": "Wearables filter shows Skydiving row only 1440r",
+      "pass": true,
+      "detail": {
+        "hidden": false,
+        "rows": [
+          "Skydiving → A jump instrument "
+        ],
+        "cases": 2,
+        "heading": "No case yet",
+        "hlevel": "H2"
+      }
+    },
+    {
+      "name": "keyboard reaches Skydiving reel link 1440r",
+      "pass": true,
+      "detail": {
+        "in": false,
+        "tag": "A",
+        "cls": "",
+        "label": "Skydiving →",
+        "href": "https://www.instagram.com/reel/Ddv8Qr_gruP/",
+        "fv": true,
+        "outline": "solid 3px rgb(20, 20, 20)",
+        "vis": true
+      }
+    },
+    {
+      "name": "Robotics filter hides the extra rows 1440r",
+      "pass": true,
+      "detail": {
+        "hidden": true,
+        "rows": 0,
+        "label": "Robotics"
+      }
+    },
+    {
+      "name": "All shows the three extra rows 1440r",
+      "pass": true,
+      "detail": {
+        "hidden": false,
+        "rows": [
+          {
+            "t": "Wheelchair Basketball Vo",
+            "a": null,
+            "v": {
+              "preload": "none",
+              "controls": true,
+              "label": "Wheelchair basketball video",
+              "w": 420
+            }
+          },
+          {
+            "t": "The Medici Network. I bu",
+            "a": null,
+            "v": null
+          },
+          {
+            "t": "Skydiving → A jump instr",
+            "a": "_blank|noopener noreferrer",
+            "v": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "keyboard reaches a case 1440r",
+      "pass": true,
+      "detail": {
+        "in": false,
+        "tag": "DIV",
+        "cls": "pcase",
+        "label": "Betta, Wearables project. Press Enter to fli",
+        "href": null,
+        "fv": true,
+        "outline": "auto 3px rgb(20, 20, 20)",
+        "vis": true
+      }
+    },
+    {
+      "name": "focus lands on close after open 1440r",
+      "pass": true,
+      "detail": {
+        "in": true,
+        "tag": "BUTTON",
+        "cls": "back-close",
+        "label": "Close Betta",
+        "href": null,
+        "fv": true,
+        "outline": "solid 2px rgb(138, 107, 47)",
+        "vis": true
+      }
+    },
+    {
+      "name": "dialog semantics 1440r",
+      "pass": true,
+      "detail": {
+        "role": "dialog",
+        "modal": "true",
+        "label": "Betta case, back cover",
+        "vLabel": "A player shoots a free throw in the Betta sleeve",
+        "vMuted": true,
+        "vPaused": true,
+        "vAuto": false,
+        "vLoop": true,
+        "vControls": false,
+        "btn": "Play video",
+        "pressed": "false",
+        "btnLabel": null,
+        "btnControls": null,
+        "closeLabel": "Close Betta"
+      }
+    },
+    {
+      "name": "clip autoplay follows motion preference 1440r",
+      "pass": true,
+      "detail": {
+        "role": "dialog",
+        "modal": "true",
+        "label": "Betta case, back cover",
+        "vLabel": "A player shoots a free throw in the Betta sleeve",
+        "vMuted": true,
+        "vPaused": true,
+        "vAuto": false,
+        "vLoop": true,
+        "vControls": false,
+        "btn": "Play video",
+        "pressed": "false",
+        "btnLabel": null,
+        "btnControls": null,
+        "closeLabel": "Close Betta"
+      }
+    },
+    {
+      "name": "tab stays inside the stage 1440r",
+      "pass": true,
+      "detail": [
+        "BUTTON.video-motion-toggle[Play video]",
+        "BUTTON.live-play[Play]",
+        "INPUT.[Drag to step through the nineteen recorded r]",
+        "A.[VIEW FULL CASE STUDY]",
+        "A.[BETTA.LIVE]",
+        "BUTTON.stage-nav[Previous project]",
+        "BUTTON.stage-nav[Next project]",
+        "BUTTON.back-close[Close Betta]",
+        "BUTTON.video-motion-toggle[Play video]",
+        "BUTTON.live-play[Play]",
+        "INPUT.[Drag to step through the nineteen recorded r]",
+        "A.[VIEW FULL CASE STUDY]",
+        "A.[BETTA.LIVE]",
+        "BUTTON.stage-nav[Previous project]"
+      ]
+    },
+    {
+      "name": "every tab stop shows a focus ring 1440r",
+      "pass": false,
+      "detail": [
+        "solid 3px rgb(244, 242, 238)",
+        "solid 3px rgb(240, 217, 168)",
+        "auto 3px rgb(16, 16, 16)",
+        "solid 3px rgb(20, 18, 15)",
+        "solid 3px rgb(240, 217, 168)",
+        "solid 2px rgb(138, 107, 47)",
+        "solid 2px rgb(138, 107, 47)",
+        "solid 2px rgb(138, 107, 47)",
+        "solid 3px rgb(244, 242, 238)",
+        "solid 3px rgb(240, 217, 168)",
+        "auto 3px rgb(16, 16, 16)",
+        "solid 3px rgb(20, 18, 15)",
+        "solid 3px rgb(240, 217, 168)",
+        "solid 2px rgb(138, 107, 47)"
+      ]
+    },
+    {
+      "name": "tab reaches toggle, links and close 1440r",
+      "pass": true,
+      "detail": [
+        "BUTTON.video-motion-toggle[Play video]",
+        "BUTTON.live-play[Play]",
+        "INPUT.[Drag to step through the nineteen recorded r]",
+        "A.[VIEW FULL CASE STUDY]",
+        "A.[BETTA.LIVE]",
+        "BUTTON.stage-nav[Previous project]",
+        "BUTTON.stage-nav[Next project]",
+        "BUTTON.back-close[Close Betta]"
+      ]
+    },
+    {
+      "name": "shift tab stays inside 1440r",
+      "pass": true,
+      "detail": [
+        "BETTA.LIVE",
+        "VIEW FULL CASE STUDY",
+        "Drag to step through the nineteen recorded r"
+      ]
+    },
+    {
+      "name": "keyboard reaches the clip toggle 1440r",
+      "pass": true,
+      "detail": [
+        "VIEW FULL CASE STUDY",
+        "BETTA.LIVE",
+        "Previous project",
+        "Next project",
+        "Close Betta",
+        "Play video"
+      ]
+    },
+    {
+      "name": "space toggles the clip 1440r",
+      "pass": true,
+      "detail": {
+        "paused": false,
+        "btn": "Pause video",
+        "pressed": "true"
+      }
+    },
+    {
+      "name": "space toggles it back 1440r",
+      "pass": true,
+      "detail": {
+        "paused": true,
+        "btn": "Play video",
+        "pressed": "false"
+      }
+    },
+    {
+      "name": "caption one line inside the picture 1440r",
+      "pass": true,
+      "detail": {
+        "text": "FIRST COURT SESSION · 21 OF 28 REPS BUZZED.",
+        "rect": [
+          219,
+          699,
+          460,
+          32
+        ],
+        "vrect": [
+          219,
+          169,
+          460,
+          562
+        ],
+        "font": "9px",
+        "lh": "14.4px",
+        "color": "rgb(240, 217, 168)",
+        "lines": 1,
+        "insideVideo": true
+      }
+    },
+    {
+      "name": "toggle is a 40px target 1440r",
+      "pass": true,
+      "detail": {
+        "color": "rgb(244, 242, 238)",
+        "bg": "rgba(11, 11, 12, 0.82)",
+        "font": "11px",
+        "rect": [
+          559,
+          181,
+          108,
+          40
+        ],
+        "minH": true
+      }
+    },
+    {
+      "name": "arrow right steps to the next case 1440r",
+      "pass": true,
+      "detail": {
+        "title": "Posture Cue",
+        "active": "BODY.stage-open",
+        "inStage": false
+      }
+    },
+    {
+      "name": "tab after a step lands inside the stage 1440r",
+      "pass": true,
+      "detail": {
+        "in": true,
+        "tag": "BUTTON",
+        "cls": "stage-nav prev",
+        "label": "Previous project",
+        "href": null,
+        "fv": true,
+        "outline": "solid 2px rgb(138, 107, 47)",
+        "vis": true
+      }
+    },
+    {
+      "name": "arrow left steps back 1440r",
+      "pass": true,
+      "detail": "Betta"
+    },
+    {
+      "name": "open stage no horizontal overflow 1440r",
+      "pass": true,
+      "detail": {
+        "sw": 1440,
+        "iw": 1440,
+        "bodyOverflow": "hidden"
+      }
+    },
+    {
+      "name": "esc closes and returns focus to the case 1440r",
+      "pass": true,
+      "detail": {
+        "hidden": true,
+        "empty": true,
+        "bodyOpen": false,
+        "focus": "Betta, Wearables project. Press Enter to flip the case."
+      }
+    },
+    {
+      "name": "tab free after close 1440r",
+      "pass": true,
+      "detail": {
+        "in": false,
+        "tag": "DIV",
+        "cls": "pcase",
+        "label": "Posture Cue, Wearables project. Press Enter ",
+        "href": null,
+        "fv": true,
+        "outline": "auto 3px rgb(20, 20, 20)",
+        "vis": true
+      }
+    },
+    {
+      "name": "projects zero errors 1440r",
+      "pass": true,
+      "detail": {
+        "perrors": [],
+        "cerrors": [],
+        "failed": []
+      }
+    },
+    {
+      "name": "projects no horizontal overflow 360r",
+      "pass": true,
+      "detail": {
+        "sw": 360,
+        "iw": 360
+      }
+    },
+    {
+      "name": "keyboard reaches Wearables chip 360r",
+      "pass": true,
+      "detail": [
+        "Abba Wada",
+        "Betta",
+        "Projects",
+        "Writing",
+        "About",
+        "All",
+        "Wearables"
+      ]
+    },
+    {
+      "name": "Wearables filter shows Skydiving row only 360r",
+      "pass": true,
+      "detail": {
+        "hidden": false,
+        "rows": [
+          "Skydiving → A jump instrument "
+        ],
+        "cases": 2,
+        "heading": "No case yet",
+        "hlevel": "H2"
+      }
+    },
+    {
+      "name": "keyboard reaches Skydiving reel link 360r",
+      "pass": true,
+      "detail": {
+        "in": false,
+        "tag": "A",
+        "cls": "",
+        "label": "Skydiving →",
+        "href": "https://www.instagram.com/reel/Ddv8Qr_gruP/",
+        "fv": true,
+        "outline": "solid 3px rgb(20, 20, 20)",
+        "vis": true
+      }
+    },
+    {
+      "name": "Robotics filter hides the extra rows 360r",
+      "pass": true,
+      "detail": {
+        "hidden": true,
+        "rows": 0,
+        "label": "Robotics"
+      }
+    },
+    {
+      "name": "All shows the three extra rows 360r",
+      "pass": true,
+      "detail": {
+        "hidden": false,
+        "rows": [
+          {
+            "t": "Wheelchair Basketball Vo",
+            "a": null,
+            "v": {
+              "preload": "none",
+              "controls": true,
+              "label": "Wheelchair basketball video",
+              "w": 320
+            }
+          },
+          {
+            "t": "The Medici Network. I bu",
+            "a": null,
+            "v": null
+          },
+          {
+            "t": "Skydiving → A jump instr",
+            "a": "_blank|noopener noreferrer",
+            "v": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "keyboard reaches a case 360r",
+      "pass": true,
+      "detail": {
+        "in": false,
+        "tag": "DIV",
+        "cls": "pcase",
+        "label": "Betta, Wearables project. Press Enter to fli",
+        "href": null,
+        "fv": true,
+        "outline": "auto 3px rgb(20, 20, 20)",
+        "vis": true
+      }
+    },
+    {
+      "name": "focus lands on close after open 360r",
+      "pass": true,
+      "detail": {
+        "in": true,
+        "tag": "BUTTON",
+        "cls": "back-close",
+        "label": "Close Betta",
+        "href": null,
+        "fv": true,
+        "outline": "solid 2px rgb(138, 107, 47)",
+        "vis": true
+      }
+    },
+    {
+      "name": "dialog semantics 360r",
+      "pass": true,
+      "detail": {
+        "role": "dialog",
+        "modal": "true",
+        "label": "Betta case, back cover",
+        "vLabel": "A player shoots a free throw in the Betta sleeve",
+        "vMuted": true,
+        "vPaused": true,
+        "vAuto": false,
+        "vLoop": true,
+        "vControls": false,
+        "btn": "Play video",
+        "pressed": "false",
+        "btnLabel": null,
+        "btnControls": null,
+        "closeLabel": "Close Betta"
+      }
+    },
+    {
+      "name": "clip autoplay follows motion preference 360r",
+      "pass": true,
+      "detail": {
+        "role": "dialog",
+        "modal": "true",
+        "label": "Betta case, back cover",
+        "vLabel": "A player shoots a free throw in the Betta sleeve",
+        "vMuted": true,
+        "vPaused": true,
+        "vAuto": false,
+        "vLoop": true,
+        "vControls": false,
+        "btn": "Play video",
+        "pressed": "false",
+        "btnLabel": null,
+        "btnControls": null,
+        "closeLabel": "Close Betta"
+      }
+    },
+    {
+      "name": "tab stays inside the stage 360r",
+      "pass": true,
+      "detail": [
+        "BUTTON.video-motion-toggle[Play video]",
+        "BUTTON.live-play[Play]",
+        "INPUT.[Drag to step through the nineteen recorded r]",
+        "A.[VIEW FULL CASE STUDY]",
+        "A.[BETTA.LIVE]",
+        "BUTTON.stage-nav[Previous project]",
+        "BUTTON.stage-nav[Next project]",
+        "BUTTON.back-close[Close Betta]",
+        "BUTTON.video-motion-toggle[Play video]",
+        "BUTTON.live-play[Play]",
+        "INPUT.[Drag to step through the nineteen recorded r]",
+        "A.[VIEW FULL CASE STUDY]",
+        "A.[BETTA.LIVE]",
+        "BUTTON.stage-nav[Previous project]"
+      ]
+    },
+    {
+      "name": "every tab stop shows a focus ring 360r",
+      "pass": false,
+      "detail": [
+        "solid 3px rgb(244, 242, 238)",
+        "solid 3px rgb(240, 217, 168)",
+        "auto 3px rgb(16, 16, 16)",
+        "solid 3px rgb(20, 18, 15)",
+        "solid 3px rgb(240, 217, 168)",
+        "solid 2px rgb(138, 107, 47)",
+        "solid 2px rgb(138, 107, 47)",
+        "solid 2px rgb(138, 107, 47)",
+        "solid 3px rgb(244, 242, 238)",
+        "solid 3px rgb(240, 217, 168)",
+        "auto 3px rgb(16, 16, 16)",
+        "solid 3px rgb(20, 18, 15)",
+        "solid 3px rgb(240, 217, 168)",
+        "solid 2px rgb(138, 107, 47)"
+      ]
+    },
+    {
+      "name": "tab reaches toggle, links and close 360r",
+      "pass": true,
+      "detail": [
+        "BUTTON.video-motion-toggle[Play video]",
+        "BUTTON.live-play[Play]",
+        "INPUT.[Drag to step through the nineteen recorded r]",
+        "A.[VIEW FULL CASE STUDY]",
+        "A.[BETTA.LIVE]",
+        "BUTTON.stage-nav[Previous project]",
+        "BUTTON.stage-nav[Next project]",
+        "BUTTON.back-close[Close Betta]"
+      ]
+    },
+    {
+      "name": "shift tab stays inside 360r",
+      "pass": true,
+      "detail": [
+        "BETTA.LIVE",
+        "VIEW FULL CASE STUDY",
+        "Drag to step through the nineteen recorded r"
+      ]
+    },
+    {
+      "name": "keyboard reaches the clip toggle 360r",
+      "pass": true,
+      "detail": [
+        "VIEW FULL CASE STUDY",
+        "BETTA.LIVE",
+        "Previous project",
+        "Next project",
+        "Close Betta",
+        "Play video"
+      ]
+    },
+    {
+      "name": "space toggles the clip 360r",
+      "pass": true,
+      "detail": {
+        "paused": false,
+        "btn": "Pause video",
+        "pressed": "true"
+      }
+    },
+    {
+      "name": "space toggles it back 360r",
+      "pass": true,
+      "detail": {
+        "paused": true,
+        "btn": "Play video",
+        "pressed": "false"
+      }
+    },
+    {
+      "name": "caption one line inside the picture 360r",
+      "pass": true,
+      "detail": {
+        "text": "FIRST COURT SESSION · 21 OF 28 REPS BUZZED.",
+        "rect": [
+          29,
+          279,
+          301,
+          32
+        ],
+        "vrect": [
+          29,
+          82,
+          301,
+          230
+        ],
+        "font": "9px",
+        "lh": "14.4px",
+        "color": "rgb(240, 217, 168)",
+        "lines": 1,
+        "insideVideo": true
+      }
+    },
+    {
+      "name": "toggle is a 40px target 360r",
+      "pass": true,
+      "detail": {
+        "color": "rgb(244, 242, 238)",
+        "bg": "rgba(11, 11, 12, 0.82)",
+        "font": "11px",
+        "rect": [
+          210,
+          94,
+          108,
+          40
+        ],
+        "minH": true
+      }
+    },
+    {
+      "name": "arrow right steps to the next case 360r",
+      "pass": true,
+      "detail": {
+        "title": "Posture Cue",
+        "active": "BODY.stage-open",
+        "inStage": false
+      }
+    },
+    {
+      "name": "tab after a step lands inside the stage 360r",
+      "pass": true,
+      "detail": {
+        "in": true,
+        "tag": "BUTTON",
+        "cls": "stage-nav prev",
+        "label": "Previous project",
+        "href": null,
+        "fv": true,
+        "outline": "solid 2px rgb(138, 107, 47)",
+        "vis": true
+      }
+    },
+    {
+      "name": "arrow left steps back 360r",
+      "pass": true,
+      "detail": "Betta"
+    },
+    {
+      "name": "open stage no horizontal overflow 360r",
+      "pass": true,
+      "detail": {
+        "sw": 360,
+        "iw": 360,
+        "bodyOverflow": "hidden"
+      }
+    },
+    {
+      "name": "esc closes and returns focus to the case 360r",
+      "pass": true,
+      "detail": {
+        "hidden": true,
+        "empty": true,
+        "bodyOpen": false,
+        "focus": "Betta, Wearables project. Press Enter to flip the case."
+      }
+    },
+    {
+      "name": "tab free after close 360r",
+      "pass": true,
+      "detail": {
+        "in": false,
+        "tag": "DIV",
+        "cls": "pcase",
+        "label": "Posture Cue, Wearables project. Press Enter ",
+        "href": null,
+        "fv": true,
+        "outline": "auto 3px rgb(20, 20, 20)",
+        "vis": true
+      }
+    },
+    {
+      "name": "projects zero errors 360r",
+      "pass": true,
+      "detail": {
+        "perrors": [],
+        "cerrors": [],
+        "failed": []
+      }
+    },
+    {
+      "name": "betta no horizontal overflow 1440",
+      "pass": true,
+      "detail": {
+        "sw": 1440,
+        "iw": 1440
+      }
+    },
+    {
+      "name": "three figures with posters 1440",
+      "pass": true,
+      "detail": [
+        [
+          "videos/betta_prototype.mp4",
+          "720x1280"
+        ],
+        [
+          "videos/betta_rig.mp4",
+          "720x1280"
+        ],
+        [
+          "videos/betta_court_rep.mp4",
+          "720x1280"
+        ]
+      ]
+    },
+    {
+      "name": "third figure: court clip with controls, no autoplay, labelled 1440",
+      "pass": true,
+      "detail": {
+        "src": "videos/betta_court_rep.mp4",
+        "poster": "720x1280",
+        "controls": true,
+        "auto": false,
+        "paused": true,
+        "label": "A player shoots a free throw in the Betta sleeve, first court session",
+        "box": [
+          360,
+          640
+        ],
+        "cap": "Oct 8, 2026. First court session, sound on: one long buzz means a good rep.",
+        "capFont": "14px",
+        "capColor": "rgb(107, 103, 95)"
+      }
+    },
+    {
+      "name": "captions as given 1440",
+      "pass": true,
+      "detail": [
+        "Aug 4, 2026. The capture rig on a real arm, every rep recorded.",
+        "Oct 8, 2026. First court session, sound on: one long buzz means a good rep."
+      ]
+    },
+    {
+      "name": "rig clip follows motion preference 1440",
+      "pass": true,
+      "detail": {
+        "paused": false
+      }
+    },
+    {
+      "name": "new caption contrast at least 4.5 1440",
+      "pass": true,
+      "detail": {
+        "sel": ".betta-videos figure:last-child figcaption",
+        "fg": [
+          107,
+          103,
+          95
+        ],
+        "bg": [
+          247,
+          245,
+          240
+        ],
+        "font": "14px",
+        "weight": "400",
+        "ratio": 5.17
+      }
+    },
+    {
+      "name": "stat paragraph contrast at least 4.5 1440",
+      "pass": true,
+      "detail": {
+        "sel": ".betta-stat:last-child p",
+        "fg": [
+          107,
+          103,
+          95
+        ],
+        "bg": [
+          247,
+          245,
+          240
+        ],
+        "font": "17px",
+        "weight": "400",
+        "ratio": 5.17
+      }
+    },
+    {
+      "name": "stat copy as given 1440",
+      "pass": true,
+      "detail": "Everything runs end to end inside the sleeve. On Oct 8, 2026 a player shot free throws in it on a real court."
+    },
+    {
+      "name": "keyboard reaches the rig toggle 1440",
+      "pass": true,
+      "detail": [
+        "VIDEO[Betta prototype motor test]",
+        "VIDEO[Betta prototype motor test]",
+        "VIDEO[Betta prototype motor test]",
+        "VIDEO[Betta prototype motor test]",
+        "VIDEO[Betta prototype motor test]",
+        "VIDEO[Betta prototype motor test]",
+        "VIDEO[Betta prototype motor test]",
+        "BUTTON[Play or pause the Betta capture rig video]"
+      ]
+    },
+    {
+      "name": "next tab stop is the court clip 1440",
+      "pass": true,
+      "detail": {
+        "in": false,
+        "tag": "VIDEO",
+        "cls": "",
+        "label": "A player shoots a free throw in the Betta sl",
+        "href": null,
+        "fv": true,
+        "outline": "auto 1px rgb(0, 95, 204)",
+        "vis": true
+      }
+    },
+    {
+      "name": "betta zero errors 1440",
+      "pass": true,
+      "detail": {
+        "perrors": [],
+        "cerrors": [],
+        "failed": []
+      }
+    },
+    {
+      "name": "betta no horizontal overflow 360",
+      "pass": true,
+      "detail": {
+        "sw": 360,
+        "iw": 360
+      }
+    },
+    {
+      "name": "three figures with posters 360",
+      "pass": true,
+      "detail": [
+        [
+          "videos/betta_prototype.mp4",
+          "720x1280"
+        ],
+        [
+          "videos/betta_rig.mp4",
+          "720x1280"
+        ],
+        [
+          "videos/betta_court_rep.mp4",
+          "720x1280"
+        ]
+      ]
+    },
+    {
+      "name": "third figure: court clip with controls, no autoplay, labelled 360",
+      "pass": true,
+      "detail": {
+        "src": "videos/betta_court_rep.mp4",
+        "poster": "720x1280",
+        "controls": true,
+        "auto": false,
+        "paused": true,
+        "label": "A player shoots a free throw in the Betta sleeve, first court session",
+        "box": [
+          320,
+          569
+        ],
+        "cap": "Oct 8, 2026. First court session, sound on: one long buzz means a good rep.",
+        "capFont": "14px",
+        "capColor": "rgb(107, 103, 95)"
+      }
+    },
+    {
+      "name": "captions as given 360",
+      "pass": true,
+      "detail": [
+        "Aug 4, 2026. The capture rig on a real arm, every rep recorded.",
+        "Oct 8, 2026. First court session, sound on: one long buzz means a good rep."
+      ]
+    },
+    {
+      "name": "rig clip follows motion preference 360",
+      "pass": true,
+      "detail": {
+        "paused": false
+      }
+    },
+    {
+      "name": "new caption contrast at least 4.5 360",
+      "pass": true,
+      "detail": {
+        "sel": ".betta-videos figure:last-child figcaption",
+        "fg": [
+          107,
+          103,
+          95
+        ],
+        "bg": [
+          247,
+          245,
+          240
+        ],
+        "font": "14px",
+        "weight": "400",
+        "ratio": 5.17
+      }
+    },
+    {
+      "name": "stat paragraph contrast at least 4.5 360",
+      "pass": true,
+      "detail": {
+        "sel": ".betta-stat:last-child p",
+        "fg": [
+          107,
+          103,
+          95
+        ],
+        "bg": [
+          247,
+          245,
+          240
+        ],
+        "font": "17px",
+        "weight": "400",
+        "ratio": 5.17
+      }
+    },
+    {
+      "name": "stat copy as given 360",
+      "pass": true,
+      "detail": "Everything runs end to end inside the sleeve. On Oct 8, 2026 a player shot free throws in it on a real court."
+    },
+    {
+      "name": "keyboard reaches the rig toggle 360",
+      "pass": true,
+      "detail": [
+        "VIDEO[Betta prototype motor test]",
+        "VIDEO[Betta prototype motor test]",
+        "VIDEO[Betta prototype motor test]",
+        "VIDEO[Betta prototype motor test]",
+        "VIDEO[Betta prototype motor test]",
+        "VIDEO[Betta prototype motor test]",
+        "VIDEO[Betta prototype motor test]",
+        "BUTTON[Play or pause the Betta capture rig video]"
+      ]
+    },
+    {
+      "name": "next tab stop is the court clip 360",
+      "pass": true,
+      "detail": {
+        "in": false,
+        "tag": "VIDEO",
+        "cls": "",
+        "label": "A player shoots a free throw in the Betta sl",
+        "href": null,
+        "fv": true,
+        "outline": "auto 1px rgb(0, 95, 204)",
+        "vis": true
+      }
+    },
+    {
+      "name": "betta zero errors 360",
+      "pass": true,
+      "detail": {
+        "perrors": [],
+        "cerrors": [],
+        "failed": []
+      }
+    },
+    {
+      "name": "betta no horizontal overflow 1440r",
+      "pass": true,
+      "detail": {
+        "sw": 1440,
+        "iw": 1440
+      }
+    },
+    {
+      "name": "three figures with posters 1440r",
+      "pass": true,
+      "detail": [
+        [
+          "videos/betta_prototype.mp4",
+          "720x1280"
+        ],
+        [
+          "videos/betta_rig.mp4",
+          "720x1280"
+        ],
+        [
+          "videos/betta_court_rep.mp4",
+          "720x1280"
+        ]
+      ]
+    },
+    {
+      "name": "third figure: court clip with controls, no autoplay, labelled 1440r",
+      "pass": true,
+      "detail": {
+        "src": "videos/betta_court_rep.mp4",
+        "poster": "720x1280",
+        "controls": true,
+        "auto": false,
+        "paused": true,
+        "label": "A player shoots a free throw in the Betta sleeve, first court session",
+        "box": [
+          360,
+          640
+        ],
+        "cap": "Oct 8, 2026. First court session, sound on: one long buzz means a good rep.",
+        "capFont": "14px",
+        "capColor": "rgb(107, 103, 95)"
+      }
+    },
+    {
+      "name": "captions as given 1440r",
+      "pass": true,
+      "detail": [
+        "Aug 4, 2026. The capture rig on a real arm, every rep recorded.",
+        "Oct 8, 2026. First court session, sound on: one long buzz means a good rep."
+      ]
+    },
+    {
+      "name": "rig clip follows motion preference 1440r",
+      "pass": true,
+      "detail": {
+        "paused": true
+      }
+    },
+    {
+      "name": "new caption contrast at least 4.5 1440r",
+      "pass": true,
+      "detail": {
+        "sel": ".betta-videos figure:last-child figcaption",
+        "fg": [
+          107,
+          103,
+          95
+        ],
+        "bg": [
+          247,
+          245,
+          240
+        ],
+        "font": "14px",
+        "weight": "400",
+        "ratio": 5.17
+      }
+    },
+    {
+      "name": "stat paragraph contrast at least 4.5 1440r",
+      "pass": true,
+      "detail": {
+        "sel": ".betta-stat:last-child p",
+        "fg": [
+          107,
+          103,
+          95
+        ],
+        "bg": [
+          247,
+          245,
+          240
+        ],
+        "font": "17px",
+        "weight": "400",
+        "ratio": 5.17
+      }
+    },
+    {
+      "name": "stat copy as given 1440r",
+      "pass": true,
+      "detail": "Everything runs end to end inside the sleeve. On Oct 8, 2026 a player shot free throws in it on a real court."
+    },
+    {
+      "name": "keyboard reaches the rig toggle 1440r",
+      "pass": true,
+      "detail": [
+        "VIDEO[Betta prototype motor test]",
+        "VIDEO[Betta prototype motor test]",
+        "VIDEO[Betta prototype motor test]",
+        "VIDEO[Betta prototype motor test]",
+        "VIDEO[Betta prototype motor test]",
+        "VIDEO[Betta prototype motor test]",
+        "VIDEO[Betta prototype motor test]",
+        "BUTTON[Play or pause the Betta capture rig video]"
+      ]
+    },
+    {
+      "name": "next tab stop is the court clip 1440r",
+      "pass": true,
+      "detail": {
+        "in": false,
+        "tag": "VIDEO",
+        "cls": "",
+        "label": "A player shoots a free throw in the Betta sl",
+        "href": null,
+        "fv": true,
+        "outline": "auto 3px rgb(20, 20, 20)",
+        "vis": true
+      }
+    },
+    {
+      "name": "betta zero errors 1440r",
+      "pass": true,
+      "detail": {
+        "perrors": [],
+        "cerrors": [],
+        "failed": []
+      }
+    },
+    {
+      "name": "nojs skydiving row under Wearables, no overflow nojs360",
+      "pass": true,
+      "detail": {
+        "r": {
+          "found": true,
+          "href": "https://www.instagram.com/reel/Ddv8Qr_gruP/",
+          "group": "Wearables",
+          "sw": 360,
+          "iw": 360,
+          "plainHidden": false,
+          "extraHidden": true,
+          "zoneHidden": true
+        },
+        "failed": []
+      }
+    }
+  ],
+  "notes": {
+    "extraRows-1440": {
+      "hidden": false,
+      "rows": [
+        {
+          "t": "Wheelchair Basketball Vo",
+          "a": null,
+          "v": {
+            "preload": "none",
+            "controls": true,
+            "label": "Wheelchair basketball video",
+            "w": 420
+          }
+        },
+        {
+          "t": "The Medici Network. I bu",
+          "a": null,
+          "v": null
+        },
+        {
+          "t": "Skydiving → A jump instr",
+          "a": "_blank|noopener noreferrer",
+          "v": null
+        }
+      ]
+    },
+    "dialog-1440": {
+      "role": "dialog",
+      "modal": "true",
+      "label": "Betta case, back cover",
+      "vLabel": "A player shoots a free throw in the Betta sleeve",
+      "vMuted": true,
+      "vPaused": false,
+      "vAuto": true,
+      "vLoop": true,
+      "vControls": false,
+      "btn": "Pause video",
+      "pressed": "true",
+      "btnLabel": null,
+      "btnControls": null,
+      "closeLabel": "Close Betta"
+    },
+    "tabcycle-1440": [
+      "BUTTON.video-motion-toggle[Pause video]",
+      "BUTTON.live-play[Pause]",
+      "INPUT.[Drag to step through the nineteen recorded r]",
+      "A.[VIEW FULL CASE STUDY]",
+      "A.[BETTA.LIVE]",
+      "BUTTON.stage-nav[Previous project]",
+      "BUTTON.stage-nav[Next project]",
+      "BUTTON.back-close[Close Betta]"
+    ],
+    "caption-1440": {
+      "text": "FIRST COURT SESSION · 21 OF 28 REPS BUZZED.",
+      "rect": [
+        219,
+        699,
+        460,
+        32
+      ],
+      "vrect": [
+        219,
+        169,
+        460,
+        562
+      ],
+      "font": "9px",
+      "lh": "14.4px",
+      "color": "rgb(240, 217, 168)",
+      "lines": 1,
+      "insideVideo": true
+    },
+    "toggle-1440": {
+      "color": "rgb(244, 242, 238)",
+      "bg": "rgba(11, 11, 12, 0.82)",
+      "font": "11px",
+      "rect": [
+        549,
+        181,
+        117,
+        40
+      ],
+      "minH": true
+    },
+    "stepFocus-1440": {
+      "title": "Posture Cue",
+      "active": "BODY.stage-open",
+      "inStage": false
+    },
+    "extraRows-360": {
+      "hidden": false,
+      "rows": [
+        {
+          "t": "Wheelchair Basketball Vo",
+          "a": null,
+          "v": {
+            "preload": "none",
+            "controls": true,
+            "label": "Wheelchair basketball video",
+            "w": 320
+          }
+        },
+        {
+          "t": "The Medici Network. I bu",
+          "a": null,
+          "v": null
+        },
+        {
+          "t": "Skydiving → A jump instr",
+          "a": "_blank|noopener noreferrer",
+          "v": null
+        }
+      ]
+    },
+    "dialog-360": {
+      "role": "dialog",
+      "modal": "true",
+      "label": "Betta case, back cover",
+      "vLabel": "A player shoots a free throw in the Betta sleeve",
+      "vMuted": true,
+      "vPaused": false,
+      "vAuto": true,
+      "vLoop": true,
+      "vControls": false,
+      "btn": "Pause video",
+      "pressed": "true",
+      "btnLabel": null,
+      "btnControls": null,
+      "closeLabel": "Close Betta"
+    },
+    "tabcycle-360": [
+      "BUTTON.video-motion-toggle[Pause video]",
+      "BUTTON.live-play[Pause]",
+      "INPUT.[Drag to step through the nineteen recorded r]",
+      "A.[VIEW FULL CASE STUDY]",
+      "A.[BETTA.LIVE]",
+      "BUTTON.stage-nav[Previous project]",
+      "BUTTON.stage-nav[Next project]",
+      "BUTTON.back-close[Close Betta]"
+    ],
+    "caption-360": {
+      "text": "FIRST COURT SESSION · 21 OF 28 REPS BUZZED.",
+      "rect": [
+        29,
+        279,
+        301,
+        32
+      ],
+      "vrect": [
+        29,
+        82,
+        301,
+        230
+      ],
+      "font": "9px",
+      "lh": "14.4px",
+      "color": "rgb(240, 217, 168)",
+      "lines": 1,
+      "insideVideo": true
+    },
+    "toggle-360": {
+      "color": "rgb(244, 242, 238)",
+      "bg": "rgba(11, 11, 12, 0.82)",
+      "font": "11px",
+      "rect": [
+        201,
+        94,
+        117,
+        40
+      ],
+      "minH": true
+    },
+    "stepFocus-360": {
+      "title": "Posture Cue",
+      "active": "BODY.stage-open",
+      "inStage": false
+    },
+    "extraRows-1440r": {
+      "hidden": false,
+      "rows": [
+        {
+          "t": "Wheelchair Basketball Vo",
+          "a": null,
+          "v": {
+            "preload": "none",
+            "controls": true,
+            "label": "Wheelchair basketball video",
+            "w": 420
+          }
+        },
+        {
+          "t": "The Medici Network. I bu",
+          "a": null,
+          "v": null
+        },
+        {
+          "t": "Skydiving → A jump instr",
+          "a": "_blank|noopener noreferrer",
+          "v": null
+        }
+      ]
+    },
+    "dialog-1440r": {
+      "role": "dialog",
+      "modal": "true",
+      "label": "Betta case, back cover",
+      "vLabel": "A player shoots a free throw in the Betta sleeve",
+      "vMuted": true,
+      "vPaused": true,
+      "vAuto": false,
+      "vLoop": true,
+      "vControls": false,
+      "btn": "Play video",
+      "pressed": "false",
+      "btnLabel": null,
+      "btnControls": null,
+      "closeLabel": "Close Betta"
+    },
+    "tabcycle-1440r": [
+      "BUTTON.video-motion-toggle[Play video]",
+      "BUTTON.live-play[Play]",
+      "INPUT.[Drag to step through the nineteen recorded r]",
+      "A.[VIEW FULL CASE STUDY]",
+      "A.[BETTA.LIVE]",
+      "BUTTON.stage-nav[Previous project]",
+      "BUTTON.stage-nav[Next project]",
+      "BUTTON.back-close[Close Betta]"
+    ],
+    "caption-1440r": {
+      "text": "FIRST COURT SESSION · 21 OF 28 REPS BUZZED.",
+      "rect": [
+        219,
+        699,
+        460,
+        32
+      ],
+      "vrect": [
+        219,
+        169,
+        460,
+        562
+      ],
+      "font": "9px",
+      "lh": "14.4px",
+      "color": "rgb(240, 217, 168)",
+      "lines": 1,
+      "insideVideo": true
+    },
+    "toggle-1440r": {
+      "color": "rgb(244, 242, 238)",
+      "bg": "rgba(11, 11, 12, 0.82)",
+      "font": "11px",
+      "rect": [
+        559,
+        181,
+        108,
+        40
+      ],
+      "minH": true
+    },
+    "stepFocus-1440r": {
+      "title": "Posture Cue",
+      "active": "BODY.stage-open",
+      "inStage": false
+    },
+    "extraRows-360r": {
+      "hidden": false,
+      "rows": [
+        {
+          "t": "Wheelchair Basketball Vo",
+          "a": null,
+          "v": {
+            "preload": "none",
+            "controls": true,
+            "label": "Wheelchair basketball video",
+            "w": 320
+          }
+        },
+        {
+          "t": "The Medici Network. I bu",
+          "a": null,
+          "v": null
+        },
+        {
+          "t": "Skydiving → A jump instr",
+          "a": "_blank|noopener noreferrer",
+          "v": null
+        }
+      ]
+    },
+    "dialog-360r": {
+      "role": "dialog",
+      "modal": "true",
+      "label": "Betta case, back cover",
+      "vLabel": "A player shoots a free throw in the Betta sleeve",
+      "vMuted": true,
+      "vPaused": true,
+      "vAuto": false,
+      "vLoop": true,
+      "vControls": false,
+      "btn": "Play video",
+      "pressed": "false",
+      "btnLabel": null,
+      "btnControls": null,
+      "closeLabel": "Close Betta"
+    },
+    "tabcycle-360r": [
+      "BUTTON.video-motion-toggle[Play video]",
+      "BUTTON.live-play[Play]",
+      "INPUT.[Drag to step through the nineteen recorded r]",
+      "A.[VIEW FULL CASE STUDY]",
+      "A.[BETTA.LIVE]",
+      "BUTTON.stage-nav[Previous project]",
+      "BUTTON.stage-nav[Next project]",
+      "BUTTON.back-close[Close Betta]"
+    ],
+    "caption-360r": {
+      "text": "FIRST COURT SESSION · 21 OF 28 REPS BUZZED.",
+      "rect": [
+        29,
+        279,
+        301,
+        32
+      ],
+      "vrect": [
+        29,
+        82,
+        301,
+        230
+      ],
+      "font": "9px",
+      "lh": "14.4px",
+      "color": "rgb(240, 217, 168)",
+      "lines": 1,
+      "insideVideo": true
+    },
+    "toggle-360r": {
+      "color": "rgb(244, 242, 238)",
+      "bg": "rgba(11, 11, 12, 0.82)",
+      "font": "11px",
+      "rect": [
+        210,
+        94,
+        108,
+        40
+      ],
+      "minH": true
+    },
+    "stepFocus-360r": {
+      "title": "Posture Cue",
+      "active": "BODY.stage-open",
+      "inStage": false
+    },
+    "figs-1440": [
+      {
+        "src": "videos/betta_prototype.mp4",
+        "poster": "720x1280",
+        "controls": true,
+        "auto": false,
+        "paused": true,
+        "label": "Betta prototype motor test",
+        "box": [
+          360,
+          640
+        ],
+        "cap": "The prototype runs its haptic motors in this test. Turn on sound to hear them.",
+        "capFont": "14px",
+        "capColor": "rgb(107, 103, 95)"
+      },
+      {
+        "src": "videos/betta_rig.mp4",
+        "poster": "720x1280",
+        "controls": false,
+        "auto": true,
+        "paused": false,
+        "label": "Betta capture rig video",
+        "box": [
+          360,
+          640
+        ],
+        "cap": "Aug 4, 2026. The capture rig on a real arm, every rep recorded.",
+        "capFont": "14px",
+        "capColor": "rgb(107, 103, 95)"
+      },
+      {
+        "src": "videos/betta_court_rep.mp4",
+        "poster": "720x1280",
+        "controls": true,
+        "auto": false,
+        "paused": true,
+        "label": "A player shoots a free throw in the Betta sleeve, first court session",
+        "box": [
+          360,
+          640
+        ],
+        "cap": "Oct 8, 2026. First court session, sound on: one long buzz means a good rep.",
+        "capFont": "14px",
+        "capColor": "rgb(107, 103, 95)"
+      }
+    ],
+    "contrast-1440": [
+      {
+        "sel": ".betta-videos figure:last-child figcaption",
+        "fg": [
+          107,
+          103,
+          95
+        ],
+        "bg": [
+          247,
+          245,
+          240
+        ],
+        "font": "14px",
+        "weight": "400",
+        "ratio": 5.17
+      },
+      {
+        "sel": ".betta-stat:last-child p",
+        "fg": [
+          107,
+          103,
+          95
+        ],
+        "bg": [
+          247,
+          245,
+          240
+        ],
+        "font": "17px",
+        "weight": "400",
+        "ratio": 5.17
+      },
+      {
+        "sel": ".betta-stat:last-child .betta-stat-headline",
+        "fg": [
+          138,
+          107,
+          47
+        ],
+        "bg": [
+          247,
+          245,
+          240
+        ],
+        "font": "38px",
+        "weight": "700",
+        "ratio": 4.56
+      },
+      {
+        "sel": ".betta-lede",
+        "fg": [
+          107,
+          103,
+          95
+        ],
+        "bg": [
+          247,
+          245,
+          240
+        ],
+        "font": "18px",
+        "weight": "400",
+        "ratio": 5.17
+      }
+    ],
+    "afterClip-1440": {
+      "in": false,
+      "tag": "VIDEO",
+      "cls": "",
+      "label": "A player shoots a free throw in the Betta sl",
+      "href": null,
+      "fv": false,
+      "outline": "none 3px rgb(20, 20, 20)",
+      "vis": true
+    },
+    "figs-360": [
+      {
+        "src": "videos/betta_prototype.mp4",
+        "poster": "720x1280",
+        "controls": true,
+        "auto": false,
+        "paused": true,
+        "label": "Betta prototype motor test",
+        "box": [
+          320,
+          569
+        ],
+        "cap": "The prototype runs its haptic motors in this test. Turn on sound to hear them.",
+        "capFont": "14px",
+        "capColor": "rgb(107, 103, 95)"
+      },
+      {
+        "src": "videos/betta_rig.mp4",
+        "poster": "720x1280",
+        "controls": false,
+        "auto": true,
+        "paused": false,
+        "label": "Betta capture rig video",
+        "box": [
+          320,
+          569
+        ],
+        "cap": "Aug 4, 2026. The capture rig on a real arm, every rep recorded.",
+        "capFont": "14px",
+        "capColor": "rgb(107, 103, 95)"
+      },
+      {
+        "src": "videos/betta_court_rep.mp4",
+        "poster": "720x1280",
+        "controls": true,
+        "auto": false,
+        "paused": true,
+        "label": "A player shoots a free throw in the Betta sleeve, first court session",
+        "box": [
+          320,
+          569
+        ],
+        "cap": "Oct 8, 2026. First court session, sound on: one long buzz means a good rep.",
+        "capFont": "14px",
+        "capColor": "rgb(107, 103, 95)"
+      }
+    ],
+    "contrast-360": [
+      {
+        "sel": ".betta-videos figure:last-child figcaption",
+        "fg": [
+          107,
+          103,
+          95
+        ],
+        "bg": [
+          247,
+          245,
+          240
+        ],
+        "font": "14px",
+        "weight": "400",
+        "ratio": 5.17
+      },
+      {
+        "sel": ".betta-stat:last-child p",
+        "fg": [
+          107,
+          103,
+          95
+        ],
+        "bg": [
+          247,
+          245,
+          240
+        ],
+        "font": "17px",
+        "weight": "400",
+        "ratio": 5.17
+      },
+      {
+        "sel": ".betta-stat:last-child .betta-stat-headline",
+        "fg": [
+          138,
+          107,
+          47
+        ],
+        "bg": [
+          247,
+          245,
+          240
+        ],
+        "font": "28px",
+        "weight": "700",
+        "ratio": 4.56
+      },
+      {
+        "sel": ".betta-lede",
+        "fg": [
+          107,
+          103,
+          95
+        ],
+        "bg": [
+          247,
+          245,
+          240
+        ],
+        "font": "18px",
+        "weight": "400",
+        "ratio": 5.17
+      }
+    ],
+    "afterClip-360": {
+      "in": false,
+      "tag": "VIDEO",
+      "cls": "",
+      "label": "A player shoots a free throw in the Betta sl",
+      "href": null,
+      "fv": false,
+      "outline": "none 3px rgb(20, 20, 20)",
+      "vis": true
+    },
+    "figs-1440r": [
+      {
+        "src": "videos/betta_prototype.mp4",
+        "poster": "720x1280",
+        "controls": true,
+        "auto": false,
+        "paused": true,
+        "label": "Betta prototype motor test",
+        "box": [
+          360,
+          640
+        ],
+        "cap": "The prototype runs its haptic motors in this test. Turn on sound to hear them.",
+        "capFont": "14px",
+        "capColor": "rgb(107, 103, 95)"
+      },
+      {
+        "src": "videos/betta_rig.mp4",
+        "poster": "720x1280",
+        "controls": false,
+        "auto": true,
+        "paused": true,
+        "label": "Betta capture rig video",
+        "box": [
+          360,
+          640
+        ],
+        "cap": "Aug 4, 2026. The capture rig on a real arm, every rep recorded.",
+        "capFont": "14px",
+        "capColor": "rgb(107, 103, 95)"
+      },
+      {
+        "src": "videos/betta_court_rep.mp4",
+        "poster": "720x1280",
+        "controls": true,
+        "auto": false,
+        "paused": true,
+        "label": "A player shoots a free throw in the Betta sleeve, first court session",
+        "box": [
+          360,
+          640
+        ],
+        "cap": "Oct 8, 2026. First court session, sound on: one long buzz means a good rep.",
+        "capFont": "14px",
+        "capColor": "rgb(107, 103, 95)"
+      }
+    ],
+    "contrast-1440r": [
+      {
+        "sel": ".betta-videos figure:last-child figcaption",
+        "fg": [
+          107,
+          103,
+          95
+        ],
+        "bg": [
+          247,
+          245,
+          240
+        ],
+        "font": "14px",
+        "weight": "400",
+        "ratio": 5.17
+      },
+      {
+        "sel": ".betta-stat:last-child p",
+        "fg": [
+          107,
+          103,
+          95
+        ],
+        "bg": [
+          247,
+          245,
+          240
+        ],
+        "font": "17px",
+        "weight": "400",
+        "ratio": 5.17
+      },
+      {
+        "sel": ".betta-stat:last-child .betta-stat-headline",
+        "fg": [
+          138,
+          107,
+          47
+        ],
+        "bg": [
+          247,
+          245,
+          240
+        ],
+        "font": "38px",
+        "weight": "700",
+        "ratio": 4.56
+      },
+      {
+        "sel": ".betta-lede",
+        "fg": [
+          107,
+          103,
+          95
+        ],
+        "bg": [
+          247,
+          245,
+          240
+        ],
+        "font": "18px",
+        "weight": "400",
+        "ratio": 5.17
+      }
+    ],
+    "afterClip-1440r": {
+      "in": false,
+      "tag": "VIDEO",
+      "cls": "",
+      "label": "A player shoots a free throw in the Betta sl",
+      "href": null,
+      "fv": false,
+      "outline": "none 3px rgb(20, 20, 20)",
+      "vis": true
+    }
+  }
+}

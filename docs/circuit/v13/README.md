@@ -35,6 +35,14 @@ through the Grid, and the attention mechanism all confirmed working).
 The Wikipedia pipeline is gone from the working tree but intact in git
 history at 9370127 if it is ever wanted again.
 
+Round 6 (2026-10-10, docs/circuit/v15/round-6.md): the lab, a drawn
+timeline of Abba building Betta, in the Betta stop (circuit/lab.js); the
+skydiving tile first on the Projects grid and the eighth car (circuit/
+skydive.js); the visitor drives (Drive in the HUD, circuit/world.js and
+nav.js), "Start lap" renamed "Watch the race", a Los Angeles clock on the
+Grid; the court clip on the Betta case and betta.html. Build query 15.0.
+This is the active system.
+
 ## Tools added
 - circuit/vendor/chakra-petch-bold.typeface.json: the OFL face as glyph
   outlines for the extruded marks, made by a scratch converter over
