@@ -120,7 +120,7 @@ export function mount(canvas, L) {
         media: candy('#dfe6ec', '#9aa8b4'),          // media district: cool shell, neon inside
         grey: candy('#c9d0d6', '#7c8791'),           // pit lane and the neutral set
         sage: candy('#b9d1a8', '#6f8f63', { transmission: 0.7, roughness: 0.4, thickness: 3 }),   // trees
-        white: candy('#eceff2', '#aeb6bc'),          // the blimp
+        white: candy('#eceff2', '#aeb6bc'),          // the helicopter's cabin
         smoke: candy('#aab1b7', '#3a3f45', { thickness: 2.5, roughness: 0.12, transmission: 0.94 }),   // the sleeve monument, graphite iMac
         red: candy('#e08a90', '#a31621'),            // Bluetooth Car's livery, its spine red
         chrome: new THREE.MeshStandardMaterial({ color: '#e9eaec', metalness: 1, roughness: 0.08, envMapIntensity: 1.6 }),   // the visor
@@ -209,8 +209,8 @@ export function mount(canvas, L) {
 
     const st = new Builder(), sh = new Builder(), gb = new Builder(true), lb = {}, guts = {};
     for (const loc of L.LOCATIONS) { lb[loc.id] = new Builder(!!DISTRICT[loc.id]); guts[loc.id] = []; }
-    const blimp = new THREE.Group();
-    let ticker = null, flagGeom = null, flagBase = null, scopeGeom = null, scopePos = null, glow = null, blimpShadow = null, built = false;
+    const heli = new THREE.Group(), rotor = new THREE.Group();   // the Betta helicopter and its main rotor
+    let ticker = null, flagGeom = null, flagBase = null, scopeGeom = null, scopePos = null, glow = null, heliShadow = null, built = false;
 
     /* ------------------------------------------------ stage A: ground and track */
     function buildGround() {
@@ -330,7 +330,7 @@ export function mount(canvas, L) {
            layer 1 (never drawn) gives the pointer something generous to find */
         buildHoardings();
         for (const loc of L.LOCATIONS) {
-            if (loc.sky) continue;   // the blimp builds itself in the ambient stage
+            if (loc.sky) continue;   // the helicopter builds itself in the ambient stage
             const g = groups[loc.id];
             for (const m of guts[loc.id]) g.add(m);
             mergeStatic(g);
@@ -896,7 +896,7 @@ export function mount(canvas, L) {
         }
         if (!running) render();
     }
-    const fontJson = fetch('circuit/vendor/chakra-petch-bold.typeface.json?v=15.0').then(r => r.json());
+    const fontJson = fetch('circuit/vendor/chakra-petch-bold.typeface.json?v=15.1').then(r => r.json());
 
     /* ------------------------------------------------ the type hoardings (V1.2, V1.3) */
     /* Three lines of type on trackside boards. Frames and posts go up with
@@ -1295,34 +1295,42 @@ export function mount(canvas, L) {
             c.group.userData.plated = true;
         }
     }
-    const BY = L.BLIMP.height != null ? L.BLIMP.height : L.BLIMP.at[2];
-    const air = { x: L.BLIMP.at[0], z: L.BLIMP.at[1], yaw: 0, set: false };
-    /* The blimp is the camera ship. It rides over whoever is leading, a
-       little ahead of their nose, so the front of the race is findable in
-       the wide shot without reading the Grid. It is slow and high on
-       purpose: it lags the leader, so a pass shows as the airship drifting
-       across to the other car. No label, no hit box, not a stop. */
-    function placeBlimp(t, dt) {
+    const BY = L.HELI.height != null ? L.HELI.height : L.HELI.at[2];
+    const air = { x: L.HELI.at[0], z: L.HELI.at[1], yaw: 0, pitch: 0, set: false };
+    /* The helicopter is the camera ship. It rides high over whoever is
+       leading, a little ahead of their nose, so the front of the race is
+       findable in the wide shot without reading the Grid. It is slow and
+       high on purpose: it lags the leader, so a pass shows as the aircraft
+       drifting across to the other car. The skydiver on the Projects stop
+       jumps from this same helicopter. No label, no hit box, not a stop. */
+    function placeHeli(t, dt) {
         const lead = (cars.length && race.order.length) ? cars[race.order[0]] : null;
         let tx, tz;
-        if (lead && lead.pose) { tx = lead.group.position.x + lead.pose.tx * L.BLIMP.lead; tz = lead.group.position.z + lead.pose.tz * L.BLIMP.lead; }
-        else { const a = t * Math.PI * 2 / 240; tx = L.BLIMP.at[0] + Math.cos(a) * 18; tz = L.BLIMP.at[1] + Math.sin(a) * 9; }
+        if (lead && lead.pose) { tx = lead.group.position.x + lead.pose.tx * L.HELI.lead; tz = lead.group.position.z + lead.pose.tz * L.HELI.lead; }
+        else { const a = t * Math.PI * 2 / 240; tx = L.HELI.at[0] + Math.cos(a) * 18; tz = L.HELI.at[1] + Math.sin(a) * 9; }
         if (!air.set) { air.x = tx; air.z = tz; air.set = true; }
-        const k = Math.min(1, Math.max(0, dt || 0.016) * (L.BLIMP.ease || 0.55));
+        const step = Math.min(1, Math.max(0, dt || 0.016) * (L.HELI.ease || 0.55));
         const px = air.x, pz = air.z;
-        air.x += (tx - air.x) * k; air.z += (tz - air.z) * k;
+        air.x += (tx - air.x) * step; air.z += (tz - air.z) * step;
         const dx = air.x - px, dz = air.z - pz;
+        const speed = dt > 0 ? Math.hypot(dx, dz) / dt : 0;
         if (dx * dx + dz * dz > 1e-6) {
             const want = Math.atan2(-dz, dx);                       // local +x is the nose
             let d = want - air.yaw;
             while (d > Math.PI) d -= Math.PI * 2;
             while (d < -Math.PI) d += Math.PI * 2;
-            air.yaw += d * Math.min(1, Math.max(0, dt || 0.016) * 1.1);   // it turns like an airship, not a drone
+            air.yaw += d * Math.min(1, Math.max(0, dt || 0.016) * 1.1);   // it turns like an aircraft, not a drone
         }
-        blimp.position.set(air.x, BY, air.z); blimp.rotation.y = air.yaw;
-        if (blimpShadow) {
-            blimpShadow.position.set(air.x + SHADOW[0] * BY * 0.9, 0.05, air.z + SHADOW[1] * BY * 0.9);
-            blimpShadow.rotation.set(-Math.PI / 2, air.yaw, 0);      // the shadow turns with the hull
+        air.pitch += (-Math.min(1, speed / 8) * 0.1 - air.pitch) * Math.min(1, Math.max(0, dt || 0.016) * 2);   // nose down when it closes on the leader
+        heli.position.set(air.x, BY + Math.sin(t * 1.3) * 0.5, air.z);
+        heli.rotation.set(0, air.yaw, air.pitch);
+        rotor.rotation.y = t * 26;   // about four turns a second: a blur from the wide shot, blades up close
+        if (heliShadow) {
+            const su = air.x + SHADOW[0] * BY * 0.9, sv = air.z + SHADOW[1] * BY * 0.9;
+            heliShadow.position.set(su, 0.05, sv);
+            heliShadow.rotation.set(-Math.PI / 2, air.yaw, 0);      // the shadow turns with the hull
+            const over = Math.max(0, -su, su - L.SIZE, -sv, sv - L.SIZE);   // from this height the shadow can fall past the plate: it fades out at the edge rather than lying on the paper
+            heliShadow.material.opacity = 0.07 * Math.max(0, 1 - over / 10);
         }
     }
     function waveFlag(t) {
@@ -1346,28 +1354,38 @@ export function mount(canvas, L) {
             const flag = new THREE.Mesh(flagGeom, new THREE.MeshBasicMaterial({ color: C.accent, side: THREE.DoubleSide, toneMapped: false }));
             flag.position.set(L.FLAG.at[0] + 2.5, 5.6, L.FLAG.at[1]); scene.add(flag);
         }
-        {   // 4. the blimp
-            const b = new Builder(true);
-            b.geometry(new THREE.SphereGeometry(1, 12, 8), 'x', new THREE.Matrix4().makeScale(16, 5.5, 5.5));
-            b.box(-15.5, -0.3, 4, 0.6, 4.5, 0.5, 'x'); b.box(-15.5, -0.3, 4, 0.6, 4.5, -5, 'x');
-            b.box(-15.5, -4.8, 4, 4.4, 0.5, -0.3, 'x'); b.box(-15.5, 0.4, 4, 4.4, 0.5, -0.3, 'x');
-            /* the gas-cell frame and the gondola are one merged mesh: the
-               rings read through the candy envelope, and six draw calls
-               become one */
-            const frame = new THREE.TorusGeometry(4.6, 0.18, 6, 16), dark = new Builder(true), q = new THREE.Quaternion();
-            q.setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI / 2);
-            for (const x of [-9, -4, 1, 6, 11]) {
-                const sc = 1 - Math.abs(x) / 24;
-                dark.geometry(frame, 'x', new THREE.Matrix4().compose(new THREE.Vector3(x, 0, 0), q, new THREE.Vector3(sc, sc, sc)));
+        {   // 4. the Betta helicopter (the blimp until round 6), the camera ship over the leader
+            const b = new Builder(true);                               // the cabin, paper-white candy
+            b.box(-4.5, -2.3, 8.5, 4.6, 4.2, -2.1, 'x');
+            b.geometry(new THREE.SphereGeometry(1, 12, 8), 'x', new THREE.Matrix4().compose(new THREE.Vector3(4, 0, 0), new THREE.Quaternion(), new THREE.Vector3(3.4, 2.1, 2.3)));
+            /* boom, fin, stabiliser, tail rotor, cowl, mast, skids and struts are one merged graphite mesh */
+            const dark = new Builder(true);
+            dark.box(-18, -0.6, 13.6, 1.2, 1.2, -0.4, 'x');            // the tail boom
+            dark.box(-19, -0.25, 1.4, 0.5, 3.2, -0.9, 'x');            // the fin
+            dark.box(-15.5, -2.2, 1.4, 4.4, 0.3, 0.5, 'x');            // the stabiliser
+            dark.geometry(new THREE.CircleGeometry(2, 10), 'x', new THREE.Matrix4().makeTranslation(-18.3, 1.8, 0.85));   // the tail rotor disc
+            dark.box(-4.5, -1.4, 5, 2.8, 1.1, 2.1, 'x');               // the engine cowl
+            dark.box(-0.7, -0.7, 1.4, 1.4, 1.3, 3.2, 'x');             // the mast
+            for (const side of [1, -1]) {
+                dark.box(-6, side > 0 ? 2.2 : -2.65, 12, 0.45, 0.4, -3.6, 'x');   // a skid
+                for (const u of [-3.5, 3]) dark.box(u, side > 0 ? 2.2 : -2.6, 0.4, 0.4, 1.6, -3.4, 'x');   // its struts
             }
-            dark.box(-2, -1, 4, 2, 1.2, -6.4, 'x');
-            blimp.add(new THREE.Mesh(dark.build(), M.graphite));
-            blimp.add(new THREE.Mesh(b.build(), M.white));
-            blimp.scale.setScalar(1.3);
-            scene.add(blimp);   // decoration only: no label, no hit box (V1.3)
-            blimpShadow = new THREE.Mesh(new THREE.CircleGeometry(1, 16), new THREE.MeshBasicMaterial({ color: C.ink, transparent: true, opacity: 0.1, depthWrite: false, toneMapped: false }));
-            blimpShadow.rotation.order = 'YXZ'; blimpShadow.rotation.x = -Math.PI / 2; blimpShadow.scale.set(15, 5.5, 1); blimpShadow.position.y = 0.05; scene.add(blimpShadow);
-            placeBlimp(0, 0);
+            heli.add(new THREE.Mesh(dark.build(), M.graphite));
+            heli.add(new THREE.Mesh(b.build(), M.white));
+            {   // the main rotor: three blades that spin, under a faint disc that reads as the blur from the wide shot
+                const blades = new Builder(true), blade = new THREE.BoxGeometry(10.4, 0.14, 0.6);
+                for (let i = 0; i < 3; i++) blades.geometry(blade, 'x', new THREE.Matrix4().makeRotationY(i * Math.PI * 2 / 3).multiply(new THREE.Matrix4().makeTranslation(5.6, 0, 0)));
+                rotor.add(new THREE.Mesh(blades.build(), M.graphite));
+                const disc = new THREE.Mesh(new THREE.CircleGeometry(10.8, 28), new THREE.MeshBasicMaterial({ color: C.ink, transparent: true, opacity: 0.08, depthWrite: false, side: THREE.DoubleSide, toneMapped: false }));
+                disc.rotation.x = -Math.PI / 2; disc.position.y = -0.05; rotor.add(disc);
+                rotor.position.y = 4.5; heli.add(rotor);
+            }
+            heli.rotation.order = 'YZX';   // yaw, then the nose pitches in its own frame
+            heli.scale.setScalar(1.4);
+            scene.add(heli);   // decoration only: no label, no hit box (V1.3)
+            heliShadow = new THREE.Mesh(new THREE.CircleGeometry(1, 20), new THREE.MeshBasicMaterial({ color: C.ink, transparent: true, opacity: 0.07, depthWrite: false, toneMapped: false }));
+            heliShadow.rotation.order = 'YXZ'; heliShadow.rotation.x = -Math.PI / 2; heliShadow.scale.set(14, 14, 1); heliShadow.position.y = 0.05; scene.add(heliShadow);
+            placeHeli(0, 0);
         }
         {   // 5. the garage scope
             scopePos = new Float32Array(scopeN * 3);
@@ -1423,15 +1441,15 @@ export function mount(canvas, L) {
         textPlane(textTexture(L.NAME.toUpperCase(), { w: 2048, h: 96, font: 'italic 600 60px ' + CHAKRA, fill: C.paper, spacing: '18px' }), 72, 3.4, [105, -2.5, 210.03]);
         {   // BETTA painted inside T1 along the track, the way circuits paint their own name
             const f = fr[L.nearest(fr, L.RUNOFF.at)];
-            const m = textPlane(textTexture(L.BLIMP.banner, { w: 1024, h: 256, font: 'italic 700 200px ' + CHAKRA, fill: C.paper, spacing: '30px' }), 18, 4.5, [L.RUNOFF.at[0], 0.06, L.RUNOFF.at[1]]);
+            const m = textPlane(textTexture(L.HELI.banner, { w: 1024, h: 256, font: 'italic 700 200px ' + CHAKRA, fill: C.paper, spacing: '30px' }), 18, 4.5, [L.RUNOFF.at[0], 0.06, L.RUNOFF.at[1]]);
             m.rotation.order = 'YXZ'; m.rotation.y = Math.atan2(-f.t[1], f.t[0]); m.rotation.x = -Math.PI / 2;
         }
         fontsLoaded = true; numberCars();
         barrierText();
-        const ban = textTexture(L.BLIMP.banner, { w: 1024, h: 256, font: 'italic 700 190px ' + CHAKRA, fill: C.ink, spacing: '28px' });
-        for (const side of [1, -1]) {   // the BETTA banner, both sides
-            const m = new THREE.Mesh(new THREE.PlaneGeometry(18, 4.5), new THREE.MeshBasicMaterial({ map: ban, transparent: true, side: THREE.DoubleSide, toneMapped: false }));
-            m.position.set(0, 0.2, 5.55 * side); m.rotation.y = side < 0 ? Math.PI : 0; blimp.add(m);
+        const ban = textTexture(L.HELI.banner, { w: 1024, h: 256, font: 'italic 700 190px ' + CHAKRA, fill: C.ink, spacing: '28px' });
+        for (const side of [1, -1]) {   // BETTA on both flanks of the cabin
+            const m = new THREE.Mesh(new THREE.PlaneGeometry(7.6, 1.9), new THREE.MeshBasicMaterial({ map: ban, transparent: true, side: THREE.DoubleSide, toneMapped: false }));
+            m.position.set(-0.25, 0.1, 2.32 * side); m.rotation.y = side < 0 ? Math.PI : 0; heli.add(m);
         }
         if (!running) render();
     }
@@ -1445,12 +1463,12 @@ export function mount(canvas, L) {
         stats.calls = renderer.info.render.calls; stats.triangles = renderer.info.render.triangles;
     }
     /* V1.2 ambient list: the four cars, the flag, the sleeve shimmer, one
-       flickering board and the drifting blimp. Eight, the ceiling. The
+       flickering board and the helicopter over the leader. Eight, the ceiling. The
        ticker and the scope hold still. */
     function tick(dt, t) {
         if (!built) return;
         placeCars(dt);
-        placeBlimp(t, dt);
+        placeHeli(t, dt);
         waveFlag(t);
         shimmerAt((t % 8) / 8);   // the sleeve shimmer, base to cuff every eight seconds
         flickerStep(t);           // one board flickers

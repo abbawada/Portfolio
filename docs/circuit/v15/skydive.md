@@ -509,3 +509,23 @@ Every command that failed while I worked, and what fixed it:
    the fold scrolls the pill into view and the scene under the head.
    Fixed at the root in the module (the settle on a visitor's pull
    above); both pass in the final run.
+
+## The helicopter round (2026-10-10)
+
+The jump now starts on the Betta helicopter, the aircraft that flies over
+the race leader on the Wada Ring (it replaced the blimp in the same
+round; see round-6.md section 6). In the module: `drawHeli` (the cabin
+with BETTA on its flank, the glass nose, the boom and fin, the spinning
+rotor, the skids, in the world's own tones), an `exitT` clock that runs
+for EXIT_S = 1.5 s from every `resetJump`, during which the diver hangs
+from the near skid, lets go at 0.6 s (LETGO_S: no pull before that,
+steering ignored throughout) and comes to the centre at full size while
+the helicopter recedes out of the top; the fall rate builds with a
+smoothstep over the same 1.5 s, so the exit costs about 0.7 s of freefall
+time (alt is about 12,800 ft when the helicopter is gone). The compact
+idle shows the helicopter passing out of the top for PASS_S = 1.8 s after
+each wrap back to 13,500 ft (`passT`). The first reduced-motion still is
+the exit, held just after the let-go, announced as "Exit from the
+helicopter, 13,500 feet" (check.mjs updated to match). The check passes
+in full: 0 failed, zero page errors; captures in
+docs/circuit/v15/final/helicopter/.

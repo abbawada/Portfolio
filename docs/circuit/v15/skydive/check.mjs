@@ -229,7 +229,7 @@ const jumpsBeforeStills = await jumps();
 await page.locator('.sky-tile').click();
 await page.waitForTimeout(200);
 check('reduced open shows still 1 at 13,500', (await cls('is-open')) && (await phase()) === 'freefall' && (await alt()) === 13500, `${await phase()} ${await alt()}`);
-check('still 1 is announced', (await live()) === 'Exit, 13,500 feet', await live());
+check('still 1 is announced', (await live()) === 'Exit from the helicopter, 13,500 feet', await live());
 check('Next visible under reduced motion', await page.locator('.sky-next').isVisible());
 check('hint hidden under reduced motion', !(await page.locator('.sky-hint').isVisible()));
 await shot('13-still-1-exit');

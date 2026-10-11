@@ -112,9 +112,10 @@
     var LAP = ['about', 'betta', 'education', 'economics', 'writing', 'projects', 'contact'];
 
     /* What moves on its own: the seven cars (one system, not seven), the
-       start flag, the sleeve shimmer, one board flicker, and the blimp,
-       which now shadows the race leader instead of drifting in a corner. */
-    var AMBIENT = ['grid-cars', 'start-flag', 'sleeve-shimmer', 'board-flicker', 'blimp'];
+       start flag, the sleeve shimmer, one board flicker, and the Betta
+       helicopter, which shadows the race leader from high up (it was a
+       blimp until round 6: the skydiver on the Projects stop jumps from it). */
+    var AMBIENT = ['grid-cars', 'start-flag', 'sleeve-shimmer', 'board-flicker', 'helicopter'];
 
     /* Scenery, blocked in. */
     var GRANDSTAND = [[84, 14, 48, 6, 5, 0, 'wall'], [84, 10, 48, 5, 9, 0, 'wall'], [82, 8, 52, 13, 0.8, 9, 'roof']];
@@ -149,7 +150,8 @@
         [84, 137, 5], [105, 140, 6], [120, 142, 4], [131, 138, 5], [143, 141, 4], [153, 137, 5], [27, 153, 6], [54, 150, 5],
         [60, 153, 5], [183, 154, 4], [41, 160, 5], [39, 172, 6], [55, 170, 5], [152, 170, 5], [7, 186, 4], [186, 197, 5]
     ];
-    var BLIMP = { at: [150, 22, 70], banner: 'BETTA', height: 62, lead: 16, ease: 0.55 };   // it flies over the race leader: height above the plate, how far ahead of the leader's nose it sits, how fast it closes
+    var HELI = { at: [150, 22, 70], banner: 'BETTA', height: 92, lead: 16, ease: 0.55 };   // the Betta helicopter flies over the race leader: height above the plate (the blimp held 62), how far ahead of the leader's nose it sits, how fast it closes
+    var BLIMP = HELI;   // the old name, for anything that still reads it
     var FLAG = { at: [100, 196] };
 
     /* The grid. One car per shelf project, lapping from the moment the
@@ -253,7 +255,7 @@
         PIT: PIT, PIT_WIDTH: PIT_WIDTH, SECTORS: SECTORS,
         LOCATIONS: LOCATIONS, LAP: LAP, AMBIENT: AMBIENT, HOARDINGS: HOARDINGS,
         GRANDSTAND: GRANDSTAND, PADDOCK: PADDOCK, CARPARK: CARPARK, BILLBOARDS: BILLBOARDS,
-        GRAVEL: GRAVEL, TREES: TREES, BLIMP: BLIMP, FLAG: FLAG, GRID: GRID, BARRIERS: BARRIERS, CAMPUS_CURBS: CAMPUS_CURBS, RUNOFF: RUNOFF,
+        GRAVEL: GRAVEL, TREES: TREES, HELI: HELI, BLIMP: BLIMP, FLAG: FLAG, GRID: GRID, BARRIERS: BARRIERS, CAMPUS_CURBS: CAMPUS_CURBS, RUNOFF: RUNOFF,
         PALETTE: PALETTE,
         sample: sample, frames: frames, ribbon: ribbon, nearest: nearest
     };

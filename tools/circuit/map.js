@@ -223,16 +223,18 @@ for (const loc of L.LOCATIONS) {
     labels += `<text x="${f2(t[0] + 10)}" y="${f2(t[1] + 18)}" class="sub">${esc(loc.section.toUpperCase())}</text>`;
 }
 
-/* ------------------------------------------------------------ blimp */
-let blimp = '';
+/* ------------------------------------------------------------ helicopter */
+let heli = '';
 {
-    const [u, v, z] = L.BLIMP.at, c = P(u, v, z);
+    const H = L.HELI || L.BLIMP, [u, v] = H.at, z = H.height != null ? H.height : H.at[2], c = P(u, v, z);
     const sh = P(u + SHADOW[0] * z * 0.9, v + SHADOW[1] * z * 0.9, 0);
-    blimp += `<ellipse cx="${f2(sh[0])}" cy="${f2(sh[1])}" rx="40" ry="14" fill="rgba(20,20,20,0.10)"/>`;
-    blimp += `<ellipse cx="${f2(c[0])}" cy="${f2(c[1])}" rx="46" ry="17" fill="${C.wall}" stroke="${shade(C.wall, 0.3)}" stroke-width="1"/>`;
-    blimp += poly([[c[0] - 44, c[1] - 4], [c[0] - 58, c[1] - 12], [c[0] - 56, c[1] + 6], [c[0] - 44, c[1] + 4]], shade(C.wall, 0.34));
-    blimp += `<rect x="${f2(c[0] - 6)}" y="${f2(c[1] + 16)}" width="12" height="5" rx="1" fill="${C.roof}"/>`;
-    blimp += `<text x="${f2(c[0])}" y="${f2(c[1] + 5)}" class="banner" text-anchor="middle">${L.BLIMP.banner}</text>`;
+    heli += `<circle cx="${f2(sh[0])}" cy="${f2(sh[1])}" r="30" fill="rgba(20,20,20,0.08)"/>`;
+    heli += `<line x1="${f2(c[0] - 14)}" y1="${f2(c[1] + 2)}" x2="${f2(c[0] - 54)}" y2="${f2(c[1] - 4)}" stroke="${C.roof}" stroke-width="4"/>`;   // the tail boom
+    heli += poly([[c[0] - 54, c[1] - 4], [c[0] - 58, c[1] - 18], [c[0] - 50, c[1] - 6]], C.roof);   // the fin
+    heli += `<rect x="${f2(c[0] - 18)}" y="${f2(c[1] - 11)}" width="40" height="22" rx="8" fill="${C.wall}" stroke="${shade(C.wall, 0.3)}" stroke-width="1"/>`;   // the cabin
+    heli += `<line x1="${f2(c[0] - 16)}" y1="${f2(c[1] + 16)}" x2="${f2(c[0] + 18)}" y2="${f2(c[1] + 16)}" stroke="${C.roof}" stroke-width="2"/>`;   // a skid
+    heli += `<ellipse cx="${f2(c[0])}" cy="${f2(c[1] - 16)}" rx="34" ry="6" fill="rgba(20,20,20,0.12)"/>`;   // the rotor disc
+    heli += `<text x="${f2(c[0] + 2)}" y="${f2(c[1] + 4)}" class="banner" text-anchor="middle">${H.banner}</text>`;
 }
 
 /* ------------------------------------------------------------ HUD */
@@ -285,7 +287,7 @@ ${style}
 <g id="track">${track}${curbs}${start}${pit}${sectors}</g>
 <g id="props">${propSVG}${faceText}</g>
 <g id="labels">${labels}</g>
-<g id="sky">${blimp}</g>
+<g id="sky">${heli}</g>
 <g id="hud">${hud}${mini}</g>
 </svg>`;
 

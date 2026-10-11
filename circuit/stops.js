@@ -12,7 +12,7 @@ export function createStops(L, dom) {
        Projects grid. Each returns a controller with destroy(); a failed
        import leaves the panel as it was, so nothing here can take a stop
        down with it. */
-    const V = '15.0';
+    const V = '15.1';
     const live = [];   // mounted controllers, torn down on clear()
     const REEL = 'https://www.instagram.com/reel/Ddv8Qr_gruP/';
     function mountLive(path, fn) {

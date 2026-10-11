@@ -54,7 +54,8 @@ ground is the Wada Ring plate growing until the landing by the pit
 straight; then "Watch the reel" and "Jump again". An automatic activation
 device fires at 2,500 ft if nobody pulls. Escape ends the jump and leaves
 the panel open; a second Escape closes the panel. Reduced motion: four
-stills advanced by Pull and Next. The module links its own stylesheet when
+stills advanced by Pull and Next. Since the helicopter round (section 6)
+every jump starts on the skid of the Betta helicopter. The module links its own stylesheet when
 the page has none, so the tile never flashes unstyled; index.html links it
 anyway. The eighth car, SKY 13, pale sky (#8fd3ff), joined the grid, and
 Skydiving appears on projects.html with the reel link.
@@ -123,3 +124,47 @@ down if a module fails (circuit/stops.js mountLive).
 - The wheelchair poster under the projects shelf shows real people and a
   USC-print shirt, as before this round.
 - Phones remain untuned beyond what each module checked at 360 and 390.
+
+## 6. The helicopter round (2026-10-10, later the same day)
+
+Asked for: make sure the skydiver is jumping from the Betta blimp, which
+may become a helicopter, and have it fly higher. Done as one aircraft in
+two places:
+
+- **The Wada Ring (circuit/world.js, circuit/layout.js).** The blimp is
+  now the Betta helicopter: a paper-white candy cabin with BETTA on both
+  flanks, a graphite boom, fin, stabiliser, tail rotor, cowl, mast and
+  skids (one merged mesh), and a three-blade main rotor that spins under
+  a faint disc, so it reads as a blur from the wide shot and as blades
+  up close. It still shadows the race leader a little ahead of the nose,
+  turns slowly like an aircraft, bobs, and dips its nose when it closes
+  on a new leader. Height 92 above the plate (the blimp held 62). Its
+  ground shadow fades out at the plate edge rather than lying on the
+  paper, since from that height it often falls past the edge. layout.js
+  exports HELI (BLIMP stays as an alias) and the ambient list says
+  'helicopter'; tools/circuit/map.js draws a helicopter glyph.
+- **The jump (circuit/skydive.js).** Every jump starts on the near skid
+  of that helicopter, seen from below and behind: the diver hangs from it
+  arms up for a moment, lets go (the arms open into the arch with one
+  roll), and the helicopter recedes up and out of the frame as the
+  camera drops away. The exit lasts 1.5 s, during which the fall builds
+  from nothing to the full rate; no steering and no pull until the diver
+  has let go (0.6 s). The compact tile shows the same helicopter passing
+  out of the top each time its count wraps back to 13,500 ft. The first
+  reduced-motion still is the exit, announced as "Exit from the
+  helicopter, 13,500 feet". Build query bumped to 15.1.
+
+Measured (docs/circuit/v15/final/helicopter/):
+
+| check | result |
+| --- | --- |
+| skydive check (docs/circuit/v15/skydive/check.mjs, 81 assertions) | 0 failed, zero page errors; frames mean 0.17 ms freefall, 0.14 ms canopy |
+| gate audit at 1600 and 1440 | zero overlaps in every category, 59 fps, 206 draw calls (was 202: the rotor blades, the rotor disc, and the two flank banners replacing the blimp's two, net four) |
+| live page at 1440 and 390, Projects open, jump started | the diver on the skid of the helicopter in both, zero page errors |
+
+One failure while working: the first run of the skydive check timed out
+waiting for the landing, because the gate audit and a capture script were
+driving two other headless Chromes at the same time and the throttled
+frames (dt is capped at 50 ms) stretched the glide past the 40 s wait.
+Re-run alone it passed in full. Nothing in the module changed between the
+two runs.
