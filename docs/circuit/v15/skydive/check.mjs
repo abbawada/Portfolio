@@ -192,7 +192,9 @@ check('closed tile is 2:3 again', closedBox && Math.round(closedBox.width) === 2
 await page.locator('.sky-tile').dblclick();
 await page.waitForTimeout(200);
 check('double click opens without pulling', (await cls('is-open')) && (await phase()) === 'freefall' && (await alt()) > 12500, `${await phase()} ${await alt()} jumps=${await jumps()}`);
-await page.waitForTimeout(700);
+/* the diver has let go once the posted altitude is 13,440 or lower (exitT past LETGO_S, which is simulation time, capped
+   at 50 ms a frame): a state wait, so the click lands after the let-go and the arming window at any frame rate */
+await page.waitForFunction(() => Number(document.querySelector('.sky').dataset.alt) <= 13440, null, { timeout: 10000 });
 await page.locator('.sky-tile').click();
 await page.waitForTimeout(80);
 check('a click after the arming window pulls', (await phase()) === 'opening', await phase());

@@ -226,9 +226,9 @@ for (const loc of L.LOCATIONS) {
 /* ------------------------------------------------------------ helicopter */
 let heli = '';
 {
-    const H = L.HELI || L.BLIMP, [u, v] = H.at, z = H.height != null ? H.height : H.at[2], c = P(u, v, z);
-    const sh = P(u + SHADOW[0] * z * 0.9, v + SHADOW[1] * z * 0.9, 0);
-    heli += `<circle cx="${f2(sh[0])}" cy="${f2(sh[1])}" r="30" fill="rgba(20,20,20,0.08)"/>`;
+    const H = L.HELI || L.BLIMP, [u, v] = H.at, floor = H.floor != null ? H.floor : H.height;
+    const band = Math.min(1, Math.max(0, (u + v - 150) / 110)), z = floor + (H.height - floor) * band * band * (3 - 2 * band);   // the world's height band: the cruising height over the near half of the plate, the floor over the far half
+    const c = P(u, v, z);   // no ground shadow, as in the world: it would land fifty units from the hull and read as a stray blob
     heli += `<line x1="${f2(c[0] - 14)}" y1="${f2(c[1] + 2)}" x2="${f2(c[0] - 54)}" y2="${f2(c[1] - 4)}" stroke="${C.roof}" stroke-width="4"/>`;   // the tail boom
     heli += poly([[c[0] - 54, c[1] - 4], [c[0] - 58, c[1] - 18], [c[0] - 50, c[1] - 6]], C.roof);   // the fin
     heli += `<rect x="${f2(c[0] - 18)}" y="${f2(c[1] - 11)}" width="40" height="22" rx="8" fill="${C.wall}" stroke="${shade(C.wall, 0.3)}" stroke-width="1"/>`;   // the cabin

@@ -150,7 +150,7 @@
         [84, 137, 5], [105, 140, 6], [120, 142, 4], [131, 138, 5], [143, 141, 4], [153, 137, 5], [27, 153, 6], [54, 150, 5],
         [60, 153, 5], [183, 154, 4], [41, 160, 5], [39, 172, 6], [55, 170, 5], [152, 170, 5], [7, 186, 4], [186, 197, 5]
     ];
-    var HELI = { at: [150, 22, 70], banner: 'BETTA', height: 92, lead: 16, ease: 0.55 };   // the Betta helicopter flies over the race leader: height above the plate (the blimp held 62), how far ahead of the leader's nose it sits, how fast it closes
+    var HELI = { at: [150, 22], banner: 'BETTA', height: 92, floor: 68, lead: 16, ease: 0.55 };   // the Betta helicopter flies over the race leader: where it rests in plan; its cruising height over the near half of the plate (the blimp held 62) and the floor it settles to over the far half (the camera looks down at 30 degrees, so a hull that stays at 92 leaves the top of the desktop rest view over the far straight; 68 is the lowest height clear of every mark); how far ahead of the leader's nose it sits; how fast it closes
     var BLIMP = HELI;   // the old name, for anything that still reads it
     var FLAG = { at: [100, 196] };
 

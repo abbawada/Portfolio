@@ -137,9 +137,9 @@
    "planOverlaps": [],
    "detail": [],
    "labelFont": "11px 700",
-   "calls": 206,
-   "triangles": 51078,
-   "fps": 58.8
+   "calls": 204,
+   "triangles": 51184,
+   "fps": 60.3
   },
   "1600": {
    "viewport": [
@@ -277,9 +277,9 @@
    "planOverlaps": [],
    "detail": [],
    "labelFont": "11px 700",
-   "calls": 206,
-   "triangles": 51078,
-   "fps": 59.3
+   "calls": 204,
+   "triangles": 51184,
+   "fps": 58.6
   }
  },
  "close": [],

@@ -81,7 +81,6 @@ async def main():
             # simpler and dependable: use the projected corners via the world's own helpers
             expr = """(() => { const c = window.__circuit, L = window.CircuitLayout, out = [];
                 for (const loc of L.LOCATIONS) {
-                    if (loc.sky) continue;   // the blimp has no fixed place on the poster
                     const g = c.groups[loc.id], hit = g.children.find(o => o.layers && o.layers.mask === 2);   // the hit box lives on layer 1
                     const p = hit.geometry.parameters, cx = hit.position.x, cy = hit.position.y, cz = hit.position.z;
                     const pts = [];

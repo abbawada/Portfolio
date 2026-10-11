@@ -120,11 +120,12 @@ export function mount(canvas, L) {
         media: candy('#dfe6ec', '#9aa8b4'),          // media district: cool shell, neon inside
         grey: candy('#c9d0d6', '#7c8791'),           // pit lane and the neutral set
         sage: candy('#b9d1a8', '#6f8f63', { transmission: 0.7, roughness: 0.4, thickness: 3 }),   // trees
-        white: candy('#eceff2', '#aeb6bc'),          // the helicopter's cabin
+        white: candy('#eceff2', '#aeb6bc'),          // the Education, Economics and Writing shells, and the white parts inside the districts
         smoke: candy('#aab1b7', '#3a3f45', { thickness: 2.5, roughness: 0.12, transmission: 0.94 }),   // the sleeve monument, graphite iMac
         red: candy('#e08a90', '#a31621'),            // Bluetooth Car's livery, its spine red
         chrome: new THREE.MeshStandardMaterial({ color: '#e9eaec', metalness: 1, roughness: 0.08, envMapIntensity: 1.6 }),   // the visor
         graphite: new THREE.MeshStandardMaterial({ color: '#2a2b2e', roughness: 0.55, metalness: 0.35, flatShading: true }),
+        cabin: new THREE.MeshStandardMaterial({ color: '#eceff2', roughness: 0.6, flatShading: true }),   // the helicopter's cabin: opaque paper, so it reads white over the graphite tower and matches the tile's aircraft
         neon: {}
     };
     for (const [k, v] of Object.entries({ cyan: '#3ad7e6', magenta: '#ff4f9d', gold: '#f0b64a', lime: '#a4ec5c', green: '#42d67a' })) {
@@ -193,7 +194,7 @@ export function mount(canvas, L) {
         const rim = new THREE.Mesh(new THREE.PlaneGeometry(10, 40), new THREE.MeshBasicMaterial({ color: '#ffffff' }));
         rim.position.set(45, 20, -30); rim.lookAt(0, 0, 0); studio.add(rim);
         const pm = new THREE.PMREMGenerator(renderer);
-        scene.environment = pm.fromScene(studio, 0.05).texture;
+        scene.environment = pm.fromScene(studio, 0.04).texture;   // the widest blur that fits the generator's twenty taps at this size; 0.05 clipped, and warned on every load
         scene.environmentIntensity = 0.9;
         pm.dispose();
     }
@@ -209,8 +210,8 @@ export function mount(canvas, L) {
 
     const st = new Builder(), sh = new Builder(), gb = new Builder(true), lb = {}, guts = {};
     for (const loc of L.LOCATIONS) { lb[loc.id] = new Builder(!!DISTRICT[loc.id]); guts[loc.id] = []; }
-    const heli = new THREE.Group(), rotor = new THREE.Group();   // the Betta helicopter and its main rotor
-    let ticker = null, flagGeom = null, flagBase = null, scopeGeom = null, scopePos = null, glow = null, heliShadow = null, built = false;
+    const heli = new THREE.Group();   // the Betta helicopter
+    let ticker = null, flagGeom = null, flagBase = null, scopeGeom = null, scopePos = null, glow = null, built = false;
 
     /* ------------------------------------------------ stage A: ground and track */
     function buildGround() {
@@ -330,7 +331,6 @@ export function mount(canvas, L) {
            layer 1 (never drawn) gives the pointer something generous to find */
         buildHoardings();
         for (const loc of L.LOCATIONS) {
-            if (loc.sky) continue;   // the helicopter builds itself in the ambient stage
             const g = groups[loc.id];
             for (const m of guts[loc.id]) g.add(m);
             mergeStatic(g);
@@ -1295,7 +1295,14 @@ export function mount(canvas, L) {
             c.group.userData.plated = true;
         }
     }
-    const BY = L.HELI.height != null ? L.HELI.height : L.HELI.at[2];
+    const BY = L.HELI.height, BY_FLOOR = L.HELI.floor != null ? L.HELI.floor : BY;
+    const bandEase = x => { x = Math.min(1, Math.max(0, x)); return x * x * (3 - 2 * x); };
+    /* The height is a band, not one number: the camera looks down at 30 degrees, so a hull that held
+       HELI.height everywhere would leave the top of the desktop frame over the far straight. The plan sum
+       x + z is the screen's up axis, so the hull cruises at HELI.height over the near half of the plate
+       (the pit straight) and settles smoothly toward HELI.floor as it follows the leader away from the
+       camera, climbing again on the way back. Nothing is pinned to the frame's edge. */
+    const heightAt = (x, z) => BY_FLOOR + (BY - BY_FLOOR) * bandEase((x + z - 150) / 110);
     const air = { x: L.HELI.at[0], z: L.HELI.at[1], yaw: 0, pitch: 0, set: false };
     /* The helicopter is the camera ship. It rides high over whoever is
        leading, a little ahead of their nose, so the front of the race is
@@ -1322,16 +1329,11 @@ export function mount(canvas, L) {
             air.yaw += d * Math.min(1, Math.max(0, dt || 0.016) * 1.1);   // it turns like an aircraft, not a drone
         }
         air.pitch += (-Math.min(1, speed / 8) * 0.1 - air.pitch) * Math.min(1, Math.max(0, dt || 0.016) * 2);   // nose down when it closes on the leader
-        heli.position.set(air.x, BY + Math.sin(t * 1.3) * 0.5, air.z);
+        heli.position.set(air.x, heightAt(air.x, air.z) + Math.sin(t * 1.3) * 0.5, air.z);
         heli.rotation.set(0, air.yaw, air.pitch);
-        rotor.rotation.y = t * 26;   // about four turns a second: a blur from the wide shot, blades up close
-        if (heliShadow) {
-            const su = air.x + SHADOW[0] * BY * 0.9, sv = air.z + SHADOW[1] * BY * 0.9;
-            heliShadow.position.set(su, 0.05, sv);
-            heliShadow.rotation.set(-Math.PI / 2, air.yaw, 0);      // the shadow turns with the hull
-            const over = Math.max(0, -su, su - L.SIZE, -sv, sv - L.SIZE);   // from this height the shadow can fall past the plate: it fades out at the edge rather than lying on the paper
-            heliShadow.material.opacity = 0.07 * Math.max(0, 1 - over / 10);
-        }
+        /* no ground shadow: from this height it would land some fifty units from the hull, often past the
+           plate edge, and nobody would read a faint disc that far away as this aircraft's. The height shows
+           in the aircraft sitting clear above the buildings. */
     }
     function waveFlag(t) {
         const p = flagGeom.attributes.position.array;
@@ -1355,7 +1357,7 @@ export function mount(canvas, L) {
             flag.position.set(L.FLAG.at[0] + 2.5, 5.6, L.FLAG.at[1]); scene.add(flag);
         }
         {   // 4. the Betta helicopter (the blimp until round 6), the camera ship over the leader
-            const b = new Builder(true);                               // the cabin, paper-white candy
+            const b = new Builder(true);                               // the cabin, opaque paper-white
             b.box(-4.5, -2.3, 8.5, 4.6, 4.2, -2.1, 'x');
             b.geometry(new THREE.SphereGeometry(1, 12, 8), 'x', new THREE.Matrix4().compose(new THREE.Vector3(4, 0, 0), new THREE.Quaternion(), new THREE.Vector3(3.4, 2.1, 2.3)));
             /* boom, fin, stabiliser, tail rotor, cowl, mast, skids and struts are one merged graphite mesh */
@@ -1364,6 +1366,7 @@ export function mount(canvas, L) {
             dark.box(-19, -0.25, 1.4, 0.5, 3.2, -0.9, 'x');            // the fin
             dark.box(-15.5, -2.2, 1.4, 4.4, 0.3, 0.5, 'x');            // the stabiliser
             dark.geometry(new THREE.CircleGeometry(2, 10), 'x', new THREE.Matrix4().makeTranslation(-18.3, 1.8, 0.85));   // the tail rotor disc
+            dark.geometry(new THREE.CircleGeometry(2, 10), 'x', new THREE.Matrix4().makeTranslation(-18.3, 1.8, 0.85).multiply(new THREE.Matrix4().makeRotationY(Math.PI)));   // its back face, so the disc shows from either flank as the hull yaws round the lap
             dark.box(-4.5, -1.4, 5, 2.8, 1.1, 2.1, 'x');               // the engine cowl
             dark.box(-0.7, -0.7, 1.4, 1.4, 1.3, 3.2, 'x');             // the mast
             for (const side of [1, -1]) {
@@ -1371,20 +1374,15 @@ export function mount(canvas, L) {
                 for (const u of [-3.5, 3]) dark.box(u, side > 0 ? 2.2 : -2.6, 0.4, 0.4, 1.6, -3.4, 'x');   // its struts
             }
             heli.add(new THREE.Mesh(dark.build(), M.graphite));
-            heli.add(new THREE.Mesh(b.build(), M.white));
-            {   // the main rotor: three blades that spin, under a faint disc that reads as the blur from the wide shot
-                const blades = new Builder(true), blade = new THREE.BoxGeometry(10.4, 0.14, 0.6);
-                for (let i = 0; i < 3; i++) blades.geometry(blade, 'x', new THREE.Matrix4().makeRotationY(i * Math.PI * 2 / 3).multiply(new THREE.Matrix4().makeTranslation(5.6, 0, 0)));
-                rotor.add(new THREE.Mesh(blades.build(), M.graphite));
-                const disc = new THREE.Mesh(new THREE.CircleGeometry(10.8, 28), new THREE.MeshBasicMaterial({ color: C.ink, transparent: true, opacity: 0.08, depthWrite: false, side: THREE.DoubleSide, toneMapped: false }));
-                disc.rotation.x = -Math.PI / 2; disc.position.y = -0.05; rotor.add(disc);
-                rotor.position.y = 4.5; heli.add(rotor);
+            heli.add(new THREE.Mesh(b.build(), M.cabin));
+            {   // the main rotor: one faint disc, the blur a running rotor photographs as. Solid blades at this
+                // frame rate step a fifth of a turn a frame and strobe, so none are drawn; the tail rotor is a disc too
+                const disc = new THREE.Mesh(new THREE.CircleGeometry(10.8, 28), new THREE.MeshBasicMaterial({ color: C.ink, transparent: true, opacity: 0.14, depthWrite: false, side: THREE.DoubleSide, toneMapped: false }));
+                disc.rotation.x = -Math.PI / 2; disc.position.y = 4.45; heli.add(disc);
             }
             heli.rotation.order = 'YZX';   // yaw, then the nose pitches in its own frame
             heli.scale.setScalar(1.4);
             scene.add(heli);   // decoration only: no label, no hit box (V1.3)
-            heliShadow = new THREE.Mesh(new THREE.CircleGeometry(1, 20), new THREE.MeshBasicMaterial({ color: C.ink, transparent: true, opacity: 0.07, depthWrite: false, toneMapped: false }));
-            heliShadow.rotation.order = 'YXZ'; heliShadow.rotation.x = -Math.PI / 2; heliShadow.scale.set(14, 14, 1); heliShadow.position.y = 0.05; scene.add(heliShadow);
             placeHeli(0, 0);
         }
         {   // 5. the garage scope

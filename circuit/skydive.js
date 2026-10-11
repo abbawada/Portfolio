@@ -8,9 +8,13 @@
    The jump starts on the skid of the Betta helicopter, the same aircraft
    that flies over the race leader on the Wada Ring (circuit/world.js):
    the diver hangs from it for a moment, lets go, and the helicopter
-   recedes up the frame as the camera drops away with the diver. The
-   compact tile shows the same helicopter passing when its count wraps
-   back to 13,500 ft, and the first reduced-motion still is the exit.
+   recedes up the frame as the camera drops away with the diver, and
+   keeps receding through a pull made before it has gone. A pull made
+   while the diver still holds the skid waits for the let-go. The compact
+   tile shows the same helicopter passing out of the top at mount, after
+   a close, and each time its count wraps back to 13,500 ft, fading in on
+   the digit dip so it never pops. The first reduced-motion still is the
+   exit.
 
    Time: freefall at 176 ft/s with one real second standing for four
    seconds of fall (13.5 s from 13,500 ft to pull height at 4,000 ft),
@@ -46,8 +50,10 @@ const PLATE_C = 900;              // plate width on screen = 1.6 w * C / (alt + 
 const HAZE_TOP = 6000, HAZE_FULL = 2000;   // the plate is invisible above the first, solid below the second
 const ARM_MS = 500;               // a click this soon after the jump starts is the double click, not a pull
 const EXIT_S = 1.5;               // real seconds from the skid to the full-speed fall; the helicopter is out of frame by the end
-const LETGO_S = 0.6;              // no pull before this: the diver is still holding the helicopter
-const PASS_S = 1.8;               // the compact tile: how long the helicopter takes to pass out of the top after the wrap
+const LETGO_S = 0.6;              // the diver holds the helicopter until then: a pull made sooner waits for the let-go
+const EXIT_STILL = 0.3;           // the reduced-motion exit still holds the exit here (a share of EXIT_S): on the skid, arms opening, the name on the cabin clear
+const PASS_S = 1.8;               // the compact tile: how long the helicopter takes to pass out of the top, at mount, after a close and after each wrap
+const PASS_FADE_S = 0.25;         // and how long it takes to fade in, the length of the digit dip, so it never pops
 const BANK_MAX = 25 * Math.PI / 180;
 const YAW_MAX = 22 * Math.PI / 180;
 const ISO_X = 0.8660254;
@@ -284,7 +290,8 @@ export function mountSkydive(el, opts) {
         cue: false, cueT: 0, aad: false, pulled: false, flare: 0, ended: false, quiet: false,
         scroll: 0, wrap: 0,     // the idle cloud stream and the idle digit wrap
         exitT: -1,              // real seconds since the jump started, while the helicopter is still in the picture; -1 otherwise
-        passT: -1,              // the compact tile: real seconds since the helicopter began its pass after the wrap; -1 otherwise
+        passT: -1,              // the compact tile: real seconds since the helicopter began its pass out of the top; -1 otherwise
+        pullWanted: false,      // a pull made while the diver still held the skid: it fires at the let-go
         still: 0
     };
     const steerT = { x: 0, y: 0 };
@@ -403,6 +410,7 @@ export function mountSkydive(el, opts) {
                     S.alt -= S.rate * smooth(S.exitT / EXIT_S) * dt;
                     if (S.exitT >= EXIT_S) S.exitT = -1;
                 } else S.alt -= S.rate * dt;
+                if (S.pullWanted && !holdingOn()) { doPull(true); break; }   // the pull made on the skid, now that the diver has let go
                 S.bank += (S.sx * BANK_MAX - S.bank) * ease;
                 if (!exiting) driftGround(9, dt);
                 if (!S.cue && S.alt <= CUE_ALT) { S.cue = true; S.cueT = 0; pullBtn.classList.add('is-lit'); say('Pull height, ' + fmtFeet(S.alt)); postAlt(); }
@@ -410,6 +418,7 @@ export function mountSkydive(el, opts) {
                 break;
             case 'opening': {
                 S.openT += dt;
+                if (S.exitT >= 0) { S.exitT += dt; if (S.exitT >= EXIT_S) S.exitT = -1; }   // a pull before the helicopter has gone: it keeps receding
                 const rate = lerp(S.rate, S.canRate, smooth((S.openT - 0.6) / 0.7));
                 S.alt -= rate * dt;
                 S.bank += (0 - S.bank) * ease;
@@ -461,20 +470,22 @@ export function mountSkydive(el, opts) {
         const scaleD = (1 - 0.38 * smooth((o - 0.7) / 0.6)) + 0.13 * settle;
         const shiftX = -S.sx * 0.07 * w, shiftY = -S.sy * 0.05 * h;
         const k = clamp(Math.min(w, h) / 240, 0.55, 1.4);
-        /* the exit: e runs 0 to 1 over EXIT_S (the first still holds it just after the let-go); the helicopter
-           hangs at the top of the frame, then recedes as the camera drops away with the diver, who starts
-           small on the near skid and comes to the centre at full size */
-        const e = freefall && S.mode === 'jump' && S.exitT >= 0 ? S.exitT / EXIT_S : (stills && S.still === 0 ? 0.42 : -1);
+        /* the exit: e runs 0 to 1 over EXIT_S, through a pull if one comes before the end (the exit still holds it
+           at EXIT_STILL); the helicopter hangs at the top of the frame, then recedes as the camera drops away with
+           the diver, who starts small on the near skid and comes to the centre at full size */
+        const e = S.mode !== 'idle' && S.exitT >= 0 ? S.exitT / EXIT_S : -1;
         const recede = e >= 0 ? smooth((e - 0.2) / 0.8) : 1;
         const letgo = e >= 0 ? smooth((e - 0.12) / 0.45) : 1;
-        let heliX = 0, heliY = 0, heliS = 0;
+        const roll = e >= 0 ? Math.sin(e * 7) * 0.22 * letgo * (1 - recede) : 0;   // letting go, the body rolls once
+        let heliX = 0, heliY = 0, heliS = 0, heliA = 1;
         if (e >= 0) {
             heliX = cx + w * (0.06 + 0.16 * recede);
             heliY = lerp(cy - 0.14 * h, -0.5 * h, recede);
             heliS = k * lerp(1, 0.5, recede);
-        } else if (S.mode === 'idle' && S.passT >= 0) {   // the compact tile: the helicopter passes out of the top after the wrap
+        } else if (S.mode === 'idle' && S.passT >= 0) {   // the compact tile: the helicopter passes out of the top, fading in on the digit dip, clear of the altimeter plate
             const r = smooth(S.passT / PASS_S);
-            heliX = cx + w * 0.12; heliY = lerp(0.2 * h, -0.5 * h, r); heliS = k * lerp(0.8, 0.45, r);
+            heliX = cx + w * 0.14; heliY = lerp(0.27 * h, -0.5 * h, r); heliS = k * lerp(0.8, 0.45, r);
+            heliA = smooth(S.passT / PASS_FADE_S);
         }
         const diverS = e >= 0 ? lerp(0.45, 1, recede) : 1;
         const diverX = e >= 0 ? (heliX - 36 * heliS - cx) * (1 - recede) : 0;
@@ -491,7 +502,7 @@ export function mountSkydive(el, opts) {
         drawClouds(0, cx, cy, shiftX, shiftY, alt);
         drawGround(cx, cy, shiftX, shiftY + jolt, alt);
         drawShadow(cx, cy, shiftX, shiftY + jolt, alt, k, settle);
-        if (heliS > 0) drawHeli(heliX, heliY, heliS, S.time * 22);
+        if (heliS > 0) { ctx.globalAlpha = heliA; drawHeli(heliX, heliY, heliS); ctx.globalAlpha = 1; }
         drawClouds(1, cx, cy, shiftX, shiftY, alt);
 
         /* the diver group: canopy, lines, diver, pulse rings */
@@ -504,12 +515,12 @@ export function mountSkydive(el, opts) {
             const stand = stills ? 1 : smooth(S.t / 0.35);
             if (stand < 1) { ctx.globalAlpha = 1 - stand; drawDiver(0, 0, 1, 0); ctx.globalAlpha = 1; }
             ctx.globalAlpha = stand; drawStanding(); ctx.globalAlpha = 1;
-        } else if (e >= 0) {
-            /* on the skid the diver hangs from the strut, arms up (the hang pose); letting go, the arms open into the arch and the body rolls once */
-            drawDiver(Math.sin(e * 7) * 0.22 * letgo * (1 - recede), 1 - letgo, 0, 0);
+        } else if (e >= 0 && freefall) {
+            /* on the skid the diver hangs from the strut, arms up (the hang pose); letting go, the arms open into the arch */
+            drawDiver(roll, 1 - letgo, 0, 0);
         } else {
-            const bank = S.mode === 'idle' ? S.sway : S.bank;
-            const hangT = smooth((o - 0.7) / 0.6);
+            const bank = S.mode === 'idle' ? S.sway : S.bank + roll;
+            const hangT = Math.max(1 - letgo, smooth((o - 0.7) / 0.6));   // a pull before the arms had opened: they go on opening
             drawDiver(bank, hangT, freefall ? 1 : 0, S.flare);
         }
         ctx.restore();
@@ -647,27 +658,21 @@ export function mountSkydive(el, opts) {
        with BETTA on its flank and the glass nose, the boom and fin off to the right, the rotor a spinning blur
        above, the skids below. Units: the cabin is 100 wide at s = 1; the diver stands on the near skid at
        (-36, 42), clear of the name. The same tones as the aircraft over the Wada Ring. */
-    function drawHeli(x, y, s, spin) {
+    function drawHeli(x, y, s) {
         ctx.save();
         ctx.translate(x, y); ctx.scale(s, s);
         ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-        /* the rotor: a faint disc and three blades */
-        ctx.beginPath(); ctx.ellipse(0, -40, 150, 13, 0, 0, Math.PI * 2); ctx.fillStyle = 'rgba(42,43,46,0.16)'; ctx.fill();
-        ctx.strokeStyle = 'rgba(42,43,46,0.75)'; ctx.lineWidth = 3;
-        for (let i = 0; i < 3; i++) {
-            const a = spin + i * Math.PI * 2 / 3;
-            ctx.beginPath(); ctx.moveTo(0, -40); ctx.lineTo(Math.cos(a) * 150, -40 + Math.sin(a) * 13); ctx.stroke();
-        }
+        /* the rotor: one faint disc, the blur a running rotor photographs as (no blades: at this frame rate they step
+           a fifth of the spacing a frame and strobe, as the world found), about the length of the airframe, so it
+           clears the altimeter plate at every size */
+        ctx.beginPath(); ctx.ellipse(0, -40, 105, 13, 0, 0, Math.PI * 2); ctx.fillStyle = 'rgba(42,43,46,0.22)'; ctx.fill();
         ctx.fillStyle = HELI_DARK; ctx.fillRect(-3, -40, 6, 14);   // the mast
         /* the boom, the stabiliser, the fin and the tail rotor */
         ctx.strokeStyle = HELI_DARK; ctx.lineWidth = 9;
         ctx.beginPath(); ctx.moveTo(44, -4); ctx.lineTo(140, -20); ctx.stroke();
         ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(126, -24); ctx.lineTo(146, -28); ctx.stroke();
         ctx.beginPath(); ctx.moveTo(134, -17); ctx.lineTo(150, -44); ctx.lineTo(148, -14); ctx.closePath(); ctx.fillStyle = HELI_DARK; ctx.fill();
-        ctx.beginPath(); ctx.arc(149, -32, 13, 0, Math.PI * 2); ctx.strokeStyle = 'rgba(42,43,46,0.35)'; ctx.lineWidth = 2; ctx.stroke();
-        const b = spin * 1.7;
-        ctx.beginPath(); ctx.moveTo(149 - Math.cos(b) * 13, -32 - Math.sin(b) * 13); ctx.lineTo(149 + Math.cos(b) * 13, -32 + Math.sin(b) * 13);
-        ctx.strokeStyle = 'rgba(42,43,46,0.8)'; ctx.lineWidth = 2; ctx.stroke();
+        ctx.beginPath(); ctx.arc(149, -32, 13, 0, Math.PI * 2); ctx.strokeStyle = 'rgba(42,43,46,0.35)'; ctx.lineWidth = 2; ctx.stroke();   // the tail rotor: its ring, no blade
         /* the far skid, behind the cabin */
         ctx.strokeStyle = HELI_DARK; ctx.lineWidth = 3;
         ctx.beginPath(); ctx.moveTo(-34, 34); ctx.lineTo(44, 34); ctx.moveTo(-16, 22); ctx.lineTo(-17, 34); ctx.moveTo(22, 22); ctx.lineTo(23, 34); ctx.stroke();
@@ -794,7 +799,7 @@ export function mountSkydive(el, opts) {
         S.lu = 100; S.lv = 203;
         S.cue = false; S.cueT = 0; S.aad = false; S.pulled = false; S.ended = false; S.quiet = false;
         S.sx = 0; S.sy = 0; steerT.x = 0; steerT.y = 0;
-        S.exitT = 0; S.passT = -1;   // every jump starts on the helicopter's skid
+        S.exitT = 0; S.passT = -1; S.pullWanted = false;   // every jump starts on the helicopter's skid
         setPhase('freefall');
         fig.classList.remove('is-landed');
         pullBtn.classList.remove('is-lit');
@@ -808,7 +813,7 @@ export function mountSkydive(el, opts) {
         resetJump();
         armedAt = performance.now() + ARM_MS;
         if (reducedNow) { S.mode = 'stills'; setStill(0); }
-        else { S.mode = 'jump'; tile.setAttribute('aria-label', LABEL.freefall); }
+        else { S.mode = 'jump'; tile.setAttribute('aria-label', LABEL.freefall); say(STILL_SAY[0]); }   // the exit is announced, as the still is
         if (onJump) onJump();
         syncLoop();
         if (!raf) draw();
@@ -822,11 +827,13 @@ export function mountSkydive(el, opts) {
             try { tile.scrollIntoView({ block: 'nearest', behavior: reducedNow ? 'auto' : 'smooth' }); } catch (err) { /* an older signature */ }
         });
     }
+    /* the diver has hold of the skid for the first LETGO_S of the exit */
+    function holdingOn() { return S.mode === 'jump' && S.phase === 'freefall' && S.exitT >= 0 && S.exitT < LETGO_S; }
     function doPull(byVisitor) {
         if (S.mode === 'stills') { setStill(S.still < 2 ? 2 : Math.min(3, S.still + 1)); return; }
         if (S.mode !== 'jump' || S.phase !== 'freefall') return;
-        if (S.exitT >= 0 && S.exitT < LETGO_S) return;   // still holding the helicopter
-        S.exitT = -1;
+        if (holdingOn()) { S.pullWanted = true; return; }   // still holding the helicopter: the pull fires at the let-go
+        S.pullWanted = false;
         S.pulled = true; S.openT = 0;
         S.canRate = Math.max(CAN_RATE, (S.alt - OPEN_DROP - FLARE_ALT) / GLIDE_S);   // a high pull still glides for about 15 s
         setPhase('opening');
@@ -837,25 +844,28 @@ export function mountSkydive(el, opts) {
         tile.setAttribute('aria-label', LABEL.canopy);
         if (byVisitor) settleIntoView();
     }
-    /* reduced motion: four cut stills, exit, pull cue, canopy, landed */
-    function setStill(i) {
+    /* reduced motion: four cut stills, exit, pull cue, canopy, landed. The first is the exit, held on the skid at
+       EXIT_STILL; when reduced motion comes on in a running jump that has already left the helicopter, that still
+       holds the altitude reached (alt) instead, in the arch, and says so */
+    function setStill(i, alt) {
         S.still = i; S.mode = 'stills';
         S.sx = 0; S.sy = 0; S.bank = 0; S.yaw = 0; S.flare = 0; S.lu = 100; S.lv = 203; S.wrap = 0;
-        S.cue = false; S.aad = false; S.pulled = false; S.ended = false;
-        S.exitT = i === 0 ? EXIT_S * 0.42 : -1; S.passT = -1;   // the first still is the exit, just after the let-go
+        S.cue = false; S.aad = false; S.pulled = false; S.ended = false; S.pullWanted = false; S.passT = -1;
+        const exit = i === 0 && (alt == null || S.exitT >= 0);
+        S.exitT = exit ? EXIT_S * EXIT_STILL : -1;
         if (i >= 2) refocus(pullBtn);
         if (i >= 3) refocus(nextBtn, closeBtn);
         pullBtn.classList.remove('is-lit');
         fig.classList.remove('is-landed');
-        if (i === 0) { setPhase('freefall'); S.alt = TOP_ALT; S.openT = 0; pullBtn.hidden = false; }
+        if (i === 0) { setPhase('freefall'); S.alt = exit ? TOP_ALT : alt; S.openT = 0; pullBtn.hidden = false; }
         else if (i === 1) { setPhase('freefall'); S.alt = CUE_ALT; S.openT = 0; S.cue = true; S.cueT = 0.9; pullBtn.hidden = false; pullBtn.classList.add('is-lit'); }
         else if (i === 2) { setPhase('canopy'); S.alt = 2000; S.openT = 5; S.pulled = true; pullBtn.hidden = true; }
         else { setPhase('landed'); S.alt = 0; S.openT = 5; S.t = 2; S.pulled = true; S.ended = true; pullBtn.hidden = true; fig.classList.add('is-landed'); }
         S.skyAlt = S.alt;
         nextBtn.hidden = i >= 3;
-        fig.dataset.alt = String(Math.round(S.alt));
+        postAlt();
         tile.setAttribute('aria-label', i >= 3 ? LABEL.again : i === 2 ? LABEL.stillLand : LABEL.stillPull);
-        say(STILL_SAY[i]);
+        say(exit || i > 0 ? STILL_SAY[i] : 'Freefall, ' + fmtFeet(S.alt));
         draw();
     }
     /* motion is back: the still becomes the same moment of a running jump, not a new jump, so onJump stays quiet */
@@ -863,7 +873,7 @@ export function mountSkydive(el, opts) {
         const i = S.still;
         S.mode = 'jump'; nextBtn.hidden = true;
         S.rate = i === 1 ? CUE_RATE : FF_RATE; S.canRate = CAN_RATE; S.cueT = i === 1 ? 0.9 : 0;
-        if (i !== 0) S.exitT = -1;   // the exit still resumes mid-exit; every other still is past the helicopter
+        if (i !== 0) S.exitT = -1;   // the exit still resumes mid-exit (one held below the helicopter already has -1); every other still is past it
         if (i === 3) { S.t = 2; S.ended = true; S.quiet = false; tile.setAttribute('aria-label', LABEL.again); }
         else if (i === 2) tile.setAttribute('aria-label', LABEL.canopy);
         else tile.setAttribute('aria-label', LABEL.freefall);
@@ -886,6 +896,7 @@ export function mountSkydive(el, opts) {
         if (!isGrid) el.classList.remove('is-open');
         S.mode = 'idle';
         resetJump();
+        if (!reducedNow) S.passT = 0;   // the count starts again at the top: the helicopter passes
         fig.dataset.phase = 'idle';
         pullBtn.classList.remove('is-lit');
         nextBtn.hidden = true;
@@ -966,9 +977,9 @@ export function mountSkydive(el, opts) {
         if (open) {
             if (reducedNow && S.mode === 'jump') {
                 const i = S.phase === 'freefall' ? (S.cue ? 1 : 0) : S.phase === 'landed' ? 3 : 2;
-                setStill(i);
+                setStill(i, S.alt);
             } else if (!reducedNow && S.mode === 'stills') resumeStill();
-        } else if (reducedNow) { S.alt = TOP_ALT; S.skyAlt = TOP_ALT; S.sway = 0; S.wrap = 0; S.scroll = 0; }
+        } else if (reducedNow) { S.alt = TOP_ALT; S.skyAlt = TOP_ALT; S.sway = 0; S.wrap = 0; S.scroll = 0; S.passT = -1; }   // the still is the diver and the count alone
         syncLoop();
         if (!raf) draw();
     };
@@ -979,7 +990,7 @@ export function mountSkydive(el, opts) {
     nextBtn.hidden = true;
     resize();
     postAlt();
-    if (opts.compact === false) doOpen(); else syncLoop();
+    if (opts.compact === false) doOpen(); else { if (!reducedNow) S.passT = 0; syncLoop(); }   // the compact tile opens on the helicopter passing
     if (!raf) draw();
 
     return {

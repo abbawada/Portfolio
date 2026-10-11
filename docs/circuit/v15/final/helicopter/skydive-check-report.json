@@ -5,21 +5,21 @@
   "frames": {
     "idle": {
       "n": 105,
-      "mean": 0.22,
+      "mean": 0.21,
       "p95": 0.5,
-      "max": 0.8
+      "max": 0.6
     },
     "freefall": {
-      "n": 1640,
-      "mean": 0.17,
-      "p95": 0.5,
-      "max": 5.1
+      "n": 1642,
+      "mean": 0.11,
+      "p95": 0.3,
+      "max": 3.9
     },
     "canopy": {
-      "n": 1968,
-      "mean": 0.14,
-      "p95": 0.4,
-      "max": 5
+      "n": 1969,
+      "mean": 0.12,
+      "p95": 0.3,
+      "max": 0.6
     }
   },
   "checks": [
@@ -45,7 +45,7 @@
     {
       "name": "idle loop runs frames",
       "pass": true,
-      "detail": 73
+      "detail": 74
     },
     {
       "name": "the stylesheet is the one the page linked (no second copy)",
@@ -181,7 +181,7 @@
     {
       "name": "frames stop once the end state settles",
       "pass": true,
-      "detail": "3833 -> 3833"
+      "detail": "3836 -> 3836"
     },
     {
       "name": "onLink fired",
@@ -253,7 +253,7 @@
     {
       "name": "no frames under reduced motion",
       "pass": true,
-      "detail": "4029 -> 4029"
+      "detail": "4044 -> 4044"
     },
     {
       "name": "reduced open shows still 1 at 13,500",
@@ -315,7 +315,7 @@
     {
       "name": "stills draw without frames",
       "pass": true,
-      "detail": "4030 -> 4030"
+      "detail": "4045 -> 4045"
     },
     {
       "name": "motion back on the landed still keeps the landed state and fires no onJump",
@@ -334,7 +334,7 @@
     {
       "name": "motion returns: idle frames again",
       "pass": true,
-      "detail": "4030 -> 4074"
+      "detail": "4045 -> 4090"
     },
     {
       "name": "destroy empties the container",
@@ -343,7 +343,7 @@
     {
       "name": "destroy stops frames",
       "pass": true,
-      "detail": "4083 -> 4083"
+      "detail": "4099 -> 4099"
     },
     {
       "name": "jump() after destroy does not fire onJump",

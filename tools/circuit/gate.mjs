@@ -174,7 +174,7 @@ for (const [w, h] of [[1600, 900], [1440, 900]]) {
 }
 if (!noClose) {
     await load(1600, 900);
-    const locs = await page.evaluate(() => window.CircuitLayout.LOCATIONS.map(l => ({ id: l.id, num: l.num, anchor: l.anchor, labelZ: l.labelZ, sky: !!l.sky })));
+    const locs = await page.evaluate(() => window.CircuitLayout.LOCATIONS.map(l => ({ id: l.id, num: l.num, anchor: l.anchor, labelZ: l.labelZ })));
     for (const loc of locs) {
         await page.evaluate(([id, a, labelZ]) => {
             const UP = [-Math.SQRT1_2, -Math.SQRT1_2], lift = labelZ * 0.45 * 1.73;

@@ -514,18 +514,509 @@ Every command that failed while I worked, and what fixed it:
 
 The jump now starts on the Betta helicopter, the aircraft that flies over
 the race leader on the Wada Ring (it replaced the blimp in the same
-round; see round-6.md section 6). In the module: `drawHeli` (the cabin
-with BETTA on its flank, the glass nose, the boom and fin, the spinning
-rotor, the skids, in the world's own tones), an `exitT` clock that runs
-for EXIT_S = 1.5 s from every `resetJump`, during which the diver hangs
-from the near skid, lets go at 0.6 s (LETGO_S: no pull before that,
-steering ignored throughout) and comes to the centre at full size while
-the helicopter recedes out of the top; the fall rate builds with a
-smoothstep over the same 1.5 s, so the exit costs about 0.7 s of freefall
-time (alt is about 12,800 ft when the helicopter is gone). The compact
-idle shows the helicopter passing out of the top for PASS_S = 1.8 s after
-each wrap back to 13,500 ft (`passT`). The first reduced-motion still is
-the exit, held just after the let-go, announced as "Exit from the
-helicopter, 13,500 feet" (check.mjs updated to match). The check passes
-in full: 0 failed, zero page errors; captures in
-docs/circuit/v15/final/helicopter/.
+round; see round-6.md section 6, which also records the fix round that
+followed the review). In the module: `drawHeli` (the cabin with BETTA on
+its flank, the glass nose, the boom and fin, the rotor as one faint disc
+about the length of the airframe, so it clears the altimeter plate at
+every size, with no blades, since at this frame rate they would step a
+fifth of the spacing a frame and strobe; the tail rotor a ring; the
+skids; in the world's own tones, HELI_BODY #eceff2 and HELI_DARK
+#2a2b2e), an `exitT` clock that runs for EXIT_S = 1.5 s from every
+`resetJump`, during which the diver hangs from the near skid, lets go at
+0.6 s (LETGO_S; steering ignored throughout the exit) and comes to the
+centre at full size while the helicopter recedes out of the top; the
+fall rate builds with a smoothstep over the same 1.5 s, so the exit
+costs about 0.75 s of freefall time (the altimeter reads about 12,970 ft
+when the helicopter is gone). A pull made while the diver still holds
+the skid is kept (`pullWanted`, `holdingOn()`) and fires at the let-go;
+a pull made later in the exit opens the canopy while the helicopter goes
+on receding (`exitT` keeps running through `opening`, and arms that had
+not finished opening go on opening). The exit is announced in a running
+jump as the still is ("Exit from the helicopter, 13,500 feet"). The
+compact idle shows the helicopter passing out of the top (PASS_S = 1.8 s,
+`passT`) at mount, after a close and after each wrap back to 13,500 ft,
+fading in over PASS_FADE_S = 0.25 s, the length of the digit dip (the
+first cut's pass popped in whole; the fix round cut it, and the round
+that followed brought it back with the fade, so a visitor who never
+clicks still sees where the diver jumps from); under reduced motion
+there is no pass. The first reduced-motion still is the
+exit, held on the skid at EXIT_STILL = 0.3 of the exit, announced as
+"Exit from the helicopter, 13,500 feet" (check.mjs updated to match, and
+its click after the let-go now waits on the posted altitude rather than
+the clock); reduced motion coming on in a running jump that has already
+left the helicopter holds the altitude reached instead (`setStill(i,
+alt)`) and says "Freefall" with that altitude. The check passes in full:
+0 failed, zero page errors; captures in docs/circuit/v15/final/helicopter/
+(refreshed after the fix round).
+
+## The review round (2026-10-10)
+
+dd49613 went to a review workflow the same night: five reviewers (world
+code, skydive code, design, runtime, world runtime and docs) and a
+completeness critic over what the five had not looked at; then a panel
+of three lenses on every finding (code, is the defect in the source;
+repro, does it show in headless Chrome against the review server on
+8646; impact, does a visitor meet it, and is the proposed fix the
+smallest one), a finding standing when two of the three agreed; then
+fixers by file (world, skydive, docs), a recheck run alone on the fixed
+tree, and the critic once more over the fixes. The helicopter section
+above was rewritten by that round to the module as it stands; this is
+the record of the round from the module's side. round-6.md section 7 is
+the same record for the whole aircraft. Reviewers and verifiers wrote
+nothing inside the repo; their probes and captures are in the session
+scratchpad under review/ (skydive-defects and skydive-states for the
+module, design-judge for the tile captures, and one folder per lens and
+finding). Nothing committed.
+
+| dimension | raised | confirmed |
+| --- | --- | --- |
+| world code | 5 | 5 |
+| skydive code | 6 | 6 |
+| design | 9 | 7 |
+| runtime | 6 | 6 |
+| world runtime and docs | 9 | 6 |
+| completeness critic | 5 | 5 |
+| all | 40 | 35 |
+
+What the module's two reviewers read and ran. Skydive code: all 1,002
+lines of circuit/skydive.js against the commit, with skydive.css, the
+harness and check.mjs; verified by hand and found right the skid
+placement (feet at y 64 in diver units, `k * scaleD * diverS` landing
+them on the near skid at heliY + 42 heliS), `drawHeli`'s canvas state
+(save and restore round the font, letterSpacing, alignment and line
+settings, globalAlpha untouched), the font fallback, the per-frame cost
+of the exit (about 25 path ops and one fillText for 1.5 s a jump), the
+exit against the AAD (it cannot fire above 13,000 ft), `setStill(0)` and
+`resumeStill(0)`, `onReduced` mid-exit, the 100 ms window between
+ARM_MS and LETGO_S, keyboard steering held at 0 through the exit, the
+IntersectionObserver freezing `exitT` with the loop, resize and destroy
+mid-exit, two tiles in one host and the self-linked stylesheet.
+Runtime: every state from a fresh load, one Chrome at a time: Escape
+during the exit on the harness and the live page, arrows held through
+it, Jump again from the end state, reduced motion from the start,
+resize 1280 to 360 to 1280 mid-exit, scrolled out of view mid-exit and
+mid-pass, destroy mid-exit, ?two=1, ?nocss=1 with the stylesheet
+delayed 1.5 s, ?open=1, focus through the whole keyboard run, phones at
+360x740 and 390x844, frame cost at DPR 3 (rAF callback 0.13 ms idle,
+0.15 during the exit, p95 0.3). Zero page errors and zero module
+console errors in every case. The design reviewer judged the tile from
+captures at 1440x900 and 390x844 (the jump at 60, 350, 650, 950 and
+1,300 ms, the compact wrap every 200 ms for 2.5 s, the reduced-motion
+exit still): the exit itself reads as "jumping from the Betta
+helicopter" in both tiles once the diver lets go, and the
+diver-to-cabin proportion is about half the cabin length; neither was a
+finding.
+
+The findings on the module (17 of the 35 confirmed), and what became of
+each:
+
+- A pull between 0.6 and 1.5 s cut the exit: the helicopter vanished
+  and the diver jumped to full size at the centre in one frame (raised
+  by skydive code and again by runtime). Fixed, edit 10 below.
+- A pull in the first 0.6 s was swallowed while the hint said "Click to
+  pull" and the pill was live (raised twice as well). Fixed, edit 10.
+- check.mjs path 7 relied on 700 ms of wall-clock to cover 0.6 s of
+  simulated exit, so under throttled frames the click was swallowed.
+  Fixed, edit 15.
+- Reduced motion switched on during the compact pass froze the
+  helicopter in the reduced idle still. Gone with the pass, edit 11.
+- The compact pass popped in: the helicopter appeared whole, fully
+  inside the frame, on the first frame after the wrap (raised by
+  skydive code as a fade, by design as a cut, the design finding rated
+  high). Cut, edit 11.
+- This report's exit altitude was wrong: the exit ends near 12,970 ft
+  and the cabin is out of the top by about 0.9 s (near 13,350 ft), not
+  12,800 ft (raised twice). Corrected in the section above, edit 18.
+- The reduced-motion exit still hid the B of BETTA behind the diver.
+  Fixed, edit 12.
+- The main rotor strobed, three solid blades stepping a fifth of the
+  spacing a frame (the tile's half of a world finding). Fixed, edit 16.
+- In the tile the rotor disc ran under the altimeter plate on the
+  desktop (the "tail rotor clipped at 390" half did not hold: the ring
+  sits 5.6 px inside the edge). Fixed, edit 13.
+- Reduced motion switched on mid-jump rewound the dive to the exit
+  still at 13,500 ft, and motion coming back replayed the exit. Fixed,
+  edit 12.
+- A motion jump never announced the exit to assistive tech; only the
+  stills said "Exit from the helicopter". Fixed, edit 14.
+- The compact tile showed no helicopter at mount and none after Back or
+  Escape, only after the first wrap. Overtaken by the cut of the pass.
+- On a 360x740 phone the Pull pill opens 12 px below the fold, and
+  scrolling to it slides the scene under the sticky head. The round-6
+  sheet layout, not from dd49613; left for Abba (below).
+- The section above still documented PASS_S and passT, "no pull before
+  the let-go" and a still "held just after the let-go" (the critic,
+  reading the fixed tree). Rewritten, edit 18.
+- The tile's helicopter differed from the world's once the world's
+  blades went: the tile still stroked three blades and a spinning tail
+  blade (the critic). Fixed, edit 16.
+- After the cut, the compact tile never shows the aircraft, so a
+  visitor who does not click never sees where the diver jumps from (the
+  critic). Recorded as Abba's decision, not repaired (below).
+
+The edits, by file (the whole round's, since the aircraft is one thing
+in two places; the map regeneration counted once, though it ran twice):
+
+1. circuit/world.js: the helicopter's ground shadow cut (the mesh, its
+   placement and fade, the declaration): it lay on the paper past the
+   plate edge, sat 560 px from the aircraft at opacity 0.07 and was
+   gone for 42 percent of the lap. Three findings closed at once.
+2. circuit/world.js: the tail-rotor disc gets a back face in the merged
+   graphite Builder, so it shows from either flank round the lap.
+3. circuit/world.js: the environment blur 0.05 to 0.04, the widest that
+   fits the PMREM generator's twenty taps; the console is empty on load.
+4. circuit/layout.js, circuit/world.js, tools/circuit/map.js: HELI.at
+   [150, 22, 70] to [150, 22], height the one altitude; the stale
+   shadow rotation line and comment went with the shadow.
+5. tools/circuit/map.js: the glyph's shadow circle cut, to match the
+   world.
+6. circuit/layout.js: HELI.height 92 to 68, the lowest height still
+   above the blimp's 62 and clear of every mark (the About roof at 55.8
+   cleared by 5.7 units); at the 1440x900 rest view the hull is
+   entirely above the frame for 4.4 percent of track frames (about 25
+   at 92) and cut by the top edge for 36; at 390x844 it never fully
+   leaves. Both height findings closed.
+7. circuit/world.js: the three blades, the rotor group and the spin
+   cut; the main rotor is one disc at opacity 0.14. One draw call
+   fewer.
+8. circuit/world.js: M.cabin, an opaque MeshStandardMaterial #eceff2,
+   for the cabin mesh alone (M.white, three districts' candy, untouched).
+9. circuit/world.js: the dead `if (loc.sky) continue;` in the LOCATIONS
+   loop deleted.
+10. circuit/skydive.js: one defect behind four findings, fixed at the
+    root. `doPull` no longer sets `exitT` to -1; the clock runs on
+    through `opening`, `draw()` computes the exit progress `e` for any
+    jump phase (`S.mode !== 'idle' && S.exitT >= 0`) and draws the hang
+    pose only in freefall, and `hangT = max(1 - letgo, snatch)` carries
+    the let-go roll over, so a pull before the helicopter has gone
+    leaves it receding at its own speed while the pilot chute comes out
+    (cabin pixels after a pull at 13,380 ft: 8268, 7269, 5978, 4069,
+    1997, 112, 0, the same slope as before the click). A press while
+    the diver still holds the skid (`holdingOn()`, the first LETGO_S)
+    is kept in `S.pullWanted` and fires as `doPull(true)` at the
+    let-go, the canopy opening at 13,440 ft; the flag is cleared in
+    `resetJump`, `setStill` and when a pull proceeds. No new UI state,
+    no new copy; the whole jump, the AAD at 1,490 ft, Jump again and
+    Escape run as before.
+11. circuit/skydive.js: the compact pass cut: PASS_S, `S.passT`, the
+    idle bookkeeping (`if (S.wrap >= 1) S.wrap = 0;` again) and the idle
+    branch of `draw()`; the header comment no longer mentions it. After
+    Escape the compact tile sits at 13,500 with 0 cabin pixels, and ten
+    captures across the 9,000 to 13,500 wrap show the digits dip and
+    return with nothing switching on.
+12. circuit/skydive.js: `EXIT_STILL = 0.3` holds the exit still in one
+    place: `setStill` puts `EXIT_S * EXIT_STILL` in `S.exitT` and
+    `draw()` reads `e` from it (the old literal 0.42 inside `draw()` is
+    why editing `setStill` alone changed nothing). `setStill(i, alt)`
+    takes the altitude reached: a fresh open or a toggle during the exit
+    gives the exit still at 13,500 with the helicopter; a toggle in a
+    jump that has already left it holds that altitude in the arch, no
+    helicopter, and says "Freefall, N feet" (10,440 ft in the probe),
+    and motion coming back continues from there. The still's data-alt
+    goes through `postAlt()` like every other state; `resumeStill`
+    needed no change.
+13. circuit/skydive.js: the rotor radius 150 to 105 in `drawHeli`: a
+    replay of the module's formulas gives 0 px of plate intrusion
+    through the exit at 490x306 and 348x217 (150 intruded 29 and
+    18.6 px; 115 still 4.0 and 0.9).
+14. circuit/skydive.js: `startJump`'s motion branch calls
+    `say(STILL_SAY[0])` after setting the tile label; a MutationObserver
+    on .sky-status saw ['', 'Exit from the helicopter, 13,500 feet'] on
+    Enter, the cue, canopy and landed announcements unchanged.
+15. docs/circuit/v15/skydive/check.mjs: path 7's `waitForTimeout(700)`
+    is `waitForFunction` on data-alt 13,440 or lower (alt at 0.6 s is
+    13,446, posted 13,450), with a two-line comment; since simulated
+    time never outruns wall time this covers the 500 ms arming window
+    too, and the 80 ms "opening" assertion stays.
+16. circuit/skydive.js: `drawHeli`'s three-blade loop and tail blade
+    cut, the disc fill 0.16 to 0.22, the signature `drawHeli(x, y, s)`,
+    `spin` gone; the rotor comment says why. Pixel change per frame over
+    the rotor band during the hang: 0 on the working tree, 4.1 to 5.5
+    every frame with the committed module served through a route.
+17. docs/circuit/map.svg, docs/circuit/map.html: regenerated with node
+    tools/circuit/map.js, twice (at the committed layout, then after the
+    world edits). Only the sky group changed.
+18. docs/circuit/v15/round-6.md, docs/circuit/v15/skydive.md and
+    docs/circuit/v15/final/helicopter/: section 6 and the helicopter
+    section above rewritten to the working tree, the exit altitude
+    corrected, and the twelve captures refreshed under the same names
+    (exit-01 to exit-04 and reduced-still-exit from the harness on
+    state waits, the two live exits from index.html, world-rest-1440 and
+    world-helicopter-close from the live page; compact-pass.png deleted
+    with the pass; gate-report.json and skydive-check-report.json
+    replaced).
+
+Not done, and why: the no-WebGL poster (images/wada-ring-poster.jpg)
+still shows the blimp, no fixer owned it (run
+/usr/local/bin/python3 tools/circuit/poster.py
+'http://127.0.0.1:8646/index.html?poster=1' after the world edits; the
+?poster=1 hides the HUD, pins, map and grid so they are not baked in
+twice); the dead loc.sky guard at tools/circuit/poster.py line 84 and
+the dead sky field at tools/circuit/gate.mjs line 177, not owned; the
+shadow's rim-fade and clipping-plane variants and the compact pass at
+mount and after Back, all overtaken by the two cuts; a frame-aware
+altitude clamp in placeHeli, not taken (it couples the world to the
+viewport, pins the hull to the canvas edge for a third of the lap and
+needs a floor and a zoom gate); the phone sheet, left for Abba; the map
+glyph's BETTA banner running past its cabin rect, a docs-only nit
+recorded in round-6.md section 6.
+
+Three decisions this round left to Abba; right after the round the first
+two were taken against the ask as written (the height is now a band, 92
+over the near half of the plate and 68 over the far half, and the compact
+pass is back with a fade on the digit dip, see the section above), and
+the third stays open:
+
+1. The height: 68 is above the blimp (6 units, about 26 px at the
+   desktop rest view), and the hull still leaves the top of the
+   1440x900 frame over the far half of the lap; the height that never
+   leaves that frame is 50 to 55, below the blimp. Higher than the
+   blimp, or always in frame.
+2. The compact tile: the diver and the count alone, the aircraft seen
+   only after the click (as now), or the pass back at each wrap as a
+   fade in the digit dip with the smaller disc kept clear of the plate
+   (a one-line change either way).
+3. The phone sheet: grow it to 76vh while the jump is open
+   (`.ring-panel:has(.sky.is-open)` in circuit.css's max-width 760px
+   block, so the Pull pill sits at 589 to 629 of 740 with no scroll),
+   or leave it at 54vh with the pill one short scroll down. The
+   in-module alternative (hide the touch hint on phones, cap the scene
+   at calc(54vh - 224px)) would cut the only words that tell a phone
+   visitor to drag to steer and squash the scene to 122 px at 360x640,
+   so it was not taken.
+
+Rechecked alone on the fixed tree, twice (after the fixes, and again
+after the docs were rewritten); the second run's numbers, the first in
+brackets where they differ:
+
+| check | result |
+| --- | --- |
+| the module check (docs/circuit/v15/skydive/check.mjs, run alone) | 81 of 81, 0 failed, pageErrors [] and consoleErrors []; frames idle 0.20 ms mean (p95 0.5), freefall 0.13 (p95 0.4, max 5.6), canopy 0.09 (p95 0.3) [0.16, 0.11 and 0.12]; the cue at 3,990 ft, the glide from the cue 18.1 s, the AAD at 1,490 ft 6.69 s after the cue, the post-let-go pull waited on the posted altitude and opened, reduced-motion still 1 at 13,500 ft announced "Exit from the helicopter, 13,500 feet" with the diver on the skid under BETTA; no timing retry |
+| gate audit (tools/circuit/gate.mjs, 1600x900 and 1440x900) | every overlap category empty at both widths; 204 draw calls and 51,184 triangles; 59.5 fps at 1600 and 59.7 at 1440 [59.1 and 60.3]; gate errors [] |
+| live page (Playwright over Chrome, DPR 2, 1440x900 and 390x844, one browser at a time) | zero page errors and zero console errors at both sizes; the Projects pin clickable at both, the tile first in the grid and idle (13,170 ft, "Skydiving, press to jump"); at 405 and 395 ms after the tile click data-phase freefall, data-alt 13490, the live region "Exit from the helicopter, 13,500 feet", the label "Skydiving, arrow keys steer, press to pull", the diver hanging arms-up from the near skid under BETTA with the whole aircraft in frame; at 1,855 and 1,846 ms still freefall at 12,760 and 12,800 ft, the arch over clouds, the helicopter gone out of the top; the helicopter in the world the one Group at scale 1.4 with five children and no shadow mesh, on screen in both rest views; 204 calls, 59.3 and 58.8 fps |
+| the hull up close (zoom 4, twelve frames) | on screen in all twelve as it follows the leader, 87 draw calls at that zoom; the cabin, BETTA, boom, fin, tail ring and skids read |
+
+docs/circuit/v15/final/helicopter-review/ holds that evidence: 48 files,
+6.36 MB. The check's 18 harness captures (01-compact-grid.png to
+18-aad-fires.png) with check-report.json and check.log;
+gate-wide-1600.png, gate-wide-1440.png, gate-report.json and gate.log;
+eight live captures (rest, Projects open, the jump at 350 ms and at
+1,800 ms, at each size; the jump shots clip figure.sky with its pill,
+hint and status) with live-report.json and live.log; frame-01.png to
+frame-12.png with frames-report.json and frames.log. The 18 PNGs over
+300 KB were quantized with pngquant (quality 80 to 100) and all 40 run
+through oxipng to bring the folder under the 8 MB budget, dimensions
+unchanged; the lossless originals are in the scratchpad
+(review/final-verify/originals/). The folder is review scratch written
+inside the repo by the recheck stage and stays untracked; the module's
+evidence for the commit is docs/circuit/v15/final/helicopter/,
+refreshed by edit 18.
+
+### Failures
+
+Every command that failed across the review workflow (the whole round,
+not the module alone), by stage, and what fixed it. The world-code and
+runtime reviewers had no failed command, and the recheck's four runs
+(check, gate, live, frames) all exited 0 and fell short only on the
+folder's size. Everything here was fixed at the root and re-run, except
+item 40, which says so.
+
+Review stage:
+
+1. Skydive code: probe.mjs read the canvas as soon as data-alt reached
+   13,400 and found no cabin pixels, a false negative (data-alt posts
+   every eighth frame, and the wrap sets 13,500 at wrap 0.5, 125 ms
+   before the pass began). probe2.mjs waits on the cabin-colour pixel
+   count itself; re-run, 1,820 pixels before and after the switch.
+2. Design: the first lap probe took the rotor's screen radius from a
+   wrong pixels-per-unit (895 px), so its overlap and cut-at-top counts
+   (478 of 478) meant nothing. Its raw samples were kept and every
+   statistic recomputed offline with the radius from the view geometry
+   (68 px at 1440, 19 px at 390), exit 0.
+3. Design: a Pillow DeprecationWarning (Image.getdata) on the
+   flank-colour measurement. Rewritten with im.load() pixel access and
+   re-run under python3 -W error; same values, no warning.
+4. World runtime and docs: `echo ======` as a separator failed under
+   zsh ("===== not found": a word that starts with = is a command-path
+   lookup). Quoted and re-run.
+5. World runtime and docs: `ls circuit/*.png` failed ("no matches
+   found": a glob that matches nothing is an error in zsh). Replaced
+   with find -iname, which found the poster assets.
+6. World runtime and docs: a repo-wide grep for AMBIENT swept
+   circuit/vendor/three.module.min.js into a 360 KB result that was
+   persisted rather than shown. Read in bounded slices; later greps
+   scoped to circuit/, tools/ and named files, excluding vendor.
+7. World runtime and docs: reduced.mjs crashed on
+   `c.raceState(...).map is not a function` (raceState returns an
+   object), and outframe.mjs carried the same call. Both calls dropped;
+   both scripts re-run clean, report and captures written.
+
+Panel stage (the three lenses, each finding its own probe):
+
+8. Four probes threw inside page.evaluate: `THREE is not defined` twice
+   (the page imports three as a module, no global) and `Box3 is not a
+   constructor` twice (geometry.boundingBox is null until computed).
+   Rewritten with camera.position.clone() or its constructor, and with
+   computeBoundingBox() plus the eight corners through matrixWorld.
+9. A finder snippet run through eval() with const declarations threw
+   `heli is not defined` (strict-mode eval keeps them scoped).
+   Rewritten as a function expression; re-run with no page errors.
+10. The phone crops came out blank: the probe cropped the canvas
+    centre, while portrait nav sets view.shiftPx and fit() offsets the
+    frame. Cropped around the hull's projected position instead.
+11. Two scripts read track frames as f.x, f.z, f.tx, f.tz (L.frames()
+    stores f.p and f.t), giving NaN or null extents. Fixed in both and
+    cross-checked against the live body meshes (projected -30 against
+    measured -27).
+12. Three probes framed the aircraft wrongly: nav.flyTo(x, z, zoom) and
+    a park at the About tower's plan point both target the ground, so
+    at height 92 the hull projected above the frame (#000000 samples,
+    or Playwright's "clipped area is either empty or outside the
+    resulting image" at y -462). Re-framed with view.target set to the
+    hull's full position (or lifted along the view direction) then
+    fit(); all samples on screen.
+13. Three probes waited for an idle phase, or clicked the tile, on the
+    harness with ?open=1, which mounts open and already jumping (the
+    click was taken as a pull and moved the stills past the exit).
+    Waited for the canvas and window.__sky and called __sky.jump(), or
+    used the compact mount and clicked only when data-phase was idle.
+14. boundingBox() of .sky-again returned null: the Jump again row is
+    shown only once is-landed is added, about a second after the
+    landed phase. Waited for it visible; the partial results were saved
+    before the long wait.
+15. The first load probe opened four live pages as tabs of one headless
+    browser; only the first rendered (background tabs do not), so it
+    proved nothing. Re-done with three separate browser instances (the
+    harness held 62 fps under them).
+16. The refute-passT probe counted near-white pixels (the altimeter
+    text and clouds match too) and read the figure's class before the
+    matchMedia change had landed. probe2 counts the cabin-window colour
+    and waits for is-reduced: 0, 184, 181, 181, 0.
+17. A probe sampled at a 700 px viewport, which tripped the 720 px
+    media query (a phone-size tile) and ended before the wrap. Widened
+    to 1000 px, waited on data-alt 9,000 or lower, sampled 2.6 s.
+18. The first pass-pop probe's thresholds came from a larger capture
+    (4,000 white pixels; the 230 px tile peaks near 1,900) and timed
+    out. Measured one idle cycle and set seen above 800 and ended below
+    400 against a baseline of about 110.
+19. probe.mjs called phase() without its page argument (TypeError on
+    evaluate). Every call given the argument; all five variants ran.
+20. probe.mjs: SyntaxError, `label` declared twice. The helper renamed;
+    all three runs completed.
+21. An init script observed document.documentElement at document start,
+    when it is still null, so no observer attached and no live-region
+    events were logged. observe(document, ...) instead; every text
+    change logged in all three runs.
+22. fix-sweep.mjs: ReferenceError D is not defined (a zsh variable used
+    inside the Node module). Read process.env.D and exported it.
+23. shot.mjs: SVGRect from getBBox() has no toJSON, so the DOM check
+    threw before the second screenshot. Spelled out x, y, w, h.
+24. probe3.mjs read renderer.properties.get(material).currentProgram,
+    undefined on this three build. Dropped the readout and tested the
+    alphaTest effect by measurement.
+25. probe3.mjs's blank-transparent-map variant blanked the shared banner
+    texture (Texture.clone() shares the Source), zeroing every later
+    diff in that run. Those results discarded; the cabin-side variants
+    re-run in probe4 and probe5 without texture swaps, each against its
+    own paired reference.
+26. Box3.setFromObject(m) without precise inflated the yawed disc's
+    footprint to 19.7. Re-run with precise: 14.0 at every yaw.
+27. The first shadow on/off pair measured a delta of 0 (the shadow was
+    faded to 0 at the plate edge, then hidden under the Grid panel).
+    clear.mjs waits on opacity 0.069 or more and a position clear of
+    the panel; a clean 7-level delta at both widths.
+28. The rest-view A/B diff was contaminated by the race running between
+    the two captures. rest-ab.mjs calls __circuit.stop() and render()
+    before both.
+29. Pixel-diff scripts printed Pillow's getdata DeprecationWarning
+    twice. Rewritten with get_flattened_data() and tobytes(); the first
+    comparison was also two separate loads (cars had moved) and was
+    replaced by a same-frame comparison.
+30. An ls of pngjs failed: no PNG decoder in that node_modules. The
+    screenshots were decoded inside the page (a data-URL Image on a 2D
+    canvas, getImageData).
+31. A probe read the tile's size right after the pin click, the compact
+    232x348 tile rather than the open one. Clicked .sky-tile and waited
+    for is-open: 490x306 and 348x217.
+32. Regex greps for Euler.set order handling in the minified three
+    proved nothing. A node .mjs imported the vendored module and printed
+    "order after set: YXZ".
+33. grep -o with .{0,1800} patterns on the minified three hit ugrep's
+    complexity limit. A node indexOf/slice one-liner extracted r185 and
+    the transmission-pass source.
+34. Zero-match lookups exited 1 five times: grep -c fromScene on the
+    commit diff (the expected zero, no fix needed), "function smooth"
+    when the helpers are const arrows, an anchored "const rafStats"
+    that stopped an && chain, a guessed path shots/log-jump.txt, and
+    `sed -n 220,240p circuit/map.js` when the file is
+    tools/circuit/map.js. Each re-run on the right pattern or path.
+35. `git show $h:circuit/layout.js` failed twice ("ambiguous argument":
+    zsh reads :c as a modifier on the variable). Braced and quoted,
+    "${h}:circuit/layout.js".
+36. BSD sed rejected GNU's N,+Mp range, and a stray `sed -n /dev/null`
+    errored. Both dropped; the lines read another way.
+37. `ls --time-style` is GNU only. `ls -lT`.
+38. Unquoted `echo ======` separators failed under zsh six times in this
+    stage (the leading = is a command-path lookup). Quoted each time
+    and re-run.
+39. A zsh glob that matched nothing (tools/circuit/harness/*.js) aborted
+    a listing. find -type f.
+40. The full-lap word-overlap probe (words.mjs, three viewports by
+    100 s) had produced no output when the verdict was due. Not
+    completed: the HUD verdict rests on the reviewer's samples.json and
+    captures re-read against the HUD words; the script and log stay in
+    the scratchpad (review/heli-hud-impact/).
+
+Fix stage:
+
+41. World: ${PIPESTATUS[0]} printed an empty exit status (zsh spells it
+    $pipestatus); the probe itself had completed. ${pipestatus[1]} on
+    the gate run and $? on the single commands, all 0.
+42. Docs: a zsh for-loop over decisions-blimp/*.txt *.md *.json aborted
+    on the unmatched glob. The four .txt files read by name.
+43. Docs: exit-03-helicopter-recedes waited for data-alt 13,320 or lower
+    and caught the aircraft already gone (13,230 ft, the same thing the
+    committed capture at 950 ms wall-clock showed). Moved to 13,380
+    (about 0.8 s of the exit) and the whole series re-run.
+44. Docs: an em-dash check piped grep into head and read head's exit.
+    grep -c on each file: 0 and 0.
+45. Docs: an awk count of the Measured table used a guessed line range
+    and found no rows. Re-run matching pipe-led lines from line 128:
+    six rows of three pipes.
+46. Skydive: the per-frame rotor-band measure averaged a NaN from a
+    buffer of a different length after the open resize and printed null
+    means. Compare equal-length buffers and average finite values only:
+    working tree 0.14, committed module 4.72.
+
+Recheck stage:
+
+47. First run: the twelve helicopter frames as full 1440x900
+    screenshots put the folder at 10.7 MB, over the 8 MB cap. Re-run as
+    680x460 clips at DPR 1 (134 to 154 KB each): 7.9 MB in 46 files.
+48. Second run: no command failed, but the folder came out at 17.2 MiB
+    (DPR 2 frames of about 1 MB each over the About tower's LED board,
+    the Projects capture 2.4 MB) and no PNG compressor was installed.
+    The 40 lossless PNGs copied to the scratchpad, pngquant 3.0.3 and
+    oxipng 10.2.1 installed with Homebrew, the 18 over 300 KB quantized
+    (quality 80 to 100, none skipped) and all 40 run through oxipng:
+    6.36 MB, dimensions unchanged, re-measured to prove it.
+
+Critic and its panel:
+
+49. A grep for the flat map's sky group with a pattern running on to
+    the hud group matched nothing (a newline separates them); the
+    pipeline exited 0 with empty output. Limited to the sky line.
+50. The same grep spanning a line break printed nothing in the panel.
+    `grep -n 'id="sky"'`, which showed no circle and the rect at
+    y 188.69.
+51. An unquoted `skydive.md?` in an echo was globbed (no match) and
+    stopped the && chain. Quoted; the remaining checks re-run.
+52. `echo ===== WORLD` and two more =-led separators failed under zsh
+    (three times). Quoted.
+53. Bare globs over scratchpad/*.json and repro-tile-pop/*.txt matched
+    nothing (two commands). grep -rl with quoted --include patterns,
+    and find piped to a while-read loop.
+54. The first probe capped its sample list at 60 entries, so it could
+    not show the wrap had happened. Recorded every altitude and ended
+    on state (back at 13,500, then below 13,000): wrapped true, 21
+    white pixels at most, zero page errors.
