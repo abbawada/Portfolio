@@ -645,6 +645,7 @@ body.ring-open .ring-broadcast { right: calc(var(--ring-panel-w) + 1.5rem); }
 @media (max-width: 760px) {
     :root { --ring-panel-w: 100vw; }
     .ring-panel { top: auto; height: 54vh; border-left: 0; border-top: 1px solid var(--hairline); }
+    .ring-panel:has(.sky.is-open) { height: 76vh; }   /* the jump open: the Pull pill fits a 360x740 screen without a scroll */
     body.ring-open .ring-hud { display: none; }   /* the sheet and the stop share the screen; the block returns on close */
     .ring-hud { max-width: 15rem; }
     .ring-hud-line { font-size: 0.875rem; line-height: 1.4; }

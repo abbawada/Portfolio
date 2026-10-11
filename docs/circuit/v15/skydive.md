@@ -784,6 +784,10 @@ the third stays open:
    at calc(54vh - 224px)) would cut the only words that tell a phone
    visitor to drag to steer and squash the scene to 122 px at 360x640,
    so it was not taken.
+   Decided 2026-10-11: 76vh while the jump is open, as the rule above.
+   Measured live at 360x740: sheet 400 before, 562 open, the pill at 589
+   to 629 with the hint showing, 400 after Back; 1440x900 unchanged;
+   skydive check 81 of 81, no page or console errors.
 
 Rechecked alone on the fixed tree, twice (after the fixes, and again
 after the docs were rewritten); the second run's numbers, the first in

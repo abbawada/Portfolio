@@ -117,10 +117,14 @@ down if a module fails (circuit/stops.js mountLive).
 - The lab's stage 2 says "a buzz after 15 s of slouching" (true to the
   ITP 348 build); the shelf's Posture Cue copy says "cues you upright the
   second you slouch". One device, two lines. Say which.
+  Decided 2026-10-11: 15 s everywhere. The shelf line and blurb (cases.js)
+  and the projects.html entry now say "cues you upright after 15 seconds
+  of slouching".
 - The court clip shows USC banners and the SC mark on the player's shirt;
   the "what counted" still too. Kept real by the orchestrator's call;
   the painted alternative is in the session scratchpad (content.md names
   the path).
+  Decided 2026-10-11: keep the real clip.
 - The wheelchair poster under the projects shelf shows real people and a
   USC-print shirt, as before this round.
 - Phones remain untuned beyond what each module checked at 360 and 390.
@@ -437,6 +441,12 @@ The three decisions as the round left them:
 3. The phone sheet. Grow it to 76vh while the jump is open so the Pull
    pill fits a 360x740 screen, or leave it at 54vh with the pill one
    short scroll down.
+   Decided 2026-10-11: 76vh while the jump is open
+   (`.ring-panel:has(.sky.is-open)` in circuit.css's phone block).
+   Measured on the live page at 360x740: the sheet 400 px before the
+   click, 562 after, the Pull pill at 589 to 629 with the steer hint
+   showing, 400 again after Back; 390x844 the same shape (456, 641,
+   pill at 655 to 695); 1440x900 unchanged; skydive check 81 of 81.
 
 Rechecked alone on the fixed tree, twice (after the fixes, and again
 after the docs were rewritten); the second run's numbers, with the
