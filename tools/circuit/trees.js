@@ -24,13 +24,17 @@ for (const b of L.BARRIERS) rects.push(pad(b.box, 2));
 for (const g of L.GRAVEL) { const us = g.map(p => p[0]), vs = g.map(p => p[1]); rects.push([Math.min(...us) - 1, Math.min(...vs) - 1, Math.max(...us) + 1, Math.max(...vs) + 1]); }
 rects.push([L.RUNOFF.at[0] - 7, L.RUNOFF.at[1] - 12, L.RUNOFF.at[0] + 7, L.RUNOFF.at[1] + 12]);
 rects.push([L.FLAG.at[0] - 4, L.FLAG.at[1] - 4, L.FLAG.at[0] + 4, L.FLAG.at[1] + 4]);
+if (L.DZ) {   // round 7: the drop zone's target, a clear lawn round it, and the windsock
+    const r = L.DZ.r + 6; rects.push([L.DZ.at[0] - r, L.DZ.at[1] - r, L.DZ.at[0] + r, L.DZ.at[1] + r]);
+    rects.push([L.DZ.sock[0] - 3, L.DZ.sock[1] - 3, L.DZ.sock[0] + 8, L.DZ.sock[1] + 5]);
+}
 const inRect = (u, v) => rects.some(r => u > r[0] && u < r[2] && v > r[1] && v < r[3]);
 const dist = (pts, u, v) => Math.min(...pts.map(p => Math.hypot(p[0] - u, p[1] - v)));
 let seed = 7; const rnd = () => { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
-const out = [];
-for (let v = 8; v <= 202; v += 11) for (let u = 8; u <= 202; u += 11) {
+const out = [], P = L.PLATE || { u0: 0, v0: 0, u1: 210, v1: 210 };   // round 7: the plate runs v -40 to 210
+for (let v = P.v0 + 8; v <= P.v1 - 8; v += 11) for (let u = P.u0 + 8; u <= P.u1 - 8; u += 11) {
     const uu = u + (rnd() - 0.5) * 7, vv = v + (rnd() - 0.5) * 7;
-    if (uu < 4 || uu > 206 || vv < 4 || vv > 206) continue;
+    if (uu < P.u0 + 4 || uu > P.u1 - 4 || vv < P.v0 + 4 || vv > P.v1 - 4) continue;
     if (dist(track, uu, vv) < 9 || dist(pit, uu, vv) < 6 || inRect(uu, vv)) continue;
     if (rnd() < 0.28) continue;   // thin the grid so it never reads as a grid
     out.push([+uu.toFixed(0), +vv.toFixed(0), 4 + Math.round(rnd() * 2)]);

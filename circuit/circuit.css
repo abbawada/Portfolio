@@ -117,13 +117,17 @@ body.circuit a:focus-visible, body.circuit button:focus-visible { outline: 2px s
 .ring-lap:hover { background: var(--ink); color: var(--paper); }
 .ring-lap[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
 
-/* V1.5: two pills under the name. Drive is the primary, filled ink; while
-   the visitor holds a car it inverts and reads Leave the car. */
+/* Round 7: one pill under the name, Start lap, filled ink; on the lap it
+   inverts and reads Leave lap. The same filled pill is the first action on
+   the jump's card. */
 .ring-hud-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-.ring-drive { background: var(--ink); color: var(--paper); }
-.ring-drive:hover { background: var(--paper); color: var(--ink); }
-.ring-drive[aria-pressed="true"] { background: var(--paper); color: var(--ink); }
-.ring-drive[aria-pressed="true"]:hover { background: var(--ink); color: var(--paper); }
+.ring-primary { background: var(--ink); color: var(--paper); }
+.ring-primary:hover { background: var(--paper); color: var(--ink); }
+.ring-primary[aria-pressed="true"] { background: var(--paper); color: var(--ink); }
+.ring-primary[aria-pressed="true"]:hover { background: var(--ink); color: var(--paper); }
+a.ring-lap { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; }
+body.circuit a.ring-primary { color: var(--paper); }
+body.circuit a.ring-primary:hover { color: var(--ink); }
 
 /* the first-visit hint, one line under the pills; it fades on the first press */
 .ring-hint {
@@ -173,129 +177,175 @@ body.circuit a:focus-visible, body.circuit button:focus-visible { outline: 2px s
 .ring-lap-exit:hover kbd { border-color: rgba(20, 20, 20, 0.4); }
 
 /* ------------------------------------------------------------
-   The drive HUD (V1.5), top right while the visitor holds a car:
-   the position chip and the lap timer in the broadcast face, the
-   toasts for every car passed, the end card after the lap. The
-   pit straight runs along the bottom of the plate, so nothing here
-   sits low.
+   Start lap (round 7): one bar at the bottom of the world, the
+   stop it is on, a clock that runs out on each stop, Next stop
+   and Leave lap. Beside the panel when one is open, above the
+   sheet on a phone.
    ------------------------------------------------------------ */
-.ring-drive-hud {
+.ring-tour {
     position: fixed;
-    top: clamp(1.25rem, 3.5vh, 2.25rem);
-    right: clamp(1rem, 3vw, 2.25rem);
-    z-index: 4;   /* above the Grid block (3): where the two columns meet, the card and its buttons win the tap */
+    left: 50%;
+    bottom: clamp(1rem, 4vh, 2rem);
+    z-index: 5;
+    transform: translateX(-50%);
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
-    gap: 0.5rem;
-    max-width: min(22rem, calc(100vw - 2rem));
-    pointer-events: none;
-    outline: 0;
+    gap: 0.4rem;
+    min-width: min(30rem, calc(100vw - 2rem));
+    padding: 0.5rem 0.5rem 0.55rem 1rem;
+    border: 1px solid var(--ink);
+    border-radius: 24px;   /* a pill on one line, a rounded card when it wraps to two */
+    background: var(--paper);
+    box-shadow: 0 8px 22px rgba(20, 20, 20, 0.18);
+    font-family: var(--font-chrome);
+    color: var(--ink);
+}
+/* with a panel open the bar spans the world beside it, and the mini-map, which would sit under it, steps aside */
+body.ring-open .ring-tour { left: clamp(1rem, 3vw, 2.25rem); right: calc(var(--ring-panel-w) + clamp(1rem, 3vw, 2.25rem)); transform: none; min-width: 0; width: auto; max-width: 36rem; }
+body.ring-open.ring-lapping .ring-map { visibility: hidden; }
+/* beside an open panel on a narrow desktop the world is too small to frame a stop next to the Grid: the Grid steps aside until the panel closes */
+@media (min-width: 761px) and (max-width: 1119px) {
+    body.ring-open .ring-tower { visibility: hidden; }
+}
+.ring-tour-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.45rem 0.5rem; }
+.ring-tour-step {
+    flex: 1 1 11rem;   /* when the name and the two buttons cannot share a line, the buttons go under it */
+    min-width: 0;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    white-space: pre;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.ring-tour-btn {
+    flex: none;
+    min-height: 36px;
+    padding: 0.4rem 0.9rem;
+    border: 1px solid var(--hairline);
+    border-radius: 999px;
+    background: var(--paper);
+    color: var(--ink);
+    font: inherit;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.ring-tour-btn:hover { border-color: var(--ink); }
+.ring-tour-next { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.ring-tour-next:hover { background: var(--paper); color: var(--ink); }
+.ring-tour-btn kbd { font: inherit; font-size: 0.5625rem; padding: 0.05rem 0.35rem; margin-left: 0.25rem; border: 1px solid var(--hairline); border-radius: 4px; }
+.ring-tour-bar { display: block; height: 3px; margin-right: 0.5rem; background: var(--hairline); border-radius: 2px; overflow: hidden; }
+.ring-tour-bar > i { display: block; height: 100%; background: var(--accent-ink); transform: scaleX(0); transform-origin: 0 50%; }
+.ring-tour.is-held .ring-tour-bar > i { background: var(--muted); }
+.ring-tour.is-riding .ring-tour-bar > i { background: var(--ink); opacity: 0.35; }
+.ring-tour.is-done .ring-tour-bar > i { background: var(--accent); }
+
+/* ------------------------------------------------------------
+   The jump (round 7): the helicopter's chip, the altimeter
+   beside the diver, and the card once they are down
+   ------------------------------------------------------------ */
+.ring-heli-pin .ring-pin-text { border-color: #2a2b2e; }
+.ring-heli-pin .ring-pin-dot { background: #8fd3ff; box-shadow: 0 0 0 2px var(--ink); }
+.ring-heli-pin .ring-pin-dot::after { border-color: #8fd3ff; }
+.ring-alt {
+    position: fixed;
+    left: 0; top: 0;
+    z-index: 2;
+    padding: 0.3rem 0.55rem;
+    border-radius: 3px;
+    background: rgba(42, 43, 46, 0.88);
+    color: var(--paper);
     font-family: var(--font-chrome);
     font-style: italic;
     font-weight: 600;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--ink);
-}
-.ring-drive-hud > * { pointer-events: auto; }
-.ring-drive-row, .ring-drive-tip { pointer-events: none; }   /* display only: a press through them is a press on the world */
-.ring-drive-row { display: flex; align-items: center; gap: 0.75rem; }
-.ring-drive-pos {
-    display: inline-flex;
-    align-items: center;
-    min-height: 32px;
-    padding: 0.25rem 0.75rem;
-    border: 1px solid var(--ink);
-    border-radius: 999px;
-    background: var(--paper);
-    font-size: 0.875rem;
-    font-weight: 600;
-    line-height: 1;
-}
-/* whole seconds, and never larger than the name: the position chip is the number, the timer sits beside it */
-.ring-drive-time {
-    font-size: clamp(1.25rem, 2vw, 1.75rem);
-    font-weight: 700;
-    line-height: 1;
+    font-size: 0.8125rem;
+    letter-spacing: 0.08em;
     font-variant-numeric: tabular-nums;
-    text-shadow: 0 0 2px var(--paper), 0 0 6px var(--paper), 0 0 12px var(--paper), 0 0 18px var(--paper);
-}
-.ring-drive-hud.is-done .ring-drive-time { display: none; }   /* the card has the number once the lap is in */
-.ring-drive-tip {
-    font-family: var(--font-serif);
-    font-style: normal;
-    font-weight: 400;
-    font-size: 0.9375rem;
-    letter-spacing: 0;
-    text-transform: none;
-    color: var(--muted);
-    text-shadow: 0 0 2px var(--paper), 0 0 6px var(--paper), 0 0 12px var(--paper);
-}
-.ring-drive-toasts { display: flex; flex-direction: column; align-items: flex-end; gap: 0.375rem; }
-.ring-drive-toast {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.375rem 0.375rem 0.375rem 0.75rem;
-    border: 1px solid var(--ink);
-    border-radius: 999px;
-    background: var(--paper);
-    box-shadow: 0 1px 0 rgba(20, 20, 20, 0.16), 0 3px 8px rgba(20, 20, 20, 0.14);
-    font-size: 0.6875rem;
-    opacity: 0;
-    transform: translateY(-4px);
-    transition: opacity 240ms ease, transform 240ms ease;
-}
-.ring-drive-toast.is-in { opacity: 1; transform: none; }
-.ring-drive-toast.is-out { opacity: 0; transition-duration: 400ms; }
-.ring-drive-toast.is-quiet { border-color: var(--hairline); color: var(--muted); box-shadow: none; }
-.ring-drive-open {
-    flex: none;
-    min-height: 36px;
-    padding: 0.4rem 0.875rem;
-    border: 1px solid var(--ink);
-    border-radius: 999px;
-    background: var(--ink);
-    color: var(--paper);
-    font: inherit;
-    font-size: 0.6875rem;
-    letter-spacing: 0.18em;
-    text-transform: inherit;
     white-space: nowrap;
-    cursor: pointer;
+    pointer-events: none;
+    will-change: transform;
+    transition: background 160ms ease, color 160ms ease;
 }
-.ring-drive-open:hover { background: var(--paper); color: var(--ink); }
-.ring-drive-toast.is-quiet .ring-drive-open { background: var(--paper); color: var(--ink); border-color: var(--hairline); }
-.ring-drive-toast.is-quiet .ring-drive-open:hover { border-color: var(--ink); }
-.ring-drive-card {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 0.5rem;
-    padding: 1rem 1.125rem;
+.ring-alt.is-cue { background: #f0b64a; color: var(--ink); }
+.ring-jump-card {
+    position: fixed;
+    left: 50%;
+    bottom: clamp(1rem, 4vh, 2rem);
+    z-index: 5;
+    transform: translateX(-50%);
+    width: min(31rem, calc(100vw - 2rem));
+    padding: 1rem 1.125rem 1.125rem;
     border: 1px solid var(--ink);
     border-radius: var(--radius);
     background: var(--paper);
-    box-shadow: 0 8px 22px rgba(20, 20, 20, 0.18);
+    box-shadow: 0 10px 26px rgba(20, 20, 20, 0.2);
     outline: 0;
 }
-.ring-drive-your { font-size: 1.125rem; font-weight: 600; }
-.ring-drive-best { font-size: 0.6875rem; color: var(--muted); }
-.ring-drive-card-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 0.5rem; margin-top: 0.375rem; }
-.ring-drive-card-actions .ring-lap { white-space: nowrap; }
-body.ring-driving #world { cursor: default; }
-/* while the visitor holds a car, at every width: the name, one exit (the
-   bottom pill; the Drive button keeps its word and its pressed state), the
-   position chip and the strip. The line, the place, the hint, the Watch
-   pill, the Grid's caption and clock step aside, and the Grid keeps three
-   rows: the car ahead, YOU, the car behind (nav.js marks them is-near). */
-body.ring-driving .ring-hud-line, body.ring-driving .ring-hud-place, body.ring-driving .ring-hint,
-body.ring-driving #ringLap, body.ring-driving .ring-tower-foot, body.ring-driving .ring-tower-clock,
-body.ring-driving .ring-tower-row:not(.is-near) { display: none; }
+.ring-jump-kicker {
+    font-family: var(--font-chrome);
+    font-style: italic;
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent-ink);
+    margin-bottom: 0.3rem;
+}
+.ring-jump-line { font-family: var(--font-serif); font-size: 1.0625rem; line-height: 1.45; margin-bottom: 0.9rem; }
+.ring-jump-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.ring-jump-actions .ring-lap { white-space: nowrap; }
+body.ring-jumping #world { cursor: default; }
+/* the jump is one shot: the Grid and the name block's small print step aside while it runs */
+body.ring-jumping .ring-broadcast, body.ring-jumping .ring-hud-line, body.ring-jumping .ring-hud-place, body.ring-jumping .ring-hint { visibility: hidden; }
+
+/* ------------------------------------------------------------
+   The Betta stop (round 7): the sleeve from the Betta site's hero,
+   one link to betta.live
+   ------------------------------------------------------------ */
+.ring-hero {
+    position: relative;
+    display: block;
+    margin: 0.25rem 0 1.25rem;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: #2a1a10;
+    outline: 1px solid var(--hairline);
+    outline-offset: -1px;
+}
+.ring-hero img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; transition: transform 420ms cubic-bezier(0.2, 0.7, 0.2, 1); }
+.ring-hero:hover img { transform: scale(1.025); }
+.ring-hero-go {
+    position: absolute;
+    left: 0.875rem;
+    bottom: 0.875rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    min-height: 36px;
+    padding: 0.4rem 0.95rem;
+    border-radius: 999px;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-chrome);
+    font-style: italic;
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.28);
+}
+.ring-hero:hover .ring-hero-go { background: var(--ink); color: var(--paper); }
+button.ring-pill { cursor: pointer; font: inherit; font-family: var(--font-chrome); font-style: italic; font-weight: 600; font-size: 0.6875rem; letter-spacing: 0.14em; text-transform: uppercase; }
 
 @media (prefers-reduced-motion: reduce) {
-    .ring-hint, .ring-drive-toast { transition: none; }
+    .ring-hint, .ring-alt { transition: none; }
+    .ring-hero img { transition: none; }
 }
 
 /* ------------------------------------------------------------
@@ -464,10 +514,6 @@ body.ring-open .ring-broadcast { right: calc(var(--ring-panel-w) + 1.5rem); }
    tower wraps them under the title, still on the right */
 .ring-tower-meta { display: flex; gap: 0.75rem; margin-left: auto; white-space: nowrap; }
 .ring-tower-clock { font-variant-numeric: tabular-nums; }
-/* the visitor's own row while they drive: an ink stripe, no attention bar, nothing to open */
-.ring-tower-row.is-you { box-shadow: inset 0 0 0 1px var(--hairline); background: var(--paper); cursor: default; }
-.ring-tower-row.is-you .ring-tower-code { color: var(--ink); }
-.ring-tower-row.is-you:hover { border-left-width: 3px; }
 .ring-tower-row {
     display: grid;
     width: 100%;
@@ -645,38 +691,33 @@ body.ring-open .ring-broadcast { right: calc(var(--ring-panel-w) + 1.5rem); }
 @media (max-width: 760px) {
     :root { --ring-panel-w: 100vw; }
     .ring-panel { top: auto; height: 54vh; border-left: 0; border-top: 1px solid var(--hairline); }
-    .ring-panel:has(.sky.is-open) { height: 76vh; }   /* the jump open: the Pull pill fits a 360x740 screen without a scroll */
     body.ring-open .ring-hud { display: none; }   /* the sheet and the stop share the screen; the block returns on close */
     .ring-hud { max-width: 15rem; }
     .ring-hud-line { font-size: 0.875rem; line-height: 1.4; }
     .ring-map { width: 130px; height: 82px; }
     .ring-tower { width: 150px; font-size: 0.625rem; }
     .ring-tower-foot { font-size: 0.4375rem; max-width: 150px; }
+    /* round 7: on a phone the Grid keeps its top three rows, so the bigger map shows beside it */
+    .ring-tower .ring-tower-row:nth-child(n+5) { display: none; }
+    .ring-tower-foot { display: none; }
     .ring-tower-meta { gap: 0.5rem; }
     body.ring-open .ring-broadcast { display: none; }
     /* the two pills on one row, so they never push the hint into the Grid */
     .ring-hud-actions { flex-wrap: nowrap; }
     .ring-hud-actions .ring-lap { padding-left: 0.875rem; padding-right: 0.875rem; white-space: nowrap; }
-    /* driving on a phone: the name alone stays top left and the bottom pill
-       is the exit; the car's column takes the full width under the name, so
-       the chip and the timer sit on one row, a toast is one line, and the
-       card is wide and short, well clear of the Grid */
-    body.ring-driving .ring-hud-actions { display: none; }
-    .ring-drive-hud { left: 1rem; right: 1rem; max-width: none; align-items: stretch; }
-    .ring-drive-row { justify-content: flex-end; }
-    .ring-drive-time { font-size: 1.375rem; }
-    .ring-drive-tip { text-align: right; }
-    .ring-drive-toasts:not(:empty), .ring-drive-card { margin-top: 1.25rem; }   /* under the name, which shares the top */
-    .ring-drive-toasts { align-items: stretch; }
-    .ring-drive-toast { display: flex; justify-content: space-between; font-size: 0.625rem; }
-    .ring-drive-toast-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .ring-drive-card { padding: 0.75rem 0.875rem; }
-    .ring-drive-card-actions { flex-wrap: nowrap; }
-    .ring-drive-card-actions .ring-lap { padding-left: 0.75rem; padding-right: 0.75rem; }
     /* the exit pill clears the mini-map (bottom right) by sitting bottom left, and
        a phone has no Escape key to name */
     .ring-lap-exit { left: 1rem; transform: none; white-space: nowrap; font-size: 0.6875rem; padding: 0.5rem 1rem; }
     .ring-lap-exit kbd { display: none; }
+    /* the lap bar sits above the sheet, full width, no Escape to name */
+    .ring-tour { left: 1rem; right: 1rem; transform: none; min-width: 0; border-radius: 14px; }
+    body.ring-open .ring-tour { left: 1rem; width: auto; bottom: calc(54vh + 0.6rem); }
+    .ring-tour-btn kbd { display: none; }
+    .ring-tour { padding: 0.6rem 0.6rem 0.6rem 0.75rem; }
+    .ring-tour-row { flex-wrap: wrap; row-gap: 0.45rem; }
+    .ring-tour-step { flex: 1 0 100%; }   /* the stop's name on its own line, the two buttons under it */
+    .ring-tour-btn { flex: 1 1 0; padding-left: 0.7rem; padding-right: 0.7rem; }
+    .ring-jump-card { left: 1rem; right: 1rem; width: auto; transform: none; }
 }
 /* a short phone has no room for the first-visit hint between the pills and the Grid */
 @media (max-width: 760px) and (max-height: 700px) {
@@ -790,11 +831,8 @@ body.is-poster .ring-hud, body.is-poster .ring-pins, body.is-poster .ring-map, b
 }
 
 /* ------------------------------------------------------------
-   Round 6: the live pieces inside panels. The lab (circuit/lab.js)
-   replaces the Betta case card; the skydiving tile (circuit/skydive.js)
-   sits first on the Projects grid. The tile's wrapper has no box of
-   its own, so the module's figure is the grid item and can span the
-   grid when it opens.
+   Live pieces inside panels: the lab (circuit/lab.js) on the
+   Journey stop; the pills under it and under the Betta hero
    ------------------------------------------------------------ */
 .ring-lab { margin: 0.25rem 0 1rem; }
 .ring-lab-links { display: flex; flex-wrap: wrap; gap: 0.625rem; margin: 0 0 2rem; }
@@ -807,8 +845,6 @@ body.is-poster .ring-hud, body.is-poster .ring-pins, body.is-poster .ring-map, b
     font-size: 0.6875rem; letter-spacing: 0.14em; text-transform: uppercase;
 }
 .ring-pill:hover { border-color: var(--ink); }
-.ring-sky { display: contents; }
-.ring-grid > .ring-sky > .sky.is-open { grid-column: 1 / -1; }
 .ring-sky-line { margin-top: 0; }
 .ring-inline-link { text-decoration: underline; text-underline-offset: 0.15em; }
 .ring-inline-link:hover { color: var(--accent-ink, var(--ink)); }

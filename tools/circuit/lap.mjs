@@ -1,5 +1,6 @@
-/* Gate 3 capture: Start lap on the live race, recorded as video, with a
-   contact sheet of frames and a screenshot of the Grid mid-race.
+/* Gate 3 capture: Start lap, recorded as video, with a contact sheet of
+   frames and a screenshot of the Grid mid-race. Round 7: Start lap is a
+   tour that opens every stop in turn; the log carries the stop it is on.
    Usage: node tools/circuit/lap.mjs URL OUTDIR [--prefix s3] [--seed N] [--warm 30]
    Writes <prefix>-lap.webm (the ride, 960x540), <prefix>-lap-frames/*.png
    every 2 s, <prefix>-grid.png (the timing block), <prefix>-lap.json (the
@@ -34,14 +35,14 @@ const t0 = Date.now();
 await page.evaluate(() => window.__circuit.nav.startLap());
 const log = [], seen = [];
 let prevOrder = null, k = 0, prevSubject = '';
-while (Date.now() - t0 < 120000) {
+while (Date.now() - t0 < 150000) {   // the tour takes about 110 s
     const st = await page.evaluate(() => { const c = window.__circuit, g = c.gridState(), rs = c.raceState(), nv = c.nav.state();
-        return { lap: nv.lap, order: g.map(x => x.id).join('>'), gaps: g.map(x => x.gap), pass: rs.pass, target: nv.target, zoom: +nv.zoom.toFixed(2), race: rs.t }; });
+        return { lap: nv.lap, stop: nv.tour ? nv.tour.stop : null, phase: nv.tour ? nv.tour.phase : null, order: g.map(x => x.id).join('>'), gaps: g.map(x => x.gap), pass: rs.pass, target: nv.target, zoom: +nv.zoom.toFixed(2), race: rs.t }; });
     if (!st.lap) break;
     const t = +((Date.now() - t0) / 1000).toFixed(1);
     if (prevOrder && st.order !== prevOrder) seen.push({ t, order: st.order });
     prevOrder = st.order;
-    log.push({ t, order: st.order, pass: st.pass, zoom: st.zoom, target: st.target.map(n => +n.toFixed(1)) });
+    log.push({ t, stop: st.stop, phase: st.phase, order: st.order, pass: st.pass, zoom: st.zoom, target: st.target.map(n => +n.toFixed(1)) });
     if (Math.floor(t / 2) > k) { k = Math.floor(t / 2); await page.screenshot({ path: path.join(framesDir, String(k).padStart(2, '0') + '.png') }); }
     await page.waitForTimeout(250);
 }

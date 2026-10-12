@@ -2,10 +2,16 @@
    Abba building Betta: one cave, one lamp, one bench, six stages so far.
    Plain canvas 2D, no libraries, no network, no raster images.
 
-   API: mountLab(el, { onInteract, autoplay, start })
-        -> { destroy(), goTo(i), play(), pause(), stages }
+   API: mountLab(el, { onInteract, autoplay, start, onStage })
+        -> { destroy(), goTo(i, holdMs), play(), pause(), stages, index }
+   start is 'last' or a stage index; onStage(i) fires whenever the scene
+   swaps to stage i.
    Extra, for the harness: opts.still (true, or seconds into the loop) renders
    one frozen frame per stage; the returned object also carries stats().
+   Round 7, the screen on the map: opts.offscreen { w, h, dpr } draws at a
+   fixed size with no observers (the element need not be in the page), and
+   opts.external leaves the clock to the caller, who calls tick(dt) once a
+   frame and reads canvas.
 
    The data lives in STAGES below. The choreography per stage lives in
    ACTIONS, keyed by the stage id, so a seventh stage is one object in
@@ -1208,6 +1214,8 @@ let uid = 0;
 export function mountLab(el, opts = {}) {
     ensureStyles();
     const onInteract = typeof opts.onInteract === 'function' ? opts.onInteract : () => {};
+    const onStage = typeof opts.onStage === 'function' ? opts.onStage : null;
+    const offscreen = opts.offscreen || null, external = !!opts.external;
     const autoplayWanted = opts.autoplay !== false;
     const stillOpt = opts.still;
     const stillMode = stillOpt === true || typeof stillOpt === 'number';
@@ -1262,7 +1270,7 @@ export function mountLab(el, opts = {}) {
     // state
     const mq = win.matchMedia ? win.matchMedia('(prefers-reduced-motion: reduce)') : null;
     let reduced = !!(mq && mq.matches);
-    let index = opts.start === 'last' ? stages.length - 1 : 0;
+    let index = opts.start === 'last' ? stages.length - 1 : (Number.isInteger(opts.start) ? Math.max(0, Math.min(stages.length - 1, opts.start)) : 0);
     let destroyed = false, rafId = 0, running = false, inView = true, hovered = false, focused = false, keyboardLast = false;
     let playing = autoplayWanted && !stillMode;
     let userPauseUntil = 0;
@@ -1313,9 +1321,9 @@ export function mountLab(el, opts = {}) {
     }
 
     function resize() {
-        const w = Math.max(320, stageEl.clientWidth || 0);
-        const h = Math.round(w * 2 / 3);
-        const d = Math.min(3, win.devicePixelRatio || 1);
+        const w = offscreen ? offscreen.w : Math.max(320, stageEl.clientWidth || 0);
+        const h = offscreen ? offscreen.h : Math.round(w * 2 / 3);
+        const d = offscreen ? (offscreen.dpr || 1) : Math.min(3, win.devicePixelRatio || 1);
         if (w === cssW && h === cssH && d === dpr) return;
         cssW = w; cssH = h; dpr = d;
         for (const c of [canvas, backC, frontC, figC, seamC]) { c.width = Math.round(w * d); c.height = Math.round(h * d); }
@@ -1637,6 +1645,7 @@ export function mountLab(el, opts = {}) {
         setText();
         markTabs(i);
         rebuildStatic();
+        if (onStage) { try { onStage(i); } catch (e) { /* a listener's fault stays the listener's */ } }
     }
     function renderStill() {
         // deterministic: run the loop from zero to the chosen second, then draw once
@@ -1658,7 +1667,7 @@ export function mountLab(el, opts = {}) {
     function start() {
         if (destroyed || running || reduced || stillMode) return;
         running = true; lastNow = 0;
-        if (!rafId) rafId = win.requestAnimationFrame(frame);
+        if (!rafId && !external) rafId = win.requestAnimationFrame(frame);
     }
     function stop() {
         running = false;
@@ -1736,13 +1745,14 @@ export function mountLab(el, opts = {}) {
     }
     armDpr();
     let io = null;
-    if (typeof win.IntersectionObserver === 'function') {
+    if (!offscreen && typeof win.IntersectionObserver === 'function') {
         io = new win.IntersectionObserver(entries => { for (const en of entries) inView = en.isIntersecting; sync(); }, { threshold: 0.05 });
         io.observe(stageEl);
     }
     let ro = null;
     const onWinResize = () => resize();
-    if (typeof win.ResizeObserver === 'function') { ro = new win.ResizeObserver(() => resize()); ro.observe(stageEl); }
+    if (offscreen) { /* a fixed size: nothing to observe */ }
+    else if (typeof win.ResizeObserver === 'function') { ro = new win.ResizeObserver(() => resize()); ro.observe(stageEl); }
     else win.addEventListener('resize', onWinResize);
 
     // first paint
@@ -1756,7 +1766,7 @@ export function mountLab(el, opts = {}) {
             destroyed = true;
             stop();
             if (io) io.disconnect();
-            if (ro) ro.disconnect(); else win.removeEventListener('resize', onWinResize);
+            if (ro) ro.disconnect(); else if (!offscreen) win.removeEventListener('resize', onWinResize);
             doc.removeEventListener('visibilitychange', onVis);
             if (mq) { if (mq.removeEventListener) mq.removeEventListener('change', onMq); else if (mq.removeListener) mq.removeListener(onMq); }
             if (dprMq) { if (dprMq.removeEventListener) dprMq.removeEventListener('change', onDpr); else if (dprMq.removeListener) dprMq.removeListener(onDpr); dprMq = null; }
@@ -1766,7 +1776,15 @@ export function mountLab(el, opts = {}) {
             tabEls.forEach(b => { b.removeEventListener('click', onTabClick); b.removeEventListener('keydown', onTabKey); });
             fig.remove();   // only this instance's figure, never whatever else the container holds
         },
-        goTo(i) { select(i, false); },
+        goTo(i, holdMs) { select(i, false); if (holdMs) userPauseUntil = performance.now() + holdMs; },   // holdMs: autoplay waits, as after a visitor's scrub
+        /* external clock (round 7): one frame of the lab, called by the world's loop */
+        tick(dt) {
+            if (destroyed || !running || reduced || stillMode) return false;
+            dt = Math.min(Math.max(dt || 0, 0), 0.1);
+            step(dt); advance(dt, performance.now()); drawFrame();
+            return true;
+        },
+        canvas,
         play() { playing = true; },
         pause() { playing = false; },
         stats() {
@@ -1774,6 +1792,7 @@ export function mountLab(el, opts = {}) {
                 rebuildMs: stats.rebuildMs || 0, stillMs: stats.stillMs || 0, reduced, running, pass };
         },
         get index() { return index; },
+        get fade() { return fade; },   // the dip to black between stages, 0 to 1, for a caller drawing type over the canvas
         stages,
     };
     return api;

@@ -41,6 +41,16 @@ skydiving tile first on the Projects grid and the eighth car (circuit/
 skydive.js); the visitor drives (Drive in the HUD, circuit/world.js and
 nav.js), "Start lap" renamed "Watch the race", a Los Angeles clock on the
 Grid; the court clip on the Betta case and betta.html. Build query 15.0.
+Pushed live 2026-10-11 (97605b0), with the helicopter round.
+
+Round 7 (2026-10-11, docs/circuit/v16/round-7.md): the jump moved onto
+the map (click the Betta helicopter: it flies to a drop zone left of the
+court, the diver falls, pulls at the wrist pulse and lands on the
+target; circuit/jump.js); the lab became stop 08, the Journey, a big
+screen behind the court with six rising plinths; the plate grew 40 on
+the far side (L.PLATE); the drive and the 2D skydiving tile are gone;
+Start lap is a tour that opens every stop in turn; the Betta stop leads
+with the sleeve hero as a link to betta.live. Build query 16.0.
 This is the active system.
 
 ## Tools added
@@ -56,6 +66,9 @@ This is the active system.
 - tools/circuit/racetest.mjs is the Session 3 race contract (touches, lines,
   idling, the interval between changes of order) and tools/circuit/lap.mjs
   records Start lap as video, frames and the Grid mid-race.
+- Round 7: tools/circuit/gate.mjs skips the helicopter's moving chip and
+  reads a diagonal mark as several pieces; tools/circuit/lap.mjs records
+  the Start lap tour; tools/circuit/drivetest.mjs is gone with the drive.
 - tools/circuit/trees.js seeds the trees from the layout (a jittered
   grid kept clear of the track, the pit lane and every footprint) and
   writes them into circuit/layout.js. Run it after any move.

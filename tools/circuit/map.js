@@ -8,8 +8,9 @@ const path = require('path');
 const L = require('../../circuit/layout.js');
 const C = L.PALETTE;
 
-const W = 1600, H = 900;
-const S = 3.35, CX = 800, CY = 128, ZS = S * 0.95;
+const PL = L.PLATE || { u0: 0, v0: 0, u1: 210, v1: 210 };   // round 7: the plate runs v -40 to 210
+const W = 1600, H = 1000;
+const S = 3.2, CX = 800 - ((PL.u1 - PL.v0) + (PL.u0 - PL.v1)) / 2 * 3.2, CY = 120 - (PL.u0 + PL.v0) * 3.2 * 0.5, ZS = S * 0.95;
 const SHADOW = [0.85, 0.3];                     // plan direction a shadow falls, per unit of height
 const CENTROID = [105, 110];                    // roughly the infield centre
 
@@ -132,11 +133,17 @@ for (const sc of L.SECTORS) {
 
 /* ------------------------------------------------------------ ground */
 let ground = '';
-ground += poly([P(0, 210, 0), P(210, 210, 0), P(210, 210, -5), P(0, 210, -5)], shade(C.plate, 0.22));
-ground += poly([P(210, 0, 0), P(210, 210, 0), P(210, 210, -5), P(210, 0, -5)], shade(C.plate, 0.42));
-ground += poly([P(0, 0, 0), P(210, 0, 0), P(210, 210, 0), P(0, 210, 0)], C.grass);
+ground += poly([P(PL.u0, PL.v1, 0), P(PL.u1, PL.v1, 0), P(PL.u1, PL.v1, -5), P(PL.u0, PL.v1, -5)], shade(C.plate, 0.22));
+ground += poly([P(PL.u1, PL.v0, 0), P(PL.u1, PL.v1, 0), P(PL.u1, PL.v1, -5), P(PL.u1, PL.v0, -5)], shade(C.plate, 0.42));
+ground += poly([P(PL.u0, PL.v0, 0), P(PL.u1, PL.v0, 0), P(PL.u1, PL.v1, 0), P(PL.u0, PL.v1, 0)], C.grass);
+if (L.DZ) {   // round 7: the drop zone, a target on the lawn
+    for (const [r, col] of [[L.DZ.r, C.paper], [L.DZ.r * 0.74, '#f0b64a'], [L.DZ.r * 0.5, C.paper], [L.DZ.r * 0.22, C.ink]]) {
+        const pts = []; for (let k = 0; k < 32; k++) { const a = k / 32 * Math.PI * 2; pts.push(P(L.DZ.at[0] + Math.cos(a) * r, L.DZ.at[1] + Math.sin(a) * r, 0.03)); }
+        ground += poly(pts, col);
+    }
+}
 {   // the name on the plate edge
-    const at = P(118, 210, -1.6);
+    const at = P(118, PL.v1, -1.6);
     ground += `<text transform="${faceMatrix(at)}" class="plate">${esc(L.NAME.toUpperCase())}</text>`;
 }
 for (const g of L.GRAVEL) ground += poly(g.map(p => P(p[0], p[1], 0.02)), C.plate);
@@ -249,7 +256,7 @@ hud += `<g transform="translate(48,60)">
   <text x="59" y="160" class="btn" text-anchor="middle">START LAP</text>
 </g>`;
 hud += `<text x="1552" y="44" class="tag" text-anchor="end">PHASE 1 · FLAT MAP · DEFAULT ZOOM 16:9</text>`;
-hud += `<text x="48" y="856" class="tag">SECTORS&#160;&#160;S1 ORIGINS&#160;&#160;S2 BUILDING&#160;&#160;S3 NOW&#160;&#160;·&#160;&#160;LAP 01 → 07</text>`;
+hud += `<text x="48" y="856" class="tag">SECTORS&#160;&#160;S1 ORIGINS&#160;&#160;S2 BUILDING&#160;&#160;S3 NOW&#160;&#160;·&#160;&#160;LAP 01 → ${String(L.LOCATIONS.length).padStart(2, '0')}</text>`;
 
 /* mini-map, bottom right, monochrome */
 let mini = '';

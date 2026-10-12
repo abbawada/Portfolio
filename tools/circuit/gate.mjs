@@ -47,7 +47,7 @@ const AUDIT = `(() => {
     const c = window.__circuit, L = window.CircuitLayout;
     const rect = el => { const r = el.getBoundingClientRect(); return { x: r.left, y: r.top, w: r.width, h: r.height }; };
     const hits = (a, b) => a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h;
-    const labels = [...document.querySelectorAll('.ring-pin')].map(el => ({ id: el.dataset.id, chip: rect(el.querySelector('.ring-pin-text')), pin: rect(el) }));
+    const labels = [...document.querySelectorAll('.ring-pin:not(.ring-heli-pin)')].map(el => ({ id: el.dataset.id, chip: rect(el.querySelector('.ring-pin-text')), pin: rect(el) }));   // round 7: the helicopter's chip moves with the aircraft; it is not a stop label
     /* silhouettes: each stop's layout boxes plus the pieces the world adds
        beside them, projected box by box to convex screen polygons */
     const T = L.LOCATIONS.find(l => l.id === 'about').boxes[0], G = L.LOCATIONS.find(l => l.id === 'projects').boxes[0], W = L.LOCATIONS.find(l => l.id === 'contact').boxes[0];
@@ -132,9 +132,9 @@ const AUDIT = `(() => {
     const grow = (r, m) => ({ x: r.x - m, y: r.y - m, w: r.w + 2 * m, h: r.h + 2 * m });
     const markClear = {}, labelOverMark = [];
     for (const l of labels) {
-        const mk = markBoxes.find(m => m.id === l.id); if (!mk) continue;
-        const poly = project6(mk.box); let m = 0;
-        if (polyRect(poly, l.chip)) { m = -1; labelOverMark.push(l.id); } else while (m < 200 && !polyRect(poly, grow(l.chip, m + 1))) m += 1;
+        const mks = markBoxes.filter(m => m.id === l.id); if (!mks.length) continue;   // round 7: a diagonal mark comes as several pieces
+        const polys = mks.map(mk => project6(mk.box)), touches = r => polys.some(poly => polyRect(poly, r)); let m = 0;
+        if (touches(l.chip)) { m = -1; labelOverMark.push(l.id); } else while (m < 200 && !touches(grow(l.chip, m + 1))) m += 1;
         markClear[l.id] = m;
     }
     const ids = Object.keys(sil), detail = [];

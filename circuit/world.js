@@ -8,6 +8,7 @@
    main thread free; shaders compile off the main thread where the browser
    allows it. mount() returns at once; the scene fills in behind it. */
 import * as THREE from './vendor/three.module.min.js';
+import { createJump } from './jump.js?v=16.0';
 
 export function mount(canvas, L) {
     'use strict';
@@ -145,7 +146,7 @@ export function mount(canvas, L) {
 
     /* V1.3 Session 2: the buildings are muted candy; each stop's one
        saturated signature colour lives on its mark and its accents only */
-    const DISTRICT = { about: M.grey, betta: null, education: M.white, economics: M.white, writing: M.white, projects: M.grey, contact: M.grey };
+    const DISTRICT = { about: M.grey, betta: null, education: M.white, economics: M.white, writing: M.white, projects: M.grey, contact: M.grey, journey: null };
     const SIG = {}; M.sig = {}; M.sigFlat = {};
     for (const loc of L.LOCATIONS) if (loc.signature) {
         SIG[loc.id] = loc.signature;
@@ -170,7 +171,9 @@ export function mount(canvas, L) {
     if ('transmissionResolutionScale' in renderer) renderer.transmissionResolutionScale = (window.devicePixelRatio || 1) > 1.5 ? 0.5 : 1;
     const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 1, 2000);
     const DIR = new THREE.Vector3(Math.cos(Math.PI / 6) * Math.SQRT1_2, Math.sin(Math.PI / 6), Math.cos(Math.PI / 6) * Math.SQRT1_2);
-    const view = { target: new THREE.Vector3(105, 2, 105), width: 318, zoom: 1, shiftPx: 0 };
+    /* round 7: the plate runs from L.PLATE (v -40 to 210), so the view is wider and centred lower on the plan */
+    const PL = L.PLATE || { u0: 0, v0: 0, u1: 210, v1: 210 };
+    const view = { target: new THREE.Vector3((PL.u0 + PL.u1) / 2, 2, (PL.v0 + PL.v1) / 2), width: 318 * ((PL.u1 - PL.v0) - (PL.u0 - PL.v1)) / 420, zoom: 1, shiftPx: 0 };
     function fit() {
         const w = canvas.clientWidth || 1, h = canvas.clientHeight || 1, aspect = w / h;
         const vw = Math.max(view.width, 200 * aspect) / view.zoom, vh = vw / aspect;
@@ -215,7 +218,7 @@ export function mount(canvas, L) {
 
     /* ------------------------------------------------ stage A: ground and track */
     function buildGround() {
-        st.box(0, 0, 210, 210, 5, -5, 'plate', 'grass');
+        st.box(PL.u0, PL.v0, PL.u1 - PL.u0, PL.v1 - PL.v0, 5, -5, 'plate', 'grass');
         const slab = (s, y) => st.poly([[s[0], s[1]], [s[0] + s[2], s[1]], [s[0] + s[2], s[1] + s[3]], [s[0], s[1] + s[3]]], y, C.plate);
         for (const g of L.GRAVEL) st.poly(g, 0.03, C.plate);
         slab(L.PADDOCK.slab, 0.03); slab(L.CARPARK.slab, 0.03);
@@ -322,6 +325,8 @@ export function mount(canvas, L) {
             b.geometry(new THREE.SphereGeometry(0.75, 8, 6), C.accent, new THREE.Matrix4().makeTranslation(u0 + 8, 3.6, v0 + 9.5));
         }
         buildArena();
+        buildJourney();
+        if (jump) jump.buildStatic(st);   // the drop zone's target and windsock (round 7)
         buildSleeve();
         buildSignage();
         buildMascot();
@@ -388,6 +393,194 @@ export function mount(canvas, L) {
             shadowOf(pu, pv, pw, pd, ph);
         }
     }
+    /* ------------------------------------------------ the Journey (round 7) */
+    /* The lab on the map. The drawn timeline of building Betta
+       (circuit/lab.js, the same scene the stop's panel shows) plays on a
+       big screen that stands behind the court's right end and faces the
+       camera head on. In front of it six plinths rise left to right, one per
+       stage, each with its prop on top and its date on the face the camera
+       sees: the robot car, the posture board, the ball, the cheque, the rig,
+       the sleeve. A violet ring sits on the plinth of the stage the screen
+       is showing and moves with it. The screen draws at most thirty times a
+       second and not at all while it is out of the frame. */
+    const JOURNEY = L.LOCATIONS.find(l => l.id === 'journey');
+    const JYAW = Math.PI / 4;   // head on to the camera
+    const STEP_PROPS = ['car', 'posture', 'throws', 'award', 'rig', 'sleeve'];
+    let screenMat = null, glowRing = null, journeyLab = null, journeyTex = null, journeyComp = null, journeyIndex = 0, labAcc = 0, journeyPlates = null;
+    const stepAt = [];
+    function buildJourney() {
+        if (!JOURNEY || !JOURNEY.screen) return;
+        const id = 'journey', sc = JOURNEY.screen, sp = JOURNEY.steps;
+        /* the screen: a graphite frame on two legs, a dark face for the lab, a violet line under it */
+        const scr = new THREE.Group(); scr.position.set(sc.at[0], 0, sc.at[1]); scr.rotation.y = JYAW;
+        const legH = sc.z0 + sc.h * 0.55;
+        for (const x of [-sc.w * 0.3, sc.w * 0.3]) { const leg = new THREE.Mesh(new THREE.BoxGeometry(2.4, legH, 1.8), M.graphite); leg.position.set(x, legH / 2, -1.5); scr.add(leg); }
+        const frame = new THREE.Mesh(new THREE.BoxGeometry(sc.w + 1.6, sc.h + 1.6, 1.3), M.graphite); frame.position.set(0, sc.z0 + sc.h / 2, -0.67); scr.add(frame);
+        const strip = new THREE.Mesh(new THREE.BoxGeometry(sc.w + 1.6, 0.4, 0.24), M.sigFlat[id]); strip.position.set(0, sc.z0 - 0.62, 0.02); scr.add(strip);
+        screenMat = new THREE.MeshBasicMaterial({ color: '#0a0a0c', toneMapped: false });
+        const face = new THREE.Mesh(new THREE.PlaneGeometry(sc.w, sc.h), screenMat); face.position.set(0, sc.z0 + sc.h / 2, 0.012); face.userData.keep = true; scr.add(face);
+        guts[id].push(scr);
+        {   // its shadow: the panel's edges cast toward the light's far side
+            const c = sc.w / 2 * Math.SQRT1_2, Lp = [sc.at[0] - c, sc.at[1] + c], Rp = [sc.at[0] + c, sc.at[1] - c];
+            const off = z => [SHADOW[0] * z * 0.9, SHADOW[1] * z * 0.9], b = off(sc.z0), t = off(sc.z0 + sc.h);
+            sh.poly(hull([[Lp[0] + b[0], Lp[1] + b[1]], [Rp[0] + b[0], Rp[1] + b[1]], [Rp[0] + t[0], Rp[1] + t[1]], [Lp[0] + t[0], Lp[1] + t[1]]]), 0.042, C.ink);
+        }
+        /* the six plinths, rising to the right, a prop on each */
+        const n = STEP_PROPS.length;
+        for (let i = 0; i < n; i++) {
+            const k = i / (n - 1), u = sp.from[0] + (sp.to[0] - sp.from[0]) * k, v = sp.from[1] + (sp.to[1] - sp.from[1]) * k, h = sp.h0 + sp.dh * i;
+            stepAt.push([u, v, h]);
+            gutMesh(id, new THREE.CylinderGeometry(sp.r, sp.r * 1.06, h, 20), M.white, [u, h / 2, v]);
+            gutMesh(id, new THREE.CylinderGeometry(sp.r * 0.93, sp.r * 0.93, 0.22, 20), M.graphite, [u, h + 0.11, v]);
+            buildProp(STEP_PROPS[i], u, h + 0.22, v);
+            shadowOf(u - sp.r, v - sp.r, sp.r * 2, sp.r * 2, h + 1.6);
+        }
+        glowRing = new THREE.Mesh(new THREE.TorusGeometry(sp.r + 0.32, 0.2, 6, 36), new THREE.MeshBasicMaterial({ color: SIG[id], transparent: true, opacity: 0.95, toneMapped: false }));
+        glowRing.rotation.x = Math.PI / 2; glowRing.userData.keep = true;
+        guts[id].push(glowRing);
+        placeGlow(0);
+    }
+    /* the props, about two units, their fronts to the camera. Every piece is
+       baked into the stop's own flat mesh (one draw call for all six), the
+       way the court's markings are; only the ball keeps the court's gold candy. */
+    function buildProp(kind, u, y, v) {
+        const id = 'journey', b = lb[id];
+        const base = new THREE.Object3D(); base.position.set(u, y, v); base.rotation.y = JYAW; base.updateMatrixWorld(true);
+        const tmp = new THREE.Object3D();
+        const part = (geo, color, x, yy, z, rx, ry, rz, parent) => {
+            tmp.position.set(x, yy, z); tmp.rotation.set(rx || 0, ry || 0, rz || 0); tmp.scale.set(1, 1, 1); tmp.updateMatrix();
+            const m = new THREE.Matrix4().multiplyMatrices(parent || base.matrixWorld, tmp.matrix);
+            b.geometry(geo, color, m);
+            return m;
+        };
+        const INK = '#1b1b1d', BOARD = '#e9e6df', GRAPH = '#2a2b2e', GREEN = '#2f6b4a', BLUE = '#2b5fb8', RED = '#c8102e', CYAN = '#3ad7e6', GOLD = SIG.betta;
+        if (kind === 'car') {   // the robot car on its breadboard
+            part(new THREE.BoxGeometry(2.3, 0.42, 1.4), INK, 0, 0.55, 0);
+            for (const x of [-0.82, 0.82]) for (const z of [-0.78, 0.78]) part(new THREE.CylinderGeometry(0.42, 0.42, 0.34, 10), GRAPH, x, 0.42, z, Math.PI / 2);
+            part(new THREE.BoxGeometry(1.3, 0.12, 0.9), BOARD, -0.25, 0.82, 0);
+            part(new THREE.BoxGeometry(0.55, 0.12, 0.6), RED, 0.68, 0.84, 0);
+        } else if (kind === 'posture') {   // the posture board on a little stand, its OLED bar lit
+            part(new THREE.BoxGeometry(1.3, 0.22, 0.9), GRAPH, 0, 0.11, 0);
+            const bm = part(new THREE.BoxGeometry(1.9, 1.15, 0.12), BOARD, 0, 0.95, 0, -0.32);
+            part(new THREE.BoxGeometry(0.75, 0.32, 0.04), INK, -0.3, 0.12, 0.08, 0, 0, 0, bm);
+            part(new THREE.BoxGeometry(0.5, 0.08, 0.02), CYAN, -0.36, 0.12, 0.11, 0, 0, 0, bm);
+            part(new THREE.BoxGeometry(0.42, 0.36, 0.05), BLUE, 0.45, -0.1, 0.08, 0, 0, 0, bm);
+        } else if (kind === 'throws') {   // the ball, on a pin, in the court's gold candy with graphite seams
+            part(new THREE.CylinderGeometry(0.08, 0.08, 0.9, 6), GRAPH, 0, 0.45, 0);
+            const ball = new THREE.Mesh(new THREE.SphereGeometry(0.95, 16, 12), M.gold); ball.position.set(u, y + 1.6, v); guts[id].push(ball);
+            for (const r of [[0, 0, 0], [0, Math.PI / 2, 0], [Math.PI / 2, 0, 0]]) part(new THREE.TorusGeometry(0.96, 0.045, 5, 32), GRAPH, 0, 1.6, 0, r[0], r[1], r[2]);
+        } else if (kind === 'award') {   // the cheque on an easel
+            for (const x of [-0.8, 0.8]) part(new THREE.BoxGeometry(0.14, 2.2, 0.14), GRAPH, x, 1.0, -0.1, 0.18);
+            part(new THREE.BoxGeometry(0.14, 2.0, 0.14), GRAPH, 0, 0.9, -0.6, -0.35);
+            const cm = part(new THREE.BoxGeometry(2.9, 1.35, 0.08), BOARD, 0, 1.55, 0.08, -0.18);
+            part(new THREE.BoxGeometry(2.9, 0.22, 0.02), GOLD, 0, 0.52, 0.05, 0, 0, 0, cm);
+            part(new THREE.BoxGeometry(1.2, 0.2, 0.02), INK, 0.55, -0.18, 0.05, 0, 0, 0, cm);
+        } else if (kind === 'rig') {   // the soldered protoboard, two IMUs, the wire, the battery
+            part(new THREE.BoxGeometry(2.0, 0.12, 1.3), GREEN, 0, 0.3, 0);
+            for (const x of [-0.5, 0.45]) part(new THREE.BoxGeometry(0.55, 0.12, 0.45), BLUE, x, 0.42, -0.12);
+            part(new THREE.BoxGeometry(1.0, 0.36, 0.5), GRAPH, 0.35, 0.3, 0.75);
+            part(new THREE.CylinderGeometry(0.05, 0.05, 1.5, 5), GOLD, -0.05, 0.5, 0.22, 0, 0, Math.PI / 2);
+            part(new THREE.BoxGeometry(0.14, 0.3, 0.14), GRAPH, -0.85, 0.15, 0.5);
+        } else if (kind === 'sleeve') {   // the sleeve, black, on a forearm form, the gold mark and cuff
+            part(new THREE.CylinderGeometry(0.75, 0.85, 0.24, 14), GRAPH, 0, 0.12, 0);
+            const am = part(new THREE.CylinderGeometry(0.5, 0.36, 2.7, 14), INK, 0, 1.55, 0, 0, 0, 0.22);
+            part(new THREE.BoxGeometry(0.42, 0.42, 0.06), GOLD, 0, 0.3, 0.44, 0.06, 0, 0, am);
+            part(new THREE.TorusGeometry(0.37, 0.06, 5, 16), GOLD, 0, -1.1, 0, Math.PI / 2, 0, 0, am);
+        }
+    }
+    function placeGlow(i) {
+        if (!glowRing || !stepAt.length) return;
+        const [u, v, h] = stepAt[Math.max(0, Math.min(stepAt.length - 1, i))];
+        glowRing.position.set(u, h + 0.24, v);
+        glowRing.userData.h = h + 0.24;
+    }
+    /* the dates on the plinths, one atlas, one mesh, once the fonts and the stages are in */
+    function dressPlates(stages) {
+        if (!JOURNEY || journeyPlates || !stepAt.length) return;
+        const n = Math.min(stages.length, stepAt.length), cw = 256, ch = 72, cv = document.createElement('canvas');
+        cv.width = cw * n; cv.height = ch;
+        const ctx = cv.getContext('2d');
+        ctx.fillStyle = C.ink; ctx.fillRect(0, 0, cv.width, ch);
+        ctx.font = 'italic 700 40px ' + CHAKRA; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        if ('letterSpacing' in ctx) ctx.letterSpacing = '3px';
+        for (let i = 0; i < n; i++) { ctx.fillStyle = i === n - 1 ? SIG.betta : C.paper; ctx.fillText(stages[i].date.toUpperCase(), cw * i + cw / 2, ch / 2 + 2); }
+        const tex = new THREE.CanvasTexture(cv); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 4;
+        const pos = [], uv = [], idx = [], w = 3.4, hh = w * ch / cw, f = [Math.SQRT1_2, Math.SQRT1_2], r = [Math.SQRT1_2, -Math.SQRT1_2];
+        const R = JOURNEY.steps.r * 1.03 + 0.04;
+        for (let i = 0; i < n; i++) {
+            const [u, v, h] = stepAt[i], cx = u + f[0] * R, cz = v + f[1] * R, cy = Math.max(0.5, h - 0.75);
+            const base = pos.length / 3;
+            for (const [a, b] of [[-1, -1], [1, -1], [1, 1], [-1, 1]]) {
+                pos.push(cx + r[0] * a * w / 2, cy + b * hh / 2, cz + r[1] * a * w / 2);
+                uv.push((i + (a + 1) / 2) / n, (b + 1) / 2);
+            }
+            idx.push(base, base + 1, base + 2, base, base + 2, base + 3);
+        }
+        const geo = new THREE.BufferGeometry();
+        geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); geo.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2)); geo.setIndex(idx);
+        journeyPlates = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ map: tex, toneMapped: false, side: THREE.DoubleSide }));
+        groups.journey.add(journeyPlates);
+        if (!running) render();
+    }
+    /* the screen: the lab, drawn offscreen at a fixed size, with its one number and its date over it */
+    const COMP_W = 768, COMP_H = 512;
+    const LAB_FPS = (window.innerWidth <= 760 || (window.matchMedia && window.matchMedia('(pointer: coarse)').matches)) ? 20 : 30;   // a phone redraws the screen less often
+    function drawComp() {
+        if (!journeyLab || !journeyComp) return;
+        const x = journeyComp.getContext('2d'), st = journeyLab.stages[journeyLab.index], a = 1 - (journeyLab.fade || 0);
+        x.globalAlpha = 1;
+        x.drawImage(journeyLab.canvas, 0, 0, COMP_W, COMP_H);
+        const g = x.createLinearGradient(0, COMP_H - 130, 0, COMP_H);
+        g.addColorStop(0, 'rgba(6,6,8,0)'); g.addColorStop(1, 'rgba(6,6,8,0.78)');
+        x.fillStyle = g; x.fillRect(0, COMP_H - 130, COMP_W, 130);
+        x.globalAlpha = a;
+        x.textBaseline = 'alphabetic'; x.textAlign = 'left';
+        if ('letterSpacing' in x) x.letterSpacing = '2px';
+        x.font = 'italic 700 ' + (st.number.length > 6 ? 54 : 70) + 'px ' + CHAKRA;
+        x.fillStyle = C.paper; x.fillText(st.number, 34, 92);
+        x.font = 'italic 600 24px ' + CHAKRA; x.globalAlpha = a * 0.88;
+        if (st.unit) x.fillText(st.unit.toUpperCase(), 37, 128);
+        x.globalAlpha = a;
+        x.font = 'italic 700 34px ' + CHAKRA; x.fillStyle = SIG.betta;
+        const date = st.date.toUpperCase(); x.fillText(date, 36, COMP_H - 34);
+        const dw = x.measureText(date).width;
+        x.font = 'italic 600 34px ' + CHAKRA; x.fillStyle = C.paper;
+        x.fillText(st.title.toUpperCase(), 36 + dw + 26, COMP_H - 34);
+        x.globalAlpha = 1;
+        if ('letterSpacing' in x) x.letterSpacing = '0px';
+    }
+    function journeyVisible() {
+        if (!JOURNEY) return false;
+        const sc = JOURNEY.screen, p = project(sc.at[0], sc.z0 + sc.h / 2, sc.at[1]), m = 260;
+        return p[0] > -m && p[1] > -m && p[0] < canvas.clientWidth + m && p[1] < canvas.clientHeight + m;
+    }
+    function mountJourneyLab(mod) {
+        if (!JOURNEY || journeyLab || !screenMat) return;
+        const holder = document.createElement('div');   // never in the page: the lab draws offscreen and the world shows it
+        journeyLab = mod.mountLab(holder, { offscreen: { w: 600, h: 400, dpr: COMP_W / 600 }, external: true, autoplay: true,
+            start: reduced.matches ? 'last' : 0,
+            onStage: i => { journeyIndex = i; placeGlow(i); if (journeyTex) { drawComp(); journeyTex.needsUpdate = true; } if (!running) render(); } });
+        journeyComp = document.createElement('canvas'); journeyComp.width = COMP_W; journeyComp.height = COMP_H;
+        journeyTex = new THREE.CanvasTexture(journeyComp); journeyTex.colorSpace = THREE.SRGBColorSpace; journeyTex.anisotropy = 4;
+        drawComp(); journeyTex.needsUpdate = true;
+        screenMat.map = journeyTex; screenMat.color.set('#ffffff'); screenMat.needsUpdate = true;
+        journeyIndex = journeyLab.index; placeGlow(journeyIndex);
+        dressPlates(mod.STAGES);
+        if (!running) render();
+    }
+    function journeyTick(dt) {
+        if (glowRing && glowRing.userData.h != null) {   // the ring breathes on its plinth
+            const k = 1 + 0.06 * Math.sin(performance.now() / 260);
+            glowRing.scale.set(k, k, 1);
+        }
+        if (!journeyLab) return;
+        labAcc += dt;
+        if (labAcc < 1 / LAB_FPS) return;
+        const step = Math.min(labAcc, 0.1); labAcc = 0;
+        if (!journeyVisible()) return;
+        if (journeyLab.tick(step)) { drawComp(); journeyTex.needsUpdate = true; }
+    }
+
     /* the 5x7 dot glyphs scaled up k times, as a bitmap for a big sign */
     function bigText(text, k) {
         const rows = [];
@@ -882,11 +1075,22 @@ export function mount(canvas, L) {
             const geo = new THREE.BufferGeometry();
             geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); geo.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3)); geo.setAttribute('color', new THREE.Float32BufferAttribute(colr, 3));
             const m = new THREE.Mesh(geo, markMat);
-            m.position.set(mk.at[0], mk.at[2], mk.at[1]); if (mk.face === 'u') m.rotation.y = Math.PI / 2;
+            m.position.set(mk.at[0], mk.at[2], mk.at[1]); if (mk.face === 'u') m.rotation.y = Math.PI / 2; else if (mk.face === 'd') m.rotation.y = Math.PI / 4;   // 'd' faces the camera head on (round 7, the Journey)
             groups[loc.id].add(m);
             const depth = MARK_DEPTH + 1.4, top = mk.h + 0.6;
-            const box = mk.face === 'u' ? [mk.at[0] - depth / 2, mk.at[1] - (w + 2.4) / 2, depth, w + 2.4, top, mk.at[2]] : [mk.at[0] - (w + 2.4) / 2, mk.at[1] - depth / 2, w + 2.4, depth, top, mk.at[2]];
-            markBoxes.push({ id: loc.id, box });
+            const half = ((w + 2.4) / 2 + depth / 2) * Math.SQRT1_2;
+            const box = mk.face === 'u' ? [mk.at[0] - depth / 2, mk.at[1] - (w + 2.4) / 2, depth, w + 2.4, top, mk.at[2]]
+                : mk.face === 'd' ? [mk.at[0] - half, mk.at[1] - half, half * 2, half * 2, top, mk.at[2]]
+                : [mk.at[0] - (w + 2.4) / 2, mk.at[1] - depth / 2, w + 2.4, depth, top, mk.at[2]];
+            if (mk.face === 'd') {   // a mark on the diagonal is reported as eight thin pieces along its length, so a chip above it is not read as touching its square bounds
+                const Lh = (w + 2.4) / 2, th = depth / 2, du = Math.SQRT1_2, dv = -Math.SQRT1_2, nu = Math.SQRT1_2, nv = Math.SQRT1_2;
+                for (let k = 0; k < 8; k++) {
+                    const a0 = -Lh + 2 * Lh * k / 8, a1 = a0 + 2 * Lh / 8, us = [], vs = [];
+                    for (const a of [a0, a1]) for (const n of [-th, th]) { us.push(mk.at[0] + du * a + nu * n); vs.push(mk.at[1] + dv * a + nv * n); }
+                    const u0 = Math.min(...us), v0 = Math.min(...vs);
+                    markBoxes.push({ id: loc.id, box: [u0, v0, Math.max(...us) - u0, Math.max(...vs) - v0, top, mk.at[2]] });
+                }
+            } else markBoxes.push({ id: loc.id, box });
             const hit = hits.find(h => h.userData.id === loc.id);   // the hit area grows to take the mark in
             if (hit && hit.userData.box) {
                 const b0 = hit.userData.box.clone().expandByPoint(new THREE.Vector3(box[0], box[5], box[1])).expandByPoint(new THREE.Vector3(box[0] + box[2], box[5] + box[4] + 1, box[1] + box[3]));
@@ -896,7 +1100,7 @@ export function mount(canvas, L) {
         }
         if (!running) render();
     }
-    const fontJson = fetch('circuit/vendor/chakra-petch-bold.typeface.json?v=15.1').then(r => r.json());
+    const fontJson = fetch('circuit/vendor/chakra-petch-bold.typeface.json?v=16.0').then(r => r.json());
 
     /* ------------------------------------------------ the type hoardings (V1.2, V1.3) */
     /* Three lines of type on trackside boards. Frames and posts go up with
@@ -1059,23 +1263,6 @@ export function mount(canvas, L) {
 
     const RACE = { speed: 9.2, line: 1.0, pass: 2.1, inside: 0.9, follow: CAR.length + 0.9, ahead: CAR.length + 1.2, clear: CAR.width + 0.25, towReach: 16, tow: 0.06, band: 0.12, drag: 0.03, edge: 0.1, commit: 0.16, lift: 0.05, rest: 4, patience: 18, firm: CAR.length + 0.3 };
     const race = { t: 0, lap: 0, seed: SEED, order: [], pass: null, passes: 0, aborts: 0, lastPass: -10, changes: 0 };
-    /* V1.5: the visitor drives. One extra car, paper white, that exists only
-       while someone is driving it. Its speed comes from the throttle and
-       the corner instead of a personality: idle is half pace, flat out is
-       a touch faster than the field, so a pass needs a clean lane and a
-       lift in the corners keeps it honest. The tow applies; the band, the
-       leader drag and the attention do not. It holds station behind a
-       blocker exactly as the others do, so it has to change lane to get
-       by, and the field treats it as a blocker like any other car. It
-       never starts a choreographed pass; the AI may pass it. Its lateral
-       follows the steer and is clamped so the car stays inside the white
-       line, and the racing line's swing means a full lock clears a car
-       only on the inside of the swing. Nothing it does is written to the
-       attention store. */
-    const DRIVE = { idle: 0.5, gain: 0.60, grip: 0.34, reach: 3.0, edge: 3.1, brake: 0.35, back: RACE.follow + 1.5, turn: 3.0, hyst: 2.0 };   // gain 0.60: a bot lap passes three to five, a person two to four, in about 68 s (docs/circuit/v15/drive.md)
-    const drive = { car: null, t: 0, s0: 0, lapDone: false, lapTime: 0, passed: [], passedBy: [], ahead: new Set(), input: { throttle: 0, steer: 0, brake: false }, halo: null };
-    const HALO_S = 1.5;   // the paper ring under the visitor's car, gone after a second and a half
-    const easeIO = x => x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
     const racingLine = s => RACE.line * Math.sin(s / lap * Math.PI * 6 + 0.4);
     function buildGrid() {
         const gridStart = startS - 4, slots = L.GRID.map((c, i) => i);
@@ -1093,28 +1280,6 @@ export function mount(canvas, L) {
     /* every frame: pace, the tow and the band set what each car wants;
        a car in line behind another holds station; a pass carries one
        round the outside; positions and gaps fall out of the distances */
-    /* a car alongside is a wall: the player cannot steer into it, and a car
-       the racing line would carry into the pinned player gives room inside
-       the line first, the player second. Runs inside the player's own step,
-       so every car stepped after it in the same frame sees the settled lane. */
-    function wall(p) {
-        for (const o of cars) {
-            if (o === p || Math.abs(o.s - p.s) >= CAR.length + 0.2) continue;
-            let d = o.lane - p.lane; if (Math.abs(d) >= RACE.clear) continue;
-            const sign = d >= 0 ? 1 : -1;
-            if ((p.lateral - p.lat0) * sign > 0) p.lateral = p.lat0;   // undo the steer toward it
-            { const rl = racingLine(p.s); p.lateral = Math.max(-DRIVE.edge - rl, Math.min(DRIVE.edge - rl, p.lateral)); p.lane = rl + p.lateral; d = o.lane - p.lane; }   // and keep the line
-            let need = RACE.clear - Math.abs(d);
-            if (need > 0) {   // the other car gives what room it has: to the line, and to the next car alongside it on that side
-                let room = Math.max(0, DRIVE.edge - sign * o.lane);
-                for (const q of cars) if (q !== o && q !== p && Math.abs(q.s - o.s) < CAR.length + 0.2 && (q.lane - o.lane) * sign > 0) room = Math.min(room, Math.max(0, (q.lane - o.lane) * sign - RACE.clear));
-                const give = Math.min(need, room);
-                o.lateral += sign * give; o.lane += sign * give; need -= give;
-                o.pose = placeAt(o.group, o.s, o.lane);
-            }
-            if (need > 0) { const lane = Math.max(-DRIVE.edge, Math.min(DRIVE.edge, p.lane - sign * need)); p.lateral += lane - p.lane; p.lane = lane; }
-        }
-    }
     function placeCars(dt) {
         race.t += dt;
         if (pulse) pulse.tick();
@@ -1122,45 +1287,36 @@ export function mount(canvas, L) {
         if (race.order.length && order.some((ci, k) => ci !== race.order[k])) race.changes++;
         race.order = order;
         for (let k = 0; k < order.length; k++) {
-            const c = cars[order[k]], ahead = k > 0 ? cars[order[k - 1]] : null, player = !!c.player;
+            const c = cars[order[k]], ahead = k > 0 ? cars[order[k - 1]] : null;
             let blocker = null, bi = -1;   // the nearest car ahead on a line this one would run into; a car alongside on a clear line is not one
-            for (let j = k - 1; j >= 0; j--) {   // for the player, both cars of a pass in progress block the whole road: nobody threads a pass
+            for (let j = k - 1; j >= 0; j--) {
                 const o = cars[order[j]], inBand = Math.abs(o.lateral - c.lateral) < RACE.clear;
-                if (inBand && o.s - c.s < CAR.length + 0.2 && Math.abs(o.lane - c.lane) >= RACE.clear) continue;   // beside us on a clear lane (the visitor's car, held off by the wall below), not ahead of us
-                if (inBand || (player && race.pass && race.pass.over !== order[k] && (order[j] === race.pass.car || order[j] === race.pass.over))) { blocker = o; bi = order[j]; break; }   // a car passing the visitor is an ordinary car to them
+                if (inBand && o.s - c.s < CAR.length + 0.2 && Math.abs(o.lane - c.lane) >= RACE.clear) continue;   // beside us on a clear lane, not ahead of us
+                if (inBand) { blocker = o; bi = order[j]; break; }
             }
             const pose = poseAt(c.s), corner = Math.min(1, Math.abs(pose.k) / 0.12);
             c.lat0 = c.lateral;
-            let want;
-            if (player) {   // the throttle and the corner, nothing else
-                const inp = drive.input;
-                want = RACE.speed * (DRIVE.idle + DRIVE.gain * inp.throttle) * (1 - DRIVE.grip * corner);
-                if (inp.brake) want = Math.min(want, RACE.speed * DRIVE.brake);
-            } else {
-                const form = 1 + 0.022 * Math.sin(t / c.f1 + c.p1) + 0.012 * Math.sin(t / c.f2 + c.p2);
-                const aimAttend = pulse ? pulse.pace(c.id) : 1;   // what the visitor's tour is worth to this car right now
-                c.attendNow += (aimAttend - c.attendNow) * Math.min(1, dt / ATTEND_SMOOTH);
-                want = RACE.speed * c.pace * c.top * form * c.attendNow * (1 - c.grip * corner);
-            }
+            const form = 1 + 0.022 * Math.sin(t / c.f1 + c.p1) + 0.012 * Math.sin(t / c.f2 + c.p2);
+            const aimAttend = pulse ? pulse.pace(c.id) : 1;   // what the visitor's tour is worth to this car right now
+            c.attendNow += (aimAttend - c.attendNow) * Math.min(1, dt / ATTEND_SMOOTH);
+            let want = RACE.speed * c.pace * c.top * form * c.attendNow * (1 - c.grip * corner);
             const passing = race.pass && race.pass.car === order[k], passed = race.pass && race.pass.over === order[k];
             if (ahead) {
                 const gap = ahead.s - c.s;
                 if (gap < RACE.towReach) want *= 1 + RACE.tow * (1 - gap / RACE.towReach);          // the tow
-                if (!player) want *= 1 + RACE.band * Math.min(1, Math.max(0, (gap - 7) / 20));     // the band: nobody drifts away
+                want *= 1 + RACE.band * Math.min(1, Math.max(0, (gap - 7) / 20));     // the band: nobody drifts away
             }
             let held = false;
             if (blocker) {   // everyone holds station behind the car it would run into, passing or not
                 const gap = blocker.s - c.s;
                 if (gap < RACE.follow) {
                     const edge = want - blocker.v;
-                    /* no pass starts across a visitor who is alongside either car of it; a pass on the visitor is fine */
-                    const third = drive.car && drive.car !== c && drive.car !== blocker && (Math.abs(drive.car.s - c.s) < CAR.length + 1.5 || Math.abs(drive.car.s - blocker.s) < CAR.length + 1.5);
-                    if (!player && !passing && !race.pass && !third && corner < 0.25 && edge > RACE.edge && gap >= CAR.length + 0.4 && t - race.lastPass > RACE.rest)
+                    if (!passing && !race.pass && corner < 0.25 && edge > RACE.edge && gap >= CAR.length + 0.4 && t - race.lastPass > RACE.rest)
                         race.pass = { car: order[k], over: bi, t0: t, side: race.passes % 2 ? -1 : 1 };
                     else { want = Math.min(want, blocker.v * (gap < RACE.follow - 0.8 ? 0.96 : 1)); held = true; }
                 }
             }
-            if (!ahead && !player) {
+            if (!ahead) {
                 const behind = order.length > 1 ? c.s - cars[order[1]].s : 0;
                 want *= 1 - RACE.drag * Math.min(1, Math.max(0, (behind - 8) / 20));                // the leader in clean air, reeled in
             }
@@ -1168,51 +1324,28 @@ export function mount(canvas, L) {
                 const over = cars[race.pass.over], clear = Math.abs(c.lateral - over.lateral) >= RACE.clear, gap = over.s - c.s;
                 if (race.pass.abort) want = Math.min(want, over.v * 0.93);
                 else if (clear) { if (!held) want *= 1 + RACE.commit; }
-                else if (gap > 0 && gap < CAR.length + 0.8) want = Math.min(want, over.v * 0.94);   // only while still behind: ahead of a visitor who is holding station, slowing to their pace would stall both
+                else if (gap > 0 && gap < CAR.length + 0.8) want = Math.min(want, over.v * 0.94);   // only while still behind
             }
-            if (passed && !player && !race.pass.abort && Math.abs(c.lateral - cars[race.pass.car].lateral) >= RACE.clear) want *= 1 - RACE.lift;
+            if (passed && !race.pass.abort && Math.abs(c.lateral - cars[race.pass.car].lateral) >= RACE.clear) want *= 1 - RACE.lift;
             c.v += (want - c.v) * Math.min(1, dt * (want < c.v ? 7 : 2.4));   // the brakes bite, the throttle builds
             /* the firm end of the hold: inside a third of a length of the
                follow distance the car's speed is clamped to its blocker's,
                so a long frame (a throttled tab, a slow phone) cannot shrink
-               the gap under a car length. Eight cars make more trains, and
-               the player closes faster than any of them. */
+               the gap under a car length. Eight cars make more trains. */
             if (held && blocker.s - c.s < RACE.firm) c.v = Math.min(c.v, blocker.v);
             c.s += c.v * dt;
-            if (player) {   // the steer sets the lateral; the lane stays inside the white line; a car alongside is a wall
-                c.lateral += (drive.input.steer * DRIVE.reach - c.lateral) * Math.min(1, dt * DRIVE.turn);
-                const rl = racingLine(c.s);
-                c.lateral = Math.max(-DRIVE.edge - rl, Math.min(DRIVE.edge - rl, c.lateral));
-                c.lane = rl + c.lateral;
-                wall(c);
-            } else {
+            {
                 const side = race.pass ? race.pass.side : 0, aimLat = passing ? RACE.pass * side : passed ? -RACE.inside * side : 0;
                 c.lateral += (aimLat - c.lateral) * Math.min(1, dt * 2.6);
             }
             c.lane = racingLine(c.s) + c.lateral;
             c.pose = placeAt(c.group, c.s, c.lane);
         }
-        if (drive.car) {   // the lap and the passes, from distance alone, with a third of a car of hysteresis so a dead heat is not ten passes
-            const c = drive.car;
-            if (drive.halo) {   // the ring under the car fades through the last half second of its time
-                const h = drive.halo; h.t += dt;
-                h.mesh.material.opacity = 0.6 * Math.max(0, Math.min(1, (HALO_S - h.t) / 0.5));
-                if (h.t >= HALO_S) { c.group.remove(h.mesh); h.mesh.geometry.dispose(); h.mesh.material.dispose(); drive.halo = null; }
-            }
-            if (!drive.lapDone) { drive.t += dt; if (c.s - drive.s0 >= lap) { drive.lapDone = true; drive.lapTime = drive.t; } }
-            for (const o of cars) {
-                if (o === c) continue;
-                const d = o.s - c.s;
-                if (drive.ahead.has(o.id)) { if (d <= -DRIVE.hyst) { drive.ahead.delete(o.id); drive.passed.push(o.id); } }
-                else if (d >= DRIVE.hyst) { drive.ahead.add(o.id); drive.passedBy.push(o.id); }
-            }
-        }
         if (race.pass) {
             const a = cars[race.pass.car], b = cars[race.pass.over], d = a.s - b.s;
             if (!race.pass.abort && d >= RACE.ahead) { race.pass = null; race.passes++; race.lastPass = t; }   // a length clear: back on the line
             else if (!race.pass.abort && t - race.pass.t0 > RACE.patience) { race.pass.abort = true; race.aborts++; }   // no way through: drop back, then tuck in
             else if (race.pass.abort && d <= -RACE.follow) { race.pass = null; race.lastPass = t; }
-            else if (race.pass.abort && b.player && d > 0) { race.pass = null; race.lastPass = t; }   // a pass on the visitor that runs out of time while already ahead of them simply ends: the car is past and rejoins the line
         }
         const leader = cars[order[0]];
         race.lap = Math.max(1, Math.floor((leader.s - startS) / lap) + 1);
@@ -1220,69 +1353,11 @@ export function mount(canvas, L) {
     const gridState = () => {
         if (!cars.length || !race.order.length) return [];
         const leader = cars[race.order[0]], lv = Math.max(1, leader.v);
-        return race.order.map((ci, k) => { const c = cars[ci], you = !!c.player; return { id: c.id, rank: k + 1, code: c.code, name: c.name, stop: c.stop, number: c.number, accent: c.accent, player: you,
-            share: (pulse && !you) ? +pulse.share(c.id).toFixed(3) : 0, attend: you ? 0 : +(c.attendNow - 1).toFixed(4), flashedAt: (pulse && !you) ? pulse.flashedAt(c.id) : 0,   // the player is kept out of the attention store
+        return race.order.map((ci, k) => { const c = cars[ci]; return { id: c.id, rank: k + 1, code: c.code, name: c.name, stop: c.stop, number: c.number, accent: c.accent,
+            share: pulse ? +pulse.share(c.id).toFixed(3) : 0, attend: +(c.attendNow - 1).toFixed(4), flashedAt: pulse ? pulse.flashedAt(c.id) : 0,
             gap: +((leader.s - c.s) / lv).toFixed(2), s: +c.s.toFixed(2), v: +c.v.toFixed(2), lane: +c.lane.toFixed(2),
             at: [c.group.position.x, c.group.position.z], tx: c.pose ? c.pose.tx : 1, tz: c.pose ? c.pose.tz : 0,
             passing: !!(race.pass && race.pass.car === ci), passed: !!(race.pass && race.pass.over === ci) }; });
-    };
-    /* V1.5: the drive. startDrive puts the visitor's car at the back of the
-       field, a follow distance and a half behind the last car; it is the
-       last entry in cars, so the others keep their indices when it leaves. */
-    function startDrive() {
-        if (drive.car || !cars.length || !race.order.length) return drive.car;
-        const last = cars[race.order[race.order.length - 1]];
-        /* the one light car on the graphite: a paper body, ink flank lines, the wing edge in gold (fix round, 2026-10-10) */
-        const paper = new THREE.MeshPhysicalMaterial({ color: C.paper, roughness: 0.35, metalness: 0.1, clearcoat: 1, clearcoatRoughness: 0.25, flatShading: true });
-        const g = makeCar(C.ink, 'YOU', { body: paper, wing: C.accent }); scene.add(g);
-        g.userData.own = [paper];   // disposed with the car; the gloss, the accents and the shadow are shared and stay
-        const c = { id: 'you', group: g, name: '', code: 'YOU', stop: null, project: null, number: 'YOU', accent: C.ink, player: true, pose: null, lane: 0, lateral: 0,
-            s: last.s - DRIVE.back, v: last.v, attendNow: 1, pace: 1, grip: DRIVE.grip, top: 1, f1: 1, f2: 1, p1: 0, p2: 0 };
-        cars.push(c);
-        if (!reduced.matches) {   // a flat paper ring under the car for the first moment of the drive, so the eye lands on it during the fly
-            const halo = new THREE.Mesh(new THREE.RingGeometry(3.4, 4.0, 48), new THREE.MeshBasicMaterial({ color: C.paper, transparent: true, opacity: 0.6, depthWrite: false, toneMapped: false }));
-            halo.rotation.x = -Math.PI / 2; halo.position.y = 0.12; g.add(halo);
-            drive.halo = { mesh: halo, t: 0 };
-        }
-        drive.car = c; drive.t = 0; drive.s0 = c.s; drive.lapDone = false; drive.lapTime = 0; drive.passed = []; drive.passedBy = [];
-        drive.input = { throttle: 0, steer: 0, brake: false };
-        drive.ahead = new Set(cars.filter(o => o !== c && o.s > c.s).map(o => o.id));
-        race.order = cars.map((x, i) => i).sort((a, b) => cars[b].s - cars[a].s);
-        c.lane = racingLine(c.s); c.pose = placeAt(g, c.s, c.lane);
-        if (fontsLoaded) numberCars();
-        if (!running) { start(); if (!running) render(); }
-        return c;
-    }
-    const setDriveInput = inp => {
-        if (!inp) return;
-        const th = +inp.throttle, st = +inp.steer;
-        drive.input.throttle = Number.isFinite(th) ? Math.max(0, Math.min(1, th)) : 0;
-        drive.input.steer = Number.isFinite(st) ? Math.max(-1, Math.min(1, st)) : 0;
-        drive.input.brake = !!inp.brake;
-    };
-    function endDrive() {
-        const c = drive.car; if (!c) return;
-        const i = cars.indexOf(c);
-        if (i >= 0) cars.splice(i, 1);
-        scene.remove(c.group);
-        if (drive.halo) { drive.halo.mesh.material.dispose(); drive.halo = null; }
-        c.group.traverse(o => {   // its own geometry, its plate and its paper body; the gloss, the accents and the shadow material are shared and stay
-            if (!o.isMesh) return;
-            o.geometry.dispose();
-            if (o.material.map) { o.material.map.dispose(); o.material.dispose(); }
-        });
-        for (const m of c.group.userData.own || []) m.dispose();
-        if (race.pass && (race.pass.car === i || race.pass.over === i)) { race.pass = null; race.lastPass = race.t; }
-        race.order = cars.map((x, k) => k).sort((a, b) => cars[b].s - cars[a].s);
-        drive.car = null; drive.input = { throttle: 0, steer: 0, brake: false };
-        if (reduced.matches) { stop(); render(); } else if (!running) render();
-    }
-    const driveState = () => {
-        const c = drive.car;
-        if (!c) return { on: false, t: 0, lapDone: false, lapTime: 0, rank: 0, passed: [], passedBy: [], v: 0, lane: 0, s: 0, lap: +lap.toFixed(1) };
-        return { on: true, t: +drive.t.toFixed(2), lapDone: drive.lapDone, lapTime: +drive.lapTime.toFixed(2), rank: race.order.indexOf(cars.indexOf(c)) + 1,
-                 passed: drive.passed.slice(), passedBy: drive.passedBy.slice(), v: +c.v.toFixed(2), lane: +c.lane.toFixed(2), lateral: +c.lateral.toFixed(2), s: +(c.s - drive.s0).toFixed(1), lap: +lap.toFixed(1),
-                 throttle: drive.input.throttle, steer: drive.input.steer, brake: drive.input.brake };
     };
     const raceState = () => !cars.length ? { seed: race.seed, t: 0, lap: 1, passes: 0, aborts: 0, changes: 0, pass: null, leader: null } : ({ seed: race.seed, t: +race.t.toFixed(2), lap: race.lap, passes: race.passes, aborts: race.aborts, changes: race.changes,
         pass: race.pass ? { car: cars[race.pass.car].id, over: cars[race.pass.over].id, since: +(race.t - race.pass.t0).toFixed(1) } : null, leader: cars[race.order[0]].id });
@@ -1303,22 +1378,30 @@ export function mount(canvas, L) {
        (the pit straight) and settles smoothly toward HELI.floor as it follows the leader away from the
        camera, climbing again on the way back. Nothing is pinned to the frame's edge. */
     const heightAt = (x, z) => BY_FLOOR + (BY - BY_FLOOR) * bandEase((x + z - 150) / 110);
-    const air = { x: L.HELI.at[0], z: L.HELI.at[1], yaw: 0, pitch: 0, set: false };
+    const air = { x: L.HELI.at[0], z: L.HELI.at[1], y: null, yaw: 0, pitch: 0, set: false };
+    let heliTask = null;   // round 7, the jump run: { x, z, y, ease, near } the aircraft flies to and holds; null follows the leader
+    const HELI_VMAX = 78;  // the jump run's top speed, units a second, so a run from across the plate is a flight and not a jump cut
+    const jump = createJump({ THREE, scene, L, heli, setHeliTask: t => { heliTask = t; }, heightAt, M, reduced, camDir: DIR });
     /* The helicopter is the camera ship. It rides high over whoever is
        leading, a little ahead of their nose, so the front of the race is
        findable in the wide shot without reading the Grid. It is slow and
        high on purpose: it lags the leader, so a pass shows as the aircraft
-       drifting across to the other car. The skydiver on the Projects stop
-       jumps from this same helicopter. No label, no hit box, not a stop. */
+       drifting across to the other car. Round 7: it is also the way in to
+       the jump. A hit box (id 'helicopter') and a chip make it clickable;
+       circuit/jump.js borrows it for the jump run through heliTask and
+       gives it back once the diver lands. It is not a stop. */
     function placeHeli(t, dt) {
         const lead = (cars.length && race.order.length) ? cars[race.order[0]] : null;
         let tx, tz;
-        if (lead && lead.pose) { tx = lead.group.position.x + lead.pose.tx * L.HELI.lead; tz = lead.group.position.z + lead.pose.tz * L.HELI.lead; }
+        if (heliTask) { tx = heliTask.x; tz = heliTask.z; }
+        else if (lead && lead.pose) { tx = lead.group.position.x + lead.pose.tx * L.HELI.lead; tz = lead.group.position.z + lead.pose.tz * L.HELI.lead; }
         else { const a = t * Math.PI * 2 / 240; tx = L.HELI.at[0] + Math.cos(a) * 18; tz = L.HELI.at[1] + Math.sin(a) * 9; }
         if (!air.set) { air.x = tx; air.z = tz; air.set = true; }
-        const step = Math.min(1, Math.max(0, dt || 0.016) * (L.HELI.ease || 0.55));
+        const step = Math.min(1, Math.max(0, dt || 0.016) * (heliTask ? heliTask.ease : (L.HELI.ease || 0.55)));
         const px = air.x, pz = air.z;
-        air.x += (tx - air.x) * step; air.z += (tz - air.z) * step;
+        let mx = (tx - air.x) * step, mz = (tz - air.z) * step;
+        { const m = Math.hypot(mx, mz), cap = HELI_VMAX * Math.max(0, dt || 0.016); if (m > cap) { mx *= cap / m; mz *= cap / m; } }   // a flight, never a jump cut: the run, and the way back to the race after a jump
+        air.x += mx; air.z += mz;
         const dx = air.x - px, dz = air.z - pz;
         const speed = dt > 0 ? Math.hypot(dx, dz) / dt : 0;
         if (dx * dx + dz * dz > 1e-6) {
@@ -1329,7 +1412,12 @@ export function mount(canvas, L) {
             air.yaw += d * Math.min(1, Math.max(0, dt || 0.016) * 1.1);   // it turns like an aircraft, not a drone
         }
         air.pitch += (-Math.min(1, speed / 8) * 0.1 - air.pitch) * Math.min(1, Math.max(0, dt || 0.016) * 2);   // nose down when it closes on the leader
-        heli.position.set(air.x, heightAt(air.x, air.z) + Math.sin(t * 1.3) * 0.5, air.z);
+        /* the band's height, or the jump run's once the aircraft is near its spot; eased either way */
+        let ty = heightAt(air.x, air.z);
+        if (heliTask && heliTask.y != null && Math.hypot(tx - air.x, tz - air.z) < (heliTask.near || 30)) ty = heliTask.y;
+        if (air.y == null) air.y = ty;
+        air.y += (ty - air.y) * Math.min(1, Math.max(0, dt || 0.016) * 1.6);
+        heli.position.set(air.x, air.y + Math.sin(t * 1.3) * (heliTask ? 0.15 : 0.5), air.z);
         heli.rotation.set(0, air.yaw, air.pitch);
         /* no ground shadow: from this height it would land some fifty units from the hull, often past the
            plate edge, and nobody would read a faint disc that far away as this aircraft's. The height shows
@@ -1382,7 +1470,11 @@ export function mount(canvas, L) {
             }
             heli.rotation.order = 'YZX';   // yaw, then the nose pitches in its own frame
             heli.scale.setScalar(1.4);
-            scene.add(heli);   // decoration only: no label, no hit box (V1.3)
+            scene.add(heli);
+            /* round 7: the aircraft is the way in to the jump, so it carries a hit box on layer 1 like the stops */
+            const heliHit = new THREE.Mesh(new THREE.BoxGeometry(27, 10, 9), flat);
+            heliHit.position.set(-6, 0.4, 0); heliHit.layers.set(1); heliHit.userData.id = 'helicopter';
+            heli.add(heliHit); hits.push(heliHit);
             placeHeli(0, 0);
         }
         {   // 5. the garage scope
@@ -1436,7 +1528,7 @@ export function mount(canvas, L) {
         const bd = L.LOCATIONS.find(l => l.id === 'contact').boxes;   // the email board and the temperature board sit on their own boxes
         textPlane(textTexture(board.board.text, { w: 1024, h: 256, font: '700 96px ' + SCHIB, fill: C.ink, bg: C.paper, spacing: '2px' }), 5.6, 1.4, [bd[1][0] + 3, 2.5, WV + 0.02], 0, groups.contact);
         textPlane(textTexture('TRACK 29°', { w: 512, h: 192, font: '700 96px ' + CHAKRA, fill: SIG.contact, bg: C.ink }), 2.7, 1.0, [bd[2][0] + 1.5, 1.7, WV + 0.02], 0, groups.contact);
-        textPlane(textTexture(L.NAME.toUpperCase(), { w: 2048, h: 96, font: 'italic 600 60px ' + CHAKRA, fill: C.paper, spacing: '18px' }), 72, 3.4, [105, -2.5, 210.03]);
+        textPlane(textTexture(L.NAME.toUpperCase(), { w: 2048, h: 96, font: 'italic 600 60px ' + CHAKRA, fill: C.paper, spacing: '18px' }), 72, 3.4, [(PL.u0 + PL.u1) / 2, -2.5, PL.v1 + 0.03]);
         {   // BETTA painted inside T1 along the track, the way circuits paint their own name
             const f = fr[L.nearest(fr, L.RUNOFF.at)];
             const m = textPlane(textTexture(L.HELI.banner, { w: 1024, h: 256, font: 'italic 700 200px ' + CHAKRA, fill: C.paper, spacing: '30px' }), 18, 4.5, [L.RUNOFF.at[0], 0.06, L.RUNOFF.at[1]]);
@@ -1467,6 +1559,8 @@ export function mount(canvas, L) {
         if (!built) return;
         placeCars(dt);
         placeHeli(t, dt);
+        if (jump) jump.tick(dt, t);
+        journeyTick(dt);
         waveFlag(t);
         shimmerAt((t % 8) / 8);   // the sleeve shimmer, base to cuff every eight seconds
         flickerStep(t);           // one board flickers
@@ -1480,12 +1574,11 @@ export function mount(canvas, L) {
         if (now - secStart >= 1000) { stats.fps = secFrames * 1000 / (now - secStart); stats.window.push(stats.fps); if (stats.window.length > 10) stats.window.shift(); secFrames = 0; secStart = now; }
         if (running) raf = requestAnimationFrame(frame);
     }
-    /* under reduced motion nothing runs on its own; a drive is the visitor
-       asking for motion, so the loop runs for exactly as long as they hold the car */
-    function start() { if (running || (reduced.matches && !drive.car) || !ready) return; running = true; last = performance.now(); secStart = last; secFrames = 0; raf = requestAnimationFrame(frame); }
+    /* under reduced motion nothing runs on its own (a jump lands at once, the lap cuts) */
+    function start() { if (running || reduced.matches || !ready) return; running = true; last = performance.now(); secStart = last; secFrames = 0; raf = requestAnimationFrame(frame); }
     function stop() { running = false; cancelAnimationFrame(raf); }
     document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); else start(); });
-    const onReduced = () => { if (reduced.matches && !drive.car) { stop(); if (built) placeCars(0); render(); } else start(); };
+    const onReduced = () => { if (reduced.matches) { stop(); if (built) placeCars(0); render(); } else start(); };
     if (reduced.addEventListener) reduced.addEventListener('change', onReduced); else reduced.addListener(onReduced);
     window.addEventListener('resize', () => { fit(); if (!running) render(); });
 
@@ -1505,6 +1598,8 @@ export function mount(canvas, L) {
     Promise.all([readyPromise, fontsReady]).then(addText, addText);
     const dressed = Promise.all([readyPromise, fontsReady]).then(dressHoardings, dressHoardings);
     const marked = Promise.all([readyPromise, fontJson]).then(([, font]) => buildMarks(font)).catch(err => console.warn('marks', err));
+    /* round 7: the Journey's screen, once the world is up and the fonts are in (its number and dates are type) */
+    const journeyReady = JOURNEY ? Promise.all([readyPromise, fontsReady]).then(() => import('./lab.js?v=16.0')).then(mountJourneyLab).catch(err => console.warn('journey screen', err)) : Promise.resolve();
 
     /* screen helpers for the navigation layer */
     const _v = new THREE.Vector3();
@@ -1527,8 +1622,11 @@ export function mount(canvas, L) {
     return { scene, camera, renderer, canvas, view, fit, render, start, stop, stats, frames: fr, poseAt, ambient: L.AMBIENT,
              groups, hooks, project, groundAt, pick, DIR, isRunning: () => running, reduced, ready: readyPromise,
              cars, carAt: id => { const c = cars.find(k => k.id === id); return c && c.pose ? { x: c.group.position.x, z: c.group.position.z, tx: c.pose.tx, tz: c.pose.tz, s: c.s, v: c.v } : null; },
-             gridState, raceState, passing: () => !!race.pass, stepRace: dt => placeCars(dt), dressed, marked, marks: () => markBoxes,
-             startDrive, endDrive, setDriveInput, driveState, driving: () => !!drive.car, DRIVE, speed: RACE.speed,
+             gridState, raceState, passing: () => !!race.pass, stepRace: dt => placeCars(dt), dressed, marked, journeyReady, marks: () => markBoxes,
+             speed: RACE.speed,
+             jump: jump ? { start: () => { const ok = jump.start(); if (!running) render(); return ok; }, state: () => jump.state(), heli: () => jump.heli(), cancel: () => jump.cancel(), EXIT_Y: jump.EXIT_Y } : null,
+             setHeliHot: on => { M.cabin.emissive.set(on ? '#8fd3ff' : '#000000'); M.cabin.emissiveIntensity = on ? 0.4 : 0; if (!running) render(); },
+             journey: { index: () => journeyIndex, goTo: (i, fromVisitor) => { if (journeyLab) journeyLab.goTo(i, fromVisitor ? 25000 : 0); }, lab: () => journeyLab, screen: () => JOURNEY && JOURNEY.screen },
              attend, attendStop, attendDwell, attendCase, attendCaseDwell, carsByStop, carByProject,
              attention: () => pulse ? L.GRID.map(c => ({ id: c.id, score: +pulse.scoreOf(c.id).toFixed(2), share: +pulse.share(c.id).toFixed(3) })) : [],
              anyAttention: () => !!pulse && pulse.anyAttention(),

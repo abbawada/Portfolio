@@ -14,6 +14,12 @@
     var NAME = 'Wada Ring';
     var PLACE = 'Los Angeles, CA';
     var SIZE = 210;
+    /* Round 7: the map grew. The far side of the circuit (the back
+       straight, the hairpin, the Exchange, the grandstand and its boards)
+       moved back 40, so the plate runs from v -40 to v 210. The band it
+       opened behind the court holds the Journey (stop 08) and, left of
+       the court, the drop zone the skydiver lands on. */
+    var PLATE = { u0: 0, v0: -40, u1: 210, v1: 210 };
 
     /* Closed loop, control points for a Catmull-Rom spline. V1.3: the loop
        fills the plate, longer straights, wider corners, every district
@@ -22,9 +28,9 @@
         [30, 190], [100, 190], [170, 190],     // pit straight, start line at u=100
         [190, 182], [199, 160],                 // T1, a long right-hander up the right side
         [186, 134], [198, 108],                 // the esses: Campus Corner
-        [190, 80], [168, 54],                   // fast sweep at the top right
-        [128, 36], [84, 32],                    // back straight, gently bowed
-        [40, 38], [14, 58], [12, 86],           // the hairpin round The Exchange
+        [190, 80], [195, 44], [168, 14],        // the long climb up the right side and the fast sweep at the top (round 7: 40 further back)
+        [128, -4], [84, -8],                    // back straight, gently bowed
+        [40, -2], [14, 18], [12, 86],           // the hairpin round The Exchange, then the long run down the left
         [34, 110], [18, 136],                   // return-leg chicane past the Press Room
         [10, 164], [18, 186]                    // the last corner onto the straight
     ];
@@ -39,7 +45,7 @@
        start line. Sectors follow the biography: origins, building, now. */
     var SECTORS = [
         { id: 1, at: [100, 190] },
-        { id: 2, at: [168, 54] },
+        { id: 2, at: [168, 14] },
         { id: 3, at: [34, 110] }
     ];
 
@@ -78,9 +84,9 @@
           boxes: [[158, 116, 18, 30, 0.6, 0, 'wall'], [158, 138, 18, 8, 9, 0, 'wall'], [170, 116, 6, 22, 7, 0, 'wall'],
                   [158, 116, 12, 8, 9, 0, 'wall'], [163, 145.4, 7, 1.2, 5, 0, 'wall']] },
         { id: 'economics', num: '04', name: 'Economics', section: 'The exchange', sector: 2,
-          anchor: [37, 58], labelZ: 30, signature: '#1fb46a',
-          mark: { text: 'ECONOMICS', at: [37, 58, 14], h: 4.6, face: 'v' },
-          boxes: [[22, 50, 30, 18, 10, 0, 'wall'], [31, 52, 12, 12, 14, 0, 'wall'], [22, 49, 31, 20, 0.4, 10, 'roof']],
+          anchor: [37, 18], labelZ: 30, signature: '#1fb46a',
+          mark: { text: 'ECONOMICS', at: [37, 18, 14], h: 4.6, face: 'v' },
+          boxes: [[22, 10, 30, 18, 10, 0, 'wall'], [31, 12, 12, 12, 14, 0, 'wall'], [22, 9, 31, 20, 0.4, 10, 'roof']],
           ticker: { face: 'v', text: 'PLUME TOKEN YIELD VAULTS  ·  ETHEREUM VALIDATORS  ·  THE MEDICI NETWORK' } },
         { id: 'writing', num: '05', name: 'Writing', section: 'Press room', sector: 3,
           anchor: [78, 109], labelZ: 1, labelSide: 'below', signature: '#ff3d8a',
@@ -95,21 +101,40 @@
           mark: { text: 'CONTACT', at: [52, 183.7, 1.8], h: 4.4, face: 'v' },
           boxes: [[37, 183, 113, 1.4, 1.8, 0, 'wall'], [96, 182.2, 6, 0.8, 3.6, 0, 'roof'], [106, 182.2, 3, 0.8, 2.6, 0, 'roof'],
                   [75, 181, 2.4, 1.6, 3.2, 0, 'wall'], [83, 181, 2.4, 1.6, 3.2, 0, 'wall'], [111, 181, 2.4, 1.6, 3.2, 0, 'wall'], [125, 181, 2.4, 1.6, 3.2, 0, 'wall'], [139, 181, 2.4, 1.6, 3.2, 0, 'wall']],
-          board: { text: 'ABBA.WADA10@GMAIL.COM' } }
+          board: { text: 'ABBA.WADA10@GMAIL.COM' } },
+        /* Round 7: the Journey, the lab on the map. The drawn timeline of
+           building Betta (circuit/lab.js) plays on a big screen that stands
+           behind the court's right end and faces the camera; in front of it
+           six plinths rise left to right, one per stage, each with its prop
+           and its date, and the plinth of the stage on the screen lights.
+           The mark rides the screen's top edge and faces the camera (face
+           'd'). screen: its plan centre, width and height, and the height
+           of its bottom edge. steps: the first and last plinth, their
+           radius, the first height and the rise per step. */
+        { id: 'journey', num: '08', name: 'Journey', section: 'The lab', sector: 1,
+          anchor: [158, 47], labelZ: 49, signature: '#8b5cf6',
+          mark: { text: 'JOURNEY', at: [158, 47, 35.4], h: 4.4, face: 'd' },
+          boxes: [[145, 33, 31, 35, 0.3, 0, 'wall']],
+          screen: { at: [158, 47], w: 36, h: 24, z0: 9 },
+          steps: { from: [151, 65.5], to: [175, 41.5], r: 2.6, h0: 1.6, dh: 1.5 } }
     ];
+    /* Round 7: the drop zone, where the skydiver from the helicopter
+       lands: a target on the lawn left of the court and a windsock. Not a
+       stop; the jump starts from the helicopter itself. */
+    var DZ = { at: [70, 62], r: 7, sock: [58, 50] };   // the sock up-left of the target, clear of the court's floodlights
 
     /* The hoardings: three lines of type on trackside boards, big enough
        to read at the default zoom (V1.3 Session 1: the photographs are
        gone; the world is modeled geometry, type and emissive signage).
        face 'v' looks toward +v, face 'u' toward +u; both face the camera. */
     var HOARDINGS = [
-        { at: [42, 12], face: 'v', panels: [{ text: 'C++  ·  PYTHON  ·  SQL', w: 22, h: 7, z0: 4 }] },
-        { at: [140, 12], face: 'v', panels: [{ text: 'ARSENAL  ·  FORMULA ONE', w: 20, h: 7, z0: 4 }] },
+        { at: [42, -28], face: 'v', panels: [{ text: 'C++  ·  PYTHON  ·  SQL', w: 22, h: 7, z0: 4 }] },
+        { at: [140, -28], face: 'v', panels: [{ text: 'ARSENAL  ·  FORMULA ONE', w: 20, h: 7, z0: 4 }] },
         { at: [203, 126], face: 'u', panels: [{ text: 'IMU  ·  HAPTICS  ·  FIRMWARE', w: 18, h: 6.5, z0: 3 }] }
     ];
 
     /* The lap guide drives past the stops in this order. */
-    var LAP = ['about', 'betta', 'education', 'economics', 'writing', 'projects', 'contact'];
+    var LAP = ['about', 'betta', 'journey', 'education', 'economics', 'writing', 'projects', 'contact'];
 
     /* What moves on its own: the seven cars (one system, not seven), the
        start flag, the sleeve shimmer, one board flicker, and the Betta
@@ -118,12 +143,12 @@
     var AMBIENT = ['grid-cars', 'start-flag', 'sleeve-shimmer', 'board-flicker', 'helicopter'];
 
     /* Scenery, blocked in. */
-    var GRANDSTAND = [[84, 14, 48, 6, 5, 0, 'wall'], [84, 10, 48, 5, 9, 0, 'wall'], [82, 8, 52, 13, 0.8, 9, 'roof']];
+    var GRANDSTAND = [[84, -26, 48, 6, 5, 0, 'wall'], [84, -30, 48, 5, 9, 0, 'wall'], [82, -32, 52, 13, 0.8, 9, 'roof']];
     var PADDOCK = { slab: [64, 146, 80, 12], haulers: [[76, 148, 7, 3, 3, 0, 'wall'], [86, 148, 7, 3, 3, 0, 'wall'], [112, 148, 7, 3, 3, 0, 'wall'], [122, 148, 7, 3, 3, 0, 'wall']] };
     var BILLBOARDS = [];   // replaced by HOARDINGS
     var GRAVEL = [
         [[195, 188], [206, 186], [207, 162], [203, 158], [202, 174], [196, 184]],
-        [[9, 50], [4, 58], [4, 84], [9, 90], [7, 70]]
+        [[9, 10], [4, 18], [4, 44], [9, 50], [7, 30]]
     ];
     var CARPARK = { slab: [150, 152, 26, 14], cars: [[153, 155, 2.2, 1.2], [156.5, 155, 2.2, 1.2], [160, 155, 2.2, 1.2], [167, 155, 2.2, 1.2], [170.5, 155, 2.2, 1.2],
                                                      [153, 161, 2.2, 1.2], [160, 161, 2.2, 1.2], [163.5, 161, 2.2, 1.2], [170.5, 161, 2.2, 1.2]] };
@@ -131,24 +156,28 @@
     var BARRIERS = [
         { box: [52, 197, 44, 0.6, 2.2, 0], face: 'v', text: 'WADA RING   ·   BETTA   ·   WADA RING' },
         { box: [104, 197, 46, 0.6, 2.2, 0], face: 'v', text: 'FEEL EVERY REP   ·   USC   ·   TOP 4 OF 221' },
-        { box: [3, 48, 0.6, 28, 2.2, 0], face: 'u', text: 'BETTA   ·   BETTA' },
-        { box: [50, 22, 30, 0.6, 2.2, 0], face: 'v', text: 'LOS ANGELES   ·   WADA RING' }
+        { box: [3, 8, 0.6, 28, 2.2, 0], face: 'u', text: 'BETTA   ·   BETTA' },
+        { box: [50, -18, 30, 0.6, 2.2, 0], face: 'v', text: 'LOS ANGELES   ·   WADA RING' }
     ];
     var CAMPUS_CURBS = [[196, 150], [192, 88]];   // cardinal and gold curbs from the T1 exit to the sweep
     var RUNOFF = { at: [182, 168] };                // BETTA painted inside T1, along the track
     var TREES = [   // seeded by tools/circuit/trees.js
-        [17, 8, 4], [33, 9, 5], [52, 6, 4], [71, 11, 4], [138, 8, 4], [153, 7, 4], [165, 6, 5], [171, 9, 6],
-        [7, 20, 6], [18, 19, 5], [32, 19, 5], [150, 20, 4], [165, 19, 5], [173, 16, 6], [196, 20, 6], [30, 32, 4],
-        [128, 27, 5], [142, 29, 5], [152, 28, 4], [185, 30, 5], [198, 30, 4], [11, 42, 6], [77, 42, 5], [82, 44, 5],
-        [95, 43, 5], [107, 44, 4], [183, 39, 4], [197, 40, 5], [61, 51, 5], [71, 49, 5], [95, 50, 4], [104, 54, 4],
-        [118, 50, 4], [141, 55, 5], [186, 53, 5], [62, 62, 5], [71, 62, 5], [85, 63, 5], [93, 60, 6], [109, 66, 6],
-        [118, 60, 5], [139, 62, 6], [195, 61, 5], [49, 73, 5], [71, 76, 6], [87, 74, 4], [171, 74, 5], [29, 82, 5],
-        [43, 85, 6], [53, 84, 5], [75, 85, 6], [82, 85, 4], [148, 85, 5], [159, 85, 5], [170, 87, 5], [44, 95, 6],
-        [50, 98, 5], [175, 99, 4], [181, 94, 6], [6, 107, 4], [53, 110, 6], [150, 105, 6], [165, 104, 5], [175, 110, 4],
-        [183, 108, 6], [10, 120, 5], [62, 116, 5], [137, 119, 5], [148, 119, 6], [5, 126, 5], [40, 130, 6], [55, 131, 6],
-        [65, 130, 4], [71, 130, 6], [83, 126, 5], [115, 131, 6], [129, 129, 4], [27, 138, 5], [55, 139, 5], [77, 137, 4],
-        [84, 137, 5], [105, 140, 6], [120, 142, 4], [131, 138, 5], [143, 141, 4], [153, 137, 5], [27, 153, 6], [54, 150, 5],
-        [60, 153, 5], [183, 154, 4], [41, 160, 5], [39, 172, 6], [55, 170, 5], [152, 170, 5], [7, 186, 4], [186, 197, 5]
+        [17, -32, 4], [33, -31, 5], [52, -34, 4], [71, -29, 4], [138, -32, 4], [153, -33, 4], [165, -34, 5], [171, -31, 6],
+        [7, -20, 6], [18, -21, 5], [32, -21, 5], [150, -20, 4], [165, -21, 5], [173, -24, 6], [196, -20, 6], [43, -12, 4],
+        [151, -8, 6], [172, -13, 4], [181, -12, 4], [196, -10, 5], [11, 1, 4], [55, 4, 5], [64, 3, 5], [77, 2, 5],
+        [82, 4, 5], [95, 3, 5], [107, 4, 4], [183, -1, 4], [197, 0, 5], [61, 11, 5], [71, 9, 5], [95, 10, 4],
+        [104, 14, 4], [118, 10, 4], [141, 15, 5], [186, 13, 5], [62, 22, 5], [71, 22, 5], [85, 23, 5], [93, 20, 6],
+        [109, 26, 6], [118, 20, 5], [139, 22, 6], [162, 21, 5], [196, 24, 4], [38, 33, 5], [60, 36, 6], [76, 34, 4],
+        [97, 33, 6], [108, 32, 5], [140, 34, 6], [33, 46, 5], [41, 43, 5], [53, 45, 6], [60, 45, 4], [87, 42, 6],
+        [93, 44, 4], [107, 47, 4], [118, 45, 4], [131, 45, 6], [137, 48, 6], [183, 44, 4], [20, 53, 5], [38, 59, 4],
+        [93, 58, 5], [126, 54, 5], [137, 54, 4], [183, 59, 5], [21, 68, 6], [42, 66, 5], [51, 65, 6], [87, 70, 4],
+        [118, 66, 6], [183, 65, 5], [29, 75, 4], [53, 77, 4], [64, 80, 5], [152, 79, 6], [164, 77, 5], [49, 91, 6],
+        [63, 89, 4], [49, 101, 5], [159, 99, 5], [176, 100, 4], [181, 99, 5], [9, 108, 5], [21, 110, 4], [66, 110, 5],
+        [162, 110, 6], [170, 110, 5], [8, 120, 5], [74, 120, 5], [83, 125, 6], [99, 119, 5], [104, 125, 5], [121, 121, 4],
+        [139, 120, 5], [53, 130, 5], [66, 136, 4], [71, 136, 6], [84, 135, 4], [94, 132, 5], [104, 135, 4], [116, 136, 6],
+        [130, 136, 6], [28, 142, 4], [55, 141, 4], [66, 143, 6], [99, 143, 5], [121, 142, 4], [126, 142, 6], [141, 143, 5],
+        [149, 146, 6], [42, 157, 6], [39, 168, 5], [49, 168, 4], [7, 201, 6], [17, 199, 6], [105, 202, 5], [120, 200, 6],
+        [143, 201, 4], [159, 200, 4], [185, 202, 4], [197, 198, 5]
     ];
     var HELI = { at: [150, 22], banner: 'BETTA', height: 92, floor: 68, lead: 16, ease: 0.55 };   // the Betta helicopter flies over the race leader: where it rests in plan; its cruising height over the near half of the plate (the blimp held 62) and the floor it settles to over the far half (the camera looks down at 30 degrees, so a hull that stays at 92 leaves the top of the desktop rest view over the far straight; 68 is the lowest height clear of every mark); how far ahead of the leader's nose it sits; how fast it closes
     var BLIMP = HELI;   // the old name, for anything that still reads it
@@ -252,7 +281,7 @@
     return {
         NAME: NAME, PLACE: PLACE, SIZE: SIZE,
         TRACK: TRACK, TRACK_WIDTH: TRACK_WIDTH, START: START,
-        PIT: PIT, PIT_WIDTH: PIT_WIDTH, SECTORS: SECTORS,
+        PIT: PIT, PIT_WIDTH: PIT_WIDTH, SECTORS: SECTORS, PLATE: PLATE, DZ: DZ,
         LOCATIONS: LOCATIONS, LAP: LAP, AMBIENT: AMBIENT, HOARDINGS: HOARDINGS,
         GRANDSTAND: GRANDSTAND, PADDOCK: PADDOCK, CARPARK: CARPARK, BILLBOARDS: BILLBOARDS,
         GRAVEL: GRAVEL, TREES: TREES, HELI: HELI, BLIMP: BLIMP, FLAG: FLAG, GRID: GRID, BARRIERS: BARRIERS, CAMPUS_CURBS: CAMPUS_CURBS, RUNOFF: RUNOFF,

@@ -6,13 +6,15 @@
 export function createStops(L, dom) {
     'use strict';
     let engine = null;
-    /* round 6: two live pieces mount inside panels and are loaded only when
-       their stop opens. The lab (circuit/lab.js) is the Betta stop's drawn
-       timeline; the skydiving tile (circuit/skydive.js) sits first in the
-       Projects grid. Each returns a controller with destroy(); a failed
+    /* round 6: a live piece mounts inside a panel and is loaded only when
+       its stop opens. Round 7: the lab (circuit/lab.js), the drawn timeline
+       of building Betta, moved from the Betta stop to its own stop, 08
+       Journey, and plays on the map as well; the skydiving tile left the
+       Projects grid, because the jump now happens on the map, from the
+       helicopter. A mount returns a controller with destroy(); a failed
        import leaves the panel as it was, so nothing here can take a stop
        down with it. */
-    const V = '15.1';
+    const V = '16.0';
     const live = [];   // mounted controllers, torn down on clear()
     const REEL = 'https://www.instagram.com/reel/Ddv8Qr_gruP/';
     function mountLive(path, fn) {
@@ -39,10 +41,15 @@ export function createStops(L, dom) {
                 '<div class="skills-grid">' + SKILLS.map(s => '<span>' + s + '</span>').join('') + '</div>' +
             '</section>',
 
+        /* round 7: the stop is the way to the Betta site, the sleeve from its hero as one big link */
         betta: () =>
             line('a haptic shooting sleeve') +
-            '<div class="ring-lab" data-live="lab"></div>' +
-            '<p class="ring-lab-links"><a href="betta.html" class="ring-pill">The full case</a><a href="https://betta.live" target="_blank" rel="noopener noreferrer" class="ring-pill">betta.live</a></p>' +
+            '<a class="ring-hero" href="https://betta.live" target="_blank" rel="noopener noreferrer" aria-label="betta.live, the Betta site, opens in a new tab">' +
+                '<picture><source type="image/webp" srcset="images/betta_sleeve_hero-800.webp 800w, images/betta_sleeve_hero-1600.webp 1600w" sizes="(max-width: 760px) 92vw, 520px">' +
+                '<img src="images/betta_sleeve_hero-1600.jpg" srcset="images/betta_sleeve_hero-800.jpg 800w, images/betta_sleeve_hero-1600.jpg 1600w" sizes="(max-width: 760px) 92vw, 520px" alt="A player lining up a shot in the black Betta sleeve" width="1600" height="900" decoding="async"></picture>' +
+                '<span class="ring-hero-go">betta.live <span aria-hidden="true">&#8599;</span></span>' +
+            '</a>' +
+            '<p class="ring-lab-links"><a href="betta.html" class="ring-pill">The full case</a><button type="button" class="ring-pill" data-go="journey">The journey</button></p>' +
             '<section class="plain-projects ring-rows" aria-label="Side Quests">' +
                 '<div class="plain-group"><h2 class="section-h">Side Quests</h2><ul class="plain-list">' +
                     '<li>Wheelchair Basketball Volunteering. Volunteering with adaptive sports programs.' +
@@ -103,7 +110,14 @@ export function createStops(L, dom) {
             line('Skydiving, Posture Cue, robots, IoT') +
             grid(['posture-cue', 'visual-mapping', 'bluetooth-car', 'home-temp-monitor']) +
             '<p class="ring-panel-line ring-sky-line">Skydiving, in the making: a jump instrument with a barometer, LiDAR, GPS and haptics. ' +
-                '<a href="' + REEL + '" target="_blank" rel="noopener noreferrer" class="ring-inline-link">The reel &rarr;</a></p>',
+                '<a href="' + REEL + '" target="_blank" rel="noopener noreferrer" class="ring-inline-link">The reel &rarr;</a></p>' +
+            (dom.canJump && dom.canJump() ? '<p class="ring-lab-links"><button type="button" class="ring-pill" data-jump>Jump from the helicopter</button></p>' : ''),
+
+        /* round 7: the lab, the drawn timeline of building Betta, at whatever stage the screen on the map is showing */
+        journey: () =>
+            line('building Betta, from a robot car to the sleeve') +
+            '<div class="ring-lab" data-live="lab"></div>' +
+            '<p class="ring-lab-links"><a href="https://betta.live" target="_blank" rel="noopener noreferrer" class="ring-pill">betta.live</a><a href="betta.html" class="ring-pill">The full case</a></p>',
 
         contact: () =>
             '<section class="about-section contact">' +
@@ -127,27 +141,20 @@ export function createStops(L, dom) {
             const cases = ids.map(id => window.CaseShelf.CASES.find(c => c.id === id)).filter(Boolean);
             engine = window.CaseShelf.mount({ shelf: g, stage: dom.stage, cases, layout: 'grid', onCase: dom.onCase });
         }
-        if (loc.id === 'projects' && g) {   // the skydiving tile, first on the grid: newest work first
-            const tile = document.createElement('div'); tile.className = 'ring-sky';
-            g.insertBefore(tile, g.firstChild);
-            const token = ++renderToken;
-            mountLive('skydive.js', m => {
-                if (token !== renderToken || !tile.isConnected) return;
-                const ctl = m.mountSkydive(tile, { href: REEL, compact: true,
-                    onJump: () => { if (dom.onCase) dom.onCase('skydiving', 'case'); },
-                    onLink: () => { if (dom.onCase) dom.onCase('skydiving', 'row'); } });
-                if (ctl) live.push(ctl);
-            });
-        }
         const labEl = body.querySelector('[data-live="lab"]');
         if (labEl) {
             const token = ++renderToken;
             mountLive('lab.js', m => {
                 if (token !== renderToken || !labEl.isConnected) return;
-                const ctl = m.mountLab(labEl, { onInteract: () => { if (dom.onCase) dom.onCase('betta', 'row'); } });
+                const ctl = m.mountLab(labEl, { start: dom.labStart ? dom.labStart() : 0,
+                    onInteract: () => { if (dom.onCase) dom.onCase('betta', 'row'); },
+                    onStage: i => { if (dom.onLabStage) dom.onLabStage(i); } });   // a scrub here moves the screen on the map too
                 if (ctl) live.push(ctl);
             });
         }
+        const jumpBtn = body.querySelector('[data-jump]');
+        if (jumpBtn) jumpBtn.addEventListener('click', () => { if (dom.onJump) dom.onJump(); });
+        for (const b of body.querySelectorAll('[data-go]')) b.addEventListener('click', () => { if (dom.onGo) dom.onGo(b.dataset.go); });
         const copy = body.querySelector('.ring-copy');
         if (copy) copy.addEventListener('click', () => {
             const text = copy.dataset.copy;
