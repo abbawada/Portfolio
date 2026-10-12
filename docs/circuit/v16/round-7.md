@@ -69,6 +69,20 @@ Start lap, Leave lap, Next stop, Skip ahead, Finish, Lap complete, To the line; 
 
 Captures: this folder, `01-` to `10-`.
 
+## Review
+An independent read of the code found six defects, five confirmed in the browser; all fixed in the same commit and re-run:
+
+| defect | fix | re-run |
+| --- | --- | --- |
+| a scroll or drag during a camera move dropped what the move was for: a stop's panel stayed hidden, the jump's card never came | `interruptFly()` in nav.js stops the move and still runs its arrival step | panel opens after a wheel or a drag mid-move; card shows after a wheel during the landing move |
+| leaving the jump by keyboard dropped the focus on the page (the chip was still hidden) | the chip is shown before the focus goes to it; the exit pill hides under the card | focus on the Skydive chip |
+| the lap moved on while the focus was inside the panel | focus arriving in the panel holds the clock | still on the stop after 10.5 s |
+| Watch the reel kept feeding the SKY car | one bump through the world, no dwell | 0, 10 on the click, 9.6 six seconds later |
+| at 1024 the lap bar beside a panel was 152 px wide and spilled onto the minimap | the bar spans the world beside the panel and wraps; the minimap steps aside on the lap; below 1120 px the Grid steps aside beside a panel | bar inside its box, name 224 px wide |
+| the altimeter read 12,090 ft on the skid | it counts from where the diver starts | 13,410 ft on the skid |
+
+Also: a dead motion hook removed, the helicopter's comment corrected, the reduced-motion canopy laid behind the diver, every helicopter flight capped at 78 units a second. After the fixes: the jump lands with its card, the label test is 8 of 8, and a full lap opens all eight stops in 110 s with no errors.
+
 ## Not verified
 - No real phone: the phone captures are Chrome's emulation, and the screen's 20 fps redraw on a phone was not measured on a device.
 - Safari and Firefox were not run.
